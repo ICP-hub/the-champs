@@ -23,6 +23,9 @@ function App() {
         <input id="name" alt="Name" type="text" />
         <button type="submit">Click Me!</button>
       </form>
+      <h1 className="text-3xl font-bold underline">
+      Hello world!
+    </h1>
       <section id="greeting">{greeting}</section>
     </main>
   );
