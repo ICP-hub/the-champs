@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "theChamps_backend": {
+      "main": "src/theChamps_backend/main.mo",
+      "type": "motoko"
+    },
+    "theChamps_frontend": {
+      "dependencies": [
+        "theChamps_backend"
+      ],
+      "source": [
+        "src/theChamps_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "theChamps_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
