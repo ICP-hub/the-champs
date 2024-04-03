@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { theChamps_backend } from 'declarations/theChamps_backend';
+import HomePage from './pages/Homepage';
+import MyProfilePage from './pages/MyProfilePage';
 
 function App() {
   const [greeting, setGreeting] = useState('');
@@ -15,18 +17,8 @@ function App() {
 
   return (
     <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-      <section id="greeting">{greeting}</section>
+     <HomePage/> 
+     {/* <MyProfilePage/> */}
     </main>
   );
 }
