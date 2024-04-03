@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { theChamps_backend } from 'declarations/theChamps_backend';
-import HomePage from './pages/Homepage';
-import MyProfilePage from './pages/MyProfilePage';
+import { useState } from "react";
+import { theChamps_backend } from "declarations/theChamps_backend";
+import HomePage from "./pages/HomePage";
+import MyProfilePage from "./pages/MyProfilePage";
 
 function App() {
-  const [greeting, setGreeting] = useState('');
+  const [greeting, setGreeting] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -17,8 +17,8 @@ function App() {
 
   return (
     <main>
-     <HomePage/> 
-     {/* <MyProfilePage/> */}
+      <HomePage />
+      {/* <MyProfilePage/> */}
     </main>
   );
 }
