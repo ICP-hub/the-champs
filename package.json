@@ -14,5 +14,8 @@
   "type": "module",
   "workspaces": [
     "src/theChamps_frontend"
-  ]
+  ],
+  "dependencies": {
+    "boring-avatars": "^1.10.1"
+  }
 }

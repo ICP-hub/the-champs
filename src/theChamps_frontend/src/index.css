@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.custom-box {
+  position: fixed;
+  top: 12%;
+  right: 0;
+  height: 100%;
+  background-color: white;
+  width: 50%; /* Adjust width as needed */
+  color: black;
+  transition: transform 0.3s;
+  /* Add shadow for non-mobile views */
+  box-shadow: inset -4px -4px 10px rgba(0, 0, 0, 0.2);
+}
+
+@media only screen and (max-width: 1380px) {
+  .custom-box {
+    box-shadow: none; /* Remove shadow for mobile views */
+  }
+}

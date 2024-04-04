@@ -2,6 +2,8 @@ import { useState } from "react";
 import { theChamps_backend } from "declarations/theChamps_backend";
 import HomePage from "./pages/HomePage";
 import MyProfilePage from "./pages/MyProfilePage";
+import Header from "./components/common/Header";
+import ProductPage from "./pages/ProductPage";
 
 function App() {
   const [greeting, setGreeting] = useState("");
@@ -17,8 +19,10 @@ function App() {
 
   return (
     <main>
-      <HomePage />
-      {/* <MyProfilePage/> */}
+      <Header />
+      <ProductPage name={"All collection"} />
+      {/* <HomePage />
+      <MyProfilePage/> */}
     </main>
   );
 }

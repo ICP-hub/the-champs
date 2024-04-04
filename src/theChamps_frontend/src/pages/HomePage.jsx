@@ -1,10 +1,14 @@
-import React from 'react'
-import HomepageContainerMain from '../components/home/HomePageContainerMain'
+import React from "react";
+import HomepageContainerMain from "../components/home/HomePageContainerMain";
+import Footer from "../components/common/Footer";
 
 const HomePage = () => {
   return (
-    <HomepageContainerMain />
-  )
-}
+    <>
+      <HomepageContainerMain />
+      <Footer></Footer>
+    </>
+  );
+};
 
-export default HomePage
+export default HomePage;
