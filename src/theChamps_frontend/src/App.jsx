@@ -4,6 +4,9 @@ import HomePage from "./pages/HomePage";
 import MyProfilePage from "./pages/MyProfilePage";
 import Header from "./components/common/Header";
 import ProductPage from "./pages/ProductPage";
+import Footer from "./components/common/Footer";
+import { RouterProvider } from "react-router-dom";
+import appRoutes from "./app.routing";
 
 function App() {
   const [greeting, setGreeting] = useState("");
@@ -20,9 +23,10 @@ function App() {
   return (
     <main>
       <Header />
-      <ProductPage name={"All collection"} />
-      {/* <HomePage />
-      <MyProfilePage/> */}
+      <div className="mt-28">
+        <RouterProvider router={appRoutes} />
+      </div>
+      <Footer />
     </main>
   );
 }

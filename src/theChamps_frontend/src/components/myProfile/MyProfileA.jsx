@@ -1,12 +1,14 @@
 import FancyHeader from "../common/FancyHeader";
 import Tabs from "../common/Tabs";
 
-const MyProfileA = () => {
-  const handleTabChange = (tab) => {
-    console.log("Selected Tab:", tab);
+const MyProfileA = ({ onTabChange }) => {
+  const handleTabChange = (tabIndex) => {
+    console.log("curr tab ", tabIndex);
+    onTabChange(tabIndex);
   };
+
   return (
-    <div className="md:px-24 p-6">
+    <div>
       <div className="flex">
         <FancyHeader fancy="My Profile" />
       </div>

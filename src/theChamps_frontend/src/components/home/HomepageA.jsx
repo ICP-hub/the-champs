@@ -21,7 +21,7 @@ import circle2 from "../../assets/icons/circle-02.svg";
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageA = () => {
   return (
-    <div className="grid min-[900px]:grid-cols-2 md:p-24 max-md:p-6 mt-28">
+    <div className="grid min-[900px]:grid-cols-2 md:p-24 max-md:p-6">
       <HomePageALeft />
       <HomePageARight />
     </div>
