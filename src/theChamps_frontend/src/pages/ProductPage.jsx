@@ -1,10 +1,10 @@
 import React from "react";
 
-import { CiSearch, CiFilter } from "react-icons/ci";
 import Footer from "../components/common/Footer";
 import ProductCard from "../components/common/productcomponent/productCard";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import Searchbar from "../components/common/Searchbar";
 
 const ProductPage = ({ name }) => {
   const products = [
@@ -103,21 +103,8 @@ const ProductPage = ({ name }) => {
               {name}
             </span>
           </h1>
-          <div className="flex justify-between ">
-            <div className="flex text-xl items-center border-[1.5px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 py-2 w-[60%] sm:w-[80%]  overflow-hidden  lg:w-[85%]  mb-12">
-              <CiSearch />
-              <input
-                type="text"
-                placeholder="Search our collection"
-                className="bg-transparent border border-transparent outline-none  w-full"
-              />
-            </div>
-            <div className="flex text-xl items-center justify-center  gap-2 border-[1.5px]  border-gray-400 rounded-md  px-3 py-2 lg:w-[12%] mb-12 overflow-hidden">
-              <div className="text-3xl">
-                <CiFilter />
-              </div>
-              Filters
-            </div>
+          <div>
+            <Searchbar />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3  gap-12 mt-4 justify-center">
             {products.map((product) => (
