@@ -19,3 +19,23 @@
     box-shadow: none; /* Remove shadow for mobile views */
   }
 }
+
+.react-multiple-carousel__arrow {
+  z-index: 0 !important;
+}
+
+.react-multiple-carousel__arrow--right {
+  right: 0 !important;
+}
+
+.react-multiple-carousel__arrow--left {
+  left: 0 !important;
+}
+
+.bg-champs {
+  background: linear-gradient(
+    to right,
+    rgba(38, 0, 252, 0.05),
+    rgba(255, 0, 234, 0.05)
+  );
+}
