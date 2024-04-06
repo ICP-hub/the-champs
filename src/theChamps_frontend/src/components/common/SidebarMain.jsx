@@ -44,7 +44,7 @@ const SidebarMain = () => {
         </div>
       </div>
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-start mt-10 justify-center  bg-opacity-50">
+        <div className="fixed inset-0 z-50  mt-32 flex items-start justify-center  bg-opacity-50">
           <div className="  p-6 rounded-lg">
             <button
               onClick={() => setIsModalOpen(false)}

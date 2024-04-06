@@ -23,7 +23,7 @@ const Searchbar = () => {
             Filters
             </div>{" "} */}
         <div className=" lg:w-[12%]  ">
-          <Menu as="div" className="relative inline-block text-left w-full">
+          <Menu as="div" className="relative inline-block text-left w-full ">
             <div>
               <Menu.Button className=" flex text-xl items-center justify-center  gap-2 border-[1.5px]  border-gray-400 rounded-md  px-3 py-2 lg:w-full  overflow-hidden">
                 <div className="text-3xl">
@@ -41,7 +41,7 @@ const Searchbar = () => {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute right-0 mt-2 w-[330px] origin-top-right divide-y  divide-gray-100 rounded-3xl bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+              <Menu.Items className="absolute right-0 mt-2 w-[330px] bg-gradient-to-r from-purple-50 to-pink-50    origin-top-right divide-y  divide-gray-100 rounded-3xl bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
                 <div className="px-1 py-1 ">
                   <div className="m-6 text-center">
                     <h1 className="text-md  text-left font-medium">

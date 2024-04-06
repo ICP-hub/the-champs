@@ -41,7 +41,7 @@ const Header = () => {
       {/* Move Sidebar outside of header */}
       <div
         className={`top-0 left-0 fixed right-0 flex flex-wrap justify-between items-center z-30 px-6 lg:px-24 py-7 ${
-          colorChange ? "page-header" : "bg-white"
+          colorChange ? "page-header" : ""
         } ${
           isSidebarOpen || isMenuOpen ? "bg-white shadow-md" : "bg-transparent"
         }`}
