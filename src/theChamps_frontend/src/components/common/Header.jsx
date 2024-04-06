@@ -6,16 +6,17 @@ import Sidebar from "./Sidebar";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [colorChange, setColorchange] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  const [colorChange, setColorchange] = useState(false);
+
   const changeNavbarColor = () => {
     if (window.scrollY >= 80) {
       setColorchange(true);
@@ -23,27 +24,34 @@ const Header = () => {
       setColorchange(false);
     }
   };
+
   window.addEventListener("scroll", changeNavbarColor);
 
   return (
-    <div className="">
-      {isSidebarOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-900 opacity-50 z-50"></div>
-      )}
-
+    <div className="relative z-[35]">
+      <div className="w-full">
+        {isSidebarOpen && (
+          <div
+            className="fixed top-0 left-0 w-full h-full bg-gray-900 opacity-50 z-25"
+            onClick={toggleSidebar}
+          ></div>
+        )}
+        <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />{" "}
+      </div>
+      {/* Move Sidebar outside of header */}
       <div
-        className={` top-0   left-0  fixed  right-0 flex flex-wrap justify-between   items-center z-50 px-6 lg:px-24 py-7  ${
-          isSidebarOpen || isMenuOpen || colorChange
-            ? "bg-white  shadow-md"
-            : "bg-transparent"
+        className={`top-0 left-0 fixed right-0 flex flex-wrap justify-between items-center z-30 px-6 lg:px-24 py-7 ${
+          colorChange ? "page-header" : "bg-white"
+        } ${
+          isSidebarOpen || isMenuOpen ? "bg-white shadow-md" : "bg-transparent"
         }`}
         style={{
           boxShadow: isSidebarOpen
-            ? "  0px -4px 10px rgba(0, 0, 0, 0.2)"
+            ? " 0px -4px 10px rgba(0, 0, 0, 0.4)"
             : "none",
         }}
       >
-        <h1 className="text-3xl font-bold font-orbitron ">CHAMPS</h1>
+        <h1 className="text-3xl font-bold font-orbitron">CHAMPS</h1>
         <ul className="hidden sm:flex md:gap-7 gap-3 md:text-lg text-sm font-bold">
           <li>Home</li>
           <li>Collection</li>
@@ -56,7 +64,7 @@ const Header = () => {
           </button>
         </div>
         <div className="flex gap-7 text-center items-center">
-          <div className=" hidden sm:flex items-center">
+          <div className="hidden sm:flex items-center z-1">
             <FiShoppingCart size={24} />
           </div>
           <button
@@ -66,19 +74,16 @@ const Header = () => {
             <FaWallet />
             <p>Login</p>
           </button>
-          <div className="">
-            <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
-          </div>
         </div>
       </div>
       {isMenuOpen && (
-        <div className=" z-10 sm:hidden fixed top-24 left-100  h-screen right-0 flex flex-col  w-[38%]  bg-white px-8 py-4">
+        <div className="z-40 sm:hidden fixed top-24 left-100 h-screen right-0 flex flex-col w-[38%] bg-white px-8 py-4">
           <ul className="flex flex-col gap-4 text-lg text-left font-bold">
             <li>Home</li>
             <li>Collection</li>
             <li>About</li>
             <li>Contact</li>
-            <div className=" w-full">
+            <div className="w-full">
               <FiShoppingCart size={24} />
             </div>
           </ul>

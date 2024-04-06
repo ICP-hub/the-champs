@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Products from "../../FakeProdDatbase.json";
 import ProductCard from "../common/productcomponent/productCard";
+import Searchbar from "../common/Searchbar";
 
 const MyProfileB = ({ activeTabIndex }) => {
   // Replace the filterProducts state later
@@ -31,7 +32,10 @@ const MyProfileB = ({ activeTabIndex }) => {
 
   return (
     <div className="flex flex-col gap-8">
-      <div>SearchBar component</div>
+      <div className="mt-8">
+        {" "}
+        <Searchbar />{" "}
+      </div>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-x-8 gap-y-8">
         {filteredProducts.map((product) => (
           <ProductCard key={product.id} product={product} />

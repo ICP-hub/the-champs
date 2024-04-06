@@ -8,6 +8,7 @@ const appRoutes = createBrowserRouter([
   { path: "/", element: <HomePage /> },
   { path: "/products", element: <ProductPage /> },
   { path: "/my-profile", element: <MyProfilePage /> },
+  { path: "/collection", element: <ProductPage name={"All Collection"} /> },
 ]);
 
 export default appRoutes;

@@ -120,7 +120,6 @@ const ProductPage = ({ name }) => {
             <IoIosArrowForward size={20} />
           </div>
         </div>
-        <Footer />
       </div>
     </>
   );
