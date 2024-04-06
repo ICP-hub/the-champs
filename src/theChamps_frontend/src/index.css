@@ -3,7 +3,7 @@
 @tailwind utilities;
 .custom-box {
   position: fixed;
-  top: 12%;
+
   right: 0;
   height: 100%;
   background-color: white;
@@ -17,5 +17,20 @@
 @media only screen and (max-width: 1380px) {
   .custom-box {
     box-shadow: none; /* Remove shadow for mobile views */
+  }
+}
+.page-header {
+  position: fixed;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.1);
+  padding: 28px 0;
+  backdrop-filter: blur(20px);
+  animation: slideDown 0.5s ease-out;
+}
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
   }
 }

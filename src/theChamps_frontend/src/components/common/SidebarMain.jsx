@@ -16,7 +16,7 @@ import { RiArrowUpDownFill } from "react-icons/ri";
 const SidebarMain = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
-    <div className="py-4 ">
+    <div className="py-4 mt-24 ">
       {/* Your sidebar content goes here */}
       <h2 className="text-md px-4   mb-4 text-gray-500 text-left ">
         connected Wallet
@@ -108,9 +108,11 @@ const SidebarMain = () => {
         <IcpLogo size={18} /> 0
       </p>
 
-      <button className="mt-4  font-bold text-[#6D01F6]  border-2 border-[#6D01F6]  py-2 px-4 rounded-md w-[90%]">
-        Link volt
-      </button>
+      <div className="flex items-center justify-center ">
+        <button className="mt-4  font-bold text-[#6D01F6] border-2 border-[#6D01F6]  py-2 px-4 rounded-md w-[90%]">
+          Link volt
+        </button>
+      </div>
       <div className="border-[1px] mt-4 border-gray-200 w-full m-0"></div>
 
       <div className="p-4 text-left text-md ">
