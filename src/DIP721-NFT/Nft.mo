@@ -10,6 +10,7 @@ import Bool "mo:base/Bool";
 import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Types "./Types";
+import Cycles "mo:base/ExperimentalCycles";
 
 shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibleToken) = Self {
   stable var transactionId: Types.TransactionId = 0;
@@ -19,6 +20,8 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
   stable var name : Text = init.name;  
   stable var symbol : Text = init.symbol;
   stable var maxLimit : Nat16 = init.maxLimit;
+  private stable var capacity = 1000000000000000000;
+  private stable var balance = Cycles.balance();
 
   // https://forum.dfinity.org/t/is-there-any-address-0-equivalent-at-dfinity-motoko/5445/3
   let null_address : Principal = Principal.fromText("aaaaa-aa");
@@ -254,6 +257,22 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
     };
   };
 
+ public func wallet_receive() : async { accepted: Nat64 } {
+    let amount = Cycles.available();
+    let limit : Nat = capacity - balance;
+    let accepted = 
+        if (amount <= limit) amount
+        else limit;
+    let deposit = Cycles.accept(accepted);
+    assert (deposit == accepted);
+    balance += accepted;
+    { accepted = Nat64.fromNat(accepted) };
+};  
   
-
+  public shared({caller}) func wallet_balance() : async Nat {
+    return balance
+};
+  public query func getCanisterId() : async Principal {
+    return Principal.fromActor(Self);
+  };
 }

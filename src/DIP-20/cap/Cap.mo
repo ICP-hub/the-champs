@@ -7,7 +7,7 @@ import Root "Root";
 import Types "Types";
 import Router "Router";
 // import ic "ic:aaaaa-aa";
-import IC "./IC";
+import IC "IC";
 
 module {
     public class Cap(canister_id: Principal, creation_cycles: Nat) {

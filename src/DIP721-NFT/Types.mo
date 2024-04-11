@@ -122,4 +122,27 @@ module {
     token_id: TokenId;
     id: Nat;
   };
+
+   public type dip721class = actor {
+    balanceOfDip721 : shared query Principal -> async Nat64;
+    getMaxLimitDip721 : shared query () -> async Nat16;
+    getMetadataDip721 : shared query TokenId -> async MetadataResult;
+    getMetadataForUserDip721 :
+      shared Principal -> async ExtendedMetadataResult;
+    getTokenIdsForUserDip721 : shared query Principal -> async [TokenId];
+    lockDip721 : shared TokenId -> async Result<Locktoken, LockTokenError>;
+    logoDip721 : shared query () -> async LogoResult;
+    mintDip721 : shared (Principal, MetadataDesc) -> async MintReceipt;
+    nameDip721 : shared query () -> async Text;
+    ownerOfDip721 : shared query TokenId -> async OwnerResult;
+    safeTransferFromDip721 :
+      shared (Principal, Principal, TokenId) -> async TxReceipt;
+    supportedInterfacesDip721 : shared query () -> async [InterfaceId];
+    symbolDip721 : shared query () -> async Text;
+    totalSupplyDip721 : shared query () -> async Nat64;
+    transferFromDip721 :
+      shared (Principal, Principal, TokenId) -> async TxReceipt;
+    unlockDip721 :
+      shared TokenId -> async Result<Unlocktoken, UnlockTokenError>
+  };
 };
