@@ -7,19 +7,18 @@ import Types "../DIP721-NFT/Types";
 import DIP20ActorClass "../DIP-20/token";
 
 actor {
-        //! 
+     
         // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
         
-
-        var nftcollectionMap = HashMap.HashMap<Principal, NFTActorClass.Dip721NFT>(0,Principal.equal,Principal.hash);
+        var nftcollectionMap = HashMap.HashMap<Principal, Principal>(0,Principal.equal,Principal.hash);
         
-        public shared ({caller = user}) func createcollection (custodian: Principal, metadata : Types.Dip721NonFungibleToken) : async Text {
+        public shared ({caller = user}) func createcollection (custodian: Principal, metadata : Types.Dip721NonFungibleToken) : async Principal {
             Cycles.add(100_500_000_000);
             let nftcollection = await NFTActorClass.Dip721NFT(custodian, metadata);
+            let collection_canister_id = await nftcollection.getCanisterId();
             let amountAccepted = await nftcollection.wallet_receive();
-
-            nftcollectionMap.put(user, nftcollection);
-            return "NFT collection created";
+            nftcollectionMap.put(user,collection_canister_id);
+            return collection_canister_id;
         };
         
         public shared ({caller = user}) func FractionalizeNFt( 
@@ -37,14 +36,15 @@ actor {
             Debug.print(debug_show(Cycles.balance()));
             Cycles.add(100_500_000_000);
             Debug.print(debug_show(Cycles.balance()));
-            let nftcollectionopt = nftcollectionMap.get(user);
-            switch (nftcollectionopt){
+            let collection_canister_id  = nftcollectionMap.get(user);
+            switch (collection_canister_id){
                 case (null) {
                     return "NFT collection not found";
                 };
-                case (?nftcollection) { 
-                    return "NFT collection not found";
-                    let mintednft = await nftcollection.mintDip721(to, metadata);
+                case (?id) { 
+                    //TODO: Issue is the creator of the collection is the user but here the canister is calling the mint function 
+                    let nftcanisteractor = actor(Principal.toText(id)) : actor {mintDip721 : (to : Principal , metadata : Types.MetadataDesc ) -> async Types.MintReceipt};
+                    let mintednft = await nftcanisteractor.mintDip721(to, metadata);
                     switch(mintednft){
                         case (#Err(_)) {
                             return "NFT not minted";
