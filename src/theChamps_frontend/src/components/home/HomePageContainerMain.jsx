@@ -3,6 +3,7 @@
 /* ----------------------------------------------------------------------------------------------------- */
 
 import CustomDivide from "../common/CustomDivide";
+import HomeFeatured from "./HomeFeatured";
 import HomePageA from "./HomepageA";
 import HomePageB from "./HomepageB";
 import HomePageC from "./HomepageC";
@@ -24,6 +25,8 @@ const HomepageContainerMain = () => {
       <HomePageA />;
       <Wallets />
       <HomePageB />
+      <CustomDivide />
+      <HomeFeatured />
       <CustomDivide />
       <HomePageC />
       <CustomDivide />

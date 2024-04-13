@@ -130,11 +130,14 @@ const QuestionBox = () => {
       {questions.map((item, index) => (
         <div
           key={index}
-          className={`py-6 ${index !== questions.length - 1 && "border-b-2"}`}
+          className={`py-6 cursor-pointer ${
+            index !== questions.length - 1 && "border-b-2"
+          }`}
+          onClick={() => handleAccordion(index)}
         >
           <div className="flex justify-between">
             <h3 className="font-bold text-xl">{item.question}</h3>
-            <span onClick={() => handleAccordion(index)}>
+            <span>
               {openIndex === index ? (
                 <MdArrowDropUp size={24} />
               ) : (

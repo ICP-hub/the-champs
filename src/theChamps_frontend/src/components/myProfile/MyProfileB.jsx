@@ -1,8 +1,15 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ imports.
+/* ----------------------------------------------------------------------------------------------------- */
 import { useEffect, useState } from "react";
 import Products from "../../FakeProdDatbase.json";
 import ProductCard from "../common/productcomponent/productCard";
 import Searchbar from "../common/Searchbar";
+import MyProfileActivity from "./MyProfileActivity";
 
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ <MyProfileB /> : tab contents
+/* ----------------------------------------------------------------------------------------------------- */
 const MyProfileB = ({ activeTabIndex }) => {
   // Replace the filterProducts state later
   const [filteredProducts, setFilteredProducts] = useState(Products);
@@ -28,19 +35,21 @@ const MyProfileB = ({ activeTabIndex }) => {
     setFilteredProducts(filtered);
   }, [activeTabIndex]);
 
-  // console.log(filteredProducts);
-
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col">
       <div className="mt-8">
         {" "}
         <Searchbar />{" "}
       </div>
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-x-8 gap-y-8">
-        {filteredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {activeTabIndex === "Activity" ? (
+        <MyProfileActivity />
+      ) : (
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-x-8 gap-y-8">
+          {filteredProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { theChamps_backend } from "declarations/theChamps_backend";
-import HomePage from "./pages/HomePage";
-import MyProfilePage from "./pages/MyProfilePage";
 import Header from "./components/common/Header";
-import ProductPage from "./pages/ProductPage";
 import Footer from "./components/common/Footer";
 import { RouterProvider } from "react-router-dom";
 import appRoutes from "./app.routing";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 function App() {
   const [greeting, setGreeting] = useState("");
@@ -15,10 +14,11 @@ function App() {
   document.body.className = "bg-champs-main";
   // Effect changing bg on scroll down
   useEffect(() => {
+    AOS.init();
     const handleScroll = () => {
       document.body.style.transition = "background 2s";
       document.body.className =
-        window.scrollY > 800 ? "bg-champs-white" : "bg-champs-main";
+        window.scrollY > 100 ? "bg-champs-white" : "bg-champs-main";
     };
 
     window.addEventListener("scroll", handleScroll);

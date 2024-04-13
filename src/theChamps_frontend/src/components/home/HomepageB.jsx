@@ -9,83 +9,96 @@ import soccer1 from "../../assets/images/soccer1.jpeg";
 import CustomButton from "../common/CustomButton";
 import { MdArrowOutward } from "react-icons/md";
 import FancyHeader from "../common/FancyHeader";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/grid";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import { Grid, Pagination, Navigation, Keyboard } from "swiper/modules";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageB /> : Soccer collection.
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageB = () => {
   const collectionsData = [
-    { image: soccer1, title: "Name", subtitle: "By The Name" },
-    { image: soccer1, title: "Name", subtitle: "By The Name" },
-    { image: soccer1, title: "Name", subtitle: "By The Name" },
-    { image: soccer1, title: "Name", subtitle: "By The Name" },
+    { image: soccer1, title: "Name1", subtitle: "By The Name" },
+    { image: soccer1, title: "Name2", subtitle: "By The Name" },
+    { image: soccer1, title: "Name3", subtitle: "By The Name" },
+    { image: soccer1, title: "Name4", subtitle: "By The Name" },
+    { image: soccer1, title: "Name5", subtitle: "By The Name" },
+    { image: soccer1, title: "Name6", subtitle: "By The Name" },
+    { image: soccer1, title: "Name7", subtitle: "By The Name" },
+    { image: soccer1, title: "Name8", subtitle: "By The Name" },
+    { image: soccer1, title: "Name9", subtitle: "By The Name" },
+    { image: soccer1, title: "Name10", subtitle: "By The Name" },
+    { image: soccer1, title: "Name11", subtitle: "By The Name" },
+    { image: soccer1, title: "Name12", subtitle: "By The Name" },
+    { image: soccer1, title: "Name13", subtitle: "By The Name" },
+    { image: soccer1, title: "Name14", subtitle: "By The Name" },
+    { image: soccer1, title: "Name15", subtitle: "By The Name" },
+    { image: soccer1, title: "Name16", subtitle: "By The Name" },
   ];
 
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
       <FancyHeader normal="Champ's" fancy="collection" />
-      <Carousel
-        additionalTransfrom={0}
-        arrows
-        autoPlaySpeed={3000}
-        centerMode={false}
-        className=""
-        containerClass="container-with-dots"
-        dotListClass=""
-        draggable
-        focusOnSelect={false}
-        infinite
-        itemClass="p-4"
-        keyBoardControl
-        minimumTouchDrag={80}
-        pauseOnHover
-        renderArrowsWhenDisabled={false}
-        renderButtonGroupOutside={false}
-        renderDotsOutside={false}
-        responsive={{
-          desktop: {
-            breakpoint: {
-              max: 3000,
-              min: 1024,
+      <div>
+        <Swiper
+          spaceBetween={30}
+          pagination={{
+            clickable: true,
+          }}
+          keyboard={{
+            enabled: true,
+          }}
+          navigation={true}
+          modules={[Grid, Pagination, Navigation, Keyboard]}
+          breakpoints={{
+            0: {
+              slidesPerView: 1,
+              grid: {
+                rows: 2,
+                fill: "row",
+              },
             },
-            items: 4,
-            partialVisibilityGutter: 40,
-          },
-          mobile: {
-            breakpoint: {
-              max: 464,
-              min: 0,
+            640: {
+              slidesPerView: 2,
+              grid: {
+                rows: 2,
+                fill: "row",
+              },
             },
-            items: 1,
-            partialVisibilityGutter: 30,
-          },
-          tablet: {
-            breakpoint: {
-              max: 1024,
-              min: 464,
+            768: {
+              slidesPerView: 3,
+              grid: {
+                rows: 2,
+                fill: "row",
+              },
             },
-            items: 2,
-            partialVisibilityGutter: 30,
-          },
-        }}
-        rewind={false}
-        rewindWithAnimation={false}
-        rtl={false}
-        shouldResetAutoplay
-        showDots={false}
-        sliderClass=""
-        slidesToSlide={1}
-        swipeable
-      >
-        {collectionsData.map((collection, index) => (
-          <Collections
-            key={index}
-            image={collection.image}
-            title={collection.title}
-            subtitle={collection.subtitle}
-          />
-        ))}
-      </Carousel>
+            1024: {
+              slidesPerView: 4,
+              grid: {
+                rows: 2,
+                fill: "row",
+              },
+            },
+          }}
+          className="mySwiper"
+        >
+          {collectionsData.map((collection, index) => (
+            <SwiperSlide key={index}>
+              <Collections
+                key={index}
+                image={collection.image}
+                title={collection.title}
+                subtitle={collection.subtitle}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
       <span className="flex justify-center gap-4 py-6">
         <CustomButton>
           View collections <MdArrowOutward size={24} />{" "}
