@@ -25,14 +25,14 @@ const Tabs = ({ tabs, defaultTab, onTabChange }) => {
 
   return (
     <div className="relative">
-      <div className="flex border-b-2 gap-10">
+      <div className="flex border-b-2 border-[#E9D6E5] md:gap-10 gap-4">
         {tabs.map((tab, index) => (
           <button
             key={index}
             ref={(el) => (tabsRef.current[index] = el)}
             className={`${
               index === selectedTabIndex ? "text-[#4701F9]" : "text-gray-600"
-            } font-bold md:text-[22px] py-4 px-1 cursor-pointer`}
+            } font-bold md:text-[22px] text-sm py-4 px-1 cursor-pointer`}
             onClick={() => handleTabClick(index)}
           >
             {tab}

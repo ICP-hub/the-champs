@@ -1,6 +1,8 @@
+/* tailwind classes */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 .custom-box {
   position: fixed;
 
@@ -18,18 +20,6 @@
   .custom-box {
     box-shadow: none; /* Remove shadow for mobile views */
   }
-}
-
-.react-multiple-carousel__arrow {
-  z-index: 0 !important;
-}
-
-.react-multiple-carousel__arrow--right {
-  right: 0 !important;
-}
-
-.react-multiple-carousel__arrow--left {
-  left: 0 !important;
 }
 
 .bg-champs {
@@ -85,5 +75,31 @@
 
 .nav-item:hover {
   background-color: rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px);}
+
+.swiper {
+  --swiper-navigation-size: 24px !important;
+  padding: 0 24px 48px 24px !important;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: white !important;
+  padding: 24px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.5);
+  top: 40% !important;
+}
+
+.swiper-button-prev {
+  left: 0px !important;
+}
+
+.swiper-button-next {
+  right: 0 !important;
+}
+
+.faq {
+  background-image: url("./assets/images/faq.jpg");
+  object-fit: cover;
 }

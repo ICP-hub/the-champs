@@ -3,6 +3,7 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
+import { useEffect } from "react";
 import choose1 from "../../assets/icons/choose-1.svg";
 import choose2 from "../../assets/icons/choose-2.svg";
 import choose3 from "../../assets/icons/choose-3.svg";
@@ -15,6 +16,7 @@ import FancyHeader from "../common/FancyHeader";
 const ChooseCard = ({ imageSrc, title, description, custom }) => {
   return (
     <div
+      data-aos="fade-up"
       className={`border-2 rounded-3xl px-6 py-12 flex flex-col gap-8 max-md:gap-4 ${custom}`}
     >
       <img src={imageSrc} alt="choose" className="max-h-[50px] max-w-[50px]" />
@@ -61,7 +63,11 @@ const HomePageC = () => {
       <div className="py-12 grid lg:grid-cols-4 gap-x-5 gap-y-5 sm:grid-cols-2 max-sm:grid-cols-1">
         {chooseCardsData.map((card, index) => (
           <div key={index} className="h-full max-lg:flex">
-            <ChooseCard {...card} custom={index % 2 !== 0 ? "lg:mt-10" : ""} />
+            <ChooseCard
+              {...card}
+              custom={index % 2 !== 0 ? "lg:mt-10" : ""}
+              animation="fade-up"
+            />
           </div>
         ))}
       </div>
