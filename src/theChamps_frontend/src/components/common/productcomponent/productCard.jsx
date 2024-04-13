@@ -1,6 +1,8 @@
 import React from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { CiHeart } from "react-icons/ci";
+import toast, { Toaster } from "react-hot-toast";
+const notify = () => toast("Here is your toast.");
 
 const ProductCard = ({ product }) => {
   const { name, price, imageUrl } = product;
@@ -18,12 +20,15 @@ const ProductCard = ({ product }) => {
         </div>
         <p className="text-gray-500 text-sm">By TheSalvare</p>
         <div className="flex justify-between  mb-4">
-          <p className="mt-4  bg-[#6D01F6] bg-opacity-100 text-white py-2 px-4 rounded-md w-[80%]">
+          <p className="mt-4    bg-opacity-100  py-2   rounded-md w-[50%]">
             ${price}
           </p>
-          <button className="mt-4   bg-[#6D01F6] bg-opacity-100 text-white   rounded-md w-[15%]  text-2xl flex items-center justify-center">
+          <button
+            className="mt-4   bg-[#6D01F6] bg-opacity-100 text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
+            onClick={notify}
+          >
             {" "}
-            <FiShoppingCart />
+            Buy now
           </button>
         </div>
       </div>

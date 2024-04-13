@@ -6,6 +6,10 @@ import ProductCard from "../components/common/productcomponent/productCard";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Searchbar from "../components/common/Searchbar";
 
+import nftgeek from "../assets/icons/Nftgeek.svg";
+import toniq from "../assets/icons/toniq.svg";
+import Card from "../components/common/Card";
+
 const ProductPage = ({ name }) => {
   const products = [
     {
@@ -97,7 +101,54 @@ const ProductPage = ({ name }) => {
   return (
     <>
       <div className=" mt-44 left-0 right-0  px-6 lg:px-24 ">
-        <div className=" z-0 ">
+        <div className="w-full relative">
+          <img
+            src="https://s3-alpha-sig.figma.com/img/ac74/2282/3c93bce880686ad33e4c8c4c5644d5e0?Expires=1713744000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qr7Oh2KsRERtw7A0vCclSNF5ddKhxj-1q~kpofC0nTvAnMk-AVqwA6kli2VfOfCOv0jvbfJqgbi8ClI8iLyBlTHSn1EXb5t3iIS-njfeAYBPUO3Ka8Vtl1zObA2iF1IzxW5Ll8hJQ~aR-xInjqC4sLsRqxXq~bhAaNmMfU9WzIEyc~PKRBynkifluczxgalTm19gla91e4~xW~xVw4RvPw1kGCtSpJyE2N9G0eXpM5YgEHf4x8TVW4XCglDiuv6V0T14IldKzt~mJ-5D1j1pcoh6SuKnK0lQmJchlSeFgbD-rPYqx8PmcRwqz2aGvj2iEvBvYTXf6h1oYLdI93QN6g__"
+            alt=""
+            className="w-full h-60 rounded-xl object-cover"
+          />
+          <div className="flex">
+            <div className="absolute top-32 w-1/4 left-16">
+              <Card nftgeek={nftgeek} toniq={toniq}  />
+            </div>
+            <div className=" absolute right-0 w-[65%] mt-8">
+              {" "}
+              <h1 className="text-3xl text-left font-bold font-sans mb-4 gap-1 ">
+                <span className="relative  text-transparent ml-2 bg-gradient-to-r from-[#6D01F6] to-pink-500 bg-clip-text">
+                  Collection Name
+                </span>
+              </h1>
+              <div>
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quam
+                voluptas ea, culpa dolorem maxime, quisquam veritatis cupiditate
+                aperiam nulla, corporis in! Ullam eaque odit neque voluptatum
+                fuga rerum cumque animi!
+              </div>
+              <div className="mt-12 w-1/2 flex gap-4  ">
+                <div className=" w-1/4 text-center text-sm space-y-2">
+                  <p>LISTINGS</p>
+                  <button className=" w-full  bg-[#6D01F6] bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
+                    184
+                  </button>
+                </div>
+                <div className=" w-1/4 text-center text-sm space-y-2">
+                  <p>AVG.PRICE</p>
+                  <button className=" w-full  bg-[#6D01F6] bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
+                    184
+                  </button>
+                </div>
+                <div className=" w-1/4 text-center text-sm space-y-2">
+                  <p>MINTED</p>
+                  <button className=" w-full  bg-[#6D01F6] bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
+                    184
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className=" z-0  mt-72">
           <h1 className="text-5xl font-bold font-sans mb-12 gap-1 ">
             <span className="relative  text-transparent ml-2 bg-gradient-to-r from-[#6D01F6] to-pink-500 bg-clip-text">
               {name}

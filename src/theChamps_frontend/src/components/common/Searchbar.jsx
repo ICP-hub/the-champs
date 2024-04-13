@@ -5,6 +5,11 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 const Searchbar = () => {
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const handleOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
   return (
     <>
       <div className="flex justify-between ">
@@ -64,12 +69,44 @@ const Searchbar = () => {
                     </button>
                   </div>
                   <div className="m-6 text-center">
-                    <button
-                      className="mt-8  flex items-center w-full justify-center  px-3 py-2 border-[1.5px] border-gray-300 bg-[#6D01F6] text-white rounded-lg"
-                      style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.4)" }}
-                    >
+                    <button className="mt-8  flex items-center w-full justify-center  px-3 py-2 border-[1.5px]   bg-[#6D01F6] text-white rounded-lg">
                       Apply Filters
                     </button>
+                  </div>
+                  <div className="flex flex-col ">
+                    <h1 className="text-md m-6  text-left font-medium">
+                      Sort By
+                    </h1>
+                    <label className="text-gray-500">
+                      <input
+                        type="radio"
+                        value="option1"
+                        checked={selectedOption === "option1"}
+                        onChange={handleOptionChange}
+                        className="m-6 mr-3"
+                      />
+                      Latest Creation
+                    </label>
+                    <label className="text-gray-500 ">
+                      <input
+                        type="radio"
+                        value="option2"
+                        checked={selectedOption === "option2"}
+                        onChange={handleOptionChange}
+                        className="m-6 mr-3"
+                      />
+                      Latest Creation
+                    </label>
+                    <label className="text-gray-500 ">
+                      <input
+                        type="radio"
+                        value="option3"
+                        checked={selectedOption === "option3"}
+                        onChange={handleOptionChange}
+                        className="m-6 mr-3 "
+                      />
+                      Latest Creation
+                    </label>
                   </div>
                 </div>
               </Menu.Items>

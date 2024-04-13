@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MdOutlineKeyboardArrowDown, MdShoppingCart } from "react-icons/md";
 import { MdCollections, MdAddShoppingCart } from "react-icons/md";
 import { IoMdHeart } from "react-icons/io";
@@ -11,29 +11,43 @@ import { CiSearch } from "react-icons/ci";
 import { RiMoneyDollarBoxLine } from "react-icons/ri";
 import { IoMdLock } from "react-icons/io";
 import { FaMagnifyingGlass } from "react-icons/fa6";
+import ReadMore from "./ReadMore";
+import {
+  ConnectButton,
+  ConnectDialog,
+  useConnect,
+  useDialog,
+} from "@connect2ic/react";
 
 import { RiArrowUpDownFill } from "react-icons/ri";
+import toast, { Toaster } from "react-hot-toast";
+
 const SidebarMain = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { principal, disconnect, isConnected } = useConnect();
+  console.log(principal, "hello");
+
   return (
     <div className="py-4 mt-24 ">
       {/* Your sidebar content goes here */}
       <h2 className="text-md px-4   mb-4 text-gray-500 text-left ">
-        connected Wallet
+        Connected Wallet
       </h2>
       <div className=" w-full hover:bg-gray-200">
         <div className="sm:flex px-4 py-2 items-center justify-between w-[90%]">
           <div className="w-12  h-12 rounded-full border border-gray-700 flex items-center justify-center">
             <Avatar
               size={40}
-              name=""
+              name={principal}
               variant="beam"
               colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
             />
           </div>
           <div className=" text-left">
             <p>plug</p>
-            <p className="text-gray-500">sbduwedbwuidns...</p>
+            <p className="text-gray-500">
+              <ReadMore text={principal || ""} maxLength={15} />
+            </p>
           </div>
           <button
             className="text-[#6D01F6]"
@@ -98,7 +112,15 @@ const SidebarMain = () => {
                 <div className="text-[#6D01F6]">
                   <IoMdLock size={20} />
                 </div>
-                Logout
+                <button
+                  onClick={() => {
+                    disconnect();
+
+                    toast.success("Logout successfully");
+                  }}
+                >
+                  Logout
+                </button>
               </div>
             </div>
           </div>
@@ -108,11 +130,11 @@ const SidebarMain = () => {
         <IcpLogo size={18} /> 0
       </p>
 
-      <div className="flex items-center justify-center ">
+      {/* <div className="flex items-center justify-center ">
         <button className="mt-4  font-bold text-[#6D01F6] border-2 border-[#6D01F6]  py-2 px-4 rounded-md w-[90%]">
           Link volt
         </button>
-      </div>
+      </div> */}
       <div className="border-[1px] mt-4 border-gray-200 w-full m-0"></div>
 
       <div className="p-4 text-left text-md ">

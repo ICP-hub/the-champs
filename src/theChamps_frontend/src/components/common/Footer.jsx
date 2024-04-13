@@ -10,10 +10,10 @@ import { MdOutlineKeyboardArrowUp } from "react-icons/md";
 /* ----------------------------------------------------------------------------------------------------- */
 const Footer = () => {
   return (
-    <div className="relative pt-[50px] md:pt-[100px]">
-      <div className=" ">
-        <div className="tracking-wider py-6 border-t border-slate-200">
-          <div className="container mx-auto max-md:p-2 flex  max-md:flex-col py-4">
+    <div className=" pt-[50px] md:pt-[100px]">
+      <div className="tracking-wider py-6 border-t border-slate-200 ">
+        <div className="  px-6 lg:px-24">
+          <div className="container mx-auto max-md:p-2 flex  max-md:flex-col py-4 ">
             <div className="flex mt-auto flex-col gap-2 w-2/3">
               <h1 className="text-3xl font-bold font-orbitron  text-transparent mb-8 bg-gradient-to-r from-[#6D01F6] to-pink-500 bg-clip-text">
                 Champs
@@ -56,18 +56,19 @@ const Footer = () => {
               </div>
             </div>
           </div>
-        </div>
-        <div className="container mx-auto text-gray-500 py-4 max-md:px-2 text-sm mb-6 ">
-          <div className="flex justify-between max-md:flex-col">
-            <p>
-              Copyright &copy; {new Date().getFullYear()} Champs All rights
-              reserved
-            </p>
-            <span className="flex gap-4">
-              <p>Privacy Policy</p>
-              <p>Terms and Service</p>
-              <MdOutlineKeyboardArrowUp size={24} />
-            </span>
+
+          <div className="container mx-auto text-gray-500 py-4 max-md:px-2 text-sm mb-6 ">
+            <div className="flex justify-between max-md:flex-col">
+              <p>
+                Copyright &copy; {new Date().getFullYear()} Champs All rights
+                reserved
+              </p>
+              <span className="flex gap-4">
+                <p>Privacy Policy</p>
+                <p>Terms and Service</p>
+                <MdOutlineKeyboardArrowUp size={24} />
+              </span>
+            </div>
           </div>
         </div>
       </div>

@@ -1,13 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { FiShoppingCart } from "react-icons/fi";
 import { FaWallet } from "react-icons/fa";
 import Sidebar from "./Sidebar";
+import { GiHamburgerMenu, GiToaster } from "react-icons/gi";
+import {
+  ConnectButton,
+  ConnectDialog,
+  useConnect,
+  useDialog,
+} from "@connect2ic/react";
+import toast from "react-hot-toast";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [colorChange, setColorchange] = useState(false);
+  const { isConnected, disconnect } = useConnect();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -26,6 +35,7 @@ const Header = () => {
   };
 
   window.addEventListener("scroll", changeNavbarColor);
+ 
 
   return (
     <div className="relative z-[35]">
@@ -53,26 +63,22 @@ const Header = () => {
       >
         <h1 className="text-3xl font-bold font-orbitron">CHAMPS</h1>
         <ul className="hidden sm:flex md:gap-7 gap-3 md:text-lg text-sm font-bold">
-          <li>Home</li>
-          <li>Collection</li>
-          <li>About</li>
-          <li>Contact</li>
+          <li className="nav-item rounded-xl p-3 px-3">Home</li>
+          <li className=" nav-item rounded-xl p-3 px-3">Collection</li>
+          <li className="nav-item rounded-xl p-3 px-3">About</li>
+          <li className="nav-item rounded-xl p-3 px-3">Contact</li>
         </ul>
         <div className="sm:hidden">
           <button className="text-2xl focus:outline-none" onClick={toggleMenu}>
-            ☰
+            <GiHamburgerMenu />
           </button>
         </div>
         <div className="flex gap-7 text-center items-center">
-          <div className="hidden sm:flex items-center z-1">
-            <FiShoppingCart size={24} />
-          </div>
           <button
             onClick={toggleSidebar}
-            className="flex gap-3 text-lg items-center border border-black rounded-md px-3 py-2"
+            className="flex gap-3 text-lg items-center border border-black rounded-md px-8 py-2"
           >
-            <FaWallet />
-            <p>Login</p>
+            <FaWallet size={24} />
           </button>
         </div>
       </div>
@@ -83,9 +89,6 @@ const Header = () => {
             <li>Collection</li>
             <li>About</li>
             <li>Contact</li>
-            <div className="w-full">
-              <FiShoppingCart size={24} />
-            </div>
           </ul>
         </div>
       )}
