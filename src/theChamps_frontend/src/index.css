@@ -75,7 +75,8 @@
 
 .nav-item:hover {
   background-color: rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(40px);}
+  backdrop-filter: blur(40px);
+}
 
 .swiper {
   --swiper-navigation-size: 24px !important;
@@ -102,4 +103,13 @@
 .faq {
   background-image: url("./assets/images/faq.jpg");
   object-fit: cover;
+}
+
+.productcardlgborder {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: linear-gradient(to right, white, white),
+    linear-gradient(to right, #fc001e, #ff7d57);
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
 }

@@ -97,10 +97,10 @@ const HomePageG = () => {
               className="rounded-3xl p-6 border-2 flex gap-8 flex-col"
             >
               <div className="flex justify-between items-center">
-                <span className="bg-gradient-to-tr from-[#2600FC] to-[#FF00EA] inline-block text-transparent bg-clip-text font-bold">
+                <span className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] inline-block text-transparent bg-clip-text font-bold">
                   {phase.title}
                 </span>
-                <div className="rounded-full bg-gradient-to-tr from-[#2600FC] to-[#FF00EA] p-2 text-white font-bold rotate-12 relative h-12 w-12 flex items-center justify-center">
+                <div className="rounded-full bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] p-2 text-white font-bold rotate-12 relative h-12 w-12 flex items-center justify-center">
                   <span className="absolute">{phase.progress}</span>
                 </div>
               </div>

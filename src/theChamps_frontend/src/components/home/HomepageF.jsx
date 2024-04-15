@@ -21,7 +21,7 @@ const HomePageF = () => {
             className="rounded-full outline-none border-2 px-5 py-3 max-sm:w-full"
             placeholder="Enter your Email"
           />
-          <button className="px-5 py-3 bg-gradient-to-tr from-[#2600FC] to-[#FF00EA] rounded-full text-white font-medium">
+          <button className="px-5 py-3 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] rounded-full text-white font-medium">
             Subscribe
           </button>
         </div>

@@ -31,7 +31,9 @@ const Tabs = ({ tabs, defaultTab, onTabChange }) => {
             key={index}
             ref={(el) => (tabsRef.current[index] = el)}
             className={`${
-              index === selectedTabIndex ? "text-[#4701F9]" : "text-gray-600"
+              index === selectedTabIndex
+                ? "bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] inline-block text-transparent bg-clip-text"
+                : "text-gray-600"
             } font-bold md:text-[22px] text-sm py-4 px-1 cursor-pointer`}
             onClick={() => handleTabClick(index)}
           >
@@ -41,7 +43,7 @@ const Tabs = ({ tabs, defaultTab, onTabChange }) => {
       </div>
       <span
         ref={tabUnderlineRef}
-        className="absolute bottom-0 block h-1 bg-[#4701F9] transition-all duration-300"
+        className="absolute bottom-0 block h-1 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] transition-all duration-300"
       />
     </div>
   );

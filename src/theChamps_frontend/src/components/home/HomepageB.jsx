@@ -3,9 +3,11 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
-import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import soccer1 from "../../assets/images/soccer1.jpeg";
+import soccer1 from "../../assets/images/soccer-1.jpeg";
+import soccer2 from "../../assets/images/soccer-2.jpeg";
+import soccer3 from "../../assets/images/soccer-3.jpeg";
+import soccer4 from "../../assets/images/soccer-4.jpeg";
 import CustomButton from "../common/CustomButton";
 import { MdArrowOutward } from "react-icons/md";
 import FancyHeader from "../common/FancyHeader";
@@ -24,26 +26,30 @@ import { Grid, Pagination, Navigation, Keyboard } from "swiper/modules";
 const HomePageB = () => {
   const collectionsData = [
     { image: soccer1, title: "Name1", subtitle: "By The Name" },
-    { image: soccer1, title: "Name2", subtitle: "By The Name" },
-    { image: soccer1, title: "Name3", subtitle: "By The Name" },
-    { image: soccer1, title: "Name4", subtitle: "By The Name" },
+    { image: soccer2, title: "Name2", subtitle: "By The Name" },
+    { image: soccer3, title: "Name3", subtitle: "By The Name" },
+    { image: soccer4, title: "Name4", subtitle: "By The Name" },
     { image: soccer1, title: "Name5", subtitle: "By The Name" },
-    { image: soccer1, title: "Name6", subtitle: "By The Name" },
-    { image: soccer1, title: "Name7", subtitle: "By The Name" },
-    { image: soccer1, title: "Name8", subtitle: "By The Name" },
-    { image: soccer1, title: "Name9", subtitle: "By The Name" },
+    { image: soccer2, title: "Name6", subtitle: "By The Name" },
+    { image: soccer3, title: "Name7", subtitle: "By The Name" },
+    { image: soccer4, title: "Name8", subtitle: "By The Name" },
+    { image: soccer3, title: "Name9", subtitle: "By The Name" },
     { image: soccer1, title: "Name10", subtitle: "By The Name" },
-    { image: soccer1, title: "Name11", subtitle: "By The Name" },
-    { image: soccer1, title: "Name12", subtitle: "By The Name" },
-    { image: soccer1, title: "Name13", subtitle: "By The Name" },
+    { image: soccer4, title: "Name11", subtitle: "By The Name" },
+    { image: soccer2, title: "Name12", subtitle: "By The Name" },
+    { image: soccer3, title: "Name13", subtitle: "By The Name" },
     { image: soccer1, title: "Name14", subtitle: "By The Name" },
-    { image: soccer1, title: "Name15", subtitle: "By The Name" },
-    { image: soccer1, title: "Name16", subtitle: "By The Name" },
+    { image: soccer4, title: "Name15", subtitle: "By The Name" },
+    { image: soccer2, title: "Name16", subtitle: "By The Name" },
   ];
 
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
-      <FancyHeader normal="Champ's" fancy="collection" />
+      <FancyHeader
+        normal="Champ's"
+        fancy="Special Collection of 20 Footballers"
+        small={true}
+      />
       <div>
         <Swiper
           spaceBetween={30}
