@@ -75,7 +75,8 @@
 
 .nav-item:hover {
   background-color: rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(40px);}
+  backdrop-filter: blur(40px);
+}
 
 .swiper {
   --swiper-navigation-size: 24px !important;
@@ -102,4 +103,8 @@
 .faq {
   background-image: url("./assets/images/faq.jpg");
   object-fit: cover;
+}
+
+.button {
+  background: linear-gradient(60.27deg, #fc001e 0%, #ff7d57 100%);
 }

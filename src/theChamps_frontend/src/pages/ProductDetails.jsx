@@ -50,7 +50,7 @@ const ProductDetails = () => {
             <div className="mt-4 text-center text-gray-400 text-xs">
               This process may take a minute. Transactions can not be reversed.
               By clicking confirm you show acceptance to our{" "}
-              <span className="text-[#6D01F6] underline">
+              <span className="text-[#FC001E] underline">
                 {" "}
                 Terms of Service
               </span>
@@ -60,7 +60,7 @@ const ProductDetails = () => {
               <button className="mr-8" onClick={() => setOpen(!open)}>
                 Cancel
               </button>
-              <button className="text-[#6D01F6] ">Confirm</button>
+              <button className="text-[#FC001E] ">Confirm</button>
             </div>
           </div>
         </div>
@@ -78,7 +78,7 @@ const ProductDetails = () => {
           <div className="flex items-center justify-between mt-16">
             <div className="">
               <h1 className="text-3xl font-bold font-sans   ">
-                <span className=" text-transparent  bg-gradient-to-r from-[#6D01F6] to-pink-500 bg-clip-text">
+                <span className=" text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
                   NFT Name
                 </span>
               </h1>
@@ -101,7 +101,7 @@ const ProductDetails = () => {
             </div>
             <div>
               <button
-                className="   bg-[#6D01F6] bg-opacity-100 text-white   rounded-md  px-5 py-2 text-md flex items-center justify-center"
+                className="   button bg-opacity-100 text-white   rounded-md  px-5 py-2 text-md flex items-center justify-center"
                 onClick={() => setOpen(!open)}
               >
                 {" "}
@@ -140,20 +140,20 @@ const ProductDetails = () => {
                     fill-opacity="0.87"
                   />
                 </svg>
-                <p className="text-sm text-[#6D01F6] font-bold">
+                <p className="text-sm text-[#FC001E] font-bold">
                   view-on-chain
                 </p>
               </div>
               <div className="flex gap-2">
                 <FaRegUserCircle />
                 <p className="text-sm font-bold">owner : </p>
-                <span className="text-sm text-[#6D01F6] font-bold">
+                <span className="text-sm text-[#FC001E] font-bold">
                   b6af85...
                 </span>
               </div>
               <div className="flex gap-2">
                 <CiMemoPad />
-                <span className="text-sm text-[#6D01F6] font-bold">
+                <span className="text-sm text-[#FC001E] font-bold">
                   License
                 </span>
               </div>

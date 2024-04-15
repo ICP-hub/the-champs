@@ -14,12 +14,6 @@ const Sidebar = ({ isOpen, toggle }) => {
   const { open } = useDialog();
   const { principal, isConnected, disconnect } = useConnect();
 
-  useEffect(() => {
-    if (isConnected) {
-      toast.success("Login successfully");
-    }
-  }, [isConnected]);
-
   return (
     <>
       <ConnectDialog dark={false} />
@@ -43,7 +37,7 @@ const Sidebar = ({ isOpen, toggle }) => {
 
             <div className="flex items-center justify-center">
               <button
-                className="mt-4 bg-[#6D01F6] bg-opacity-100 text-white py-2 px-4 rounded-md w-[90%]"
+                className="mt-4 button bg-opacity-100 text-white py-2 px-4 rounded-md w-[90%]"
                 onClick={() => open()} // Fix: Use arrow function or wrap setLogin(true) inside another function
                 style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.4)" }}
               >

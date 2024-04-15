@@ -24,7 +24,7 @@ const ProductCard = ({ product }) => {
             ${price}
           </p>
           <button
-            className="mt-4   bg-[#6D01F6] bg-opacity-100 text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
+            className="mt-4   button   bg-opacity-100 text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
             onClick={notify}
           >
             {" "}

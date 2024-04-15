@@ -109,12 +109,12 @@ const ProductPage = ({ name }) => {
           />
           <div className="flex">
             <div className="absolute top-32 w-1/4 left-16">
-              <Card nftgeek={nftgeek} toniq={toniq}  />
+              <Card nftgeek={nftgeek} toniq={toniq} />
             </div>
             <div className=" absolute right-0 w-[65%] mt-8">
               {" "}
               <h1 className="text-3xl text-left font-bold font-sans mb-4 gap-1 ">
-                <span className="relative  text-transparent ml-2 bg-gradient-to-r from-[#6D01F6] to-pink-500 bg-clip-text">
+                <span className="relative  text-transparent ml-2 bg-gradient-to-r  from-[#FC001E] to-[#FF7D57] bg-clip-text">
                   Collection Name
                 </span>
               </h1>
@@ -127,19 +127,19 @@ const ProductPage = ({ name }) => {
               <div className="mt-12 w-1/2 flex gap-4  ">
                 <div className=" w-1/4 text-center text-sm space-y-2">
                   <p>LISTINGS</p>
-                  <button className=" w-full  bg-[#6D01F6] bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
+                  <button className=" w-full  button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
                     184
                   </button>
                 </div>
                 <div className=" w-1/4 text-center text-sm space-y-2">
                   <p>AVG.PRICE</p>
-                  <button className=" w-full  bg-[#6D01F6] bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
+                  <button className=" w-full  button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
                     184
                   </button>
                 </div>
                 <div className=" w-1/4 text-center text-sm space-y-2">
                   <p>MINTED</p>
-                  <button className=" w-full  bg-[#6D01F6] bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
+                  <button className=" w-full button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
                     184
                   </button>
                 </div>

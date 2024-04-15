@@ -15,7 +15,7 @@ const Footer = () => {
         <div className="  px-6 lg:px-24">
           <div className="container mx-auto max-md:p-2 flex  max-md:flex-col py-4 ">
             <div className="flex mt-auto flex-col gap-2 w-2/3">
-              <h1 className="text-3xl font-bold font-orbitron  text-transparent mb-8 bg-gradient-to-r from-[#6D01F6] to-pink-500 bg-clip-text">
+              <h1 className="text-3xl font-bold font-orbitron  text-transparent mb-8 bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
                 Champs
               </h1>
               <p className="sm:w-1/2 text-sm text-gray-500">

@@ -25,7 +25,6 @@ import toast, { Toaster } from "react-hot-toast";
 const SidebarMain = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { principal, disconnect, isConnected } = useConnect();
-  console.log(principal, "hello");
 
   return (
     <div className="py-4 mt-24 ">
@@ -50,7 +49,7 @@ const SidebarMain = () => {
             </p>
           </div>
           <button
-            className="text-[#6D01F6]"
+            className="text-[#FC001E]"
             onClick={() => setIsModalOpen(true)}
           >
             <MdOutlineKeyboardArrowDown size={24} />
@@ -84,32 +83,32 @@ const SidebarMain = () => {
               style={{ boxShadow: " 4px 4px 10px rgba(0, 0, 0, 0.2)" }}
             >
               <div className=" p-2 px-4 flex gap-8 mt-2 items-center text-lg hover:bg-gray-200 w-full">
-                <div className="text-[#6D01F6]">
+                <div className="text-[#fc001e]">
                   <LuRefreshCcw size={20} />
                 </div>
                 Refresh
               </div>
               <div className="  p-2 px-4 flex gap-8 mt-2 items-center text-lg hover:bg-gray-200 w-full">
-                <div className="text-[#6D01F6]">
+                <div className="text-[#fc001e]">
                   <FaCopy size={20} />
                 </div>
                 Copy Address
               </div>
               <div className="  p-2 px-4 flex gap-8 mt-2 items-center text-lg hover:bg-gray-200 w-full ">
-                <div className="text-[#6D01F6] ">
+                <div className="text-[#fc001e] ">
                   <FaMagnifyingGlass size={20} />
                 </div>
                 View In Explorer
               </div>
               <div className=" p-2 px-4 flex gap-8 mt-2 items-center text-lg hover:bg-gray-200 w-full">
-                <div className="text-[#6D01F6]">
+                <div className="text-[#fc001e]">
                   <RiMoneyDollarBoxLine size={20} />
                 </div>
                 Check Payment
               </div>
               <div className="border-[1px] mt-4 border-gray-200 w-full m-0"></div>
               <div className=" p-2 px-4 flex gap-8 mb-2 items-center text-lg hover:bg-gray-200 w-full">
-                <div className="text-[#6D01F6]">
+                <div className="text-[#fc001e]">
                   <IoMdLock size={20} />
                 </div>
                 <button
@@ -140,13 +139,13 @@ const SidebarMain = () => {
       <div className="p-4 text-left text-md ">
         <p className=" mb-2 text-gray-400">NFTs</p>
         <div className="flex gap-8 items-center text-lg">
-          <div className="text-[#6D01F6]">
+          <div className="text-[#fc001e]">
             <MdCollections size={24} />
           </div>
           Collected
         </div>
         <div className="flex gap-8 mt-4 items-center text-lg">
-          <div className="text-[#6D01F6]">
+          <div className="text-[#fc001e]">
             <MdAddShoppingCart size={24} />
           </div>
           selling
@@ -155,13 +154,13 @@ const SidebarMain = () => {
       <div className="p-4 py-2 text-left text-md ">
         <p className=" mb-2 text-gray-400">Profile</p>
         <div className="flex gap-8 items-center text-lg">
-          <div className="text-[#6D01F6]">
+          <div className="text-[#fc001e]">
             <IoMdHeart size={24} />
           </div>
           Favorites
         </div>
         <div className="flex gap-8 mt-4 items-center text-lg">
-          <div className="text-[#6D01F6]">
+          <div className="text-[#fc001e]">
             <RiArrowUpDownFill size={24} />
           </div>
           Activity

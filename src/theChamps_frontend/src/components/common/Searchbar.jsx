@@ -68,11 +68,7 @@ const Searchbar = () => {
                       Latest Creations
                     </button>
                   </div>
-                  <div className="m-6 text-center">
-                    <button className="mt-8  flex items-center w-full justify-center  px-3 py-2 border-[1.5px]   bg-[#6D01F6] text-white rounded-lg">
-                      Apply Filters
-                    </button>
-                  </div>
+
                   <div className="flex flex-col ">
                     <h1 className="text-md m-6  text-left font-medium">
                       Sort By
@@ -107,6 +103,11 @@ const Searchbar = () => {
                       />
                       Latest Creation
                     </label>
+                  </div>
+                  <div className="m-6 text-center">
+                    <button className="mt-8  flex items-center w-full justify-center  px-3 py-2 border-[1.5px]   button text-white rounded-lg">
+                      Apply Filters
+                    </button>
                   </div>
                 </div>
               </Menu.Items>
