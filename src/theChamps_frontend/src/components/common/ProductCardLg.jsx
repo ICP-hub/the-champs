@@ -30,13 +30,13 @@ const ProductCardLg = ({ prod }) => {
             <h1 className="font-bold text-2xl">Name</h1>
             <p className="text-sm text-[#7B7583] font-normal">By name</p>
           </div>
-          <CiHeart size={48} className="cursor-pointer" />
+          {/* <CiHeart size={48} className="cursor-pointer" /> */}
         </div>
         <div className="flex justify-between pt-6 gap-4 text-sm">
-          <button className="px-4 py-2 bg-[#6D01F6] text-white cursor-pointer border-2 border-[#6D01F6] rounded-lg w-full">
+          <button className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57]  text-white cursor-pointer  rounded-lg w-full">
             View Collection
           </button>
-          <button className="px-4 py-2 border-2 border-[#6D01F6] cursor-pointer rounded-lg w-full">
+          <button className="px-4 py-2  cursor-pointer rounded-lg w-full productcardlgborder">
             More Info
           </button>
         </div>

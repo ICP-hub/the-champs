@@ -2,7 +2,7 @@
 /*  @ imports.
 /* ----------------------------------------------------------------------------------------------------- */
 import { useEffect, useState } from "react";
-import Products from "../../FakeProdDatbase.json";
+import { FakeData } from "../../FakeProdDatbase";
 import ProductCard from "../common/productcomponent/productCard";
 import Searchbar from "../common/Searchbar";
 import MyProfileActivity from "./MyProfileActivity";
@@ -12,7 +12,7 @@ import MyProfileActivity from "./MyProfileActivity";
 /* ----------------------------------------------------------------------------------------------------- */
 const MyProfileB = ({ activeTabIndex }) => {
   // Replace the filterProducts state later
-  const [filteredProducts, setFilteredProducts] = useState(Products);
+  const [filteredProducts, setFilteredProducts] = useState(FakeData);
 
   useEffect(() => {
     let filtered = [];
@@ -20,16 +20,16 @@ const MyProfileB = ({ activeTabIndex }) => {
     switch (activeTabIndex) {
       // use filter method for real data : demo for now
       case "My NFTs":
-        filtered = Products.slice(0, 3);
+        filtered = FakeData.slice(0, 3);
         break;
       case "Favorites":
-        filtered = Products.slice(0, 6);
+        filtered = FakeData.slice(0, 6);
         break;
       case "Purchased":
-        filtered = Products.slice(0, 8);
+        filtered = FakeData.slice(0, 8);
         break;
       default:
-        filtered = Products;
+        filtered = FakeData;
     }
 
     setFilteredProducts(filtered);
