@@ -4,6 +4,7 @@ import ProductPage from "./pages/ProductPage";
 import MyProfilePage from "./pages/MyProfilePage";
 import CollectionPage from "./pages/CollectionPage";
 import ProductDetails from "./pages/ProductDetails";
+import Protected from "./components/common/Protected";
 
 import FAQ from "./components/policy-faq/Faq";
 import PrivacyPolicy from "./components/policy-faq/Privacy-policy";
@@ -11,11 +12,18 @@ import PrivacyPolicy from "./components/policy-faq/Privacy-policy";
 const appRoutes = createBrowserRouter([
   { path: "/", element: <HomePage /> },
   { path: "/products", element: <ProductPage /> },
-  { path: "/my-profile", element: <MyProfilePage /> },
+  {
+    path: "/my-profile",
+    element: (
+      <Protected>
+        <MyProfilePage />
+      </Protected>
+    ),
+  },
   { path: "/collection", element: <CollectionPage name={"All Collection"} /> },
   { path: "/collections/collection", element: <ProductPage name={""} /> },
   { path: "/collections/collection/a", element: <ProductDetails /> },
-  
+
   { path: "/faq", element: <FAQ /> },
   { path: "/privacy-policy", element: <PrivacyPolicy /> },
 ]);

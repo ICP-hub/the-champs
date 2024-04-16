@@ -11,7 +11,7 @@ import { Toaster } from "react-hot-toast";
 
 const client = createClient({
   canisters: {},
-  providers: [new PlugWallet(), new StoicWallet()],
+  providers: [new PlugWallet()],
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(

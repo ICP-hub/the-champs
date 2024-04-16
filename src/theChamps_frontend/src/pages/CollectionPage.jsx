@@ -5,6 +5,8 @@ import ProductCard from "../components/common/productcomponent/productCard";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Searchbar from "../components/common/Searchbar";
+import { FakeData } from "../FakeProdDatbase";
+import ProductCardLg from "../components/common/ProductCardLg";
 
 const CollectionPage = ({ name }) => {
   const products = [
@@ -106,9 +108,9 @@ const CollectionPage = ({ name }) => {
           <div>
             <Searchbar />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3  gap-12 mt-4 justify-center">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+          <div className="grid min-[948px]:grid-cols-2 gap-x-8 gap-y-8">
+            {FakeData.map((prod, index) => (
+              <ProductCardLg prod={prod} key={index} />
             ))}
           </div>
         </div>
