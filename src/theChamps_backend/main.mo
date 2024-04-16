@@ -3,23 +3,31 @@ import Cycles "mo:base/ExperimentalCycles";
 import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
 import Debug "mo:base/Debug";
+import Error "mo:base/Error";
 import Types "../DIP721-NFT/Types";
 import DIP20ActorClass "../DIP-20/token";
 
-actor {
+actor Champs {
      
         // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
         
         var nftcollectionMap = HashMap.HashMap<Principal, Principal>(0,Principal.equal,Principal.hash);
+
+        public func idQuick() : async Principal { 
+            return Principal.fromActor(Champs);
+        };
         
         public shared ({caller = user}) func createcollection (custodian: Principal, metadata : Types.Dip721NonFungibleToken) : async Principal {
             Cycles.add(100_500_000_000);
             let nftcollection = await NFTActorClass.Dip721NFT(custodian, metadata);
-            let collection_canister_id = await nftcollection.getCanisterId();
             let amountAccepted = await nftcollection.wallet_receive();
+            let collection_canister_id = await nftcollection.getCanisterId();
+            let champscanister = await idQuick();
+            let new_custodian = await nftcollection.addcustodians(champscanister);
             nftcollectionMap.put(user,collection_canister_id);
             return collection_canister_id;
         };
+
         
         public shared ({caller = user}) func FractionalizeNFt( 
             to : Principal,
@@ -46,8 +54,8 @@ actor {
                     let nftcanisteractor = actor(Principal.toText(id)) : actor {mintDip721 : (to : Principal , metadata : Types.MetadataDesc ) -> async Types.MintReceipt};
                     let mintednft = await nftcanisteractor.mintDip721(to, metadata);
                     switch(mintednft){
-                        case (#Err(_)) {
-                            return "NFT not minted";
+                        case (#Err(index)) {
+                            throw Error.reject(debug_show(index));
                         };
                         case (#Ok(newnft)){
                         let fractiontokens = await DIP20ActorClass.Token(

@@ -34,6 +34,17 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
     );
   };
 
+  public shared ({caller}) func addcustodians(custodian: Principal) : async Result.Result<Types.AddCustodian,Types.AddCustodianError> {
+    if (not List.some(custodians, func (c : Principal) : Bool { c == caller })) {
+      return #err(#Unauthorized);
+    } else if (List.some(custodians, func (c : Principal) : Bool { c == custodian })) {
+      return #err(#AlreadyCustodian);
+    } else {
+      custodians := List.push(custodian, custodians);
+      return #ok(#CustodianAdded);
+    };
+  };
+
   public query func ownerOfDip721(token_id: Types.TokenId) : async Types.OwnerResult {
     let item = List.find(nfts, func(token: Types.Nft) : Bool { token.id == token_id });
     switch (item) {

@@ -1,0 +1,1 @@
+dfx canister call theChamps_backend FractionalizeNft '(principal, principal, vec record {data:vec nat8; key_val_data:vec record {key:text; val:variant {Nat64Content:nat64; Nat32Content:nat32; Nat8Content:nat8; NatContent:nat; Nat16Content:nat16; BlobContent:vec nat8; TextContent:text}}; purpose:variant {Preview; Rendered}}, text, text, text, nat8, nat, principal, nat)'
