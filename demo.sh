@@ -1,1 +1,57 @@
-dfx canister call theChamps_backend FractionalizeNft '(principal, principal, vec record {data:vec nat8; key_val_data:vec record {key:text; val:variant {Nat64Content:nat64; Nat32Content:nat32; Nat8Content:nat8; NatContent:nat; Nat16Content:nat16; BlobContent:vec nat8; TextContent:text}}; purpose:variant {Preview; Rendered}}, text, text, text, nat8, nat, principal, nat)'
+#!/usr/bin/env bash
+dfx stop
+set -e  # stop on error
+
+dfx start --background --clean
+dfx identity new alice --disable-encryption || true
+ALICE=$(dfx --identity alice identity get-principal)
+dfx identity new bob --disable-encryption || true
+BOB=$(dfx --identity bob identity get-principal)
+
+dfx deploy theChamps_backend
+
+dfx canister call theChamps_backend createcollection \
+"(
+    principal\"34qty-yjykw-cag5h-sjxxu-xjkuk-b6ecf-zkgww-7brzz-cqvw7-vygwj-hqe\", 
+    record {
+        maxLimit = 5000:nat16; 
+        logo = record {
+            data = \"Your logo text here\"; 
+            logo_type = \"Your logo type here\"
+        }; 
+        name = \"Your collection name here\"; 
+        symbol = \"Your collection symbol here\"
+    }
+)"
+
+dfx canister call theChamps_backend FractionalizeNFt \
+"(
+    principal\"34qty-yjykw-cag5h-sjxxu-xjkuk-b6ecf-zkgww-7brzz-cqvw7-vygwj-hqe\", 
+    principal\"34qty-yjykw-cag5h-sjxxu-xjkuk-b6ecf-zkgww-7brzz-cqvw7-vygwj-hqe\", 
+    vec { 
+        record {
+            data = blob\"data_in_bytes_here\"; 
+            key_val_data = vec {
+                record { key = \"size\"; val = variant{Nat64Content=123456:nat64}; };
+                record { key = \"format\"; val = variant{TextContent=\"JPEG\"}; };
+                record { key = \"resolution\"; val = variant{Nat32Content=1080:nat32}; };
+                record { key = \"quality\"; val = variant{Nat8Content=95:nat8}; };
+                record { key = \"fileType\"; val = variant{TextContent=\"image/jpeg\"}; };
+                record { key = \"tag\"; val = variant{TextContent=\"landscape\"}; };
+                record { key = \"locationType\"; val = variant{Nat8Content=4:nat8}; };
+                record { key = \"logo\"; val = variant{BlobContent=blob\"http://logo_url.com\"}; };
+                record { key = \"symbol\"; val = variant{TextContent=\"SYMB\"}; };
+            };
+            purpose = variant{Rendered};
+        }
+    },
+    \"Additional Text 1\", 
+    \"Additional Text 2\", 
+    \"Additional Text 3\", 
+    42:nat8, 
+    123456789:nat, 
+    principal\"34qty-yjykw-cag5h-sjxxu-xjkuk-b6ecf-zkgww-7brzz-cqvw7-vygwj-hqe\", 
+    99:nat
+)"
+
+echo "Done" 
