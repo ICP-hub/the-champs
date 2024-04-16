@@ -118,6 +118,16 @@ module {
 
   public type MintReceipt = Result<MintReceiptPart, ApiError>;
 
+  public type AddCustodianError = {
+    #Unauthorized;
+    #ZeroAddress;
+    #AlreadyCustodian;
+  };
+
+  public type AddCustodian = {
+    #CustodianAdded;
+  };
+
   public type MintReceiptPart = {
     token_id: TokenId;
     id: Nat;
