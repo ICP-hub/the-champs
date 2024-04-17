@@ -70,3 +70,4 @@ dfx deploy --argument "(
     maxLimit = 100;
   }
 )" dip721_nft
+
