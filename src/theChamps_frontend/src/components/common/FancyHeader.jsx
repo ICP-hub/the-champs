@@ -9,7 +9,7 @@ const FancyHeader = ({ normal, fancy, small }) => {
       }`}
     >
       {normal ? <h1 className="leading-10">{normal}</h1> : null}
-      <span className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] inline-block text-transparent bg-clip-text pb-1 min-w-max">
+      <span className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] inline-block text-transparent bg-clip-text pb-1">
         {fancy}
       </span>
     </div>

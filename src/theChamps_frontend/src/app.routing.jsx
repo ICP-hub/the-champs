@@ -27,7 +27,7 @@ const appRoutes = createBrowserRouter([
 
   { path: "/faq", element: <FAQ /> },
   { path: "/privacy-policy", element: <PrivacyPolicy /> },
-  { path: "/contacts", element: <ContactUs /> },
+  { path: "/contact", element: <ContactUs /> },
 ]);
 
 export default appRoutes;
