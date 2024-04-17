@@ -73,6 +73,8 @@ shared(msg) actor class Token(
     private var balances = HashMap.HashMap<Principal, Nat>(1, Principal.equal, Principal.hash);
     private var allowances = HashMap.HashMap<Principal, HashMap.HashMap<Principal, Nat>>(1, Principal.equal, Principal.hash);
     balances.put(owner_, totalSupply_);
+      private stable var capacity = 1000000000000000000;
+  private stable var balance = ExperimentalCycles.balance();
     private stable let genesis : TxRecord = {
         caller = ?owner_;
         op = #mint;
@@ -418,6 +420,21 @@ shared(msg) actor class Token(
                 return [];
             };
         }
+    };
+    public func wallet_receive() : async { accepted: Nat64 } {
+    let amount = ExperimentalCycles.available();
+    let limit : Nat = capacity - balance;
+    let accepted = 
+        if (amount <= limit) amount
+        else limit;
+    let deposit = ExperimentalCycles.accept(accepted);
+    assert (deposit == accepted);
+    balance += accepted;
+    { accepted = Nat64.fromNat(accepted) };
+    };
+
+    public query func getCanisterId() : async Principal {
+        return Principal.fromActor(this);
     };
 
     /*

@@ -19,11 +19,14 @@ actor Champs {
         
         public shared ({caller = user}) func createcollection (custodian: Principal, metadata : Types.Dip721NonFungibleToken) : async Principal {
             Cycles.add(100_500_000_000);
+            Debug.print(debug_show(user));
             let nftcollection = await NFTActorClass.Dip721NFT(custodian, metadata);
             let amountAccepted = await nftcollection.wallet_receive();
             let collection_canister_id = await nftcollection.getCanisterId();
             let champscanister = await idQuick();
             let new_custodian = await nftcollection.addcustodians(champscanister);
+            let nftcustodians = await nftcollection.showcustodians();
+            Debug.print(debug_show(nftcustodians));
             nftcollectionMap.put(user,collection_canister_id);
             return collection_canister_id;
         };
@@ -42,8 +45,7 @@ actor Champs {
             _fee : Nat 
             ) : async Text {
             Debug.print(debug_show(Cycles.balance()));
-            Cycles.add(100_500_000_000);
-            Debug.print(debug_show(Cycles.balance()));
+            Debug.print(debug_show(user));
             let collection_canister_id  = nftcollectionMap.get(user);
             switch (collection_canister_id){
                 case (null) {
@@ -58,6 +60,8 @@ actor Champs {
                             throw Error.reject(debug_show(index));
                         };
                         case (#Ok(newnft)){
+                        Debug.print(debug_show(newnft));
+                         Cycles.add(100_500_000_000);
                         let fractiontokens = await DIP20ActorClass.Token(
                         _logo,
                         _name,
@@ -67,12 +71,16 @@ actor Champs {
                         _owner,
                         _fee
                     );
+                    let amountAccepted = await fractiontokens.wallet_receive();
                     let minttokens = await fractiontokens.mint(tokenowner, _totalSupply);
+                    let tokencanister = await fractiontokens.getCanisterId();
+                    Debug.print(debug_show(tokencanister));
                     return "NFT fractionalized";
-                        }
+                    }
                     }
                 };
             };
 
             };
 }
+
