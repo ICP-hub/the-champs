@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes } from "react-router-dom";
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 import appRoutes from "./app.routing";
+import { RouterProvider } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
