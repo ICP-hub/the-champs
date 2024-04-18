@@ -106,7 +106,8 @@
 }
 
 .button {
-  background: linear-gradient(60.27deg, #fc001e 0%, #ff7d57 100%);}
+  background: linear-gradient(60.27deg, #fc001e 0%, #ff7d57 100%);
+}
 .productcardlgborder {
   border: 2px solid transparent;
   border-radius: 8px;
@@ -114,4 +115,103 @@
     linear-gradient(to right, #fc001e, #ff7d57);
   background-clip: padding-box, border-box;
   background-origin: padding-box, border-box;
+}
+
+.nav-menu {
+  position: relative;
+  width: 400px;
+  height: 50px;
+  font-size: 0;
+}
+.nav-menu .nav-link {
+  line-height: 50px;
+  height: 100%;
+  font-size: 15px;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  text-decoration: none;
+
+  text-align: center;
+  cursor: pointer;
+}
+.nav-menu .animation {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  z-index: 0;
+  transition: all 0.5s ease 0s;
+}
+.nav-link:nth-child(1) {
+  width: 100px;
+}
+.nav-link:nth-child(2) {
+  width: 100px;
+}
+.nav-link:nth-child(3) {
+  width: 100px;
+}
+.nav-link:nth-child(4) {
+  width: 100px;
+}
+
+.nav-menu .start-home,
+.nav-link:nth-child(1):hover ~ .animation {
+  width: 100px;
+  left: 0;
+  background-color: rgba(221, 221, 221, 0.4);
+}
+.nav-menu .start-shop,
+.nav-link:nth-child(2):hover ~ .animation {
+  width: 135px;
+  left: 83px;
+  background-color: rgba(221, 221, 221, 0.4);
+}
+.nav-menu .start-about,
+.nav-link:nth-child(3):hover ~ .animation {
+  width: 100px;
+  left: 205px;
+  background-color: rgba(221, 221, 221, 0.4);
+}
+.nav-menu .start-contact,
+.nav-link:nth-child(4):hover ~ .animation {
+  width: 100px;
+  left: 300px;
+  background-color: rgba(221, 221, 221, 0.4);
+}
+
+.nav-link-active {
+  width: 100px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* BackToTopButton.css */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 }

@@ -2,16 +2,22 @@ import FancyHeader from "../common/FancyHeader";
 import { HiMiniMagnifyingGlass } from "react-icons/hi2";
 import AccordionComponent from "../common/Accordion";
 import FaqData from "./faqData.json";
+import Header from "../common/Header";
+import Footer from "../common/Footer";
 
 const FAQ = () => {
   return (
-    <div className="md:px-24 max-md:px-6">
-      <div className="flex">
-        <FancyHeader fancy="FAQ" />
+    <>
+      <Header />
+      <div className="md:px-24 mt-44 max-md:px-6">
+        <div className="flex">
+          <FancyHeader fancy="FAQ" />
+        </div>
+        {/* <FaqSearch /> */}
+        <FaqContents />
       </div>
-      {/* <FaqSearch /> */}
-      <FaqContents />
-    </div>
+      <Footer />
+    </>
   );
 };
 

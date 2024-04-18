@@ -11,6 +11,7 @@ import {
   useDialog,
 } from "@connect2ic/react";
 import toast from "react-hot-toast";
+import { Link, NavLink } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,7 +36,6 @@ const Header = () => {
   };
 
   window.addEventListener("scroll", changeNavbarColor);
- 
 
   return (
     <div className="relative z-[35]">
@@ -62,12 +62,49 @@ const Header = () => {
         }}
       >
         <h1 className="text-3xl font-bold font-orbitron">CHAMPS</h1>
-        <ul className="hidden sm:flex md:gap-7 gap-3 md:text-lg text-sm font-bold">
-          <li className="nav-item rounded-xl p-3 px-3">Home</li>
-          <li className=" nav-item rounded-xl p-3 px-3">Collection</li>
-          <li className="nav-item rounded-xl p-3 px-3">About</li>
-          <li className="nav-item rounded-xl p-3 px-3">Contact</li>
-        </ul>
+        <div className=" mr-8 flex  justify-center items-center nav-menu  md:block hidden">
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive
+                ? "nav-link font-bold tracking-wider text-gray-900"
+                : "nav-link font-semibold tracking-wider text-gray-900"
+            }
+          >
+            Home
+          </NavLink>
+          <NavLink
+            to="/collection"
+            className={({ isActive }) =>
+              isActive
+                ? "nav-link font-bold tracking-wider text-gray-900"
+                : "nav-link font-semibold tracking-wider text-gray-900"
+            }
+          >
+            Collection
+          </NavLink>
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              isActive
+                ? "nav-link font-bold tracking-wider text-gray-900"
+                : "nav-link font-semibold tracking-wider text-gray-900"
+            }
+          >
+            About
+          </NavLink>
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              isActive
+                ? "nav-link font-bold tracking-wider text-gray-900"
+                : "nav-link font-semibold tracking-wider text-gray-900"
+            }
+          >
+            Contact
+          </NavLink>
+          <div class="animation rounded-xl"></div>
+        </div>
         <div className="sm:hidden">
           <button className="text-2xl focus:outline-none" onClick={toggleMenu}>
             <GiHamburgerMenu />

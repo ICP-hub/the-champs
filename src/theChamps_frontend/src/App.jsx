@@ -36,11 +36,7 @@ function App() {
 
   return (
     <main>
-      <Header />
-      <div className="mt-28">
-        <RouterProvider router={appRoutes} />
-      </div>
-      <Footer />
+      <RouterProvider router={appRoutes} />
     </main>
   );
 }

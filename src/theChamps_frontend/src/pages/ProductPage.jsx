@@ -1,6 +1,5 @@
 import React from "react";
 
-import Footer from "../components/common/Footer";
 import ProductCard from "../components/common/productcomponent/productCard";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
@@ -9,6 +8,9 @@ import Searchbar from "../components/common/Searchbar";
 import nftgeek from "../assets/icons/Nftgeek.svg";
 import toniq from "../assets/icons/toniq.svg";
 import Card from "../components/common/Card";
+import Header from "../components/common/Header";
+import Footer from "../components/common/Footer";
+import { Link } from "react-router-dom";
 
 const ProductPage = ({ name }) => {
   const products = [
@@ -100,6 +102,7 @@ const ProductPage = ({ name }) => {
   ];
   return (
     <>
+      <Header />
       <div className=" mt-44 left-0 right-0  px-6 lg:px-24 ">
         <div className="w-full relative">
           <img
@@ -107,11 +110,11 @@ const ProductPage = ({ name }) => {
             alt=""
             className="w-full h-60 rounded-xl object-cover"
           />
-          <div className="flex">
-            <div className="absolute top-32 w-1/4 left-16">
+          <div className="md:flex">
+            <div className="md:absolute md:top-32 mt-12 md:mt-0  md:w-1/4  w-full md:left-16">
               <Card nftgeek={nftgeek} toniq={toniq} />
             </div>
-            <div className=" absolute right-0 w-[65%] mt-8">
+            <div className=" absolute right-0 md:w-[65%] mt-8">
               {" "}
               <h1 className="text-3xl text-left font-bold font-sans mb-4 gap-1 ">
                 <span className="relative  text-transparent ml-2 bg-gradient-to-r  from-[#FC001E] to-[#FF7D57] bg-clip-text">
@@ -159,7 +162,9 @@ const ProductPage = ({ name }) => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3  gap-12 mt-4 justify-center">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <Link to="/collections/collection/a">
+                <ProductCard key={product.id} product={product} />
+              </Link>
             ))}
           </div>
         </div>
@@ -172,6 +177,7 @@ const ProductPage = ({ name }) => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

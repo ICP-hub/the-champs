@@ -3,8 +3,8 @@ import React from "react";
 import { BsInstagram } from "react-icons/bs";
 import { FaYoutube } from "react-icons/fa";
 import { RiTwitterFill } from "react-icons/ri";
-import { MdOutlineKeyboardArrowUp } from "react-icons/md";
-
+import BackToTopButton from "./BackToTop";
+import { Link } from "react-router-dom";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Component Footer.
 /* ----------------------------------------------------------------------------------------------------- */
@@ -40,10 +40,10 @@ const Footer = () => {
               <div className="flex flex-col gap-4 max-md:gap-2">
                 <p className="font-semibold text-lg">Quick links</p>
                 <span className="text-gray-500 text-md flex flex-col items-start gap-2">
-                  <p>About </p>
-                  <p>Collection</p>
+                  <Link to="/about">About </Link>
+                  <Link to="/collection">Collection</Link>
                   <p>Roadmap</p>
-                  <p>FAQs</p>
+                  <Link to="/faq">FAQs</Link>
                 </span>
               </div>
               <div className="flex flex-col gap-4 max-md:gap-2">
@@ -51,7 +51,7 @@ const Footer = () => {
                 <span className="text-gray-500 text-md flex flex-col items-start gap-1">
                   <p>How does it works!</p>
                   <p>Blockchain</p>
-                  <p>Get in touch</p>
+                  <Link to="/contact">Get in touch</Link>
                 </span>
               </div>
             </div>
@@ -64,9 +64,9 @@ const Footer = () => {
                 reserved
               </p>
               <span className="flex gap-4">
-                <p>Privacy Policy</p>
-                <p>Terms and Service</p>
-                <MdOutlineKeyboardArrowUp size={24} />
+                <Link to="/privacy-policy">Privacy Policy</Link>
+                <Link to="/Terms-and-services">Terms and Service</Link>
+                <BackToTopButton />
               </span>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { CiHeart } from "react-icons/ci";
+import { Link } from "react-router-dom";
 
 const ProductCardLg = ({ prod }) => {
   return (
@@ -33,9 +34,12 @@ const ProductCardLg = ({ prod }) => {
           {/* <CiHeart size={48} className="cursor-pointer" /> */}
         </div>
         <div className="flex justify-between pt-6 gap-4 text-sm">
-          <button className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57]  text-white cursor-pointer  rounded-lg w-full">
+          <Link
+            to="/collections/collection"
+            className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57]  text-white cursor-pointer  rounded-lg w-full"
+          >
             View Collection
-          </button>
+          </Link>
           <button className="px-4 py-2  cursor-pointer rounded-lg w-full productcardlgborder">
             More Info
           </button>

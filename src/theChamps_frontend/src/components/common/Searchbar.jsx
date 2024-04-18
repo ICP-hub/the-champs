@@ -52,19 +52,19 @@ const Searchbar = () => {
                     <h1 className="text-md  text-left font-medium">
                       Floor Price
                     </h1>
-                    <button className="mt-5  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  hover:bg-violet-500 hover:text-white rounded-lg">
+                    <button className="mt-5  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  hover:bg-[#FC001E] hover:text-white rounded-lg">
                       Highest to Lowest
                     </button>
-                    <button className="mt-4  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  hover:bg-violet-500  hover:text-white rounded-lg">
+                    <button className="mt-4  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  hover:bg-[#FC001E]  hover:text-white rounded-lg">
                       Lowest to Highest
                     </button>
                   </div>
                   <div className="m-6 mt-8 text-center">
                     <h1 className="text-md  text-left font-medium">Sort By</h1>
-                    <button className="mt-5  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  hover:bg-violet-500  hover:text-white rounded-lg">
+                    <button className="mt-5  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  hover:bg-[#FC001E]  hover:text-white rounded-lg">
                       Recent Creations
                     </button>
-                    <button className="mt-4  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300 hover:bg-violet-500  hover:text-white rounded-lg">
+                    <button className="mt-4  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300 hover:bg-[#FC001E]  hover:text-white rounded-lg">
                       Latest Creations
                     </button>
                   </div>
@@ -73,7 +73,7 @@ const Searchbar = () => {
                     <h1 className="text-md m-6  text-left font-medium">
                       Sort By
                     </h1>
-                    <label className="text-gray-500">
+                    <label className="text-gray-500 w-[85%] text-md flex items-center justify-center">
                       <input
                         type="radio"
                         value="option1"
@@ -81,9 +81,9 @@ const Searchbar = () => {
                         onChange={handleOptionChange}
                         className="m-6 mr-3"
                       />
-                      Latest Creation
+                      Latest Creations
                     </label>
-                    <label className="text-gray-500 ">
+                    <label className="text-gray-500  w-[85%] text-md flex items-center justify-center">
                       <input
                         type="radio"
                         value="option2"
@@ -91,9 +91,9 @@ const Searchbar = () => {
                         onChange={handleOptionChange}
                         className="m-6 mr-3"
                       />
-                      Latest Creation
+                      Latest Creations
                     </label>
-                    <label className="text-gray-500 ">
+                    <label className="text-gray-500  w-[85%] text-md flex items-center justify-center">
                       <input
                         type="radio"
                         value="option3"
@@ -101,7 +101,7 @@ const Searchbar = () => {
                         onChange={handleOptionChange}
                         className="m-6 mr-3 "
                       />
-                      Latest Creation
+                      Latest Creations
                     </label>
                   </div>
                   <div className="m-6 text-center">
