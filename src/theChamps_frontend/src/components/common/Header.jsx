@@ -11,6 +11,7 @@ import {
   useDialog,
 } from "@connect2ic/react";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,7 +36,6 @@ const Header = () => {
   };
 
   window.addEventListener("scroll", changeNavbarColor);
- 
 
   return (
     <div className="relative z-[35]">
@@ -63,7 +63,7 @@ const Header = () => {
       >
         <h1 className="text-3xl font-bold font-orbitron">CHAMPS</h1>
         <ul className="hidden sm:flex md:gap-7 gap-3 md:text-lg text-sm font-bold">
-          <li className="nav-item rounded-xl p-3 px-3">Home</li>
+          <Link className="nav-item rounded-xl p-3 px-3">Home</Link>
           <li className=" nav-item rounded-xl p-3 px-3">Collection</li>
           <li className="nav-item rounded-xl p-3 px-3">About</li>
           <li className="nav-item rounded-xl p-3 px-3">Contact</li>

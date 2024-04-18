@@ -106,7 +106,9 @@
 }
 
 .button {
-  background: linear-gradient(60.27deg, #fc001e 0%, #ff7d57 100%);}
+  background: linear-gradient(60.27deg, #fc001e 0%, #ff7d57 100%);
+}
+
 .productcardlgborder {
   border: 2px solid transparent;
   border-radius: 8px;

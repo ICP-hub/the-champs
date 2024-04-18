@@ -100,7 +100,7 @@ const ContactForm = () => {
           name="additionalDetails"
           rows={3}
           maxLength={1000}
-          className="mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm"
+          className="inputbox mt-1 px-3 py-2 border border-slate-400 rounded-md focus:outline-none focus:border-indigo-500 block w-full shadow-sm bg-transparent"
           required
         />
       </div>

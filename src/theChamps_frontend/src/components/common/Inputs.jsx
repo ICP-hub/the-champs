@@ -20,7 +20,7 @@ const Input = ({ label, type, placeholder, value, onChange, name }) => {
         value={value}
         onChange={onChange}
         name={name}
-        className="mt-1 px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm bg-transparent"
+        className="inputbox mt-1 px-3 py-2 border border-slate-400 rounded-md focus:outline-none focus:border-indigo-500 block w-full shadow-sm bg-transparent"
       />
     </div>
   );
@@ -90,7 +90,7 @@ const CountryInput = ({ value, onChange }) => {
         value={value}
         onChange={handleCountryChange}
         name="country"
-        className="mt-1 block w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 bg-transparent"
+        className="mt-1 block w-full px-3 py-2 border border-slate-400 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 bg-transparent"
       >
         <option value="">Please select...</option>
         {countries.map((country) => (
