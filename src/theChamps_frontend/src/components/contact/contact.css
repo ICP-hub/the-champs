@@ -35,7 +35,7 @@ input.iti__tel-input[type="tel"] {
   border: 1px solid;
   border-radius: 0.3125rem;
   padding: 8px 12px;
-  @apply border-2 border-gray-300 bg-transparent focus:border-indigo-500;
+  @apply border border-slate-400 bg-transparent focus:border-indigo-500;
 }
 
 input.iti__tel-input[type="tel"]:focus {

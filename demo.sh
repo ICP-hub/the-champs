@@ -12,7 +12,7 @@ dfx deploy theChamps_backend
 
 dfx canister call theChamps_backend createcollection \
 "(
-    principal\"34qty-yjykw-cag5h-sjxxu-xjkuk-b6ecf-zkgww-7brzz-cqvw7-vygwj-hqe\", 
+    principal\"$(dfx identity get-principal)\", 
     record {
         maxLimit = 5000:nat16; 
         logo = record {
@@ -26,8 +26,8 @@ dfx canister call theChamps_backend createcollection \
 
 dfx canister call theChamps_backend FractionalizeNFt \
 "(
-    principal\"34qty-yjykw-cag5h-sjxxu-xjkuk-b6ecf-zkgww-7brzz-cqvw7-vygwj-hqe\", 
-    principal\"34qty-yjykw-cag5h-sjxxu-xjkuk-b6ecf-zkgww-7brzz-cqvw7-vygwj-hqe\", 
+    principal\"$(dfx identity get-principal)\", 
+    principal\"$(dfx identity get-principal)\", 
     vec { 
         record {
             data = blob\"data_in_bytes_here\"; 
@@ -50,7 +50,7 @@ dfx canister call theChamps_backend FractionalizeNFt \
     \"Additional Text 3\", 
     42:nat8, 
     123456789:nat, 
-    principal\"34qty-yjykw-cag5h-sjxxu-xjkuk-b6ecf-zkgww-7brzz-cqvw7-vygwj-hqe\", 
+    principal\"$(dfx identity get-principal)\", 
     99:nat
 )"
 
