@@ -13,7 +13,7 @@ const Searchbar = ({ grid, setGrid }) => {
   };
   return (
     <>
-      <div className="flex justify-between ">
+      <div className="flex justify-between">
         <div className="flex text-xl items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-2 w-[50%] sm:w-[75%]  overflow-hidden  lg:w-[80%] mb-4">
           <CiSearch size={24} />
           <input

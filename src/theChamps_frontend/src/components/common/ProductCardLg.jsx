@@ -22,7 +22,7 @@ const ProductCardLg = ({ prod }) => {
               transition={{ duration: 0.2, ease: "easeInOut" }}
               src={prod.image1}
               alt="image-1"
-              className="rounded-lg row-span-2 w-full object-cover h-full"
+              className="rounded-lg row-span-2 w-full object-cover h-full cursor-pointer"
             ></motion.img>
           </div>
           <div className="overflow-hidden rounded-lg">
@@ -31,7 +31,7 @@ const ProductCardLg = ({ prod }) => {
               transition={{ duration: 0.2, ease: "easeInOut" }}
               src={prod.image2}
               alt="image-2"
-              className="rounded-lg h-full w-full"
+              className="rounded-lg h-full w-full  cursor-pointer"
             ></motion.img>
           </div>
         </div>

@@ -16,7 +16,7 @@ const CollectionPage = ({ name }) => {
     <>
       <Header />
       <motion.div
-        className="mt-44 left-0 right-0  px-6 lg:px-24"
+        className="mt-44 left-0 right-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -28,7 +28,7 @@ const CollectionPage = ({ name }) => {
               {name}
             </span>
           </h1>
-          <div className="sticky top-24 search-bar  px-6 lg:px-24">
+          <div className="sticky top-24 search-bar  px-6 lg:px-24 z-10">
             <Searchbar grid={grid} setGrid={setGrid} />
           </div>
           {grid ? (
