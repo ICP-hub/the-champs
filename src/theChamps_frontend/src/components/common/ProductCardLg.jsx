@@ -1,28 +1,39 @@
 import { CiHeart } from "react-icons/ci";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const ProductCardLg = ({ prod }) => {
   return (
     <div className="rounded-lg shadow-lg p-6 border-2">
       <div className="grid grid-cols-3 gap-x-8">
-        <div className="col-span-2">
-          <img
+        <div className="col-span-2 overflow-hidden rounded-lg">
+          <motion.img
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
             src={prod.imageUrl}
             alt={prod.title}
-            className="rounded-lg h-full object-cover"
-          />
+            className="rounded-lg h-full object-cover cursor-pointer"
+          ></motion.img>
         </div>
         <div className="grid grid-rows-2 gap-y-8">
-          <img
-            src={prod.image1}
-            alt="image-1"
-            className="rounded-lg row-span-2 w-full object-cover h-full"
-          />
-          <img
-            src={prod.image2}
-            alt="image-2"
-            className="rounded-lg h-full w-full"
-          />
+          <div className="overflow-hidden rounded-lg">
+            <motion.img
+              whileHover={{ scale: 1.1 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              src={prod.image1}
+              alt="image-1"
+              className="rounded-lg row-span-2 w-full object-cover h-full"
+            ></motion.img>
+          </div>
+          <div className="overflow-hidden rounded-lg">
+            <motion.img
+              whileHover={{ scale: 1.1 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              src={prod.image2}
+              alt="image-2"
+              className="rounded-lg h-full w-full"
+            ></motion.img>
+          </div>
         </div>
       </div>
       <div className="py-6">

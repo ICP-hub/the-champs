@@ -6,6 +6,7 @@ import appRoutes from "./app.routing";
 import { RouterProvider } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { AnimatePresence } from "framer-motion";
 
 function App() {
   // Set initial body background
@@ -26,7 +27,9 @@ function App() {
 
   return (
     <main>
-      <RouterProvider router={appRoutes} />
+      <AnimatePresence mode="wait" initial={true}>
+        <RouterProvider router={appRoutes} />
+      </AnimatePresence>
     </main>
   );
 }

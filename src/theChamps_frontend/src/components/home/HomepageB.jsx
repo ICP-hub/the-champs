@@ -19,6 +19,7 @@ import "swiper/css/grid";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Grid, Pagination, Navigation, Keyboard } from "swiper/modules";
+import { motion } from "framer-motion";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageB /> : Soccer collection.
@@ -116,13 +117,16 @@ const HomePageB = () => {
 
 const Collections = ({ image, title, subtitle }) => {
   return (
-    <div className="flex flex-col gap-4">
+    <motion.div
+      whileHover={{ translateY: -15 }}
+      className="flex flex-col gap-4 cursor-pointer"
+    >
       <img src={image} alt="image" className="rounded-2xl object-contain" />
       <div className="flex items-center justify-center flex-col">
         <h1 className="text-[28px] font-bold">{title}</h1>
         <p className="text-[15px] text-[#7B7583]">{subtitle}</p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

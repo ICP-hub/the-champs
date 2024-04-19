@@ -8,14 +8,28 @@ import { FakeData } from "../FakeProdDatbase";
 import ProductCardLg from "../components/common/ProductCardLg";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
+<<<<<<< HEAD
 import MyProfileActivity from "../components/myProfile/MyProfileActivity";
+=======
+import { motion } from "framer-motion";
+>>>>>>> f97befe (animationadded__cards)
 
 const CollectionPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
   return (
     <>
       <Header />
+<<<<<<< HEAD
       <div className=" mt-44 left-0 right-0  ">
+=======
+      <motion.div
+        className="mt-44 left-0 right-0  px-6 lg:px-24"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+>>>>>>> f97befe (animationadded__cards)
         <div className=" z-0 ">
           <h1 className="text-5xl font-bold font-sans mb-12 gap-1  px-6 lg:px-24 ">
             <span className="relative  text-transparent ml-2 bg-gradient-to-r   from-[#FC001E] to-[#FF7D57] bg-clip-text">
@@ -45,7 +59,7 @@ const CollectionPage = ({ name }) => {
             <IoIosArrowForward size={20} />
           </div>
         </div>
-      </div>
+      </motion.div>
       <Footer />
     </>
   );

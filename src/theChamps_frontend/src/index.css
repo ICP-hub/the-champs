@@ -87,7 +87,7 @@
 
 .swiper {
   --swiper-navigation-size: 24px !important;
-  padding: 0 24px 48px 24px !important;
+  padding: 24px 24px 48px 24px !important;
 }
 
 .swiper-button-prev,
@@ -105,6 +105,10 @@
 
 .swiper-button-next {
   right: 0 !important;
+}
+
+.swiper-button-disabled {
+  opacity: 0 !important;
 }
 
 .faq {

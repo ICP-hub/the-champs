@@ -6,6 +6,7 @@ import { FakeData } from "../../FakeProdDatbase";
 import ProductCard from "../common/productcomponent/productCard";
 import Searchbar from "../common/Searchbar";
 import MyProfileActivity from "./MyProfileActivity";
+import { motion } from "framer-motion";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <MyProfileB /> : tab contents
@@ -44,11 +45,17 @@ const MyProfileB = ({ activeTabIndex }) => {
       {activeTabIndex === "Activity" ? (
         <MyProfileActivity />
       ) : (
-        <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-x-8 gap-y-8">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          className="grid lg:grid-cols-3 md:grid-cols-2 gap-x-8 gap-y-8"
+        >
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );
