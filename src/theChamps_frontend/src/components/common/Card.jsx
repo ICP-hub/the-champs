@@ -9,8 +9,7 @@ const Card = ({ nftgeek, toniq }) => {
         style={{ boxShadow: " 4px 4px 10px rgba(0, 0, 0, 0.4)" }}
       >
         <img
-          src="https://s3-alpha-sig.figma.com/img/c95d/5dd3/584da49eb53713d2f06a775d13085d75?Expires=1713139200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=fGtkGDPMg53FPYGIDASuxb4-~dFL8ikNGIlNlKcRHkAVbB34PW5JVaSCBy7tIvTuIdkJwyf3haWFOzhApv4dTljC-Sficd2WkGXedWagLGwGUYsWys1VXITmJg5vKRsu1fTV9OVi6jPkOhd6CRb6N0lOE15GjG0RrM2qjey5eTIa2Nclg9f5pbLBIzVD6BYYFPP2Yay~yUCjLie-7mcYY-7m2J13TQMg4ntvTQTZxkVO4GxGHWzDzb6DxXxLOWRGHPO3QM-Kba9zURwBFIYH92GQJ8eSY8xkhx9VxTt99a1MLv~mxksjygteyMIWGM5qzLIzG8a14Qg3H4-tbhCK0w__
-        "
+          src="https://s3-alpha-sig.figma.com/img/7a4c/b37b/155e7f59d0a8b94c4168cb5240bd1e65?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jPOZEotrdDZi1xKBEDTq5RJa8YTfs75rb1PMOad5E9ZOI6O7q91KWS3XdE3Tumq-UWYJ44XZkmG~UnAPXXxbGw3yPiKwT-acKZfwlkatj6thE2CSMZXVWthAFQ5eUUh69OgfP6Cfu5zUE6WDXjVJQFV7AKjwuJxmDkTzckX3SZpg0qDPIXqMyeKozZEerYOlh9htYXzrKSkhIxPqlmj4sP2n~WVV1V4H3LpE9u8SCvEn494H-eyBG8YkC0C6Q~O6o6~n2o7hSsuojX8inIqC-~op7ObDkGbmzWsqb88L1dUOfRo7I6-X~f2mKNxKrJ84xGgKjYwYcELK0Y~L505YFQ__"
           alt=""
           className="object-cover w-full rounded-3xl h-[80%] p-3"
         />

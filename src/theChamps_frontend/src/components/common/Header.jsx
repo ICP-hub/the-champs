@@ -37,6 +37,20 @@ const Header = () => {
 
   window.addEventListener("scroll", changeNavbarColor);
 
+  useEffect(() => {
+    // Disable scroll when modal is open
+    if (isSidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    // Cleanup: Enable scroll when component unmounts
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isSidebarOpen]);
+
   return (
     <div className="relative z-[35]">
       <div className="w-full">

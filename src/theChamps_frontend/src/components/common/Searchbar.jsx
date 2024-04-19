@@ -3,8 +3,9 @@ import { CiSearch, CiFilter } from "react-icons/ci";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-
-const Searchbar = () => {
+import { IoGridOutline } from "react-icons/io5";
+import { CiBoxList } from "react-icons/ci";
+const Searchbar = ({ grid, setGrid }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleOptionChange = (event) => {
@@ -13,8 +14,8 @@ const Searchbar = () => {
   return (
     <>
       <div className="flex justify-between ">
-        <div className="flex text-xl items-center border-[1.5px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 py-2 w-[60%] sm:w-[80%]  overflow-hidden  lg:w-[85%]  mb-12">
-          <CiSearch />
+        <div className="flex text-xl items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-2 w-[50%] sm:w-[75%]  overflow-hidden  lg:w-[80%] mb-4">
+          <CiSearch size={24} />
           <input
             type="text"
             placeholder="Search our collection"
@@ -30,8 +31,8 @@ const Searchbar = () => {
         <div className=" lg:w-[12%]  ">
           <Menu as="div" className="relative inline-block text-left w-full ">
             <div>
-              <Menu.Button className=" flex text-xl items-center justify-center  gap-2 border-[1.5px]  border-gray-400 rounded-md  px-3 py-2 lg:w-full  overflow-hidden">
-                <div className="text-3xl">
+              <Menu.Button className=" flex text-xl items-center justify-center  gap-2 border-[1px]  border-gray-400 rounded-md  px-3 md:py-2 lg:w-full  overflow-hidden">
+                <div className="md:text-3xl">
                   <CiFilter />
                 </div>
                 Filters
@@ -114,6 +115,12 @@ const Searchbar = () => {
             </Transition>
           </Menu>
         </div>
+        <button
+          className="flex text-xl items-center justify-center   border-[1px]  border-gray-400 rounded-md   lg:w-[5%]  md:h-12 h-8 overflow-hidden"
+          onClick={() => setGrid(!grid)}
+        >
+          {grid ? <CiBoxList size={24} /> : <IoGridOutline />}
+        </button>
       </div>
     </>
   );
