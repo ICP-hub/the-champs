@@ -76,8 +76,3 @@ dfx deploy --argument "(
   }
 )" dip721_nft
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> f018bed (update)
