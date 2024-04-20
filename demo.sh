@@ -8,7 +8,7 @@ ALICE=$(dfx --identity alice identity get-principal)
 dfx identity new bob --disable-encryption || true
 BOB=$(dfx --identity bob identity get-principal)
 
-dfx deploy theChamps_backend
+dfx deploy 
 
 dfx canister call theChamps_backend createcollection \
 "(

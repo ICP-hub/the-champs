@@ -188,19 +188,6 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
     });
   };
 
-  // public shared({caller}) func transferToCanister(tokenId: Types.TokenId, to: Principal) : async Result.Result<Types, Types.Dip721Transfererror> {
-  //   var token = List.find(nfts, func(token: Types.Nft) : Bool { token.id == tokenId });
-  //   switch (token) {
-  //     case (null) { throw Error("Token not found"); };
-  //     case (?token) {
-  //       if (token.owner != to) {
-  //         token.owner := to;
-  //       } else {
-  //         throw Error("Token is already owned by the target canister");
-  //       };
-  //     };
-  //   };
-  // };
 
   public shared ({caller}) func lockDip721(token_id: Types.TokenId) : async Result.Result<Types.Locktoken,Types.LockTokenError> {
     let item = List.find(nfts, func(token: Types.Nft) : Bool { token.id == token_id });
