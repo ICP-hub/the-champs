@@ -7,8 +7,8 @@ import { MdArrowOutward } from "react-icons/md";
 import anim1 from "../../assets/images/anim1.png";
 import anim2 from "../../assets/images/anim2.png";
 import anim3 from "../../assets/images/anim3.png";
-import soccer1 from "../../assets/images/soccer-1.jpeg";
-import soccer2 from "../../assets/images/soccer-4.jpeg";
+import soccer1 from "../../assets/images/soccer-1-removebg.png";
+import soccer2 from "../../assets/images/soccer-4-removebg.png";
 import square from "../../assets/icons/square.svg";
 import star from "../../assets/icons/star.svg";
 import star2 from "../../assets/icons/star-02.svg";
@@ -16,12 +16,13 @@ import star3 from "../../assets/icons/star-03.svg";
 import circle from "../../assets/icons/circle.svg";
 import circle2 from "../../assets/icons/circle-02.svg";
 
+import { AnimatePresence, motion } from "framer-motion";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageA /> : Homepage top.
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageA = () => {
   return (
-    <div className="grid min-[900px]:grid-cols-2 md:p-24 max-md:p-6">
+    <div className="grid lg:grid-cols-2 md:p-24 max-md:p-6">
       <HomePageALeft />
       <HomePageARight />
     </div>
@@ -77,13 +78,15 @@ const HomePageALeftCommunityCounter = () => {
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageARight = () => {
   return (
-    <div className="max-[900px]:order-first grid grid-rows-2 gap-y-5">
+    <div className="lg:order-last order-first grid grid-rows-2 gap-y-5">
       <div className="grid grid-cols-2">
-        <div className="rotate-12">
-          <img
+        <div className="rotate-12 relative">
+          <div className="absolute h-full w-full rounded-3xl bg-[#fd513d] shadow-[20px_20px_0px_0px_rgba(207,210,221,0.5)]"></div>
+          <motion.img
+            whileHover={{ rotate: -15, scale: 1.2, x: -73, y: 11 }}
             src={soccer1}
             alt="soccer1"
-            className="rounded-3xl shadow-[20px_20px_0px_0px_rgba(207,210,221,0.5)]"
+            className="rounded-3xl max-lg:relative absolute bottom-0 z-10"
           />
         </div>
         <div className="flex">
@@ -110,11 +113,13 @@ const HomePageARight = () => {
             <img src={square} alt="square" className="max-h-20 max-w-80" />
           </span>
         </div>
-        <div className="rotate-[-10deg]">
-          <img
+        <div className="rotate-[-10deg] relative">
+          <div className="absolute h-full w-full rounded-3xl bg-gradient-to-tr from-[#2b0405] to-[#2d1e23] shadow-[20px_20px_0px_0px_rgba(207,210,221,0.5)]"></div>
+          <motion.img
+            whileHover={{ rotate: 15, scale: 1.2, x: -20, y: -60 }}
             src={soccer2}
             alt="soccer2"
-            className="rounded-3xl shadow-[20px_20px_0px_0px_rgba(207,210,221,0.5)]"
+            className="rounded-3xl relative h-full z-10"
           />
         </div>
       </div>

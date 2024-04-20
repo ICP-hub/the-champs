@@ -3,7 +3,7 @@
 /* ----------------------------------------------------------------------------------------------------- */
 
 import FancyHeader from "../common/FancyHeader";
-
+import { motion } from "framer-motion";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageG /> : Champ's roadmap
 /* ----------------------------------------------------------------------------------------------------- */
@@ -92,9 +92,10 @@ const HomePageG = () => {
       <div className="py-12">
         <div className="grid lg:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1 gap-x-4 gap-y-4">
           {phases.map((phase, index) => (
-            <div
+            <motion.div
+              whileHover={index < 3 ? { y: -20 } : { y: 20 }}
               key={index}
-              className="rounded-3xl p-6 border-2 flex gap-8 flex-col"
+              className="rounded-3xl p-6 border-2 flex gap-8 flex-col cards"
             >
               <div className="flex justify-between items-center">
                 <span className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] inline-block text-transparent bg-clip-text font-bold">
@@ -110,7 +111,7 @@ const HomePageG = () => {
               <h3 className="text-[#7B7583] font-medium text-lg">
                 {phase.description}
               </h3>
-              <span className="w-20 border-2"></span>
+              <span className="w-20 h-1 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57]"></span>
               <div className="flex flex-col gap-2">
                 {phase.points.map((point, i) => (
                   <p key={i} className="cursor-pointer font-medium">
@@ -118,7 +119,7 @@ const HomePageG = () => {
                   </p>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

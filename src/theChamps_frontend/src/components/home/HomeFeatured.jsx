@@ -12,7 +12,7 @@ const HomeFeatured = () => {
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
       <FancyHeader normal="View" fancy="All our collections" />
-      <div className="grid min-[948px]:grid-cols-2 gap-x-8 gap-y-8">
+      <div className="grid lg:grid-cols-2 gap-x-8 gap-y-8">
         {FakeData.slice(0, 2).map((prod, index) => (
           <ProductCardLg prod={prod} key={index} />
         ))}
