@@ -8,7 +8,7 @@ import anim7 from "../../assets/images/anim-7.png";
 import { IoLogoInstagram, IoLogoTwitter } from "react-icons/io";
 import { FaDiscord } from "react-icons/fa";
 import FancyHeader from "../common/FancyHeader";
-
+import { motion } from "framer-motion";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ artistData : Fake data : Replace by originals
 /* ----------------------------------------------------------------------------------------------------- */
@@ -71,7 +71,8 @@ const Artists = () => {
   return (
     <div className="grid grid-cols-4 py-6 gap-x-4 gap-y-4 max-[900px]:grid-cols-2">
       {artistData.map((artist, index) => (
-        <div
+        <motion.div
+          whileHover={{ y: -40 }}
           key={index}
           className={`flex flex-col gap-4 justify-center items-center ${
             index % 2 === 0 ? "min-[900px]:mt-20" : ""
@@ -93,7 +94,7 @@ const Artists = () => {
               </a>
             ))}
           </span>
-        </div>
+        </motion.div>
       ))}
     </div>
   );

@@ -243,3 +243,42 @@
   /* border: 2px solid red; */
   border-radius: 10px;
 }
+
+/* .cards:hover {
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background: linear-gradient(to right, white, white),
+    linear-gradient(to right, #fc001e, #ff7d57);
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+} */
+
+.cards:hover {
+  transform: scale(1, 1);
+}
+
+.cards:hover::after,
+.cards:hover::before {
+  transform: scale(1, 1);
+}
+.cards::after,
+.cards::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  bottom: -1px;
+  left: -1px;
+  transition: all 0.5s;
+  border-radius: 16px;
+}
+.cards::after {
+  border-right: 4px solid #ff7d57;
+  border-left: 4px solid #fc001e;
+  transform: scale(1, 0);
+}
+.cards::before {
+  border-top: 4px solid #ff7d57;
+  border-bottom: 4px solid #fc001e;
+  transform: scale(0, 1);
+}

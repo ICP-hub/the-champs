@@ -4,7 +4,7 @@
 /* ----------------------------------------------------------------------------------------------------- */
 import { useState } from "react";
 import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
-
+import { AnimatePresence, motion } from "framer-motion";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ questions : Fake data : Replace by originals
 /* ----------------------------------------------------------------------------------------------------- */
@@ -145,11 +145,19 @@ const QuestionBox = () => {
               )}
             </span>
           </div>
-          {openIndex === index && (
-            <div className="pt-6 text-[#7B7583] font-normal text-lg">
-              {item.answer}
-            </div>
-          )}
+          <AnimatePresence>
+            {openIndex === index && (
+              <motion.div
+                initial={{ maxHeight: 0 }}
+                animate={{ maxHeight: 200 }}
+                exit={{ opacity: 0, maxHeight: 0 }}
+                transition={{ duration: 0.3 }}
+                className="text-[#7B7583] font-normal text-lg"
+              >
+                {item.answer}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       ))}
     </div>

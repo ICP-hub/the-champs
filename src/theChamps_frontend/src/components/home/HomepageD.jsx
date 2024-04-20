@@ -1,36 +1,60 @@
 /* eslint-disable react/prop-types */
 /* ----------------------------------------------------------------------------------------------------- */
-/*  @ <DataBlock /> : <HomepPageD />.
-/* ----------------------------------------------------------------------------------------------------- */
-const DataBlock = ({ value, label }) => {
-  return (
-    <div className="p-6 flex flex-col gap-4 sm:items-center sm:justify-center">
-      <h1 className="font-bold text-7xl max-lg:text-3xl max-sm:text-lg">
-        {value}
-      </h1>
-      <p className="max-lg:text-sm sm:min-w-max text-[#7B7583]">{label}</p>
-    </div>
-  );
-};
 
+import { useEffect, useState } from "react";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageD /> : Counts wallet, artists, value.
 /* ----------------------------------------------------------------------------------------------------- */
+const dataBlocks = [
+  { value: "400", label: "Wallets Connected", unit: "k+" },
+  { value: "400", label: "Wallets Connected", unit: "k+" },
+  { value: "230", label: "Creative artists", unit: "+" },
+  { value: "3", label: "Estimated value", unit: "x" },
+];
+
 const HomePageD = () => {
-  const dataBlocks = [
-    { value: "400k+", label: "Wallets Connected" },
-    { value: "400k+", label: "Wallets Connected" },
-    { value: "230+", label: "Creative artists" },
-    { value: "2.5x", label: "Estimated value" },
-  ];
+  const [counts, setCounts] = useState([]);
+
+  useEffect(() => {
+    const intervalIds = [];
+    dataBlocks.forEach((block, index) => {
+      let startNumber = 0;
+      const targetNumber = parseFloat(block.value);
+      const intervalId = setInterval(() => {
+        startNumber++;
+        setCounts((prevCounts) => {
+          const newCounts = [...prevCounts];
+          newCounts[index] = startNumber;
+          return newCounts;
+        });
+        if (startNumber === targetNumber) {
+          clearInterval(intervalId);
+        }
+      }, 10);
+      intervalIds.push(intervalId);
+    });
+    return () => {
+      intervalIds.forEach((id) => clearInterval(id));
+    };
+  }, []);
 
   return (
     <div className="md:p-24 max-md:p-6 grid grid-cols-4 max-md:grid-cols-2 md:divide-x-2">
       {dataBlocks.map((block, index) => (
-        <DataBlock key={index} {...block} />
+        <div
+          key={index}
+          className="p-6 flex flex-col gap-4 sm:items-center sm:justify-center"
+        >
+          <h1 className="font-bold text-7xl max-lg:text-3xl max-sm:text-lg">
+            {counts[index]}
+            {block.unit}
+          </h1>
+          <p className="max-lg:text-sm sm:min-w-max text-[#7B7583]">
+            {block.label}
+          </p>
+        </div>
       ))}
     </div>
   );
 };
-
 export default HomePageD;
