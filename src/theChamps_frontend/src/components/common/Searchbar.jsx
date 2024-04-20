@@ -5,7 +5,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { IoGridOutline } from "react-icons/io5";
 import { CiBoxList } from "react-icons/ci";
-const Searchbar = ({ grid, setGrid }) => {
+const Searchbar = ({ grid, setGrid, gridrequired }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleOptionChange = (event) => {
@@ -14,7 +14,11 @@ const Searchbar = ({ grid, setGrid }) => {
   return (
     <>
       <div className="flex justify-between">
-        <div className="flex text-xl items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-2 w-[50%] sm:w-[75%]  overflow-hidden  lg:w-[80%] mb-4">
+        <div
+          className={`flex text-xl items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-2 ${
+            gridrequired ? " sm:w-[80%]" : "sm:w-[85%]"
+          } overflow-hidden w-[50%] mb-4`}
+        >
           <CiSearch size={24} />
           <input
             type="text"
@@ -53,60 +57,60 @@ const Searchbar = ({ grid, setGrid }) => {
                     <h1 className="text-md  text-left font-medium">
                       Floor Price
                     </h1>
-                    <button className="mt-5  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  hover:bg-[#FC001E] hover:text-white rounded-lg">
+                    <button className="mt-2  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300   bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E]  hover:text-white rounded-lg">
                       Highest to Lowest
                     </button>
-                    <button className="mt-4  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  hover:bg-[#FC001E]  hover:text-white rounded-lg">
+                    <button className="mt-2 flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300   bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E]  hover:text-white rounded-lg">
                       Lowest to Highest
                     </button>
                   </div>
-                  <div className="m-6 mt-8 text-center">
+                  <div className="m-6 mt-2  text-center">
                     <h1 className="text-md  text-left font-medium">Sort By</h1>
-                    <button className="mt-5  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  hover:bg-[#FC001E]  hover:text-white rounded-lg">
+                    <button className="mt-2  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300   bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E]  hover:text-white rounded-lg">
                       Recent Creations
                     </button>
-                    <button className="mt-4  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300 hover:bg-[#FC001E]  hover:text-white rounded-lg">
+                    <button className="mt-2  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E]  hover:text-white rounded-lg">
                       Latest Creations
                     </button>
                   </div>
 
                   <div className="flex flex-col ">
-                    <h1 className="text-md m-6  text-left font-medium">
+                    <h1 className="text-md m-6 my-2  text-left font-medium">
                       Sort By
                     </h1>
-                    <label className="text-gray-500 w-[85%] text-md flex items-center justify-center">
+                    <label className="text-gray-500 w-[85%] text-md  ">
                       <input
                         type="radio"
                         value="option1"
                         checked={selectedOption === "option1"}
                         onChange={handleOptionChange}
-                        className="m-6 mr-3"
+                        className="mx-6 mt-3"
                       />
                       Latest Creations
                     </label>
-                    <label className="text-gray-500  w-[85%] text-md flex items-center justify-center">
+                    <label className="text-gray-500  w-[85%] text-md  ">
                       <input
                         type="radio"
                         value="option2"
                         checked={selectedOption === "option2"}
                         onChange={handleOptionChange}
-                        className="m-6 mr-3"
+                        className="mx-6 mt-3"
                       />
                       Latest Creations
                     </label>
-                    <label className="text-gray-500  w-[85%] text-md flex items-center justify-center">
+                    <label className="text-gray-500  w-[85%] text-md  ">
                       <input
                         type="radio"
                         value="option3"
                         checked={selectedOption === "option3"}
                         onChange={handleOptionChange}
-                        className="m-6 mr-3 "
+                        className="mx-6 mt-3 "
                       />
                       Latest Creations
                     </label>
                   </div>
                   <div className="m-6 text-center">
-                    <button className="mt-8  flex items-center w-full justify-center  px-3 py-2 border-[1.5px]   button text-white rounded-lg">
+                    <button className="  flex items-center w-full justify-center  px-3 py-2 border-[1.5px]   button text-white rounded-lg">
                       Apply Filters
                     </button>
                   </div>
@@ -115,12 +119,14 @@ const Searchbar = ({ grid, setGrid }) => {
             </Transition>
           </Menu>
         </div>
-        <button
-          className="flex text-xl items-center justify-center   border-[1px]  border-gray-400 rounded-md   lg:w-[5%]  md:h-12 h-8 overflow-hidden"
-          onClick={() => setGrid(!grid)}
-        >
-          {grid ? <CiBoxList size={24} /> : <IoGridOutline />}
-        </button>
+        {gridrequired && (
+          <button
+            className="flex text-xl items-center justify-center   border-[1px]  border-gray-400 rounded-md   lg:w-[5%]  md:h-12 h-8 overflow-hidden"
+            onClick={() => setGrid(!grid)}
+          >
+            {grid ? <CiBoxList size={24} /> : <IoGridOutline />}
+          </button>
+        )}
       </div>
     </>
   );

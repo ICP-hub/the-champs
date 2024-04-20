@@ -73,10 +73,10 @@ const ProductDetails = () => {
         )}
 
         <div className="md:flex gap-8">
-          <div className="md:w-1/3 w-full   h-screen ">
+          <div className="md:w-1/4 w-full  mb-16 ">
             <Card nftgeek={nftgeek} toniq={toniq} />
           </div>
-          <div className=" gap-8 md:w-2/3  ">
+          <div className=" gap-8 md:w-3/4  ">
             <div className="flex items-center gap-4">
               <IoArrowBack />
               <Link to="/collection" className="text-xl font-medium">
@@ -117,7 +117,7 @@ const ProductDetails = () => {
                 </button>
               </div>
             </div>
-            <div className="border-[1px] mt-8 border-black w-full"></div>
+            <div className="border-[1px] mt-4 border-black w-full"></div>
             <div className="mt-8">
               <h1 className="font-medium text-lg">Details</h1>
               <p className="text-sm mt-4">
@@ -202,7 +202,7 @@ const Cards = () => {
           Flower
         </p>
         <p className="w-full text-center flex items-center justify-center h-28 font-bold">
-          Diamand
+          Diamond
         </p>
       </div>
     </>

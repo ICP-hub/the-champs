@@ -12,6 +12,8 @@ import { RiMoneyDollarBoxLine } from "react-icons/ri";
 import { IoMdLock } from "react-icons/io";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import ReadMore from "./ReadMore";
+import { Link } from "react-router-dom";
+
 import {
   ConnectButton,
   ConnectDialog,
@@ -21,10 +23,14 @@ import {
 
 import { RiArrowUpDownFill } from "react-icons/ri";
 import toast, { Toaster } from "react-hot-toast";
+import useClipboard from "react-use-clipboard";
 
 const SidebarMain = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { principal, disconnect, isConnected } = useConnect();
+  const [isCopied, setCopied] = useClipboard(principal, {
+    successDuration: 1000,
+  });
 
   return (
     <div className="py-4 mt-24 ">
@@ -49,7 +55,7 @@ const SidebarMain = () => {
             </p>
           </div>
           <button
-            className="text-[#FC001E]"
+            className="text-[#FF7D57]"
             onClick={() => setIsModalOpen(true)}
           >
             <MdOutlineKeyboardArrowDown size={24} />
@@ -79,36 +85,44 @@ const SidebarMain = () => {
               </svg>
             </button>
             <div
-              className=" pt-1 bg-white text-gray-700  "
+              className=" pt-1 bg-white text-gray-700 rounded-2xl "
               style={{ boxShadow: " 4px 4px 10px rgba(0, 0, 0, 0.2)" }}
             >
-              <div className=" p-2 px-4 flex gap-8 mt-2 items-center text-lg hover:bg-gray-200 w-full">
-                <div className="text-[#fc001e]">
+              <div className=" p-2 px-4 flex gap-8 mt-2 items-center text-lg hover:bg-gray-200 w-full cursor-pointer">
+                <div className="text-[#FF7D57]">
                   <LuRefreshCcw size={20} />
                 </div>
                 Refresh
               </div>
-              <div className="  p-2 px-4 flex gap-8 mt-2 items-center text-lg hover:bg-gray-200 w-full">
-                <div className="text-[#fc001e]">
+
+              <button
+                className="  p-2 px-4 flex gap-8 mt-2 items-center text-lg hover:bg-gray-200 w-full cursor-pointer"
+                onClick={() => {
+                  setCopied();
+                  toast.success("Address copied successfully");
+                }}
+              >
+                <p className="text-[#FF7D57]">
                   <FaCopy size={20} />
-                </div>
+                </p>
                 Copy Address
-              </div>
-              <div className="  p-2 px-4 flex gap-8 mt-2 items-center text-lg hover:bg-gray-200 w-full ">
-                <div className="text-[#fc001e] ">
+              </button>
+
+              <div className="  p-2 px-4 flex gap-8 mt-2 items-center text-lg hover:bg-gray-200 w-full cursor-pointer">
+                <div className="text-[#FF7D57] ">
                   <FaMagnifyingGlass size={20} />
                 </div>
                 View In Explorer
               </div>
-              <div className=" p-2 px-4 flex gap-8 mt-2 items-center text-lg hover:bg-gray-200 w-full">
-                <div className="text-[#fc001e]">
+              <div className=" p-2 px-4 flex gap-8 mt-2 items-center text-lg hover:bg-gray-200 w-full cursor-pointer">
+                <div className="text-[#FF7D57]">
                   <RiMoneyDollarBoxLine size={20} />
                 </div>
                 Check Payment
               </div>
               <div className="border-[1px] mt-4 border-gray-200 w-full m-0"></div>
-              <div className=" p-2 px-4 flex gap-8 mb-2 items-center text-lg hover:bg-gray-200 w-full">
-                <div className="text-[#fc001e]">
+              <div className=" p-2 px-4 flex gap-8 mb-2 items-center text-lg hover:bg-gray-200 hover:rounded-b-2xl w-full overflow-hidden cursor-pointer">
+                <div className="text-[#FF7D57]">
                   <IoMdLock size={20} />
                 </div>
                 <button
@@ -134,36 +148,52 @@ const SidebarMain = () => {
           Link volt
         </button>
       </div> */}
-      <div className="border-[1px] mt-4 border-gray-200 w-full m-0"></div>
+      {/* <div className="border-[1px] mt-4 border-gray-200 w-full m-0"></div> */}
 
-      <div className="p-4 text-left text-md ">
-        <p className=" mb-2 text-gray-400">NFTs</p>
-        <div className="flex gap-8 items-center text-lg">
-          <div className="text-[#fc001e]">
-            <MdCollections size={24} />
-          </div>
-          Collected
-        </div>
-        <div className="flex gap-8 mt-4 items-center text-lg">
-          <div className="text-[#fc001e]">
-            <MdAddShoppingCart size={24} />
-          </div>
-          selling
+      <div className="flex items-center justify-center">
+        <div className="p-4 text-left text-md rounded-2xl border border-gray-200 w-[90%]  ">
+          <p className=" mb-2 text-gray-400">NFTs</p>
+          <Link
+            to="/collections/collection"
+            className="flex gap-8 items-center text-lg cursor-pointer"
+          >
+            <div className="text-[#FF7D57]">
+              <MdCollections size={24} />
+            </div>
+            Collected
+          </Link>
+          <Link
+            to="/my-profile"
+            className="flex gap-8 mt-4 items-center text-lg cursor-pointer"
+          >
+            <div className="text-[#FF7D57]">
+              <MdAddShoppingCart size={24} />
+            </div>
+            selling
+          </Link>
         </div>
       </div>
-      <div className="p-4 py-2 text-left text-md ">
-        <p className=" mb-2 text-gray-400">Profile</p>
-        <div className="flex gap-8 items-center text-lg">
-          <div className="text-[#fc001e]">
-            <IoMdHeart size={24} />
-          </div>
-          Favorites
-        </div>
-        <div className="flex gap-8 mt-4 items-center text-lg">
-          <div className="text-[#fc001e]">
-            <RiArrowUpDownFill size={24} />
-          </div>
-          Activity
+      <div className="flex items-center justify-center mt-4">
+        <div className="p-4 text-left text-md rounded-2xl border border-gray-200 w-[90%] ">
+          <p className=" mb-2 text-gray-400">Profile</p>
+          <Link
+            to="/my-profile"
+            className="flex gap-8 items-center text-lg cursor-pointer"
+          >
+            <div className="text-[#FF7D57]">
+              <IoMdHeart size={24} />
+            </div>
+            Favorites
+          </Link>
+          <Link
+            to="/my-profile"
+            className="flex gap-8 mt-4 items-center text-lg cursor-pointer"
+          >
+            <div className="text-[#FF7D57]">
+              <RiArrowUpDownFill size={24} />
+            </div>
+            Activity
+          </Link>
         </div>
       </div>
     </div>

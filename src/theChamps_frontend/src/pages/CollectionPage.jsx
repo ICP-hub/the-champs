@@ -9,6 +9,7 @@ import ProductCardLg from "../components/common/ProductCardLg";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import { motion } from "framer-motion";
+import MyProfileActivity from "../components/myProfile/MyProfileActivity";
 
 const CollectionPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
@@ -28,7 +29,8 @@ const CollectionPage = ({ name }) => {
               {name}
             </span>
           </h1>
-          <div className="sticky top-24 search-bar  px-6 lg:px-24 z-10">
+          <div className=" search-bar  px-6 lg:px-24 z-10">
+            {/* sticky top-24 */}
             <Searchbar grid={grid} setGrid={setGrid} />
           </div>
           {grid ? (
