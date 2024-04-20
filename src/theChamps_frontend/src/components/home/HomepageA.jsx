@@ -83,7 +83,7 @@ const HomePageARight = () => {
         <div className="rotate-12 relative">
           <div className="absolute h-full w-full rounded-3xl bg-[#fd513d] shadow-[20px_20px_0px_0px_rgba(207,210,221,0.5)]"></div>
           <motion.img
-            whileHover={{ rotate: -15, scale: 1.2, x: -73, y: 11 }}
+            whileHover={{ rotate: -15, scale: 1.1, x: -73, y: 11 }}
             src={soccer1}
             alt="soccer1"
             className="rounded-3xl max-lg:relative absolute bottom-0 z-10"
@@ -116,7 +116,7 @@ const HomePageARight = () => {
         <div className="rotate-[-10deg] relative">
           <div className="absolute h-full w-full rounded-3xl bg-gradient-to-tr from-[#2b0405] to-[#2d1e23] shadow-[20px_20px_0px_0px_rgba(207,210,221,0.5)]"></div>
           <motion.img
-            whileHover={{ rotate: 15, scale: 1.2, x: -20, y: -60 }}
+            whileHover={{ rotate: 15, scale: 1.1, x: -20, y: -60 }}
             src={soccer2}
             alt="soccer2"
             className="rounded-3xl relative h-full z-10"
