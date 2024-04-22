@@ -13,7 +13,7 @@ const Searchbar = ({ grid, setGrid, gridrequired }) => {
   };
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between gap-2 ">
         <div
           className={`flex text-xl items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-2 ${
             gridrequired ? " sm:w-[80%]" : "sm:w-[85%]"
@@ -35,7 +35,7 @@ const Searchbar = ({ grid, setGrid, gridrequired }) => {
         <div className=" lg:w-[12%]  ">
           <Menu as="div" className="relative inline-block text-left w-full ">
             <div>
-              <Menu.Button className=" flex text-xl items-center justify-center  gap-2 border-[1px]  border-gray-400 rounded-md  px-3 md:py-2 lg:w-full  overflow-hidden">
+              <Menu.Button className=" flex text-xl items-center justify-center  gap-2 border-[1px]  border-gray-400 rounded-md  px-3 md:py-2 lg:w-full  overflow-hidden ">
                 <div className="md:text-3xl">
                   <CiFilter />
                 </div>
@@ -74,41 +74,6 @@ const Searchbar = ({ grid, setGrid, gridrequired }) => {
                     </button>
                   </div>
 
-                  <div className="flex flex-col ">
-                    <h1 className="text-md m-6 my-2  text-left font-medium">
-                      Sort By
-                    </h1>
-                    <label className="text-gray-500 w-[85%] text-md  ">
-                      <input
-                        type="radio"
-                        value="option1"
-                        checked={selectedOption === "option1"}
-                        onChange={handleOptionChange}
-                        className="mx-6 mt-3"
-                      />
-                      Latest Creations
-                    </label>
-                    <label className="text-gray-500  w-[85%] text-md  ">
-                      <input
-                        type="radio"
-                        value="option2"
-                        checked={selectedOption === "option2"}
-                        onChange={handleOptionChange}
-                        className="mx-6 mt-3"
-                      />
-                      Latest Creations
-                    </label>
-                    <label className="text-gray-500  w-[85%] text-md  ">
-                      <input
-                        type="radio"
-                        value="option3"
-                        checked={selectedOption === "option3"}
-                        onChange={handleOptionChange}
-                        className="mx-6 mt-3 "
-                      />
-                      Latest Creations
-                    </label>
-                  </div>
                   <div className="m-6 text-center">
                     <button className="  flex items-center w-full justify-center  px-3 py-2 border-[1.5px]   button text-white rounded-lg">
                       Apply Filters
@@ -121,7 +86,7 @@ const Searchbar = ({ grid, setGrid, gridrequired }) => {
         </div>
         {gridrequired && (
           <button
-            className="flex text-xl items-center justify-center   border-[1px]  border-gray-400 rounded-md   lg:w-[5%]  md:h-12 h-8 overflow-hidden"
+            className="flex text-xl items-center justify-center   border-[1px]  border-gray-400 rounded-md   lg:w-[5%]  sm:w-10 md:h-12 h-8 overflow-hidden"
             onClick={() => setGrid(!grid)}
           >
             {grid ? <CiBoxList size={24} /> : <IoGridOutline />}

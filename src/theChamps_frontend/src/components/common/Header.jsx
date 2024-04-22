@@ -76,7 +76,7 @@ const Header = () => {
         }}
       >
         <h1 className="text-3xl font-bold font-orbitron">CHAMPS</h1>
-        <div className=" mr-8 flex  justify-center items-center nav-menu  md:block hidden">
+        <div className=" mr-8  justify-center items-center nav-menu  md:block hidden">
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -119,7 +119,7 @@ const Header = () => {
           </NavLink>
           <div class="animation rounded-xl"></div>
         </div>
-        <div className="sm:hidden">
+        <div className="md:hidden">
           <button className="text-2xl focus:outline-none" onClick={toggleMenu}>
             <GiHamburgerMenu />
           </button>
@@ -134,12 +134,12 @@ const Header = () => {
         </div>
       </div>
       {isMenuOpen && (
-        <div className="z-40 sm:hidden fixed top-24 left-100 h-screen right-0 flex flex-col w-[38%] bg-white px-8 py-4">
+        <div className="z-40 md:hidden fixed top-24 left-100 h-screen right-0 flex flex-col w-[38%] bg-white px-8 py-4">
           <ul className="flex flex-col gap-4 text-lg text-left font-bold">
-            <li>Home</li>
-            <li>Collection</li>
-            <li>About</li>
-            <li>Contact</li>
+            <Link to="/">Home</Link>
+            <Link to="/collection">Collection</Link>
+            <Link to="/about">About</Link>
+            <Link to="/contact">contact</Link>
           </ul>
         </div>
       )}

@@ -3,6 +3,7 @@
 /* ----------------------------------------------------------------------------------------------------- */
 import FancyHeader from "../common/FancyHeader";
 import Tabs from "../common/Tabs";
+import { useLocation } from "react-router";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <MyProfileA /> : route : my-profile : <Tabs />
@@ -12,6 +13,9 @@ const MyProfileA = ({ onTabChange }) => {
     // console.log("curr tab ", tabIndex);
     onTabChange(tabIndex);
   };
+  const location = useLocation();
+
+  console.log(location.state, "hello");
 
   return (
     <div>
@@ -21,7 +25,7 @@ const MyProfileA = ({ onTabChange }) => {
       <div className="py-6">
         <Tabs
           tabs={["My NFTs", "Favorites", "Purchased", "Activity"]}
-          defaultTabIndex="My NFTs"
+          defaultTabIndex={"My NFTs"}
           onTabChange={handleTabChange}
         />
       </div>

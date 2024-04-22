@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import ProductCard from "../components/common/productcomponent/productCard";
+import ProductCard from "../components/productcomponent/productCard";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Searchbar from "../components/common/Searchbar";
@@ -29,7 +29,7 @@ const CollectionPage = ({ name }) => {
               {name}
             </span>
           </h1>
-          <div className=" search-bar  px-6 lg:px-24 z-10">
+          <div className=" search-bar  px-6 lg:px-24">
             {/* sticky top-24 */}
             <Searchbar grid={grid} setGrid={setGrid} />
           </div>

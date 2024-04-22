@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router";
 const Tabs = ({ tabs, defaultTab, onTabChange }) => {
-  const [selectedTabIndex, setSelectedTabIndex] = useState(defaultTab || 0);
+  const { state } = useLocation();
+  const [selectedTabIndex, setSelectedTabIndex] = useState(state || 0);
   const tabUnderlineRef = useRef(null);
   const tabsRef = useRef([]);
 

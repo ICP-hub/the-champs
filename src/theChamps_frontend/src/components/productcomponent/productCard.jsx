@@ -13,13 +13,15 @@ const ProductCard = ({ product }) => {
       className="border   rounded-xl overflow-hidden "
       style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
     >
-      <motion.img
-        whileHover={{ scale: 1.1 }}
-        transition={{ duration: 0.2, ease: "easeInOut" }}
-        src={imageUrl}
-        alt=""
-        className="rounded-t-lg h-full object-cover cursor-pointer "
-      ></motion.img>
+      <div className="overflow-hidden">
+        <motion.img
+          whileHover={{ scale: 1.1 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
+          src={imageUrl}
+          alt=""
+          className="rounded-t-lg h-full object-cover cursor-pointer overflow-hidden "
+        ></motion.img>
+      </div>
       <div className="p-2 mx-2">
         <div className="flex justify-between font-bold items-center">
           <h2 className="text-lg font-semibold mb-2">{name}</h2>

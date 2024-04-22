@@ -16,7 +16,7 @@ const ReadMore = ({ text, maxLength, readmore }) => {
           {readmore && (
             <button
               onClick={toggleTruncate}
-              className="text-sm text-[#FC001E] font-bold"
+              className="text-sm  text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text font-bold"
             >
               Read More
             </button>
@@ -27,7 +27,7 @@ const ReadMore = ({ text, maxLength, readmore }) => {
           {text}{" "}
           <button
             onClick={toggleTruncate}
-            className="text-sm text-[#FC001E] font-bold"
+            className="text-sm  text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text font-bold"
           >
             Read Less
           </button>
