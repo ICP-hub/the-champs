@@ -72,7 +72,8 @@ const Artists = () => {
     <div className="grid grid-cols-4 py-6 gap-x-4 gap-y-4 max-[900px]:grid-cols-2">
       {artistData.map((artist, index) => (
         <motion.div
-          whileHover={{ y: -40 }}
+          whileHover={index % 2 === 0 ? { y: -40 } : { y: 40 }}
+          transition={index % 2 === 0 ? null : { delay: 0.5 }}
           key={index}
           className={`flex flex-col gap-4 justify-center items-center ${
             index % 2 === 0 ? "min-[900px]:mt-20" : ""

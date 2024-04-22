@@ -31,7 +31,7 @@ const ProductDetails = () => {
   return (
     <>
       <Header />
-      <div className="md:mt-44 left-0 right-0 gap-8 px-6 lg:px-24">
+      <div className="md:mt-44 mt-44 left-0 right-0 gap-8 px-6 lg:px-24">
         {open && (
           <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
             <div className=" mt-16  md:w-[28%]  bg-white p-8 pb-4  ">
@@ -73,10 +73,10 @@ const ProductDetails = () => {
         )}
 
         <div className="md:flex gap-8">
-          <div className="md:w-1/3 w-full   h-screen ">
+          <div className="md:w-1/4 w-full  mb-16 ">
             <Card nftgeek={nftgeek} toniq={toniq} />
           </div>
-          <div className=" gap-8 md:w-2/3  ">
+          <div className=" gap-8 md:w-3/4  ">
             <div className="flex items-center gap-4">
               <IoArrowBack />
               <Link to="/collection" className="text-xl font-medium">
@@ -92,7 +92,7 @@ const ProductDetails = () => {
                 </h1>
                 <p
                   className="
-            text-gray-500 text-sm"
+            text-gray-500 text-sm mt-4"
                 >
                   By TheSalvare
                 </p>
@@ -117,7 +117,7 @@ const ProductDetails = () => {
                 </button>
               </div>
             </div>
-            <div className="border-[1px] mt-8 border-black w-full"></div>
+            <div className="border-[1px] mt-4 border-black w-full"></div>
             <div className="mt-8">
               <h1 className="font-medium text-lg">Details</h1>
               <p className="text-sm mt-4">
@@ -131,11 +131,11 @@ const ProductDetails = () => {
           </div>
         </div>
         <div className="w-full flex items-center justify-center mb-8">
-          <div className=" w-full  shadow-lg rounded-lg bg-white">
-            <div className="m-12 gap-2">
-              <div className="md:flex justify-start gap-2">
-                <p className="font-bold text-lg">Details</p>
-                <div className="flex">
+          <div className=" w-full   rounded-2xl   border-[1px] border-gray-400 bg-white">
+            <div className="m-12">
+              <div className="md:flex justify-start gap-2 ">
+                <p className="font-bold text-lg ">Details</p>
+                <div className="flex mb-2">
                   <svg
                     width="25"
                     height="24"
@@ -149,20 +149,20 @@ const ProductDetails = () => {
                       fill-opacity="0.87"
                     />
                   </svg>
-                  <p className="text-sm text-[#FC001E] font-bold">
+                  <p className="text-sm  text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text font-bold">
                     view-on-chain
                   </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap mb-2">
                   <FaRegUserCircle />
                   <p className="text-sm font-bold">owner : </p>
-                  <span className="text-sm text-[#FC001E] font-bold">
-                    b6af85...
+                  <span className="text-sm  text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text font-bold">
+                    xu4ui-cp5wm-7rrnj-pgdyk-gy56x-4ebkr-at2by-cttrf-mikbr-ieepm-uqe
                   </span>
                 </div>
                 <div className="flex gap-2">
                   <CiMemoPad />
-                  <span className="text-sm text-[#FC001E] font-bold">
+                  <span className="text-sm  text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text font-bold">
                     License
                   </span>
                 </div>
@@ -175,14 +175,6 @@ const ProductDetails = () => {
                   maxLength={375}
                   readmore={true}
                 />
-              </div>
-              <div className="mt-10 grid  md:grid-cols-3 w-full gap-6">
-                <Cards />
-                <Cards />
-                <Cards />
-                <Cards />
-                <Cards />
-                <Cards />
               </div>
             </div>
           </div>
@@ -202,7 +194,7 @@ const Cards = () => {
           Flower
         </p>
         <p className="w-full text-center flex items-center justify-center h-28 font-bold">
-          Diamand
+          Diamond
         </p>
       </div>
     </>

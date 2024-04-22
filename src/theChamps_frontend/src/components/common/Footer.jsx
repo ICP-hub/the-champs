@@ -42,15 +42,13 @@ const Footer = () => {
                 <span className="text-gray-500 text-md flex flex-col items-start gap-2">
                   <Link to="/about">About </Link>
                   <Link to="/collection">Collection</Link>
-                  <p>Roadmap</p>
+
                   <Link to="/faq">FAQs</Link>
                 </span>
               </div>
               <div className="flex flex-col gap-4 max-md:gap-2">
                 <p className="font-semibold text-lg">Community</p>
                 <span className="text-gray-500 text-md flex flex-col items-start gap-1">
-                  <p>How does it works!</p>
-                  <p>Blockchain</p>
                   <Link to="/contact">Get in touch</Link>
                 </span>
               </div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import ProductCard from "../components/common/productcomponent/productCard";
+import ProductCard from "../components/productcomponent/productCard";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Searchbar from "../components/common/Searchbar";
@@ -11,7 +11,8 @@ import Card from "../components/common/Card";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import { Link } from "react-router-dom";
-import MyProfileActivity from "../components/myProfile/MyProfileActivity";
+
+import ProductLists from "../components/productcomponent/ProductList";
 
 const ProductPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
@@ -119,7 +120,7 @@ const ProductPage = ({ name }) => {
             <div className=" absolute right-0 md:w-[65%] mt-8">
               {" "}
               <h1 className="text-3xl text-left font-bold font-sans mb-4 gap-1 ">
-                <span className="relative  text-transparent ml-2 bg-gradient-to-r  from-[#FC001E] to-[#FF7D57] bg-clip-text">
+                <span className="relative  text-transparent  bg-gradient-to-r  from-[#FC001E] to-[#FF7D57] bg-clip-text">
                   Collection Name
                 </span>
               </h1>
@@ -160,8 +161,8 @@ const ProductPage = ({ name }) => {
               {name}
             </span>
           </h1>
-          <div className="sticky top-24 search-bar  px-6 lg:px-24">
-            <Searchbar grid={grid} setGrid={setGrid} />
+          <div className="  search-bar  px-6 lg:px-24">
+            <Searchbar grid={grid} setGrid={setGrid} gridrequired={true} />
           </div>
           {grid ? (
             <div className="grid grid-cols-1  px-6 lg:px-24  sm:grid-cols-2  lg:grid-cols-3  gap-12 mt-4 justify-center">
@@ -173,7 +174,7 @@ const ProductPage = ({ name }) => {
             </div>
           ) : (
             <div className=" px-6 lg:px-24 mt-8">
-              <MyProfileActivity />
+              <ProductLists />
             </div>
           )}
         </div>

@@ -3,16 +3,25 @@ import { FiShoppingCart } from "react-icons/fi";
 import { CiHeart } from "react-icons/ci";
 import toast, { Toaster } from "react-hot-toast";
 const notify = () => toast("Here is your toast.");
+import { motion } from "framer-motion";
 
 const ProductCard = ({ product }) => {
   const { name, price, imageUrl } = product;
 
   return (
     <div
-      className="border   rounded-xl overflow-hidden"
+      className="border   rounded-xl overflow-hidden "
       style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
     >
-      <img src={imageUrl} alt={name} className="w-full h-96 object-cover" />
+      <div className="overflow-hidden">
+        <motion.img
+          whileHover={{ scale: 1.1 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
+          src={imageUrl}
+          alt=""
+          className="rounded-t-lg h-full object-cover cursor-pointer overflow-hidden "
+        ></motion.img>
+      </div>
       <div className="p-2 mx-2">
         <div className="flex justify-between font-bold items-center">
           <h2 className="text-lg font-semibold mb-2">{name}</h2>

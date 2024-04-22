@@ -4,12 +4,14 @@
 import { useState } from "react";
 import MyProfileA from "./MyProfileA";
 import MyProfileB from "./MyProfileB";
+import { useLocation } from "react-router";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ base : <MyProfileContainerMain /> : route : my-profile
 /* ----------------------------------------------------------------------------------------------------- */
 const MyProfileContainerMain = () => {
-  const [activeTabIndex, setActiveTabIndex] = useState("My NFTs");
+  const { state } = useLocation();
+  const [activeTabIndex, setActiveTabIndex] = useState(state);
 
   // console.log(activeTabIndex);
   const handleTabChange = (tabIndex) => {

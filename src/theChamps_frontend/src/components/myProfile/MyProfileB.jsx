@@ -3,7 +3,7 @@
 /* ----------------------------------------------------------------------------------------------------- */
 import { useEffect, useState } from "react";
 import { FakeData } from "../../FakeProdDatbase";
-import ProductCard from "../common/productcomponent/productCard";
+import ProductCard from "../productcomponent/productCard";
 import Searchbar from "../common/Searchbar";
 import MyProfileActivity from "./MyProfileActivity";
 import { motion } from "framer-motion";

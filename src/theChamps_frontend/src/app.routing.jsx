@@ -7,9 +7,11 @@ import ProductDetails from "./pages/ProductDetails";
 import Protected from "./components/common/Protected";
 
 import FAQ from "./components/policy-faq/Faq";
-import PrivacyPolicy from "./components/policy-faq/Privacy-policy";
+
 import ContactUs from "./components/contact/ContactUs";
 import About from "./pages/About";
+import PrivacyPolicy from "./pages/PrivacyPolicyPage";
+import TermsAndService from "./pages/TermsAndService";
 /**** Create Routes *****/
 const appRoutes = createBrowserRouter([
   { path: "/", element: <HomePage /> },
@@ -27,9 +29,11 @@ const appRoutes = createBrowserRouter([
   { path: "/collections/collection/a", element: <ProductDetails /> },
 
   { path: "/faq", element: <FAQ /> },
-  { path: "/privacy-policy", element: <PrivacyPolicy /> },
+
   { path: "/contact", element: <ContactUs /> },
   { path: "/about", element: <About /> },
+  { path: "/privacy-policy", element: <PrivacyPolicy /> },
+  { path: "/Terms-and-services", element: <TermsAndService /> },
 ]);
 
 export default appRoutes;
