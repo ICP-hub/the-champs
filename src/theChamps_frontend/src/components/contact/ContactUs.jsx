@@ -29,7 +29,7 @@ const ContactUs = () => {
             <ContactForm />
             <Player
               src={ContactAnimation}
-              className="player contact-aside min-h-[500px] min-w-[500px] max-lg:order-first"
+              className="player contact-aside h-full w-full max-lg:order-first"
               loop
               autoplay
             />

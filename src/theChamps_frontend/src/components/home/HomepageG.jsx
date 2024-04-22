@@ -95,7 +95,7 @@ const HomePageG = () => {
             <motion.div
               whileHover={index < 3 ? { y: -20 } : { y: 20 }}
               key={index}
-              className="rounded-3xl p-6 border-2 flex gap-8 flex-col cards"
+              className="rounded-2xl p-6 border-2 flex gap-8 flex-col border__animation"
             >
               <div className="flex justify-between items-center">
                 <span className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] inline-block text-transparent bg-clip-text font-bold">

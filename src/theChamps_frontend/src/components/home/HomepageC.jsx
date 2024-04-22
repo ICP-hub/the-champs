@@ -17,7 +17,7 @@ const ChooseCard = ({ imageSrc, title, description, custom }) => {
   return (
     <div
       data-aos="fade-up"
-      className={`border-2 rounded-3xl px-6 py-12 flex flex-col gap-8 max-md:gap-4 ${custom} cards`}
+      className={`border-2 rounded-2xl px-6 py-12 flex flex-col gap-8 max-md:gap-4 ${custom}  border__animation`}
     >
       <img src={imageSrc} alt="choose" className="max-h-[50px] max-w-[50px]" />
       <h1 className="font-bold text-3xl max-[900px]:text-2xl">{title}</h1>

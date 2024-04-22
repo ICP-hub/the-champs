@@ -6,11 +6,11 @@ const ProductCardLg = ({ prod }) => {
   // motion variants
   const imgVariants = {
     hover: { scale: 1.1, transition: { duration: 0.2, ease: "easeInOut" } },
-    initial: { scale: 1, transition: { duration: 0.2, ease: "easeInOut" } },
+    initial: { scale: 1.01 },
   };
 
   return (
-    <div className="rounded-2xl p-6 border-2 cards">
+    <div className="rounded-2xl p-6 border-2 border__animation">
       <div className="grid grid-cols-3 gap-x-8">
         <div className="col-span-2 overflow-hidden rounded-2xl">
           <motion.img
@@ -19,7 +19,7 @@ const ProductCardLg = ({ prod }) => {
             whileHover="hover"
             src={prod.imageUrl}
             alt={prod.title}
-            className="rounded-2xl h-full object-cover  z-[1] relative"
+            className="rounded-2xl h-full object-cover  z-[1]"
           ></motion.img>
         </div>
         <div className="grid grid-rows-2 gap-y-8">
@@ -45,7 +45,7 @@ const ProductCardLg = ({ prod }) => {
           </div>
         </div>
       </div>
-      <div className="py-6">
+      <div className="pt-6">
         <div className="flex justify-between">
           <div className="flex flex-col">
             <h1 className="font-bold text-2xl">Name</h1>
