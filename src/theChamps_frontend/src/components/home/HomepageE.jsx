@@ -26,7 +26,7 @@ const Setup = () => {
       <div className="grid md:grid-cols-2 py-12 gap-x-8 gap-y-4">
         <img src={Setup1} alt="setup-1" />
         <div className="flex flex-col gap-4 lg:py-12">
-          <span className="font-bold bg-gradient-to-tr from-[#2600FC] to-[#FF00EA] inline-block max-w-max text-transparent bg-clip-text">
+          <span className="font-bold bg-gradient-to-tr from-[#fc001e] to-[#ff7d57] inline-block max-w-max text-transparent bg-clip-text">
             01
           </span>
           <h1 className="font-bold lg:text-[56px] max-lg:text-3xl">
@@ -48,7 +48,7 @@ const Setup = () => {
       </div>
       <div className="grid md:grid-cols-2 py-12 gap-x-8 gap-y-4">
         <div className="flex flex-col gap-4 lg:py-12">
-          <span className="font-bold bg-gradient-to-tr from-[#2600FC] to-[#FF00EA] inline-block max-w-max text-transparent bg-clip-text">
+          <span className="font-bold bg-gradient-to-tr from-[#fc001e] to-[#ff7d57] inline-block max-w-max text-transparent bg-clip-text">
             02
           </span>
           <h1 className="font-bold lg:text-[56px] max-lg:text-3xl">
@@ -73,7 +73,7 @@ const Setup = () => {
       <div className="grid md:grid-cols-2 py-12 gap-x-8 gap-y-4">
         <img src={Setup3} alt="setup-3" />
         <div className="flex flex-col gap-4 lg:py-12">
-          <span className="font-bold bg-gradient-to-tr from-[#2600FC] to-[#FF00EA] inline-block max-w-max text-transparent bg-clip-text">
+          <span className="font-bold bg-gradient-to-tr from-[#fc001e] to-[#ff7d57] inline-block max-w-max text-transparent bg-clip-text">
             03
           </span>
           <h1 className="font-bold lg:text-[56px] max-lg:text-3xl">
