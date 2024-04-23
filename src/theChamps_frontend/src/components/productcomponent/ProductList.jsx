@@ -2,6 +2,7 @@
 /*  @ imports.
 /* ----------------------------------------------------------------------------------------------------- */
 import soccer1 from "../../assets/images/soccer-1.jpeg";
+import { Link } from "react-router-dom";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Fake activityData
@@ -79,23 +80,25 @@ const ProductList = ({ activity }) => {
   const { image, mintVal, owner, time, Rarity } = activity;
 
   return (
-    <div className="grid grid-cols-5 md:text-sm font-bold text-xs bg-white border-[1px]  border-gray-400 p-4 rounded-lg">
-      <div className="lg:flex gap-2 items-center justify-center">
-        <img
-          src={image}
-          alt={mintVal}
-          className="max-h-16 max-w-16 rounded-lg"
-        />
-        <p>{mintVal}</p>
-      </div>
-      <div className="flex items-center justify-center">19.99</div>
-      <div className="flex items-center justify-center">{Rarity}</div>
+    <Link to="/collections/collection/a">
+      <div className="grid grid-cols-5 md:text-sm font-bold text-xs bg-white border-[1px]  border-gray-400 p-4 rounded-lg">
+        <div className="lg:flex gap-2 items-center justify-center">
+          <img
+            src={image}
+            alt={mintVal}
+            className="max-h-16 max-w-16 rounded-lg"
+          />
+          <p>{mintVal}</p>
+        </div>
+        <div className="flex items-center justify-center">19.99</div>
+        <div className="flex items-center justify-center">{Rarity}</div>
 
-      <div className="flex items-center justify-center">{owner}</div>
-      <div className="flex items-center justify-center flex-col gap-2">
-        <p>{time}</p>
+        <div className="flex items-center justify-center">{owner}</div>
+        <div className="flex items-center justify-center flex-col gap-2">
+          <p>{time}</p>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
