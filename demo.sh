@@ -3,10 +3,6 @@ dfx stop
 set -e  # stop on error
 
 dfx start --background --clean
-dfx identity new alice --disable-encryption || true
-ALICE=$(dfx --identity alice identity get-principal)
-dfx identity new bob --disable-encryption || true
-BOB=$(dfx --identity bob identity get-principal)
 
 dfx deploy theChamps_backend
 
