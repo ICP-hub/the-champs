@@ -6,7 +6,7 @@ import { defaultProviders } from "@connect2ic/core/providers";
 
 import { createClient } from "@connect2ic/core";
 import { Connect2ICProvider } from "@connect2ic/react";
-import * as backend from "../../../.dfx/local/canisters/theChamps_backend";
+import * as backend from "../../../.dfx/local/canisters/theChamps_backend/";
 
 import { PlugWallet, StoicWallet } from "@connect2ic/core/providers";
 
