@@ -13,6 +13,15 @@ import About from "./pages/About";
 import PrivacyPolicy from "./pages/PrivacyPolicyPage";
 import TermsAndService from "./pages/TermsAndService";
 import HowItWorks from "./pages/How-it-works";
+import MainAdmin from "./admin/pages/MainAdmin";
+import DashBoard from "./admin/features/dashboard/DashBoard";
+import Market from "./admin/features/collections/Market";
+import CreateCollections from "./admin/features/collections/CreateCollection";
+import HeroNFT from "./admin/features/NFT/HeroNFT";
+import UserDashboard from "./admin/features/users/Users";
+import UpdateCollection from "./admin/features/collections/UpdateCollection";
+import NFTList from "./admin/features/NFT/NFTList";
+import SingleNFT from "./admin/features/NFT/SingleNFT";
 /**** Create Routes *****/
 const appRoutes = createBrowserRouter([
   { path: "/", element: <HomePage /> },
@@ -36,6 +45,78 @@ const appRoutes = createBrowserRouter([
   { path: "/privacy-policy", element: <PrivacyPolicy /> },
   { path: "/Terms-and-services", element: <TermsAndService /> },
   { path: "/how-it-works", element: <HowItWorks /> },
+  {
+    path: "/admin",
+    element: (
+      <MainAdmin>
+        <DashBoard />
+      </MainAdmin>
+    ),
+  },
+  {
+    path: "/market",
+    element: (
+      <MainAdmin>
+        <Market />
+      </MainAdmin>
+    ),
+  },
+  {
+    path: "details/:slug",
+    element: (
+      <MainAdmin>
+        <CreateCollections></CreateCollections>
+      </MainAdmin>
+    ),
+  },
+  {
+    path: "/create/:slug",
+    element: (
+      <MainAdmin>
+        <HeroNFT />
+      </MainAdmin>
+    ),
+  },
+  {
+    path: "/create-collection",
+    element: (
+      <MainAdmin>
+        <CreateCollections></CreateCollections>
+      </MainAdmin>
+    ),
+  },
+  {
+    path: "/users/:sdf",
+    element: (
+      <MainAdmin>
+        <UserDashboard />
+      </MainAdmin>
+    ),
+  },
+  {
+    path: "/users/:sdf/update-collections",
+    element: (
+      <MainAdmin>
+        <UpdateCollection />
+      </MainAdmin>
+    ),
+  },
+  {
+    path: "/users/:sdf/collection-detail",
+    element: (
+      <MainAdmin>
+        <NFTList />
+      </MainAdmin>
+    ),
+  },
+  {
+    path: "/users/:sdf/collection-detail/:slug",
+    element: (
+      <MainAdmin>
+        <SingleNFT />
+      </MainAdmin>
+    ),
+  },
 ]);
 
 export default appRoutes;
