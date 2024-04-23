@@ -26,6 +26,7 @@ dfx canister call theChamps_backend createcollection \
 
 dfx canister call theChamps_backend FractionalizeNFt \
 "(
+    principal\"be2us-64aaa-aaaaa-qaabq-cai\",
     principal\"$(dfx identity get-principal)\", 
     principal\"$(dfx identity get-principal)\", 
     vec { 
@@ -53,5 +54,8 @@ dfx canister call theChamps_backend FractionalizeNFt \
     principal\"$(dfx identity get-principal)\", 
     99:nat
 )"
+
+
+dfx canister call theChamps_backend getusersnft
 
 echo "Done" 
