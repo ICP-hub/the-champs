@@ -14,7 +14,7 @@ actor Champs {
         // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
         
         var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
-        var favourites = TrieMap.TrieMap<Principal, [Types.Nft] >(Principal.equal,Principal.hash);
+        var favourites = TrieMap.TrieMap<Principal, [Types.MetadataDesc] >(Principal.equal,Principal.hash);
 
         public func idQuick() : async Principal { 
             return Principal.fromActor(Champs);
@@ -147,9 +147,46 @@ actor Champs {
         return List.toArray(collection);
     };
 
-    // public shared ({caller = user}) func addfavourite(collectioncanisterid : Principal, tokenid : Types.TokenId) : async Text {
+    public shared ({caller = user}) func addfavourite(collectioncanisterid : Principal, tokenid : Types.TokenId) : async Text {
+        let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {getMetadataDip721 : (token_id: Types.TokenId) -> async Types.MetadataResult;};
+        let metadata:Types.MetadataResult = await nftcanisteractor.getMetadataDip721(tokenid);
+        switch(metadata){
+            case (#Err(index)) {
+                throw Error.reject(debug_show(index));
+            };
+            case (#Ok(data)) {
+                let userfavourites = favourites.get(user);
+                switch(userfavourites){
+                    case null {
+                        let temp =  List.push(data, List.nil<Types.MetadataDesc>());
+                        favourites.put(user,List.toArray(temp));
+                        return "Favourite added";
+                    };
+                    case (?favourite) {
+                        let temp:List.List<Types.MetadataDesc> = List.push(data, List.fromArray(favourite));
+                        favourites.put(user, List.toArray(temp));
+                        return "Favourite added";
+                    };
+                };
+            };
+        };
+    };
+
+    public shared ({caller = user}) func getfavourites() : async [Types.MetadataDesc] {
+        let userfavourites = favourites.get(user);
+        switch(userfavourites){
+            case null {
+                return [];
+            };
+            case (?favourite) {
+                return favourite;
+            };
+        };
+    };
+
+    // public shared ({caller = user}) func removefavourite(collectioncanisterid : Principal, tokenid : Types.TokenId) : async Text {
     //     let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {getMetadataDip721 : (token_id: Types.TokenId) -> async Types.MetadataResult;};
-    //     let metadata = await nftcanisteractor.getMetadataDip721(tokenid);
+    //     let metadata:Types.MetadataResult = await nftcanisteractor.getMetadataDip721(tokenid);
     //     switch(metadata){
     //         case (#Err(index)) {
     //             throw Error.reject(debug_show(index));
@@ -158,17 +195,16 @@ actor Champs {
     //             let userfavourites = favourites.get(user);
     //             switch(userfavourites){
     //                 case null {
-    //                     let newfavourites = [data];
-    //                     favourites.put(user, newfavourites);
-    //                     return "Favourite added";
+    //                     return "Favourite not found";
     //                 };
-    //                 case (?favourites) {
-    //                     let temp = List.push(data, List.fromArray(favourites));
+    //                 case (?favourite) {
+    //                     let temp:List.List<Types.MetadataDesc> = List.remove(data, List.fromArray(favourite));
     //                     favourites.put(user, List.toArray(temp));
-    //                     return "Favourite added";
+    //                     return "Favourite removed";
     //                 };
     //             };
     //         };
     //     };
     // };
+
 }
