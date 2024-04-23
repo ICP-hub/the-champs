@@ -8,7 +8,7 @@ ALICE=$(dfx --identity alice identity get-principal)
 dfx identity new bob --disable-encryption || true
 BOB=$(dfx --identity bob identity get-principal)
 
-dfx deploy 
+dfx deploy theChamps_backend
 
 dfx canister call theChamps_backend createcollection \
 "(
@@ -26,6 +26,7 @@ dfx canister call theChamps_backend createcollection \
 
 dfx canister call theChamps_backend FractionalizeNFt \
 "(
+    principal\"be2us-64aaa-aaaaa-qaabq-cai\",
     principal\"$(dfx identity get-principal)\", 
     principal\"$(dfx identity get-principal)\", 
     vec { 
@@ -53,5 +54,8 @@ dfx canister call theChamps_backend FractionalizeNFt \
     principal\"$(dfx identity get-principal)\", 
     99:nat
 )"
+
+
+dfx canister call theChamps_backend getusersnft
 
 echo "Done" 

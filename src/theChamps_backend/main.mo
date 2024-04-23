@@ -1,19 +1,20 @@
 import NFTActorClass "../DIP721-NFT/Nft";
-import Iter "mo:base/Iter";
 import Cycles "mo:base/ExperimentalCycles";
-import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
 import Debug "mo:base/Debug";
 import Error "mo:base/Error";
 import Types "../DIP721-NFT/Types";
 import DIP20ActorClass "../DIP-20/token";
 import List "mo:base/List";
+import TrieMap "mo:base/TrieMap";
+// import Helpers "./helper";
 
 actor Champs {
      
         // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
         
-        var nftcollectionMap = HashMap.HashMap<Principal, [Principal]>(0,Principal.equal,Principal.hash);
+        var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
+        var favourites = TrieMap.TrieMap<Principal, [Types.Nft] >(Principal.equal,Principal.hash);
 
         public func idQuick() : async Principal { 
             return Principal.fromActor(Champs);
@@ -96,11 +97,11 @@ actor Champs {
 
             };
 
-        public shared ({caller = user}) func getusersnft () : async [Types.MetadataResult] {
-            var results = List.nil<[Types.MetadataResult]>(); 
+        public shared ({caller = user}) func getusersnft () : async Types.MetadataResultArray {
+            var results = List.nil<Types.MetadataDesc>(); 
             switch (nftcollectionMap.get(user)){
                 case null {
-                    return [#Err(#InvalidTokenId)];
+                    return #Err(#InvalidTokenId);
                 };
                 case (?collections) {
                     let userscollections : [Principal] = collections;
@@ -109,12 +110,65 @@ actor Champs {
                         let nftcanisteractor = actor(Principal.toText(id)) : actor {getMetadataDip721 : (token_id: Types.TokenId) -> async Types.MetadataResult; getTokenIdsForUserDip721 : (user: Principal) -> async [Types.TokenId];};
                         let usertokenID : [Types.TokenId] = await nftcanisteractor.getTokenIdsForUserDip721(user);
                         for (tokenid in usertokenID.vals()){
-                            let metadata = await nftcanisteractor.getMetadataDip721(tokenid);                          
+                            let metadata = await nftcanisteractor.getMetadataDip721(tokenid);
+                            switch(metadata){
+                                case (#Err(index)) {
+                                    throw Error.reject(debug_show(index));
+                                };
+                                case (#Ok(data)) {
+                                    results := List.push(data, results);
+                                };
+                            };                          
                     };
                 };
-                return results;
+                return #Ok(List.toArray(results));
             };
         };
     };
-};
 
+    public shared ({caller = admin}) func getallcollections() : async [Types.Dip721NonFungibleToken] {
+        var collection = List.nil<Types.Dip721NonFungibleToken>();
+        for (collections in nftcollectionMap.vals()){
+            for (id in collections.vals()){
+                let nftcanisteractor = actor(Principal.toText(id)) : actor {logoDip721 : () -> async Types.LogoResult; nameDip721 : () -> async Text; symbolDip721 : () -> async Text; getMaxLimitDip721 : () -> async Nat16;};
+                let logo = await nftcanisteractor.logoDip721();
+                let name = await nftcanisteractor.nameDip721();
+                let symbol = await nftcanisteractor.symbolDip721();
+                let totalSupply = await nftcanisteractor.getMaxLimitDip721();
+                let tempcollection : Types.Dip721NonFungibleToken = {
+                    logo = logo;
+                    name = name;
+                    symbol = symbol;
+                    maxLimit = totalSupply;
+                };
+                collection := List.push(tempcollection, collection);
+            };
+        };
+        return List.toArray(collection);
+    };
+
+    // public shared ({caller = user}) func addfavourite(collectioncanisterid : Principal, tokenid : Types.TokenId) : async Text {
+    //     let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {getMetadataDip721 : (token_id: Types.TokenId) -> async Types.MetadataResult;};
+    //     let metadata = await nftcanisteractor.getMetadataDip721(tokenid);
+    //     switch(metadata){
+    //         case (#Err(index)) {
+    //             throw Error.reject(debug_show(index));
+    //         };
+    //         case (#Ok(data)) {
+    //             let userfavourites = favourites.get(user);
+    //             switch(userfavourites){
+    //                 case null {
+    //                     let newfavourites = [data];
+    //                     favourites.put(user, newfavourites);
+    //                     return "Favourite added";
+    //                 };
+    //                 case (?favourites) {
+    //                     let temp = List.push(data, List.fromArray(favourites));
+    //                     favourites.put(user, List.toArray(temp));
+    //                     return "Favourite added";
+    //                 };
+    //             };
+    //         };
+    //     };
+    // };
+}

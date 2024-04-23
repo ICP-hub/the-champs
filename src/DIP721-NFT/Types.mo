@@ -5,6 +5,7 @@ import Nat32 "mo:base/Nat32";
 import Nat64 "mo:base/Nat64";
 import Blob "mo:base/Blob";
 import Principal "mo:base/Principal";
+import Result "mo:base/Result";
 
 module {
   public type Dip721NonFungibleToken = {
@@ -13,6 +14,8 @@ module {
     symbol: Text;
     maxLimit : Nat16;
   };
+
+  public type TokenDetails = Result<Dip721NonFungibleToken, ApiError>;
 
   public type Dip721Transfererror = {
     #ZeroAddress;
@@ -87,6 +90,7 @@ module {
   }, ApiError>;
 
   public type MetadataResult = Result<MetadataDesc, ApiError>;
+  public type MetadataResultArray = Result<[MetadataDesc], ApiError>;
 
   public type MetadataDesc = [MetadataPart];
 
@@ -132,5 +136,9 @@ module {
     token_id: TokenId;
     id: Nat;
   };
+
+  public type CollectionDetails = {
+
+  }
 
 };
