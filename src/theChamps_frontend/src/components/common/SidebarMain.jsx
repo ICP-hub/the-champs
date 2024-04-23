@@ -336,7 +336,7 @@ const SidebarMain = () => {
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 115.77 122.88"
-              width="25"
+              width="30"
               height="25"
               className="gradient-icon"
             >

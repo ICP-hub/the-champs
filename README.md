@@ -76,3 +76,6 @@ dfx deploy --argument "(
   }
 )" dip721_nft
 
+dfx generate
+cp src/declarations/theChamps_backend/* .dfx/local/canisters/theChamps_backend/
+dfx deploy

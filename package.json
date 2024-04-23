@@ -28,9 +28,12 @@
     "heroicons-react": "^1.4.1",
     "intl-tel-input": "^21.1.4",
     "react-copy-to-clipboard": "^5.1.0",
+    "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.4.1",
     "react-router": "^6.22.3",
     "react-router-dom": "^6.22.3",
+    "react-select": "^5.8.0",
+    "react-table": "^7.8.0",
     "react-toastify": "^10.0.5",
     "react-use-clipboard": "^1.0.9",
     "swiper": "^11.1.0"
