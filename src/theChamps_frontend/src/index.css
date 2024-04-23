@@ -55,7 +55,8 @@
 
 .bg-champs-main {
   background-image: url("./assets/bg.png");
-  object-fit: contain;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .bg-champs-white {

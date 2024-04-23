@@ -16,7 +16,7 @@ import star3 from "../../assets/icons/star-03.svg";
 import circle from "../../assets/icons/circle.svg";
 import circle2 from "../../assets/icons/circle-02.svg";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageA /> : Homepage top.
 /* ----------------------------------------------------------------------------------------------------- */

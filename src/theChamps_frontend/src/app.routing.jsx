@@ -12,6 +12,7 @@ import ContactUs from "./components/contact/ContactUs";
 import About from "./pages/About";
 import PrivacyPolicy from "./pages/PrivacyPolicyPage";
 import TermsAndService from "./pages/TermsAndService";
+import HowItWorks from "./pages/How-it-works";
 /**** Create Routes *****/
 const appRoutes = createBrowserRouter([
   { path: "/", element: <HomePage /> },
@@ -34,6 +35,7 @@ const appRoutes = createBrowserRouter([
   { path: "/about", element: <About /> },
   { path: "/privacy-policy", element: <PrivacyPolicy /> },
   { path: "/Terms-and-services", element: <TermsAndService /> },
+  { path: "/how-it-works", element: <HowItWorks /> },
 ]);
 
 export default appRoutes;
