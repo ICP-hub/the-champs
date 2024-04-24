@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import ProductCard from "../components/productcomponent/productCard";
 
@@ -10,9 +10,25 @@ import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import { motion } from "framer-motion";
 import MyProfileActivity from "../components/myProfile/MyProfileActivity";
+import { useCanister } from "@connect2ic/react";
 
 const CollectionPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
+  const [backend] = useCanister("backend");
+  const [collection, setCollection] = useState("");
+
+  useEffect(() => {
+    const getAllCollection = async () => {
+      try {
+        console.log("hello");
+        const res = await backend.getallcollections();
+        setCollection(res);
+        console.log(res);
+      } catch {}
+    };
+    getAllCollection();
+  }, [backend]);
+
   return (
     <>
       <Header />
