@@ -26,9 +26,6 @@ const MyProfileB = ({ activeTabIndex }) => {
       case "Favorites":
         filtered = FakeData.slice(0, 6);
         break;
-      case "Purchased":
-        filtered = FakeData.slice(0, 8);
-        break;
       default:
         filtered = FakeData;
     }
