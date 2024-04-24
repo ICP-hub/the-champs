@@ -177,11 +177,8 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
       locked = true;
       forsale = false;
     };
-
     nfts := List.push(nft, nfts);
-
     transactionId += 1;
-
     return #Ok({
       token_id = newId;
       id = transactionId;
