@@ -84,6 +84,12 @@ module {
     forsale: Bool;
   };
 
+  public type NftResult = Result<[Nft],GetNftError>;
+
+  public type GetNftError = {
+    #NoNftFound;
+  };
+
   public type ExtendedMetadataResult = Result<{
     metadata_desc: MetadataDesc;
     token_id: TokenId;
