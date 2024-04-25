@@ -174,6 +174,21 @@ actor Champs {
         return nfts;
     };
 
+    public shared ({caller = user}) func getcollectiondetails(collectioncanisterid : Principal) : async Types.Dip721NonFungibleToken {
+        let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {logoDip721 : () -> async Types.LogoResult; nameDip721 : () -> async Text; symbolDip721 : () -> async Text; getMaxLimitDip721 : () -> async Nat16;};
+        let logo = await nftcanisteractor.logoDip721();
+        let name = await nftcanisteractor.nameDip721();
+        let symbol = await nftcanisteractor.symbolDip721();
+        let totalSupply = await nftcanisteractor.getMaxLimitDip721();
+        let collection : Types.Dip721NonFungibleToken = {
+            logo = logo;
+            name = name;
+            symbol = symbol;
+            maxLimit = totalSupply;
+        };
+        return collection;
+    };
+
     public shared ({caller = user}) func addfavourite(collectioncanisterid : Principal, tokenid : Types.TokenId) : async Text {
         let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {getNFT : (token_id: Types.TokenId) -> async Types.NftResult;};
         let metadata:Types.NftResult = await nftcanisteractor.getNFT(tokenid);
@@ -221,6 +236,31 @@ actor Champs {
                 let newlist:List.List<Types.Nft> = List.filter<Types.Nft>(temp, func x : Bool {x.id != tokenid});
                 favourites.put(user, List.toArray(newlist));
                 return "Favourite removed";
+            };
+        };
+    };
+
+    public shared({caller = user}) func getallfavourites () : async [Types.Nft] {
+        let userfavourites = favourites.get(user);
+        switch(userfavourites){
+            case null {
+                return [];
+            };
+            case (?favourite) {
+                return favourite;
+            };
+        };
+    };
+
+    public shared ({caller = user}) func getNFTdetails(collectioncanisterid : Principal, tokenid : Types.TokenId) : async Types.Nft {
+        let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {getNFT : (token_id: Types.TokenId) -> async Types.NftResult;};
+        let metadata:Types.NftResult = await nftcanisteractor.getNFT(tokenid);
+        switch(metadata){
+            case (#Err(index)) {
+                throw Error.reject(debug_show(index));
+            };
+            case (#Ok(data)) {
+                return data;
             };
         };
     };
