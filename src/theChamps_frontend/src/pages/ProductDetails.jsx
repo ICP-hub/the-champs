@@ -33,8 +33,8 @@ const ProductDetails = () => {
       <Header />
       <div className="md:mt-44 mt-44 left-0 right-0 gap-8 px-6 lg:px-24">
         {open && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-            <div className=" mt-16  md:w-[28%]  bg-white p-8 pb-4  ">
+          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
+            <div className=" mt-20  md:w-[28%]  bg-white p-8 pb-4  ">
               <p className="text-center font-bold text-sm">
                 You are about to make a purchase!
               </p>

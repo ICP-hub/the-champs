@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import ProductCard from "../components/productcomponent/productCard";
 
@@ -13,96 +13,122 @@ import Footer from "../components/common/Footer";
 import { Link } from "react-router-dom";
 
 import ProductLists from "../components/productcomponent/ProductList";
+import { useCanister } from "@connect2ic/react";
+import { Principal } from "@dfinity/principal";
+import ProductCardLoader from "../components/productcomponent/ProductCardLoader";
+const products = [
+  {
+    id: 1,
+    name: "Product 1",
+    price: 19.99,
+    imageUrl:
+      " https://s3-alpha-sig.figma.com/img/7a4c/b37b/155e7f59d0a8b94c4168cb5240bd1e65?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jPOZEotrdDZi1xKBEDTq5RJa8YTfs75rb1PMOad5E9ZOI6O7q91KWS3XdE3Tumq-UWYJ44XZkmG~UnAPXXxbGw3yPiKwT-acKZfwlkatj6thE2CSMZXVWthAFQ5eUUh69OgfP6Cfu5zUE6WDXjVJQFV7AKjwuJxmDkTzckX3SZpg0qDPIXqMyeKozZEerYOlh9htYXzrKSkhIxPqlmj4sP2n~WVV1V4H3LpE9u8SCvEn494H-eyBG8YkC0C6Q~O6o6~n2o7hSsuojX8inIqC-~op7ObDkGbmzWsqb88L1dUOfRo7I6-X~f2mKNxKrJ84xGgKjYwYcELK0Y~L505YFQ__",
+  },
+  {
+    id: 2,
+    name: "Product 2",
+    price: 29.99,
+    imageUrl:
+      " https://s3-alpha-sig.figma.com/img/fc03/276b/ff0c0935ecb0638de0a4eec42156702d?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mcxGbPOLeVv0g10rfnbiI8~KfxRtFmoDRgoH7C~jAZTC0s4oOxZfkuXSWyw7WGgTrc7DrVTCwlHNL~05xGaNG60eN8W7SDekpk8valQxSMHXkVu4kxiPFj~vxxHeLLSUXdBM48UB0YvTsIUedWJDB46~4JFmwwX8ieasY6aAe62evR2H3AG23i0B9Uze2CnrRI22ZIfwmDHVgFOU6Lykj00SmPnLjnYUGlDFE2n3xpwbZEyaHoaLFziudPsyYPCOs00MyzQwQCJfpBA4dEILWmvB~rxyz98Nshd~u4WEDb6w1iGde2gwkJIjFL9Ay1ImPmJ~SLO3EEt9R5y72GC6hQ__",
+  },
+  {
+    id: 3,
+    name: "Product 3",
+    price: 39.99,
+    imageUrl:
+      " https://s3-alpha-sig.figma.com/img/5913/2795/65808d0975b07404be84d5415a3b9910?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oLoZwfcesw26IArhUdil1MpCk0AYHs6LYeWcBSBwVy6tyZaWCpeWBqrwtwHghpijyZlXl0kogRDAz~S4h7ejJgA4rWIG5qpT3q0oGx6zw49wQol0EvjAzzLBw6YwumTU7PKO7hVqJ-P4hPG8zPm0ZesbhVXb1Gtt2xPgycWJKKerKVBj8hdpw2C08aLcsnxTw6wx0ONLK0gb5SxW8BZnxtJURDCX8B8yY28lBLNFs-zzdVsnzxNJ2B5jzJazDJyW-rPL0eQO3RbkyWkb7Gp0rBx22nAvOfTE8JgVglNIOL-~Mi3R2Es4416GeMswE7lRdWcfHTixoNOQHqoji1ucwA__",
+  },
+  {
+    id: 4,
+    name: "Product 1",
+    price: 19.99,
+    imageUrl:
+      " https://s3-alpha-sig.figma.com/img/7a4c/b37b/155e7f59d0a8b94c4168cb5240bd1e65?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jPOZEotrdDZi1xKBEDTq5RJa8YTfs75rb1PMOad5E9ZOI6O7q91KWS3XdE3Tumq-UWYJ44XZkmG~UnAPXXxbGw3yPiKwT-acKZfwlkatj6thE2CSMZXVWthAFQ5eUUh69OgfP6Cfu5zUE6WDXjVJQFV7AKjwuJxmDkTzckX3SZpg0qDPIXqMyeKozZEerYOlh9htYXzrKSkhIxPqlmj4sP2n~WVV1V4H3LpE9u8SCvEn494H-eyBG8YkC0C6Q~O6o6~n2o7hSsuojX8inIqC-~op7ObDkGbmzWsqb88L1dUOfRo7I6-X~f2mKNxKrJ84xGgKjYwYcELK0Y~L505YFQ__",
+  },
+  {
+    id: 5,
+    name: "Product 2",
+    price: 29.99,
+    imageUrl:
+      " https://s3-alpha-sig.figma.com/img/fc03/276b/ff0c0935ecb0638de0a4eec42156702d?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mcxGbPOLeVv0g10rfnbiI8~KfxRtFmoDRgoH7C~jAZTC0s4oOxZfkuXSWyw7WGgTrc7DrVTCwlHNL~05xGaNG60eN8W7SDekpk8valQxSMHXkVu4kxiPFj~vxxHeLLSUXdBM48UB0YvTsIUedWJDB46~4JFmwwX8ieasY6aAe62evR2H3AG23i0B9Uze2CnrRI22ZIfwmDHVgFOU6Lykj00SmPnLjnYUGlDFE2n3xpwbZEyaHoaLFziudPsyYPCOs00MyzQwQCJfpBA4dEILWmvB~rxyz98Nshd~u4WEDb6w1iGde2gwkJIjFL9Ay1ImPmJ~SLO3EEt9R5y72GC6hQ__",
+  },
+  {
+    id: 6,
+    name: "Product 3",
+    price: 39.99,
+    imageUrl:
+      " https://s3-alpha-sig.figma.com/img/5913/2795/65808d0975b07404be84d5415a3b9910?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oLoZwfcesw26IArhUdil1MpCk0AYHs6LYeWcBSBwVy6tyZaWCpeWBqrwtwHghpijyZlXl0kogRDAz~S4h7ejJgA4rWIG5qpT3q0oGx6zw49wQol0EvjAzzLBw6YwumTU7PKO7hVqJ-P4hPG8zPm0ZesbhVXb1Gtt2xPgycWJKKerKVBj8hdpw2C08aLcsnxTw6wx0ONLK0gb5SxW8BZnxtJURDCX8B8yY28lBLNFs-zzdVsnzxNJ2B5jzJazDJyW-rPL0eQO3RbkyWkb7Gp0rBx22nAvOfTE8JgVglNIOL-~Mi3R2Es4416GeMswE7lRdWcfHTixoNOQHqoji1ucwA__",
+  },
+  {
+    id: 7,
+    name: "Product 1",
+    price: 19.99,
+    imageUrl:
+      " https://s3-alpha-sig.figma.com/img/7a4c/b37b/155e7f59d0a8b94c4168cb5240bd1e65?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jPOZEotrdDZi1xKBEDTq5RJa8YTfs75rb1PMOad5E9ZOI6O7q91KWS3XdE3Tumq-UWYJ44XZkmG~UnAPXXxbGw3yPiKwT-acKZfwlkatj6thE2CSMZXVWthAFQ5eUUh69OgfP6Cfu5zUE6WDXjVJQFV7AKjwuJxmDkTzckX3SZpg0qDPIXqMyeKozZEerYOlh9htYXzrKSkhIxPqlmj4sP2n~WVV1V4H3LpE9u8SCvEn494H-eyBG8YkC0C6Q~O6o6~n2o7hSsuojX8inIqC-~op7ObDkGbmzWsqb88L1dUOfRo7I6-X~f2mKNxKrJ84xGgKjYwYcELK0Y~L505YFQ__",
+  },
+  {
+    id: 8,
+    name: "Product 2",
+    price: 29.99,
+    imageUrl:
+      " https://s3-alpha-sig.figma.com/img/fc03/276b/ff0c0935ecb0638de0a4eec42156702d?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mcxGbPOLeVv0g10rfnbiI8~KfxRtFmoDRgoH7C~jAZTC0s4oOxZfkuXSWyw7WGgTrc7DrVTCwlHNL~05xGaNG60eN8W7SDekpk8valQxSMHXkVu4kxiPFj~vxxHeLLSUXdBM48UB0YvTsIUedWJDB46~4JFmwwX8ieasY6aAe62evR2H3AG23i0B9Uze2CnrRI22ZIfwmDHVgFOU6Lykj00SmPnLjnYUGlDFE2n3xpwbZEyaHoaLFziudPsyYPCOs00MyzQwQCJfpBA4dEILWmvB~rxyz98Nshd~u4WEDb6w1iGde2gwkJIjFL9Ay1ImPmJ~SLO3EEt9R5y72GC6hQ__",
+  },
+  {
+    id: 9,
+    name: "Product 3",
+    price: 39.99,
+    imageUrl:
+      " https://s3-alpha-sig.figma.com/img/5913/2795/65808d0975b07404be84d5415a3b9910?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oLoZwfcesw26IArhUdil1MpCk0AYHs6LYeWcBSBwVy6tyZaWCpeWBqrwtwHghpijyZlXl0kogRDAz~S4h7ejJgA4rWIG5qpT3q0oGx6zw49wQol0EvjAzzLBw6YwumTU7PKO7hVqJ-P4hPG8zPm0ZesbhVXb1Gtt2xPgycWJKKerKVBj8hdpw2C08aLcsnxTw6wx0ONLK0gb5SxW8BZnxtJURDCX8B8yY28lBLNFs-zzdVsnzxNJ2B5jzJazDJyW-rPL0eQO3RbkyWkb7Gp0rBx22nAvOfTE8JgVglNIOL-~Mi3R2Es4416GeMswE7lRdWcfHTixoNOQHqoji1ucwA__",
+  },
+  {
+    id: 10,
+    name: "Product 1",
+    price: 19.99,
+    imageUrl:
+      " https://s3-alpha-sig.figma.com/img/7a4c/b37b/155e7f59d0a8b94c4168cb5240bd1e65?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jPOZEotrdDZi1xKBEDTq5RJa8YTfs75rb1PMOad5E9ZOI6O7q91KWS3XdE3Tumq-UWYJ44XZkmG~UnAPXXxbGw3yPiKwT-acKZfwlkatj6thE2CSMZXVWthAFQ5eUUh69OgfP6Cfu5zUE6WDXjVJQFV7AKjwuJxmDkTzckX3SZpg0qDPIXqMyeKozZEerYOlh9htYXzrKSkhIxPqlmj4sP2n~WVV1V4H3LpE9u8SCvEn494H-eyBG8YkC0C6Q~O6o6~n2o7hSsuojX8inIqC-~op7ObDkGbmzWsqb88L1dUOfRo7I6-X~f2mKNxKrJ84xGgKjYwYcELK0Y~L505YFQ__",
+  },
+  {
+    id: 11,
+    name: "Product 2",
+    price: 29.99,
+    imageUrl:
+      " https://s3-alpha-sig.figma.com/img/fc03/276b/ff0c0935ecb0638de0a4eec42156702d?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mcxGbPOLeVv0g10rfnbiI8~KfxRtFmoDRgoH7C~jAZTC0s4oOxZfkuXSWyw7WGgTrc7DrVTCwlHNL~05xGaNG60eN8W7SDekpk8valQxSMHXkVu4kxiPFj~vxxHeLLSUXdBM48UB0YvTsIUedWJDB46~4JFmwwX8ieasY6aAe62evR2H3AG23i0B9Uze2CnrRI22ZIfwmDHVgFOU6Lykj00SmPnLjnYUGlDFE2n3xpwbZEyaHoaLFziudPsyYPCOs00MyzQwQCJfpBA4dEILWmvB~rxyz98Nshd~u4WEDb6w1iGde2gwkJIjFL9Ay1ImPmJ~SLO3EEt9R5y72GC6hQ__",
+  },
+  {
+    id: 12,
+    name: "Product 3",
+    price: 39.99,
+    imageUrl:
+      " https://s3-alpha-sig.figma.com/img/5913/2795/65808d0975b07404be84d5415a3b9910?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oLoZwfcesw26IArhUdil1MpCk0AYHs6LYeWcBSBwVy6tyZaWCpeWBqrwtwHghpijyZlXl0kogRDAz~S4h7ejJgA4rWIG5qpT3q0oGx6zw49wQol0EvjAzzLBw6YwumTU7PKO7hVqJ-P4hPG8zPm0ZesbhVXb1Gtt2xPgycWJKKerKVBj8hdpw2C08aLcsnxTw6wx0ONLK0gb5SxW8BZnxtJURDCX8B8yY28lBLNFs-zzdVsnzxNJ2B5jzJazDJyW-rPL0eQO3RbkyWkb7Gp0rBx22nAvOfTE8JgVglNIOL-~Mi3R2Es4416GeMswE7lRdWcfHTixoNOQHqoji1ucwA__",
+  },
+  // Add more products as needed
+];
 
 const ProductPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
-  const products = [
-    {
-      id: 1,
-      name: "Product 1",
-      price: 19.99,
-      imageUrl:
-        " https://s3-alpha-sig.figma.com/img/7a4c/b37b/155e7f59d0a8b94c4168cb5240bd1e65?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jPOZEotrdDZi1xKBEDTq5RJa8YTfs75rb1PMOad5E9ZOI6O7q91KWS3XdE3Tumq-UWYJ44XZkmG~UnAPXXxbGw3yPiKwT-acKZfwlkatj6thE2CSMZXVWthAFQ5eUUh69OgfP6Cfu5zUE6WDXjVJQFV7AKjwuJxmDkTzckX3SZpg0qDPIXqMyeKozZEerYOlh9htYXzrKSkhIxPqlmj4sP2n~WVV1V4H3LpE9u8SCvEn494H-eyBG8YkC0C6Q~O6o6~n2o7hSsuojX8inIqC-~op7ObDkGbmzWsqb88L1dUOfRo7I6-X~f2mKNxKrJ84xGgKjYwYcELK0Y~L505YFQ__",
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      price: 29.99,
-      imageUrl:
-        " https://s3-alpha-sig.figma.com/img/fc03/276b/ff0c0935ecb0638de0a4eec42156702d?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mcxGbPOLeVv0g10rfnbiI8~KfxRtFmoDRgoH7C~jAZTC0s4oOxZfkuXSWyw7WGgTrc7DrVTCwlHNL~05xGaNG60eN8W7SDekpk8valQxSMHXkVu4kxiPFj~vxxHeLLSUXdBM48UB0YvTsIUedWJDB46~4JFmwwX8ieasY6aAe62evR2H3AG23i0B9Uze2CnrRI22ZIfwmDHVgFOU6Lykj00SmPnLjnYUGlDFE2n3xpwbZEyaHoaLFziudPsyYPCOs00MyzQwQCJfpBA4dEILWmvB~rxyz98Nshd~u4WEDb6w1iGde2gwkJIjFL9Ay1ImPmJ~SLO3EEt9R5y72GC6hQ__",
-    },
-    {
-      id: 3,
-      name: "Product 3",
-      price: 39.99,
-      imageUrl:
-        " https://s3-alpha-sig.figma.com/img/5913/2795/65808d0975b07404be84d5415a3b9910?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oLoZwfcesw26IArhUdil1MpCk0AYHs6LYeWcBSBwVy6tyZaWCpeWBqrwtwHghpijyZlXl0kogRDAz~S4h7ejJgA4rWIG5qpT3q0oGx6zw49wQol0EvjAzzLBw6YwumTU7PKO7hVqJ-P4hPG8zPm0ZesbhVXb1Gtt2xPgycWJKKerKVBj8hdpw2C08aLcsnxTw6wx0ONLK0gb5SxW8BZnxtJURDCX8B8yY28lBLNFs-zzdVsnzxNJ2B5jzJazDJyW-rPL0eQO3RbkyWkb7Gp0rBx22nAvOfTE8JgVglNIOL-~Mi3R2Es4416GeMswE7lRdWcfHTixoNOQHqoji1ucwA__",
-    },
-    {
-      id: 4,
-      name: "Product 1",
-      price: 19.99,
-      imageUrl:
-        " https://s3-alpha-sig.figma.com/img/7a4c/b37b/155e7f59d0a8b94c4168cb5240bd1e65?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jPOZEotrdDZi1xKBEDTq5RJa8YTfs75rb1PMOad5E9ZOI6O7q91KWS3XdE3Tumq-UWYJ44XZkmG~UnAPXXxbGw3yPiKwT-acKZfwlkatj6thE2CSMZXVWthAFQ5eUUh69OgfP6Cfu5zUE6WDXjVJQFV7AKjwuJxmDkTzckX3SZpg0qDPIXqMyeKozZEerYOlh9htYXzrKSkhIxPqlmj4sP2n~WVV1V4H3LpE9u8SCvEn494H-eyBG8YkC0C6Q~O6o6~n2o7hSsuojX8inIqC-~op7ObDkGbmzWsqb88L1dUOfRo7I6-X~f2mKNxKrJ84xGgKjYwYcELK0Y~L505YFQ__",
-    },
-    {
-      id: 5,
-      name: "Product 2",
-      price: 29.99,
-      imageUrl:
-        " https://s3-alpha-sig.figma.com/img/fc03/276b/ff0c0935ecb0638de0a4eec42156702d?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mcxGbPOLeVv0g10rfnbiI8~KfxRtFmoDRgoH7C~jAZTC0s4oOxZfkuXSWyw7WGgTrc7DrVTCwlHNL~05xGaNG60eN8W7SDekpk8valQxSMHXkVu4kxiPFj~vxxHeLLSUXdBM48UB0YvTsIUedWJDB46~4JFmwwX8ieasY6aAe62evR2H3AG23i0B9Uze2CnrRI22ZIfwmDHVgFOU6Lykj00SmPnLjnYUGlDFE2n3xpwbZEyaHoaLFziudPsyYPCOs00MyzQwQCJfpBA4dEILWmvB~rxyz98Nshd~u4WEDb6w1iGde2gwkJIjFL9Ay1ImPmJ~SLO3EEt9R5y72GC6hQ__",
-    },
-    {
-      id: 6,
-      name: "Product 3",
-      price: 39.99,
-      imageUrl:
-        " https://s3-alpha-sig.figma.com/img/5913/2795/65808d0975b07404be84d5415a3b9910?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oLoZwfcesw26IArhUdil1MpCk0AYHs6LYeWcBSBwVy6tyZaWCpeWBqrwtwHghpijyZlXl0kogRDAz~S4h7ejJgA4rWIG5qpT3q0oGx6zw49wQol0EvjAzzLBw6YwumTU7PKO7hVqJ-P4hPG8zPm0ZesbhVXb1Gtt2xPgycWJKKerKVBj8hdpw2C08aLcsnxTw6wx0ONLK0gb5SxW8BZnxtJURDCX8B8yY28lBLNFs-zzdVsnzxNJ2B5jzJazDJyW-rPL0eQO3RbkyWkb7Gp0rBx22nAvOfTE8JgVglNIOL-~Mi3R2Es4416GeMswE7lRdWcfHTixoNOQHqoji1ucwA__",
-    },
-    {
-      id: 7,
-      name: "Product 1",
-      price: 19.99,
-      imageUrl:
-        " https://s3-alpha-sig.figma.com/img/7a4c/b37b/155e7f59d0a8b94c4168cb5240bd1e65?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jPOZEotrdDZi1xKBEDTq5RJa8YTfs75rb1PMOad5E9ZOI6O7q91KWS3XdE3Tumq-UWYJ44XZkmG~UnAPXXxbGw3yPiKwT-acKZfwlkatj6thE2CSMZXVWthAFQ5eUUh69OgfP6Cfu5zUE6WDXjVJQFV7AKjwuJxmDkTzckX3SZpg0qDPIXqMyeKozZEerYOlh9htYXzrKSkhIxPqlmj4sP2n~WVV1V4H3LpE9u8SCvEn494H-eyBG8YkC0C6Q~O6o6~n2o7hSsuojX8inIqC-~op7ObDkGbmzWsqb88L1dUOfRo7I6-X~f2mKNxKrJ84xGgKjYwYcELK0Y~L505YFQ__",
-    },
-    {
-      id: 8,
-      name: "Product 2",
-      price: 29.99,
-      imageUrl:
-        " https://s3-alpha-sig.figma.com/img/fc03/276b/ff0c0935ecb0638de0a4eec42156702d?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mcxGbPOLeVv0g10rfnbiI8~KfxRtFmoDRgoH7C~jAZTC0s4oOxZfkuXSWyw7WGgTrc7DrVTCwlHNL~05xGaNG60eN8W7SDekpk8valQxSMHXkVu4kxiPFj~vxxHeLLSUXdBM48UB0YvTsIUedWJDB46~4JFmwwX8ieasY6aAe62evR2H3AG23i0B9Uze2CnrRI22ZIfwmDHVgFOU6Lykj00SmPnLjnYUGlDFE2n3xpwbZEyaHoaLFziudPsyYPCOs00MyzQwQCJfpBA4dEILWmvB~rxyz98Nshd~u4WEDb6w1iGde2gwkJIjFL9Ay1ImPmJ~SLO3EEt9R5y72GC6hQ__",
-    },
-    {
-      id: 9,
-      name: "Product 3",
-      price: 39.99,
-      imageUrl:
-        " https://s3-alpha-sig.figma.com/img/5913/2795/65808d0975b07404be84d5415a3b9910?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oLoZwfcesw26IArhUdil1MpCk0AYHs6LYeWcBSBwVy6tyZaWCpeWBqrwtwHghpijyZlXl0kogRDAz~S4h7ejJgA4rWIG5qpT3q0oGx6zw49wQol0EvjAzzLBw6YwumTU7PKO7hVqJ-P4hPG8zPm0ZesbhVXb1Gtt2xPgycWJKKerKVBj8hdpw2C08aLcsnxTw6wx0ONLK0gb5SxW8BZnxtJURDCX8B8yY28lBLNFs-zzdVsnzxNJ2B5jzJazDJyW-rPL0eQO3RbkyWkb7Gp0rBx22nAvOfTE8JgVglNIOL-~Mi3R2Es4416GeMswE7lRdWcfHTixoNOQHqoji1ucwA__",
-    },
-    {
-      id: 10,
-      name: "Product 1",
-      price: 19.99,
-      imageUrl:
-        " https://s3-alpha-sig.figma.com/img/7a4c/b37b/155e7f59d0a8b94c4168cb5240bd1e65?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jPOZEotrdDZi1xKBEDTq5RJa8YTfs75rb1PMOad5E9ZOI6O7q91KWS3XdE3Tumq-UWYJ44XZkmG~UnAPXXxbGw3yPiKwT-acKZfwlkatj6thE2CSMZXVWthAFQ5eUUh69OgfP6Cfu5zUE6WDXjVJQFV7AKjwuJxmDkTzckX3SZpg0qDPIXqMyeKozZEerYOlh9htYXzrKSkhIxPqlmj4sP2n~WVV1V4H3LpE9u8SCvEn494H-eyBG8YkC0C6Q~O6o6~n2o7hSsuojX8inIqC-~op7ObDkGbmzWsqb88L1dUOfRo7I6-X~f2mKNxKrJ84xGgKjYwYcELK0Y~L505YFQ__",
-    },
-    {
-      id: 11,
-      name: "Product 2",
-      price: 29.99,
-      imageUrl:
-        " https://s3-alpha-sig.figma.com/img/fc03/276b/ff0c0935ecb0638de0a4eec42156702d?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mcxGbPOLeVv0g10rfnbiI8~KfxRtFmoDRgoH7C~jAZTC0s4oOxZfkuXSWyw7WGgTrc7DrVTCwlHNL~05xGaNG60eN8W7SDekpk8valQxSMHXkVu4kxiPFj~vxxHeLLSUXdBM48UB0YvTsIUedWJDB46~4JFmwwX8ieasY6aAe62evR2H3AG23i0B9Uze2CnrRI22ZIfwmDHVgFOU6Lykj00SmPnLjnYUGlDFE2n3xpwbZEyaHoaLFziudPsyYPCOs00MyzQwQCJfpBA4dEILWmvB~rxyz98Nshd~u4WEDb6w1iGde2gwkJIjFL9Ay1ImPmJ~SLO3EEt9R5y72GC6hQ__",
-    },
-    {
-      id: 12,
-      name: "Product 3",
-      price: 39.99,
-      imageUrl:
-        " https://s3-alpha-sig.figma.com/img/5913/2795/65808d0975b07404be84d5415a3b9910?Expires=1714348800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=oLoZwfcesw26IArhUdil1MpCk0AYHs6LYeWcBSBwVy6tyZaWCpeWBqrwtwHghpijyZlXl0kogRDAz~S4h7ejJgA4rWIG5qpT3q0oGx6zw49wQol0EvjAzzLBw6YwumTU7PKO7hVqJ-P4hPG8zPm0ZesbhVXb1Gtt2xPgycWJKKerKVBj8hdpw2C08aLcsnxTw6wx0ONLK0gb5SxW8BZnxtJURDCX8B8yY28lBLNFs-zzdVsnzxNJ2B5jzJazDJyW-rPL0eQO3RbkyWkb7Gp0rBx22nAvOfTE8JgVglNIOL-~Mi3R2Es4416GeMswE7lRdWcfHTixoNOQHqoji1ucwA__",
-    },
-    // Add more products as needed
-  ];
+  const [backend] = useCanister("backend");
+  const [collection, setCollection] = useState("");
+  const [loading, setloading] = useState(true);
+
+  useEffect(() => {
+    const getCollectionWiseNft = async () => {
+      try {
+        const id = Principal.fromText("be2us-64aaa-aaaaa-qaabq-cai");
+        const res = await backend.getcollectionwisenft(id);
+        console.log("hello");
+        setCollection(res);
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getCollectionWiseNft();
+    setTimeout(() => {
+      setloading(false);
+    }, 5000);
+  }, [backend]);
+
   return (
     <>
       <Header />
@@ -161,21 +187,31 @@ const ProductPage = ({ name }) => {
               {name}
             </span>
           </h1>
-          <div className="  search-bar  px-6 lg:px-24">
+          <div className="  search-bar  px-6 lg:px-24 relative z-10">
             <Searchbar grid={grid} setGrid={setGrid} gridrequired={true} />
           </div>
-          {grid ? (
-            <div className="grid grid-cols-1  px-6 lg:px-24  sm:grid-cols-2  lg:grid-cols-3  gap-12 mt-4 justify-center">
-              {products.map((product) => (
-                <Link to="/collections/collection/a">
-                  <ProductCard key={product.id} product={product} />
-                </Link>
+          {loading ? (
+            <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 max-lg:grid-cols-2 max-sm:grid-cols-1 pb-4   px-6 lg:px-24">
+              {Array.from({ length: 9 }, (_, index) => (
+                <ProductCardLoader key={index} />
               ))}
             </div>
           ) : (
-            <div className=" px-6 lg:px-24 mt-8">
-              <ProductLists />
-            </div>
+            <>
+              {grid ? (
+                <div className="grid grid-cols-1  px-6 lg:px-24  sm:grid-cols-2  lg:grid-cols-3  gap-12 mt-4 justify-center">
+                  {products.map((product) => (
+                    <Link to="/collections/collection/a">
+                      <ProductCard key={product.id} product={product} />
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className=" px-6 lg:px-24 mt-8">
+                  <ProductLists />
+                </div>
+              )}
+            </>
           )}
         </div>
         <div className="flex items-center justify-center w-full mt-12 gap-2 text-gray-300">
