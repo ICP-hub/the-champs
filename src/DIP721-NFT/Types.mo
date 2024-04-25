@@ -84,7 +84,7 @@ module {
     forsale: Bool;
   };
 
-  public type NftResult = Result<[Nft],GetNftError>;
+  public type NftResult = Result<Nft,GetNftError>;
 
   public type GetNftError = {
     #NoNftFound;
