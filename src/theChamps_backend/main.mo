@@ -14,7 +14,7 @@ actor Champs {
         // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
         
         var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
-        var favourites = TrieMap.TrieMap<Principal, [Types.MetadataDesc] >(Principal.equal,Principal.hash);
+        var favourites = TrieMap.TrieMap<Principal, [Types.Nft] >(Principal.equal,Principal.hash);
 
         public func idQuick() : async Principal { 
             return Principal.fromActor(Champs);
@@ -131,6 +131,22 @@ actor Champs {
         };
     };
 
+    public shared ({caller = user}) func getsingleCollectiondetail(collection_id : Principal) : async Types.Dip721NonFungibleToken {
+        let nftcanisteractor = actor(Principal.toText(collection_id)) : actor {logoDip721 : () -> async Types.LogoResult; nameDip721 : () -> async Text; symbolDip721 : () -> async Text; getMaxLimitDip721 : () -> async Nat16;};
+        let logo = await nftcanisteractor.logoDip721();
+        let name = await nftcanisteractor.nameDip721();
+        let symbol = await nftcanisteractor.symbolDip721();
+        let totalSupply = await nftcanisteractor.getMaxLimitDip721();
+        let collection : Types.Dip721NonFungibleToken = {
+            logo = logo;
+            name = name;
+            symbol = symbol;
+            maxLimit = totalSupply;
+        };
+        return collection;
+    };
+
+
     public shared ({caller = admin}) func getallcollections() : async [Types.Dip721NonFungibleToken] {
         var collection = List.nil<Types.Dip721NonFungibleToken>();
         for (collections in nftcollectionMap.vals()){
@@ -158,9 +174,24 @@ actor Champs {
         return nfts;
     };
 
+    public shared ({caller = user}) func getcollectiondetails(collectioncanisterid : Principal) : async Types.Dip721NonFungibleToken {
+        let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {logoDip721 : () -> async Types.LogoResult; nameDip721 : () -> async Text; symbolDip721 : () -> async Text; getMaxLimitDip721 : () -> async Nat16;};
+        let logo = await nftcanisteractor.logoDip721();
+        let name = await nftcanisteractor.nameDip721();
+        let symbol = await nftcanisteractor.symbolDip721();
+        let totalSupply = await nftcanisteractor.getMaxLimitDip721();
+        let collection : Types.Dip721NonFungibleToken = {
+            logo = logo;
+            name = name;
+            symbol = symbol;
+            maxLimit = totalSupply;
+        };
+        return collection;
+    };
+
     public shared ({caller = user}) func addfavourite(collectioncanisterid : Principal, tokenid : Types.TokenId) : async Text {
-        let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {getMetadataDip721 : (token_id: Types.TokenId) -> async Types.MetadataResult;};
-        let metadata:Types.MetadataResult = await nftcanisteractor.getMetadataDip721(tokenid);
+        let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {getNFT : (token_id: Types.TokenId) -> async Types.NftResult;};
+        let metadata:Types.NftResult = await nftcanisteractor.getNFT(tokenid);
         switch(metadata){
             case (#Err(index)) {
                 throw Error.reject(debug_show(index));
@@ -169,12 +200,11 @@ actor Champs {
                 let userfavourites = favourites.get(user);
                 switch(userfavourites){
                     case null {
-                        let temp =  List.push(data, List.nil<Types.MetadataDesc>());
-                        favourites.put(user,List.toArray(temp));
+                        favourites.put(user,[data]);
                         return "Favourite added";
                     };
                     case (?favourite) {
-                        let temp:List.List<Types.MetadataDesc> = List.push(data, List.fromArray(favourite));
+                        let temp:List.List<Types.Nft> = List.push(data, List.fromArray(favourite));
                         favourites.put(user, List.toArray(temp));
                         return "Favourite added";
                     };
@@ -183,7 +213,7 @@ actor Champs {
         };
     };
 
-    public shared ({caller = user}) func getfavourites() : async [Types.MetadataDesc] {
+    public shared ({caller = user}) func getfavourites() : async [Types.Nft] {
         let userfavourites = favourites.get(user);
         switch(userfavourites){
             case null {
@@ -195,27 +225,43 @@ actor Champs {
         };
     };
 
-    // public shared ({caller = user}) func removefavourite(collectioncanisterid : Principal, tokenid : Types.TokenId) : async Text {
-    //     let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {getMetadataDip721 : (token_id: Types.TokenId) -> async Types.MetadataResult;};
-    //     let metadata:Types.MetadataResult = await nftcanisteractor.getMetadataDip721(tokenid);
-    //     switch(metadata){
-    //         case (#Err(index)) {
-    //             throw Error.reject(debug_show(index));
-    //         };
-    //         case (#Ok(data)) {
-    //             let userfavourites = favourites.get(user);
-    //             switch(userfavourites){
-    //                 case null {
-    //                     return "Favourite not found";
-    //                 };
-    //                 case (?favourite) {
-    //                     let temp:List.List<Types.MetadataDesc> = List.remove(data, List.fromArray(favourite));
-    //                     favourites.put(user, List.toArray(temp));
-    //                     return "Favourite removed";
-    //                 };
-    //             };
-    //         };
-    //     };
-    // };
+    public shared ({caller = user}) func removefavourite(tokenid : Types.TokenId) : async Text {
+        let userfavourites = favourites.get(user);
+        switch(userfavourites){
+            case null {
+                return "Favourite not found";
+            };
+            case (?favourite) {
+                let temp:List.List<Types.Nft> = List.fromArray(favourite);
+                let newlist:List.List<Types.Nft> = List.filter<Types.Nft>(temp, func x : Bool {x.id != tokenid});
+                favourites.put(user, List.toArray(newlist));
+                return "Favourite removed";
+            };
+        };
+    };
 
+    public shared({caller = user}) func getallfavourites () : async [Types.Nft] {
+        let userfavourites = favourites.get(user);
+        switch(userfavourites){
+            case null {
+                return [];
+            };
+            case (?favourite) {
+                return favourite;
+            };
+        };
+    };
+
+    public shared ({caller = user}) func getNFTdetails(collectioncanisterid : Principal, tokenid : Types.TokenId) : async Types.Nft {
+        let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {getNFT : (token_id: Types.TokenId) -> async Types.NftResult;};
+        let metadata:Types.NftResult = await nftcanisteractor.getNFT(tokenid);
+        switch(metadata){
+            case (#Err(index)) {
+                throw Error.reject(debug_show(index));
+            };
+            case (#Ok(data)) {
+                return data;
+            };
+        };
+    };
 }

@@ -17,7 +17,7 @@ const Searchbar = ({ grid, setGrid, gridrequired }) => {
         <div
           className={`flex text-xl items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-2 ${
             gridrequired ? " sm:w-[80%]" : "sm:w-[85%]"
-          } overflow-hidden w-[50%] mb-4`}
+          } overflow-hidden w-[60%] mb-4`}
         >
           <CiSearch size={24} />
           <input
