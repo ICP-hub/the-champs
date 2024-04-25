@@ -45,7 +45,7 @@ const CollectionPage = ({ name }) => {
               {name}
             </span>
           </h1>
-          <div className=" search-bar  px-6 lg:px-24">
+          <div className=" search-bar  px-6 lg:px-24 relative z-10">
             {/* sticky top-24 */}
             <Searchbar grid={grid} setGrid={setGrid} />
           </div>
