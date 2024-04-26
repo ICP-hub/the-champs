@@ -7,30 +7,14 @@ import Types "../DIP721-NFT/Types";
 import DIP20ActorClass "../DIP-20/token";
 import List "mo:base/List";
 import TrieMap "mo:base/TrieMap";
-import Text "mo:base/Text";
-import Result "mo:base/Result";
-import Time "mo:base/Time";
-import Iter "mo:base/Iter";
-
-
-import UUID "mo:uuid/UUID";
-import Source "mo:uuid/async/SourceV4";
 // import Helpers "./helper";
 
 actor Champs {
      
-        let g = Source.Source();
         // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
         
-        private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
-        private var stavlenftcollectionMap : [(Principal, [Principal])] = [];
-
-        private var favourites = TrieMap.TrieMap<Principal, [Types.Nft] >(Principal.equal,Principal.hash);
-        private var stablefavourites : [(Principal, [Types.Nft])] = [];
-        
-        private var contacts = TrieMap.TrieMap<Types.ContactId, Types.Contact>(Text.equal, Text.hash);
-        private stable var stablecontacts : [(Types.ContactId, Types.Contact)] = [];
-
+        var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
+        var favourites = TrieMap.TrieMap<Principal, [Types.Nft] >(Principal.equal,Principal.hash);
 
         public func idQuick() : async Principal { 
             return Principal.fromActor(Champs);
@@ -283,96 +267,5 @@ actor Champs {
                 return data;
             };
         };
-    };
-
-    // ******************************************* Contact US CRUD functions *************************************************************
-
-        public shared (msg) func createContact(co : Types.UserContact) : async Result.Result<(Types.Contact), Types.CreateContactError> {
-
-        if (co.name == "") { return #err(#EmptyName) };
-        if (co.email == "") { return #err(#EmptyEmail) };
-        if (co.message == "") { return #err(#EmptyMessage) };
-
-        let contactId : Types.ContactId = UUID.toText(await g.new());
-
-        let contact : Types.Contact = {
-            id = contactId;
-            name = co.name;
-            email = co.email;
-            contact_number = co.contact_number;
-            message = co.message;
-            time_created = Time.now();
-            time_updated = Time.now();
-        };
-        contacts.put(contactId, contact);
-        return #ok(contact);
-    };
-    
-        public shared (msg) func updateContact(
-        id : Types.ContactId,
-        read : Bool,
-    ) : async Result.Result<(Types.Contact), Types.UpdateContactError> {
-        // if (Principal.isAnonymous(msg.caller)) {
-        //     return #err(#UserNotAuthenticated);
-        // };
-        // let adminstatus = await isAdmin(msg.caller);
-        // if (adminstatus == false) {
-        //     return #err(#UserNotAdmin); // We require the user to be admin
-        // };
-
-        let result = contacts.get(id);
-        switch (result) {
-            case null {
-                return #err(#ContactNotFound);
-            };
-            case (?v) {
-                let contact : Types.Contact = {
-                    id = id;
-                    email = v.email;
-                    name = v.name;
-                    contact_number = v.contact_number;
-                    message = v.message;
-                    read = read;
-                    time_created = v.time_created;
-                    // only update time_updated
-                    time_updated = Time.now();
-                };
-                contacts.put(id, contact);
-                return #ok(contact);
-            };
-        };
-    };
-
-    public query func getContact(id : Types.ContactId) : async Result.Result<Types.Contact, Types.GetContactError> {
-        let contact = contacts.get(id);
-        return Result.fromOption(contact, #ContactNotFound);
-        // If the post is not found, this will return an error as result.
-    };
-
-    public shared (msg) func deleteContact(id : Types.ContactId) : async Result.Result<(), Types.DeleteContactError> {
-        let userPrincipalStr = Principal.toText(msg.caller);
-
-        // Check if the caller is an admin
-        // let adminstatus = await isAdmin(msg.caller);
-        // if (adminstatus == false) {
-        //     return #err(#UserNotAdmin); // We require the user to be admin
-        // };
-        contacts.delete(id);
-        return #ok(());
-    };
-
-    public query func listContacts() : async [(Types.ContactId, Types.Contact)] {
-        return Iter.toArray(contacts.entries());
-    };
-    
-
-        system func preupgrade() {
-        
-
-    };
-
-    // Postupgrade function to restore the data from stable variables
-    system func postupgrade() {
-
     };
 }
