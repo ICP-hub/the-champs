@@ -1,98 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Table from "../../utils/Table";
 import { AiOutlineTable, AiOutlineAppstore } from "react-icons/ai"; // Import AiOutlineTable and AiOutlineAppstore icons
 import { IoHeart } from "react-icons/io5";
+import { useCanister } from "@connect2ic/react";
 
 const Market = () => {
   const [displayMode, setDisplayMode] = useState("row");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "Name",
-        accessor: "title",
-      },
-      {
-        Header: "Type",
-        accessor: "category",
-      },
-      {
-        Header: "PRICE",
-        accessor: "price",
-      },
-      {
-        Header: "Principal",
-        accessor: "inventory",
-      },
-    ],
-    []
-  );
+  const [backend] = useCanister("backend");
 
   // Sample JSON data
-  const sampleData = [
-    {
-      title: "Product 1",
-      category: "Category A",
-      status: "Active",
-      price: "$10",
-      inventory: 100,
-      image:
-        "https://img.freepik.com/free-vector/hand-drawn-nft-style-ape-illustration_23-2149622021.jpg?w=740&t=st=1713351871~exp=1713352471~hmac=ed679c41842035c86855182a5cdfd9b4317fac54471101d127d87f9cdd467412", // Sample NFT image link
-      slug: "product-1",
-    },
-    {
-      title: "Product 2",
-      category: "Category B",
-      status: "Paused",
-      price: "$20",
-      inventory: 50,
-      image:
-        "https://img.freepik.com/free-vector/hand-drawn-virtual-sports-illustration_23-2150581118.jpg?t=st=1713351989~exp=1713355589~hmac=121e9e0f3087dd1846af2c6832cffff96815d1016baa128800f8ef2bd443f93e&w=740", // Sample NFT image link
-      slug: "product-2",
-    },
-    {
-      title: "Product 2",
-      category: "Category B",
-      status: "Paused",
-      price: "$20",
-      inventory: 50,
-      image:
-        "https://img.freepik.com/free-vector/hand-drawn-virtual-sports-illustration_23-2150581118.jpg?t=st=1713351989~exp=1713355589~hmac=121e9e0f3087dd1846af2c6832cffff96815d1016baa128800f8ef2bd443f93e&w=740", // Sample NFT image link
-      slug: "product-2",
-    },
-    {
-      title: "Product 2",
-      category: "Category B",
-      status: "Paused",
-      price: "$20",
-      inventory: 50,
-      image:
-        "https://img.freepik.com/free-vector/hand-drawn-virtual-sports-illustration_23-2150581118.jpg?t=st=1713351989~exp=1713355589~hmac=121e9e0f3087dd1846af2c6832cffff96815d1016baa128800f8ef2bd443f93e&w=740", // Sample NFT image link
-      slug: "product-2",
-    },
-    {
-      title: "Product 2",
-      category: "Category B",
-      status: "Paused",
-      price: "$20",
-      inventory: 50,
-      image:
-        "https://img.freepik.com/free-vector/hand-drawn-virtual-sports-illustration_23-2150581118.jpg?t=st=1713351989~exp=1713355589~hmac=121e9e0f3087dd1846af2c6832cffff96815d1016baa128800f8ef2bd443f93e&w=740", // Sample NFT image link
-      slug: "product-2",
-    },
-    {
-      title: "Product 2",
-      category: "Category B",
-      status: "Paused",
-      price: "$20",
-      inventory: 50,
-      image:
-        "https://img.freepik.com/free-vector/hand-drawn-virtual-sports-illustration_23-2150581118.jpg?t=st=1713351989~exp=1713355589~hmac=121e9e0f3087dd1846af2c6832cffff96815d1016baa128800f8ef2bd443f93e&w=740", // Sample NFT image link
-      slug: "product-2",
-    },
-  ];
+  const [sampleData, setSampleData] = useState([]);
+
+  const getAllCollections = async () => {
+    try {
+      const data = await backend.getallcollections();
+      setSampleData(data);
+      console.log("data", data);
+    } catch (error) {
+      console.log("reeegdf");
+    }
+  };
+
+  useEffect(() => {
+    getAllCollections();
+  }, []);
   const handleSearchInputChange = (event) => {
     const value = event.target.value;
     setSearchQuery(value);
@@ -141,11 +75,11 @@ const Market = () => {
           {/* // {displayMode === "column" && ( */}
           <div className="grid md:grid-cols-3 grid-cols-1 gap-4  px-2   ">
             {sampleData.map((item, index) => (
-              <div>
+              <div key={index}>
                 <div
                   className=" w-full h-80 flex flex-col justify-between rounded-xl  "
                   style={{
-                    backgroundImage: `url(${item.image})`,
+                    backgroundImage: `url(${item?.data?.symbol})`,
                     backgroundSize: "cover",
                     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.8)",
                   }}
@@ -160,11 +94,11 @@ const Market = () => {
                         />
                       </div>
                       <div>
-                        <h4 className="text-sm"> Collection Name</h4>
+                        <h4 className="text-sm"> {item?.data?.name}</h4>
                       </div>
                     </div>
                     <div className="dark:bg-[#38385470] bg-[#ffffff30] p-2 rounded-full">
-                      <h1>Creator Name*</h1>
+                      <h1> Admin*</h1>
                     </div>
                   </div>
                   <div className=" dark:bg-[#38385470] bg-[#ffffff30]  mx-2 p-1 mt-auto mb-2 rounded-2xl ">

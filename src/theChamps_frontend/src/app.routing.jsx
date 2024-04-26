@@ -22,6 +22,7 @@ import UserDashboard from "./admin/features/users/Users";
 import UpdateCollection from "./admin/features/collections/UpdateCollection";
 import NFTList from "./admin/features/NFT/NFTList";
 import SingleNFT from "./admin/features/NFT/SingleNFT";
+import User from "./admin/pages/User";
 /**** Create Routes *****/
 const appRoutes = createBrowserRouter([
   { path: "/", element: <HomePage /> },
@@ -54,7 +55,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "/market",
+    path: "/admin-collections",
     element: (
       <MainAdmin>
         <Market />
@@ -62,7 +63,15 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "details/:slug",
+    path: "/users",
+    element: (
+      <MainAdmin>
+        <User />
+      </MainAdmin>
+    ),
+  },
+  {
+    path: "/details/:slug",
     element: (
       <MainAdmin>
         <CreateCollections></CreateCollections>
@@ -94,7 +103,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "/users/:sdf/update-collections",
+    path: "/admin/users/:sdf/update-collections",
     element: (
       <MainAdmin>
         <UpdateCollection />
@@ -102,7 +111,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "/users/:sdf/collection-detail",
+    path: "/admin/users/:sdf/collection-detail",
     element: (
       <MainAdmin>
         <NFTList />
@@ -110,7 +119,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "/users/:sdf/collection-detail/:slug",
+    path: "/admin/users/:sdf/collection-detail/:slug",
     element: (
       <MainAdmin>
         <SingleNFT />

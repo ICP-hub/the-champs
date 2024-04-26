@@ -1,6 +1,7 @@
 import React from "react";
 import Table, { DetailButton } from "../utils/Table";
 import { Link } from "react-router-dom";
+import "regenerator-runtime/runtime";
 
 const User = () => {
   const columns = React.useMemo(

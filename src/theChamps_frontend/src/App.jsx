@@ -21,7 +21,7 @@ function App() {
   }, []);
 
   return (
-    <main>
+    <main className="App">
       <AnimatePresence mode="wait" initial={true}>
         <RouterProvider router={appRoutes} />
       </AnimatePresence>

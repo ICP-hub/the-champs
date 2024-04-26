@@ -64,7 +64,7 @@ const LeftSidebar = ({ isSidebarOpen, closeSidebar }) => {
         <ul className="menu-list">
           <li className="menu-item xl:flex xl:items-center xl:justify-center  mb-4">
             <NavLink
-              to="/"
+              to="/admin"
               className={({ isActive }) =>
                 isActive
                   ? "w-full   bg-gradient-to-r from-[#FC001E] to-[#FF7D57] flex items-center justify-start gap-3 p-3 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] "
@@ -79,7 +79,7 @@ const LeftSidebar = ({ isSidebarOpen, closeSidebar }) => {
           </li>
           <li className="menu-item xl:flex xl:items-center xl:justify-center  mb-4">
             <NavLink
-              to="/market"
+              to="/admin-collections"
               className={({ isActive }) =>
                 isActive
                   ? "w-full   bg-gradient-to-r from-[#FC001E] to-[#FF7D57] h-12 flex items-center justify-start gap-3 p-3 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] "
@@ -89,7 +89,7 @@ const LeftSidebar = ({ isSidebarOpen, closeSidebar }) => {
               <span className="flex items-center">
                 <MdOutlineGridView size={18} />
               </span>
-              <span className="   font-medium ml-2 ">Market</span>
+              <span className="   font-medium ml-2 ">Collections</span>
             </NavLink>
           </li>
           <li className="menu-item xl:flex xl:items-center xl:justify-center  mb-4">
