@@ -6,6 +6,7 @@ import Nat64 "mo:base/Nat64";
 import Blob "mo:base/Blob";
 import Principal "mo:base/Principal";
 import Result "mo:base/Result";
+import Time "mo:base/Time";
 
 module {
   public type Dip721NonFungibleToken = {
@@ -43,6 +44,49 @@ module {
   public type Locktoken = {
     #LockedSuccessfully;
   };
+
+  // Contact details TYpes 
+
+      public type ContactId = Text;
+
+    public type UserContact = {
+        name : Text;
+        email : Text;
+        message : Text;
+        contact_number : Text;
+    };
+
+    public type Contact = UserContact and {
+        id : ContactId;
+        time_created : Time.Time;
+        time_updated : Time.Time;
+    };
+
+    public type CreateContactError = {
+        #EmptyName;
+        #EmptyEmail;
+        #EmptyMessage;
+    };
+
+    public type GetContactError = {
+        #UserNotAuthenticated;
+        #UserNotAdmin;
+        #ContactNotFound;
+    };
+
+    public type DeleteContactError = {
+        #UserNotAdmin;
+        #UserNotAuthenticated;
+    };
+
+    public type UpdateContactError = {
+        #UserNotAuthenticated;
+        #UserNotAdmin;
+        #EmptyName;
+        #EmptyEmail;
+        #EmptyMessage;
+        #ContactNotFound;
+    };
 
   public type LockTokenError = {
     #ZeroAddress;
