@@ -156,7 +156,6 @@ actor Champs {
                 let name = await nftcanisteractor.nameDip721();
                 let symbol = await nftcanisteractor.symbolDip721();
                 let totalSupply = await nftcanisteractor.getMaxLimitDip721();
-                let id = await nftcanisteractor.getCanisterId();
                 let tempcollection : Types.Dip721NonFungibleToken = {
                     logo = logo;
                     name = name;
