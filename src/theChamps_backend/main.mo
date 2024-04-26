@@ -147,22 +147,27 @@ actor Champs {
     };
 
 
-    public shared ({caller = admin}) func getallcollections() : async [Types.Dip721NonFungibleToken] {
-        var collection = List.nil<Types.Dip721NonFungibleToken>();
+    public shared ({caller = admin}) func getallcollections() : async [Types.CollectionDetials] {
+        var collection = List.nil<Types.CollectionDetials>();
         for (collections in nftcollectionMap.vals()){
             for (id in collections.vals()){
-                let nftcanisteractor = actor(Principal.toText(id)) : actor {logoDip721 : () -> async Types.LogoResult; nameDip721 : () -> async Text; symbolDip721 : () -> async Text; getMaxLimitDip721 : () -> async Nat16;};
+                let nftcanisteractor = actor(Principal.toText(id)) : actor {logoDip721 : () -> async Types.LogoResult; nameDip721 : () -> async Text; symbolDip721 : () -> async Text; getMaxLimitDip721 : () -> async Nat16; getCanisterId : () -> async Principal;};
                 let logo = await nftcanisteractor.logoDip721();
                 let name = await nftcanisteractor.nameDip721();
                 let symbol = await nftcanisteractor.symbolDip721();
                 let totalSupply = await nftcanisteractor.getMaxLimitDip721();
+                let id = await nftcanisteractor.getCanisterId();
                 let tempcollection : Types.Dip721NonFungibleToken = {
                     logo = logo;
                     name = name;
                     symbol = symbol;
                     maxLimit = totalSupply;
                 };
-                collection := List.push(tempcollection, collection);
+                let collection_details: Types.CollectionDetials = {
+                    canister_id = id;
+                    data = tempcollection;
+                };
+                collection := List.push(collection_details, collection);
             };
         };
         return List.toArray(collection);

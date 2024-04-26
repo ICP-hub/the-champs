@@ -84,6 +84,11 @@ module {
     forsale: Bool;
   };
 
+  public type CollectionDetials = {
+    canister_id : Principal;
+    data : Dip721NonFungibleToken;
+  };
+
   public type NftResult = Result<Nft,GetNftError>;
 
   public type GetNftError = {
