@@ -399,7 +399,7 @@ const CreateCollections = () => {
             Wallet address to receive NFTs* <br />{" "}
             <span className="text-sm">
               This must be a wallet address, not principal ID. This is where you
-              will receive team NFTs and surplus NFTs from your launch.
+              will receive team NFTs and surplus NFTs from your launch
             </span>
           </label>
           <input
