@@ -3,7 +3,6 @@ import Iter "mo:base/Iter";
 module {
 
         public func paginate<V>(array : [V], chunkSize : Nat) : [[V]] {
-
         var paginationArray : List.List<[V]> = List.nil<[V]>();
         var num_chunk : Nat = (array.size() + chunkSize -1) / chunkSize;
         for (i in Iter.range(0, num_chunk -1)) {
