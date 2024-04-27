@@ -5,6 +5,7 @@ import { TbSquareRoundedChevronLeft } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
+import { TailSpin } from "react-loader-spinner";
 const CreateCollections = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -102,8 +103,8 @@ const CreateCollections = () => {
     record: {
       maxLimit: "",
       logo: {
-        data: "ssdfd",
-        logo_type: "sadsfsdfd",
+        data: "",
+        logo_type: "",
       },
       name: "",
       symbol: "",
@@ -112,44 +113,59 @@ const CreateCollections = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const updatedFormData = { ...formData };
+    const updatedFormData = { ...formData }; // Create a copy to avoid mutation
 
-    // Update the form data state based on input field name
-    if (
-      name === "principal" ||
-      name === "record.maxLimit" ||
-      name === "record.logo.data" ||
-      name === "record.logo.logo_type" ||
-      name === "record.name" ||
-      name === "record.symbol"
-    ) {
-      // If the input field name is nested, split it and update the nested object
-      const keys = name.split(".");
-      if (keys.length === 2) {
-        updatedFormData[keys[0]][keys[1]] = value;
-      } else {
-        updatedFormData[name] = value;
-      }
-      setFormData(updatedFormData);
+    // Handle both top-level and nested field updates
+    const parts = name.split(".");
+    if (parts.length === 1) {
+      updatedFormData[name] = value;
+    } else {
+      const [recordField, nestedField] = parts;
+      updatedFormData.record[nestedField] = value;
     }
+
+    setFormData(updatedFormData);
+  };
+  const handleLogoDataChange = (event) => {
+    const { value } = event.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      record: {
+        ...prevState.record,
+        logo: {
+          ...prevState.record.logo,
+          data: value,
+        },
+      },
+    }));
+  };
+  const handleLogoTypeChange = (event) => {
+    const { value } = event.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      record: {
+        ...prevState.record,
+        logo: {
+          ...prevState.record.logo,
+          logo_type: value,
+        },
+      },
+    }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      setLoading(true); // Set loading state to true
+      setLoading(true);
       const { principal, record } = formData;
-      // Parse maxLimit as a number
       const parsedRecord = {
         ...record,
         maxLimit: parseInt(record.maxLimit),
       };
-      // Call the backend function to create the collection
       const result = await backend.createcollection(principal, parsedRecord);
       console.log("Collection creation result:", result);
 
-      // Check if the response is successful
-      if (result) {
+      if (result.ok) {
         console.log("Collection created successfully!", result);
       } else {
         console.error("Collection creation failed:", result);
@@ -157,7 +173,7 @@ const CreateCollections = () => {
     } catch (error) {
       console.error("Error creating collection:", error);
     } finally {
-      setLoading(false); // Set loading state to false after the operation is complete
+      setLoading(false);
     }
   };
 
@@ -206,33 +222,40 @@ const CreateCollections = () => {
           </div>
         </div>
         <div className="w-full">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
+          <label
+            htmlFor="logoData"
+            className="md:text-lg text-sm font-semibold"
+          >
             Logo Data
           </label>
           <input
             type="text"
             id="logoData"
-            name="record.logo.data"
+            name="logoData"
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             value={formData.record.logo.data}
-            onChange={handleChange}
+            onChange={handleLogoDataChange}
             required
           />
         </div>
         <div className="w-full">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Logo Type <br /> <span className="text-sm">Less than 7 words</span>
+          <label
+            htmlFor="logoType"
+            className="md:text-lg text-sm font-semibold"
+          >
+            Logo Type <br />
           </label>
           <input
             type="text"
             id="logoType"
-            name="record.logo.logo_type"
+            name="logoType"
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             value={formData.record.logo.logo_type}
-            onChange={handleChange}
+            onChange={handleLogoTypeChange}
             required
           />
         </div>
+
         <div className="w-full">
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
             Collection Name
@@ -478,7 +501,21 @@ const CreateCollections = () => {
             type="submit"
             className="uppercase bg-red-500 shadow-md dark:bg-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] "
           >
-            {loading ? "Creating Collection..." : "Create Collection"}
+            {loading ? (
+              <div className="flex gap-3 items-center">
+                Createing Collection
+                <TailSpin
+                  height="15"
+                  width="15"
+                  color="white"
+                  ariaLabel="tail-spin-loading"
+                  radius="1"
+                  visible={true}
+                />
+              </div>
+            ) : (
+              "Create Collection"
+            )}
           </button>
         </div>
       </form>
