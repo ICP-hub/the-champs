@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from "react";
-
-import ProductCard from "../components/productcomponent/productCard";
-
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Searchbar from "../components/common/Searchbar";
-import { FakeData } from "../FakeProdDatbase";
 import ProductCardLg from "../components/common/ProductCardLg";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import { motion } from "framer-motion";
-import MyProfileActivity from "../components/myProfile/MyProfileActivity";
 import { useCanister } from "@connect2ic/react";
+import ProducrCardLgLoader from "../components/productcomponent/ProducrCardLgLoader";
 
 const CollectionPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
   const [backend] = useCanister("backend");
-  const [collection, setCollection] = useState("");
+  const [collection, setCollection] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getAllCollection = async () => {
@@ -24,7 +21,11 @@ const CollectionPage = ({ name }) => {
         const res = await backend.getallcollections();
         setCollection(res);
         console.log(res);
-      } catch {}
+        setLoading(false); // Set loading to false when data is fetched
+      } catch (error) {
+        console.log(error);
+        setLoading(false); // Set loading to false even if there's an error
+      }
     };
     getAllCollection();
   }, [backend]);
@@ -39,25 +40,34 @@ const CollectionPage = ({ name }) => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className=" z-0 ">
+        <div className="z-0">
           <h1 className="text-5xl font-bold font-sans mb-12 gap-1  px-6 lg:px-24 ">
             <span className="relative  text-transparent ml-2 bg-gradient-to-r   from-[#FC001E] to-[#FF7D57] bg-clip-text">
               {name}
             </span>
           </h1>
-          <div className=" search-bar  px-6 lg:px-24 relative z-10">
+          <div className="search-bar px-6 lg:px-24 relative z-10">
             {/* sticky top-24 */}
             <Searchbar grid={grid} setGrid={setGrid} />
           </div>
-          {grid ? (
-            <div className="grid min-[948px]:grid-cols-2 gap-x-8 gap-y-8  mt-8 px-6 lg:px-24">
-              {FakeData.map((prod, index) => (
-                <ProductCardLg prod={prod} key={index} />
+
+          {loading ? (
+            <div className="grid lg:grid-cols-2 xl:grid-cols-2 gap-8 max-lg:grid-cols-2 mt-8 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
+              {Array.from({ length: 9 }, (_, index) => (
+                <ProducrCardLgLoader key={index} />
               ))}
             </div>
+          ) : collection.length === 0 ? (
+            <div className="text-center mt-8 px-6 lg:px-24 h-screen flex justify-center items-center">
+              <button className="px-4 py-2  cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
+                No collection found
+              </button>
+            </div>
           ) : (
-            <div className=" px-6 lg:px-24 mt-8">
-              <MyProfileActivity />
+            <div className="grid min-[948px]:grid-cols-2 gap-x-8 gap-y-8 mt-8 px-6 lg:px-24">
+              {collection.map((prod, index) => (
+                <ProductCardLg prod={prod} key={index} />
+              ))}
             </div>
           )}
         </div>

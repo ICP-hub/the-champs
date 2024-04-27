@@ -191,7 +191,7 @@ const ProductPage = ({ name }) => {
             <Searchbar grid={grid} setGrid={setGrid} gridrequired={true} />
           </div>
           {loading ? (
-            <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 max-lg:grid-cols-2 max-sm:grid-cols-1 pb-4   px-6 lg:px-24">
+            <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 max-lg:grid-cols-2 mt-4 max-sm:grid-cols-1 pb-4   px-6 lg:px-24">
               {Array.from({ length: 9 }, (_, index) => (
                 <ProductCardLoader key={index} />
               ))}

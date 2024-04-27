@@ -4,15 +4,15 @@ const ProducrCardLgLoader = () => {
   return (
     <div className="rounded-2xl p-6 border-2  animate-pulse">
       <div className="grid grid-cols-3 gap-x-8">
-        <div className="col-span-2  h-full w-[50%] overflow-hidden rounded-2xl">
-          <div className="rounded-2xl h-full object-cover  z-[1]"></div>
+        <div className="col-span-2  h-full w-[100%] overflow-hidden rounded-2xl">
+          <div className="w-full object-cover h-[400px] bg-gray-300 rounded-xl  animate-pulse"></div>
         </div>
-        <div className="grid grid-rows-2 gap-y-8">
+        <div className="grid grid-rows-2 ">
           <div className="overflow-hidden rounded-2xl">
-            <div className="rounded-2xl row-span-2 w-full object-cover h-full  z-[1] relative"></div>
+            <div className="w-full object-cover h-[192px] bg-gray-300 rounded-xl mb-2  animate-pulse"></div>
           </div>
           <div className="overflow-hidden rounded-2xl">
-            <div className="rounded-2xl h-full w-full  z-[1] relative"></div>
+            <div className="w-full object-cover h-[200px] bg-gray-300 rounded-xl animate-pulse"></div>
           </div>
         </div>
       </div>
@@ -25,12 +25,8 @@ const ProducrCardLgLoader = () => {
           {/* <CiHeart size={48} className="cursor-pointer" /> */}
         </div>
         <div className="flex justify-between pt-6 gap-4 text-sm">
-          <button className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57]  text-white cursor-pointer  rounded-lg w-full z-[1]">
-            View Collection
-          </button>
-          <button className="px-4 py-2  cursor-pointer rounded-lg w-full productcardlgborder z-[1]">
-            More Info
-          </button>
+          <h4 className="h-6 w-40 bg-gray-200 rounded-full animate-pulse"></h4>
+          <h4 className="h-6 w-40 bg-gray-200 rounded-full animate-pulse"></h4>
         </div>
       </div>
     </div>
