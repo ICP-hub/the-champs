@@ -1,7 +1,6 @@
-import { CiHeart } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-
+import soccer3 from "../../assets/images/soccer-3.jpeg";
 const ProductCardLg = ({ prod }) => {
   // motion variants
   const imgVariants = {
@@ -17,8 +16,8 @@ const ProductCardLg = ({ prod }) => {
             variants={imgVariants}
             initial="initial"
             whileHover="hover"
-            src={prod.imageUrl}
-            alt={prod.title}
+            src={soccer3}
+            alt={prod.data.name}
             className="rounded-2xl h-full object-cover  z-[1]"
           ></motion.img>
         </div>
@@ -28,7 +27,7 @@ const ProductCardLg = ({ prod }) => {
               variants={imgVariants}
               initial="initial"
               whileHover="hover"
-              src={prod.image1}
+              src={soccer3}
               alt="image-1"
               className="rounded-2xl row-span-2 w-full object-cover h-full  z-[1] relative"
             ></motion.img>
@@ -38,7 +37,7 @@ const ProductCardLg = ({ prod }) => {
               variants={imgVariants}
               initial="initial"
               whileHover="hover"
-              src={prod.image2}
+              src={soccer3}
               alt="image-2"
               className="rounded-2xl h-full w-full  z-[1] relative"
             ></motion.img>
@@ -48,8 +47,10 @@ const ProductCardLg = ({ prod }) => {
       <div className="pt-6">
         <div className="flex justify-between">
           <div className="flex flex-col">
-            <h1 className="font-bold text-2xl">Name</h1>
-            <p className="text-sm text-[#7B7583] font-normal">By name</p>
+            <h1 className="font-bold text-2xl">{prod.data.name}</h1>
+            <p className="text-sm text-[#7B7583] font-normal">
+              By {prod.canister_id.toText()}
+            </p>
           </div>
           {/* <CiHeart size={48} className="cursor-pointer" /> */}
         </div>
