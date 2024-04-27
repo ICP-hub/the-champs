@@ -19,6 +19,10 @@ actor Champs {
         public func idQuick() : async Principal { 
             return Principal.fromActor(Champs);
         };
+
+        public shared ({caller = user}) func whoami() : async Principal {
+            return user;
+        };
         
         public shared ({caller = user}) func createcollection (custodian: Principal, metadata : Types.Dip721NonFungibleToken) : async [Principal] {
             Cycles.add(100_500_000_000);

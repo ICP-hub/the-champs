@@ -358,7 +358,6 @@ const DashBoard = () => {
           </div>
         </div>
       </div>
-      <Toaster />
     </div>
   );
 };

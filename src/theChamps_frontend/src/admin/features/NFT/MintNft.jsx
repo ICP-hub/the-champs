@@ -4,33 +4,38 @@ import { useDropzone } from "react-dropzone";
 import { FaLastfm } from "react-icons/fa6";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
-import { Form } from "react-router-dom";
+import { Form, useParams } from "react-router-dom";
 
 const MintNft = () => {
   const [loading, setLoading] = useState(false);
+  const param = useParams();
+  console.log("canister id is ", param.slug);
   const userid = Principal.fromText(
     "5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe"
   );
+  const canisterid = Principal.fromText(param.slug);
   const [backend] = useCanister("backend");
   const [formData, setFormData] = useState({
-    nftCanisterId: "be2us-64aaa-aaaaa-qaabq-cai",
+    nftCanisterId: canisterid,
     to: userid,
     tokenowner: userid,
-    metadata: {
-      data: "",
-      keyValData: [
-        { key: "size", val: { Nat64Content: 123456 } },
-        { key: "format", val: { TextContent: "JPEG" } },
-        { key: "resolution", val: { Nat32Content: 1080 } },
-        { key: "quality", val: { Nat8Content: 95 } },
-        { key: "fileType", val: { TextContent: "image/jpeg" } },
-        { key: "tag", val: { TextContent: "landscape" } },
-        { key: "locationType", val: { Nat8Content: 4 } },
-        { key: "logo", val: { BlobContent: "http://logo_url.com" } },
-        { key: "symbol", val: { TextContent: "SYMB" } },
-      ],
-      purpose: "Rendered",
-    },
+    metadata: [
+      {
+        data: [{}],
+        keyValData: [
+          { key: "size", val: { Nat64Content: 123456 } },
+          { key: "format", val: { TextContent: "JPEG" } },
+          { key: "resolution", val: { Nat32Content: 1080 } },
+          { key: "quality", val: { Nat8Content: 95 } },
+          { key: "fileType", val: { TextContent: "image/jpeg" } },
+          { key: "tag", val: { TextContent: "landscape" } },
+          { key: "locationType", val: { Nat8Content: 4 } },
+          { key: "logo", val: { BlobContent: "http://logo_url.com" } },
+          { key: "symbol", val: { TextContent: "SYMB" } },
+        ],
+        purpose: "",
+      },
+    ],
 
     logo: "Additional Text 1",
     name: "Additional Text 2",
@@ -61,8 +66,9 @@ const MintNft = () => {
     }
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     setLoading(true);
 
     try {
@@ -100,148 +106,160 @@ const MintNft = () => {
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Plan Your Launch</h1>
       </div>
-      <form className="space-y-4">
+      <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            custodian*
+            Canister id*
           </label>
           <input
+            readOnly
             type="text"
             required
             name="custodian"
             id="custodian"
-            value={formData.custodian}
+            value={formData.nftCanisterId}
             onChange={handleChange}
             className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
           />
         </div>
         <div>
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            creator*
+            To *
           </label>
           <input
             type="text"
             required
             name="creator"
             id="creator"
-            value={formData.creator}
+            value={formData.to}
             onChange={handleChange}
             className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
           />
         </div>
         <div>
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            recipient*
+            tokenowner *
           </label>
           <input
             type="text"
             required
             name="recipient"
             id="recipient"
-            value={formData.recipient}
+            value={formData.tokenowner}
             onChange={handleChange}
             className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
           />
         </div>
-        <div>
-          <div>
-            <label
-              htmlFor="metadata.data"
-              className="md:text-lg text-sm font-semibold"
-            >
-              Metadata Data
-            </label>
-            <input
-              type="text"
-              required
-              name="metadata.data"
-              id="metadata.data"
-              value={formData.metadata.data}
-              onChange={handleChange}
-              className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
-            />
+        <h1 className="md:text-xl text-sm font-semibold">META DATA</h1>
+        {formData.metadata.map((data, index) => (
+          <div key={index} className="flex gap-4">
+            <div>
+              <label
+                htmlFor={`metadata-data-${index}`}
+                className="md:text-lg text-sm "
+              >
+                Data
+              </label>
+              <input
+                type="text"
+                required
+                name={`metadata-data-${index}`}
+                id={`metadata-data-${index}`}
+                value={data.data}
+                onChange={(event) => handleMetadataChange(event, index, "data")}
+                className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor={`metadata-keyvaldata-${index}`}
+                className="md:text-lg text-sm "
+              >
+                Metadata Key Value Data
+              </label>
+              <input
+                type="text"
+                required
+                name={`metadata-keyvaldata-${index}`}
+                id={`metadata-keyvaldata-${index}`}
+                value={data.keyValData}
+                onChange={(event) =>
+                  handleMetadataChange(event, index, "keyValData")
+                }
+                className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor={`metadata-purpose-${index}`}
+                className="md:text-lg text-sm"
+              >
+                Metadata Purpose
+              </label>
+              <select
+                name={`metadata-purpose-${index}`}
+                id={`metadata-purpose-${index}`}
+                required
+                value={data.purpose}
+                onChange={(event) => handleMetadataChange(event, index)}
+                className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
+              >
+                <option value="Save in my wallet (5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe)">
+                  Preview
+                </option>
+                <option value="Burn the remaining NFTs (This would destroy unsold NFTs to reduce total supply.)">
+                  Rendered
+                </option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label
-              htmlFor="metadata.key_val_data"
-              className="md:text-lg text-sm font-semibold"
-            >
-              Metadata Key Value Data
-            </label>
-            <input
-              type="text"
-              required
-              name="metadata.key_val_data"
-              id="metadata.key_val_data"
-              value={formData.metadata.key_val_data}
-              onChange={handleChange}
-              className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="metadata.purpose"
-              className="md:text-lg text-sm font-semibold"
-            >
-              Metadata Purpose
-            </label>
-            <input
-              type="text"
-              required
-              name="metadata.purpose"
-              id="metadata.purpose"
-              value={formData.metadata.purpose}
-              onChange={handleChange}
-              className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
-            />
-          </div>
-        </div>
+        ))}
 
         <div>
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            metadataName*
+            Logo *
           </label>
           <input
             type="text"
             required
             name="metadataName"
             id="metadataName"
-            value={formData.metadataName}
+            value={formData.logo}
             onChange={handleChange}
             className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
           />
         </div>
         <div>
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            metadataDescription*
+            Name *
           </label>
           <input
             type="text"
             required
             name="metadataDescription"
             id="metadataDescription"
-            value={formData.metadataDescription}
+            value={formData.name}
             onChange={handleChange}
             className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
           />
         </div>
         <div>
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Launch Name*
+            Symbol *
           </label>
           <input
             type="text"
             required
             name="metadataType"
             id="metadataType"
-            value={formData.metadataType}
+            value={formData.symbol}
             onChange={handleChange}
             className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
           />
         </div>
         <div>
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            amount*
+            Decimal *
           </label>
           <input
             type="number"
@@ -255,14 +273,14 @@ const MintNft = () => {
         </div>
         <div>
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            decimals*
+            Total Supply *
           </label>
           <input
             type="number"
             required
             name="decimals"
             id="decimals"
-            value={formData.decimals}
+            value={formData.totalsupply}
             onChange={handleChange}
             className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
           />
@@ -283,14 +301,14 @@ const MintNft = () => {
         </div>
         <div>
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            controller*
+            Owner *
           </label>
           <input
             type="text"
             required
             name="controller"
             id="controller"
-            value={formData.controller}
+            value={formData.owner}
             onChange={handleChange}
             className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
           />
@@ -407,14 +425,14 @@ const MintNft = () => {
           </select>
         </div> */}
         <div className="flex gap-4  justify-end">
-          <button className="uppercase bg-[#fff] text-sm md:text-[16px] shadow-md dark:bg-[#2e2e48] border border-red-500  flex items-center justify-start gap-3 py-2 px-2 md:px-4 md:py-2 rounded-xl  ">
+          {/* <button className="uppercase bg-[#fff] text-sm md:text-[16px] shadow-md dark:bg-[#2e2e48] border border-red-500  flex items-center justify-start gap-3 py-2 px-2 md:px-4 md:py-2 rounded-xl  ">
             cancel
           </button>
           <button className="uppercase text-sm md:text-[16px] bg-red-500 shadow-md dark:bg-red-500  flex items-center justify-start gap-3  py-2 px-2 md:px-4 md:py-2 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] ">
             Continue
-          </button>
+          </button> */}
           <button
-            onSubmit={handleSubmit}
+            type="submit"
             className="uppercase text-sm md:text-[16px] bg-gradient-to-r from-red-500 to-[#FF7D57] shadow-md   flex items-center justify-start gap-3 py-2 px-2 md:px-4 md:py-2 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] "
           >
             save & next
