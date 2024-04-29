@@ -5,7 +5,7 @@ import { AiOutlineTable, AiOutlineAppstore } from "react-icons/ai"; // Import Ai
 import { IoHeart } from "react-icons/io5";
 import { useCanister } from "@connect2ic/react";
 import { BallTriangle, Grid, Vortex } from "react-loader-spinner";
-
+import notfound from "../../assets/notfound.jpeg";
 const Market = () => {
   const [displayMode, setDisplayMode] = useState("row");
   const [searchQuery, setSearchQuery] = useState("");
@@ -92,15 +92,16 @@ const Market = () => {
                 wrapperClass="grid-wrapper"
               />
             </div>
-          ) : (
+          ) : sampleData.length > 0 ? (
             <div className="grid md:grid-cols-3 grid-cols-1 gap-4  px-2   ">
               {sampleData.map((item, index) => (
                 <div key={index}>
                   <div
                     className=" w-full h-80 flex flex-col justify-between rounded-xl  "
                     style={{
-                      backgroundImage: `url(${item?.data?.symbol})`,
+                      backgroundImage: `url(${item?.data?.logo?.data})`,
                       backgroundSize: "cover",
+                      backgroundPosition: "center",
                       boxShadow: "0 4px 8px rgba(0, 0, 0, 0.8)",
                     }}
                   >
@@ -109,7 +110,7 @@ const Market = () => {
                         <div className="">
                           <img
                             className="rounded-full w-9 h-9"
-                            src={item.image}
+                            src={item?.data?.symbol}
                             alt=""
                           />
                         </div>
@@ -145,10 +146,10 @@ const Market = () => {
                       <div className="flex justify-between gap-2 mx-2  my-2">
                         <div className="bg-transparent">
                           <Link
-                            to={`/details/${item.slug}`}
+                            to={`/details/${item?.canister_id.toString()}`}
                             className="uppercase dark:bg-[#2e2e48] bg-[#fff]  flex items-center justify-start gap-3 px-2 py-1 rounded-xl  bg:text-[#e1e1e1]"
                           >
-                            Details
+                            view
                           </Link>
                         </div>
                         <div className="">
@@ -156,7 +157,7 @@ const Market = () => {
                             to={`/create/${item?.canister_id.toString()}`}
                             className="uppercase bg-red-500  shadow-md dark:bg-red-500  flex items-center justify-start gap-3 px-2 py-1 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] "
                           >
-                            Create
+                            Mint
                           </Link>
                         </div>
                       </div>
@@ -164,6 +165,10 @@ const Market = () => {
                   </div>{" "}
                 </div>
               ))}
+            </div>
+          ) : (
+            <div className="flex justify-center items-center h-80">
+              <img width={"300px"} src={notfound} alt="not found" />
             </div>
           )}
         </div>

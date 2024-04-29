@@ -74,7 +74,7 @@ const appRoutes = createBrowserRouter([
     path: "/details/:slug",
     element: (
       <MainAdmin>
-        <CreateCollections></CreateCollections>
+        <NFTList />
       </MainAdmin>
     ),
   },

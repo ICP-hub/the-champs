@@ -46,6 +46,38 @@ const MintNft = () => {
     fee: 99,
   });
 
+  const handleAddMetadata = () => {
+    setFormData({
+      ...formData,
+      metadata: [
+        ...formData.metadata,
+        { data: "", keyValData: "", purpose: "Preview" },
+      ],
+    });
+  };
+
+  const handleRemoveMetadata = (index) => {
+    const updatedMetadata = [...formData.metadata];
+    updatedMetadata.splice(index, 1);
+    setFormData({
+      ...formData,
+      metadata: updatedMetadata,
+    });
+  };
+
+  const handleMetadataChange = (event, index, field) => {
+    const { name, value } = event.target;
+    const updatedMetadata = [...formData.metadata];
+    if (field) {
+      updatedMetadata[index][field] = value;
+    } else {
+      updatedMetadata[index][name] = value;
+    }
+    setFormData({
+      ...formData,
+      metadata: updatedMetadata,
+    });
+  };
   const handleChange = (event) => {
     const { name, value } = event.target;
     // If the changed field is within the metadata object
@@ -150,71 +182,90 @@ const MintNft = () => {
             className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
           />
         </div>
-        <h1 className="md:text-xl text-sm font-semibold">META DATA</h1>
-        {formData.metadata.map((data, index) => (
-          <div key={index} className="flex gap-4">
-            <div>
-              <label
-                htmlFor={`metadata-data-${index}`}
-                className="md:text-lg text-sm "
-              >
-                Data
-              </label>
-              <input
-                type="text"
-                required
-                name={`metadata-data-${index}`}
-                id={`metadata-data-${index}`}
-                value={data.data}
-                onChange={(event) => handleMetadataChange(event, index, "data")}
-                className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
-              />
+        <div>
+          <h1 className="md:text-xl text-sm font-semibold">META DATA</h1>
+          {formData.metadata.map((metadataEntry, index) => (
+            <div key={index} className="w-50">
+              <div>
+                <label
+                  htmlFor={`metadata-data-${index}`}
+                  className="md:text-lg text-sm"
+                >
+                  Data
+                </label>
+                <input
+                  type="text"
+                  required
+                  name={`metadata-data-${index}`}
+                  id={`metadata-data-${index}`}
+                  value={metadataEntry.data}
+                  onChange={(event) =>
+                    handleMetadataChange(event, index, "data")
+                  }
+                  className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor={`metadata-keyvaldata-${index}`}
+                  className="md:text-lg text-sm"
+                >
+                  Metadata Key Value Data
+                </label>
+                <input
+                  type="text"
+                  required
+                  name={`metadata-keyvaldata-${index}`}
+                  id={`metadata-keyvaldata-${index}`}
+                  value={metadataEntry.keyValData}
+                  onChange={(event) =>
+                    handleMetadataChange(event, index, "keyValData")
+                  }
+                  className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor={`metadata-purpose-${index}`}
+                  className="md:text-lg text-sm"
+                >
+                  Metadata Purpose
+                </label>
+                <select
+                  name={`metadata-purpose-${index}`}
+                  id={`metadata-purpose-${index}`}
+                  required
+                  value={metadataEntry.purpose}
+                  onChange={(event) =>
+                    handleMetadataChange(event, index, "purpose")
+                  }
+                  className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
+                >
+                  <option value="Preview">Preview</option>
+                  <option value="Rendered">Rendered</option>
+                </select>
+              </div>
+              <div>
+                {index > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveMetadata(index)}
+                    className="text-red-600 font-semibold"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
             </div>
-            <div>
-              <label
-                htmlFor={`metadata-keyvaldata-${index}`}
-                className="md:text-lg text-sm "
-              >
-                Metadata Key Value Data
-              </label>
-              <input
-                type="text"
-                required
-                name={`metadata-keyvaldata-${index}`}
-                id={`metadata-keyvaldata-${index}`}
-                value={data.keyValData}
-                onChange={(event) =>
-                  handleMetadataChange(event, index, "keyValData")
-                }
-                className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor={`metadata-purpose-${index}`}
-                className="md:text-lg text-sm"
-              >
-                Metadata Purpose
-              </label>
-              <select
-                name={`metadata-purpose-${index}`}
-                id={`metadata-purpose-${index}`}
-                required
-                value={data.purpose}
-                onChange={(event) => handleMetadataChange(event, index)}
-                className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
-              >
-                <option value="Save in my wallet (5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe)">
-                  Preview
-                </option>
-                <option value="Burn the remaining NFTs (This would destroy unsold NFTs to reduce total supply.)">
-                  Rendered
-                </option>
-              </select>
-            </div>
-          </div>
-        ))}
-
+          ))}
+          <button
+            type="button"
+            onClick={handleAddMetadata}
+            className="text-green-600 font-semibold"
+          >
+            Add Metadata
+          </button>
+        </div>
         <div>
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
             Logo *
