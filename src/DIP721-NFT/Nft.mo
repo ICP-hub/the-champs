@@ -139,7 +139,7 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
     };
   };
 
-    public query func getNFT(token_id: Types.TokenId) : async Types.NftResult {
+  public query func getNFT(token_id: Types.TokenId) : async Types.NftResult {
     let item = List.find(nfts, func(token: Types.Nft) : Bool { token.id == token_id });
     switch (item) {
       case null {
