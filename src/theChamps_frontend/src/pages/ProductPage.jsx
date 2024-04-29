@@ -10,7 +10,7 @@ import toniq from "../assets/icons/toniq.svg";
 import Card from "../components/common/Card";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import ProductLists from "../components/productcomponent/ProductList";
 import { useCanister } from "@connect2ic/react";
@@ -109,25 +109,53 @@ const ProductPage = ({ name }) => {
   const [backend] = useCanister("backend");
   const [collection, setCollection] = useState("");
   const [loading, setloading] = useState(true);
+  const { id } = useParams();
+  const [searchQuery, setSearchQuery] = useState();
+  const [searchResults, setSearchResults] = useState(products);
+  const [collectionDetails, setCollectionDetails] = useState("");
+
+  const getCollectionDetails = async () => {
+    try {
+      const canister_id = Principal.fromText(id);
+      const res = await backend.getcollectiondetails(canister_id);
+      console.log("hello");
+      setCollectionDetails(res);
+
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const getCollectionWiseNft = async () => {
       try {
-        const id = Principal.fromText("be2us-64aaa-aaaaa-qaabq-cai");
-        const res = await backend.getcollectionwisenft(id);
+        const canister_id = Principal.fromText(id);
+        const res = await backend.getcollectionwisenft(canister_id);
         console.log("hello");
         setCollection(res);
+        setSearchResults(collection);
         console.log(res);
       } catch (error) {
         console.log(error);
       }
     };
-
+    getCollectionDetails();
     getCollectionWiseNft();
     setTimeout(() => {
       setloading(false);
     }, 5000);
   }, [backend]);
+
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    const filteredResults = products.filter((item) =>
+      item.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setSearchResults(filteredResults);
+  };
 
   return (
     <>
@@ -147,7 +175,7 @@ const ProductPage = ({ name }) => {
               {" "}
               <h1 className="text-3xl text-left font-bold font-sans mb-4 gap-1 ">
                 <span className="relative  text-transparent  bg-gradient-to-r  from-[#FC001E] to-[#FF7D57] bg-clip-text">
-                  Collection Name
+                  {collectionDetails.name}
                 </span>
               </h1>
               <div>
@@ -188,7 +216,13 @@ const ProductPage = ({ name }) => {
             </span>
           </h1>
           <div className="  search-bar  px-6 lg:px-24 relative z-10">
-            <Searchbar grid={grid} setGrid={setGrid} gridrequired={true} />
+            <Searchbar
+              grid={grid}
+              setGrid={setGrid}
+              gridrequired={true}
+              value={searchQuery}
+              handleSearch={handleSearch}
+            />
           </div>
           {loading ? (
             <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 max-lg:grid-cols-2 mt-4 max-sm:grid-cols-1 pb-4   px-6 lg:px-24">
@@ -200,7 +234,7 @@ const ProductPage = ({ name }) => {
             <>
               {grid ? (
                 <div className="grid grid-cols-1  px-6 lg:px-24  sm:grid-cols-2  lg:grid-cols-3  gap-12 mt-4 justify-center">
-                  {products.map((product) => (
+                  {collection.map((product) => (
                     <Link to="/collections/collection/a">
                       <ProductCard key={product.id} product={product} />
                     </Link>

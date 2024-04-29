@@ -13,14 +13,16 @@ const CollectionPage = ({ name }) => {
   const [backend] = useCanister("backend");
   const [collection, setCollection] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState();
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     const getAllCollection = async () => {
       try {
-        console.log("hello");
         const res = await backend.getallcollections();
         setCollection(res);
         console.log(res);
+        setSearchResults(res);
         setLoading(false); // Set loading to false when data is fetched
       } catch (error) {
         console.log(error);
@@ -29,6 +31,16 @@ const CollectionPage = ({ name }) => {
     };
     getAllCollection();
   }, [backend]);
+
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    const filteredResults = collection.filter((item) =>
+      item.data.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setSearchResults(filteredResults);
+  };
 
   return (
     <>
@@ -48,7 +60,12 @@ const CollectionPage = ({ name }) => {
           </h1>
           <div className="search-bar px-6 lg:px-24 relative z-10">
             {/* sticky top-24 */}
-            <Searchbar grid={grid} setGrid={setGrid} />
+            <Searchbar
+              grid={grid}
+              setGrid={setGrid}
+              value={searchQuery}
+              handleSearch={handleSearch}
+            />
           </div>
 
           {loading ? (
@@ -65,7 +82,7 @@ const CollectionPage = ({ name }) => {
             </div>
           ) : (
             <div className="grid min-[948px]:grid-cols-2 gap-x-8 gap-y-8 mt-8 px-6 lg:px-24">
-              {collection.map((prod, index) => (
+              {searchResults.map((prod, index) => (
                 <ProductCardLg prod={prod} key={index} />
               ))}
             </div>

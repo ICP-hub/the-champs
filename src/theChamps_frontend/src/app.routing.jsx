@@ -36,7 +36,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   { path: "/collection", element: <CollectionPage name={"All Collection"} /> },
-  { path: "/collections/collection", element: <ProductPage name={""} /> },
+  { path: "/collections/:id", element: <ProductPage name={""} /> },
   { path: "/collections/collection/a", element: <ProductDetails /> },
 
   { path: "/faq", element: <FAQ /> },

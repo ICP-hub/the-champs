@@ -5,7 +5,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { IoGridOutline } from "react-icons/io5";
 import { CiBoxList } from "react-icons/ci";
-const Searchbar = ({ grid, setGrid, gridrequired }) => {
+const Searchbar = ({ grid, setGrid, gridrequired, value, handleSearch }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleOptionChange = (event) => {
@@ -24,6 +24,8 @@ const Searchbar = ({ grid, setGrid, gridrequired }) => {
             type="text"
             placeholder="Search our collection"
             className="bg-transparent border border-transparent outline-none  w-full"
+            value={value}
+            onChange={handleSearch}
           />
         </div>
         {/* <div className="flex text-xl items-center justify-center  gap-2 border-[1.5px]  border-gray-400 rounded-md  px-3 py-2 lg:w-[12%] mb-12 overflow-hidden">
@@ -57,25 +59,25 @@ const Searchbar = ({ grid, setGrid, gridrequired }) => {
                     <h1 className="text-md  text-left font-medium">
                       Floor Price
                     </h1>
-                    <button className="mt-2  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300   bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E]  hover:text-white rounded-lg">
+                    <button className="mt-2  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300   bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg">
                       Highest to Lowest
                     </button>
-                    <button className="mt-2 flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300   bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E]  hover:text-white rounded-lg">
+                    <button className="mt-2 flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300   bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg">
                       Lowest to Highest
                     </button>
                   </div>
                   <div className="m-6 mt-2  text-center">
                     <h1 className="text-md  text-left font-medium">Sort By</h1>
-                    <button className="mt-2  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300   bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E]  hover:text-white rounded-lg">
+                    <button className="mt-2  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300   bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg">
                       Recent Creations
                     </button>
-                    <button className="mt-2  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E]  hover:text-white rounded-lg">
+                    <button className="mt-2  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg">
                       Latest Creations
                     </button>
                   </div>
 
                   <div className="m-6 text-center">
-                    <button className="  flex items-center w-full justify-center  px-3 py-2 border-[1.5px]   button text-white rounded-lg">
+                    <button className="  flex items-center w-full justify-center  px-3 py-2 border-[1.5px]   button border-white text-white rounded-lg ">
                       Apply Filters
                     </button>
                   </div>
