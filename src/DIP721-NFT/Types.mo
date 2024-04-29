@@ -6,6 +6,8 @@ import Nat64 "mo:base/Nat64";
 import Blob "mo:base/Blob";
 import Principal "mo:base/Principal";
 import Result "mo:base/Result";
+import Time "mo:base/Time";
+import Types "../DIP-20/types";
 
 module {
   public type Dip721NonFungibleToken = {
@@ -23,6 +25,19 @@ module {
     #InvalidTokenId;
     #Other;
   };
+
+  public type FractionalNFT = {
+    nft: Nft;
+    fractional_token : Types.Metadata;
+  };
+
+
+
+  public type FractionalNFTError = {
+    #CollectionNotFound;
+  };
+
+  public type FractionalNFTResult = Result<FractionalNFT, FractionalNFTError>; 
 
   public type ApiError = {
     #Unauthorized;
@@ -150,6 +165,46 @@ module {
 
   public type CollectionDetails = {
 
-  }
+  };
 
+    public type ContactId = Text;
+
+    public type UserContact = {
+        name : Text;
+        email : Text;
+        message : Text;
+        contact_number : Text;
+    };
+
+    public type Contact = UserContact and {
+        id : ContactId;
+        time_created : Time.Time;
+        time_updated : Time.Time;
+    };
+
+    public type CreateContactError = {
+        #EmptyName;
+        #EmptyEmail;
+        #EmptyMessage;
+    };
+
+    public type GetContactError = {
+        #UserNotAuthenticated;
+        #UserNotAdmin;
+        #ContactNotFound;
+    };
+
+    public type DeleteContactError = {
+        #UserNotAdmin;
+        #UserNotAuthenticated;
+    };
+
+    public type UpdateContactError = {
+        #UserNotAuthenticated;
+        #UserNotAdmin;
+        #EmptyName;
+        #EmptyEmail;
+        #EmptyMessage;
+        #ContactNotFound;
+    };
 };

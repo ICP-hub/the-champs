@@ -41,4 +41,14 @@ module {
             case null { P.unreachable() };
             case (?x_) { x_ };
         };
+
+    public type Metadata = {
+        logo : Text;
+        name : Text;
+        symbol : Text;
+        decimals : Nat8;
+        totalSupply : Nat;
+        owner : Principal;
+        fee : Nat;
+    };
 };    
