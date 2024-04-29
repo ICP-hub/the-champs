@@ -18,7 +18,7 @@ const HomeFeatured = () => {
 
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
-      <FancyHeader normal="View" fancy="All our collections" />
+      <FancyHeader normal="View" fancy="All our collections" small />
       {isLoading ? (
         <div className="flex justify-center items-center">
           Loading collections...

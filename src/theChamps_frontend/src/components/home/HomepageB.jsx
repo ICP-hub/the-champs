@@ -19,12 +19,14 @@ import { Grid, Pagination, Navigation, Keyboard } from "swiper/modules";
 import { motion } from "framer-motion";
 import CollectionApi from "../../api/CollectionApi";
 import { useEffect, useState } from "react";
+import NFTApi from "../../api/NftApi";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageB /> : Soccer collection.
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageB = () => {
   const { getAllCollections, isLoading, collections } = CollectionApi();
+  const { getCollectionWiseNFT, nftLoading, NFTlist } = NFTApi();
   const [numColumns, setNumColumns] = useState(2);
 
   const updateBreakpoints = () => {
@@ -44,17 +46,24 @@ const HomePageB = () => {
     return () => window.removeEventListener("resize", updateBreakpoints);
   }, []);
 
+  // Effect hook get collection onLoad;
   useEffect(() => {
     getAllCollections();
   }, []);
 
+  // Effect hook extract nft from collection
+  useEffect(() => {
+    if (collections) {
+      collections.map((collect) => getCollectionWiseNFT(collect.canister_id));
+    }
+  }, [isLoading]);
+
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
-      <FancyHeader
-        normal="Champ's"
-        fancy="Special Collection of 20 Footballers"
-        small={true}
-      />
+      <div className="flex gap-2 max-md:flex-col">
+        <FancyHeader normal="Champ's" />
+        <FancyHeader fancy="Special Collection of 20 Footballers" small />
+      </div>
       {isLoading ? (
         <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 px-8 gap-x-8 gap-y-8">
           {Array.from({ length: numColumns }).map((_, index) => (
@@ -107,14 +116,9 @@ const HomePageB = () => {
             }}
             className="mySwiper"
           >
-            {collections?.map((collection, index) => (
+            {NFTlist?.map((NFT, index) => (
               <SwiperSlide key={index}>
-                <Collections
-                  key={index}
-                  image={soccer1}
-                  title={collection.data.name}
-                  subtitle={collection.canister_id.toText()}
-                />
+                <NFTCard key={index} NFT={NFT} collection={collections} />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -131,18 +135,31 @@ const HomePageB = () => {
 };
 
 /* ----------------------------------------------------------------------------------------------------- */
-/*  @ <Collections /> : collection card.
+/*  @ <NFTCard /> : collection card.
 /* ----------------------------------------------------------------------------------------------------- */
-const Collections = ({ image, title, subtitle }) => {
+const NFTCard = ({ NFT, collection }) => {
+  const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    const img = NFT.metadata.map((item) => item.key_val_data);
+    // console.log("This console is coming from HOMEPAGE B  NFT:", NFT);
+    // console.log(Object.values(img));
+  }, [NFT]);
+
   return (
     <motion.div
       whileHover={{ translateY: -15 }}
       className="flex flex-col gap-4 cursor-pointer"
     >
-      <img src={image} alt="image" className="rounded-2xl object-contain" />
+      <img src={soccer1} alt="image" className="rounded-2xl object-contain" />
       <div className="flex flex-col">
-        <h1 className="text-[28px] font-bold line-clamp-1">{title}</h1>
-        <p className="text-[15px] text-[#7B7583]">{subtitle}</p>
+        <h1 className="text-[28px] font-bold line-clamp-1">
+          {NFT.owner.toText()}
+        </h1>
+        {/* Static collection pick for now we can show featured later */}
+        <p className="text-[15px] text-[#7B7583]">
+          By {collection[0].data.name}
+        </p>
       </div>
     </motion.div>
   );
