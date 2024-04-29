@@ -8,7 +8,7 @@ const FancyHeader = ({ normal, fancy, small }) => {
           : "max-[940px]:text-3xl"
       }`}
     >
-      {normal ? <h1 className="leading-10">{normal}</h1> : null}
+      {normal ? <h1 className="leading-10 pb-1">{normal}</h1> : null}
       <span className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] inline-block text-transparent bg-clip-text pb-1">
         {fancy}
       </span>

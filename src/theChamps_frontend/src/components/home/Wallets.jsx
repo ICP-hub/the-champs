@@ -12,17 +12,18 @@ import { motion } from "framer-motion";
 /* ----------------------------------------------------------------------------------------------------- */
 const Wallets = () => {
   return (
-    <div className="flex justify-evenly items-center max-md:items-start max-md:flex-col max-md:px-6">
-      {[wallet1, wallet2, wallet3, wallet6].map((src, index) => (
-        <motion.img
-          initial={{ scale: 0 }}
-          animate={{ scale: 1.1 }}
-          transition={{ duration: 0.6 }}
-          key={index}
-          src={src}
-          alt={`anim${index + 1}`}
-          className="max-h-12 "
-        />
+    <div className="grid md:grid-cols-4 md:px-24 max-md:px-6 gap-x-4 gap-y-4">
+      {[wallet2, wallet3, wallet6, wallet1].map((src, index) => (
+        <div className="flex items-center justify-center" key={index}>
+          <motion.img
+            initial={{ scale: 0 }}
+            animate={{ scale: 1.1 }}
+            transition={{ duration: 0.6 }}
+            src={src}
+            alt={`anim${index + 1}`}
+            className="max-h-12"
+          />
+        </div>
       ))}
     </div>
   );
