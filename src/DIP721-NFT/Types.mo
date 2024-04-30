@@ -12,8 +12,12 @@ import Types "../DIP-20/types";
 module {
   public type Dip721NonFungibleToken = {
     logo: LogoResult;
+    bannerImage : LogoResult;
     name: Text;
     symbol: Text;
+    description: Text;
+    created_at: Time.Time;
+    updated_at: Time.Time;
     maxLimit : Nat16;
   };
 

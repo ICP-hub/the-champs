@@ -8,3 +8,4 @@ motoko-base = "https://github.com/dfinity/motoko-base#master@f2b7a634e34213aa528
 motoko-sha = "https://github.com/tgalal/motoko-sha#master@9e2468f51ef060ae04fde8d573183191bda30189"
 motoko-bitcoin = "https://github.com/tgalal/motoko-bitcoin#master@10cf7f2efbba9bb4d077013db1b990143f193844"
 cap-motoko-library = "https://github.com/stephenandrews/cap-motoko-library#master@f3332361111e20788c9ecabba714332b31fbd5fb"
+uuid = "1.0.0"
