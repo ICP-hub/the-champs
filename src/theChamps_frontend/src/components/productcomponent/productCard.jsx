@@ -7,8 +7,6 @@ import { motion } from "framer-motion";
 import ReadMore from "../common/ReadMore";
 
 const ProductCard = ({ product }) => {
-  const { name, price, imageUrl } = product;
-
   return (
     <div
       className="border   rounded-xl overflow-hidden "
@@ -39,7 +37,6 @@ const ProductCard = ({ product }) => {
             className="mt-4   button   bg-opacity-100 text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
             onClick={notify}
           >
-            {" "}
             Buy now
           </button>
         </div>

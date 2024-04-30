@@ -2,7 +2,6 @@
 /*  @ imports.
 /* ----------------------------------------------------------------------------------------------------- */
 import { useEffect, useState } from "react";
-import { FakeData } from "../../FakeProdDatbase";
 import ProductCard from "../productcomponent/productCard";
 import Searchbar from "../common/Searchbar";
 import MyProfileActivity from "./MyProfileActivity";
@@ -11,35 +10,18 @@ import { motion } from "framer-motion";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <MyProfileB /> : tab contents
 /* ----------------------------------------------------------------------------------------------------- */
-const MyProfileB = ({ activeTabIndex }) => {
+const MyProfileB = ({ activeTabIndex, userNFT }) => {
   // Replace the filterProducts state later
-  const [filteredProducts, setFilteredProducts] = useState(FakeData);
+  const [filteredNFT, setFilteredNFT] = useState(null);
 
   useEffect(() => {
     let filtered = [];
-
-    switch (activeTabIndex) {
-      // use filter method for real data : demo for now
-      case "My NFTs":
-        filtered = FakeData.slice(0, 3);
-        break;
-      case "Favorites":
-        filtered = FakeData.slice(0, 6);
-        break;
-      case "Selling":
-        filtered = FakeData.slice(0, 2);
-        break;
-      default:
-        filtered = FakeData;
-    }
-
-    setFilteredProducts(filtered);
+    setFilteredNFT(filtered);
   }, [activeTabIndex]);
 
   return (
     <div className="flex flex-col">
       <div className="mt-8">
-        {" "}
         <Searchbar />{" "}
       </div>
       {activeTabIndex === "Activity" ? (
@@ -52,9 +34,10 @@ const MyProfileB = ({ activeTabIndex }) => {
           transition={{ duration: 0.5 }}
           className="grid lg:grid-cols-3 md:grid-cols-2 gap-x-8 gap-y-8"
         >
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {userNFT?.map(
+            (product) => console.log(product)
+            // <ProductCard key={product.id} product={product} />
+          )}
         </motion.div>
       )}
     </div>
