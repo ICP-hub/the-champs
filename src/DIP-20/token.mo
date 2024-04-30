@@ -34,15 +34,7 @@ shared(msg) actor class Token(
     type Operation = Types.Operation;
     type TransactionStatus = Types.TransactionStatus;
     type TxRecord = Types.TxRecord;
-    type Metadata = {
-        logo : Text;
-        name : Text;
-        symbol : Text;
-        decimals : Nat8;
-        totalSupply : Nat;
-        owner : Principal;
-        fee : Nat;
-    };
+
     // returns tx index or error msg
     public type TxReceipt = {
         #Ok: Nat;
@@ -73,8 +65,8 @@ shared(msg) actor class Token(
     private var balances = HashMap.HashMap<Principal, Nat>(1, Principal.equal, Principal.hash);
     private var allowances = HashMap.HashMap<Principal, HashMap.HashMap<Principal, Nat>>(1, Principal.equal, Principal.hash);
     balances.put(owner_, totalSupply_);
-      private stable var capacity = 1000000000000000000;
-  private stable var balance = ExperimentalCycles.balance();
+    private stable var capacity = 1000000000000000000;
+    private stable var balance = ExperimentalCycles.balance();
     private stable let genesis : TxRecord = {
         caller = ?owner_;
         op = #mint;
@@ -309,7 +301,7 @@ shared(msg) actor class Token(
         return _allowance(owner, spender);
     };
 
-    public query func getMetadata() : async Metadata {
+    public query func getMetadata() : async Types.Metadata {
         return {
             logo = logo_;
             name = name_;
@@ -358,7 +350,7 @@ shared(msg) actor class Token(
     };
 
     public type TokenInfo = {
-        metadata: Metadata;
+        metadata: Types.Metadata;
         feeTo: Principal;
         // status info
         historySize: Nat;

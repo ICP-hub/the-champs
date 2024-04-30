@@ -7,14 +7,28 @@ import Types "../DIP721-NFT/Types";
 import DIP20ActorClass "../DIP-20/token";
 import List "mo:base/List";
 import TrieMap "mo:base/TrieMap";
+import Result "mo:base/Result";
+import Iter "mo:base/Iter";
+import UUID "mo:uuid/UUID";
+import Source "mo:uuid/async/SourceV4";
+import Time "mo:base/Time";
+import Text "mo:base/Text";
 // import Helpers "./helper";
 
 actor Champs {
      
         // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
+        let g = Source.Source();
+        private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
+        private var stavlenftcollectionMap : [(Principal, [Principal])] = [];
+
+        private var favourites = TrieMap.TrieMap<Principal, [Types.Nft] >(Principal.equal,Principal.hash);
+        private var stablefavourites : [(Principal, [Types.Nft])] = [];
         
-        var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
-        var favourites = TrieMap.TrieMap<Principal, [Types.Nft] >(Principal.equal,Principal.hash);
+        private var contacts = TrieMap.TrieMap<Types.ContactId, Types.Contact>(Text.equal, Text.hash);
+        private stable var stablecontacts : [(Types.ContactId, Types.Contact)] = [];
+
+        private var fractionalnftmap = TrieMap.TrieMap<Principal, [(Types.FractionalNFT,Principal)]>(Principal.equal,Principal.hash);
 
         public func idQuick() : async Principal { 
             return Principal.fromActor(Champs);
@@ -51,7 +65,13 @@ actor Champs {
             };
         };
 
-        
+        // public shared ({caller = user}) func TransferDIP20tokens (to : Principal, amount : Nat) : async Text {
+        //     let fractiontokens = await DIP20ActorClass.Token();
+        //     let amountAccepted = await fractiontokens.wallet_receive();
+        //     let transfer = await fractiontokens.transfer(to, amount);
+        //     return "Tokens transferred";
+        // }; 
+
         public shared ({caller = user}) func FractionalizeNFt(
             nftcanisterid : Principal,
             to : Principal,
@@ -64,13 +84,13 @@ actor Champs {
             _totalSupply: Nat,
             _owner: Principal,
             _fee : Nat 
-            ) : async Text {
+            ) : async Types.FractionalNFTResult {
             Debug.print(debug_show(Cycles.balance()));
             Debug.print(debug_show(user));
             let collection_canister_id  = nftcollectionMap.get(user);
             switch (collection_canister_id){
                 case (null) {
-                    return "NFT collection not found";
+                    return #Err(#CollectionNotFound);
                 };
                 case (?id) {  
                     let nftcanisteractor = actor(Principal.toText(nftcanisterid)) : actor {mintDip721 : (to : Principal , metadata : Types.MetadataDesc ) -> async Types.MintReceipt};
@@ -94,15 +114,43 @@ actor Champs {
                     let amountAccepted = await fractiontokens.wallet_receive();
                     let minttokens = await fractiontokens.mint(tokenowner, _totalSupply);
                     Debug.print(debug_show(minttokens));
-                    let tokencanister = await fractiontokens.getCanisterId();
+                    let tokencanister : Principal = await fractiontokens.getCanisterId();
                     Debug.print(debug_show(tokencanister));
-                    return "NFT fractionalized";
+                    let tokenmetadata = {
+                        logo = _logo;
+                        name = _name;
+                        symbol = _symbol;
+                        decimals = _decimals;
+                        totalSupply = _totalSupply;
+                        owner = _owner;
+                        fee = _fee;
+                    };
+                    let nftdata = await getNFTdetails(nftcanisterid, newnft.token_id);
+                    
+                    let fractionNftDetails : Types.FractionalNFT = {
+                        nft = nftdata;
+                        fractional_token = tokenmetadata;
+                    };
+                    switch(fractionalnftmap.get(user)){
+                        case null {
+                            let newfractionalnft = [(fractionNftDetails,tokencanister)];
+                            fractionalnftmap.put(user, newfractionalnft);
+                            return #Ok(fractionNftDetails);
+                        };
+                        case (?nft){
+                            let temp = List.push((fractionNftDetails,tokencanister), List.fromArray(nft));
+                            fractionalnftmap.put(user, List.toArray(temp));
+                            return #Ok(fractionNftDetails);
+                        };
+                    };
+                    return #Ok(fractionNftDetails);
                     }
                     }
                 };
             };
+        };
 
-            };
+        
 
         public func getusersnft (user : Principal) : async Types.MetadataResultArray {
             var results = List.nil<Types.MetadataDesc>(); 
@@ -271,5 +319,92 @@ actor Champs {
                 return data;
             };
         };
+    };
+
+    // ******************************************* Contact US CRUD functions *************************************************************
+
+        public shared (msg) func createContact(co : Types.UserContact) : async Result.Result<(Types.Contact), Types.CreateContactError> {
+
+        if (co.name == "") { return #err(#EmptyName) };
+        if (co.email == "") { return #err(#EmptyEmail) };
+        if (co.message == "") { return #err(#EmptyMessage) };
+
+        let contactId : Types.ContactId = UUID.toText(await g.new());
+
+        let contact : Types.Contact = {
+            id = contactId;
+            name = co.name;
+            email = co.email;
+            contact_number = co.contact_number;
+            message = co.message;
+            time_created = Time.now();
+            time_updated = Time.now();
+        };
+        contacts.put(contactId, contact);
+        return #ok(contact);
+    };
+    
+        public shared (msg) func updateContact(
+        id : Types.ContactId,
+        read : Bool,
+    ) : async Result.Result<(Types.Contact), Types.UpdateContactError> {
+        // if (Principal.isAnonymous(msg.caller)) {
+        //     return #err(#UserNotAuthenticated);
+        // };
+        // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
+
+        let result = contacts.get(id);
+        switch (result) {
+            case null {
+                return #err(#ContactNotFound);
+            };
+            case (?v) {
+                let contact : Types.Contact = {
+                    id = id;
+                    email = v.email;
+                    name = v.name;
+                    contact_number = v.contact_number;
+                    message = v.message;
+                    read = read;
+                    time_created = v.time_created;
+                    // only update time_updated
+                    time_updated = Time.now();
+                };
+                contacts.put(id, contact);
+                return #ok(contact);
+            };
+        };
+    };
+
+    public query func getContact(id : Types.ContactId) : async Result.Result<Types.Contact, Types.GetContactError> {
+        let contact = contacts.get(id);
+        return Result.fromOption(contact, #ContactNotFound);
+        // If the post is not found, this will return an error as result.
+    };
+
+    public shared (msg) func deleteContact(id : Types.ContactId) : async Result.Result<(), Types.DeleteContactError> {
+        let userPrincipalStr = Principal.toText(msg.caller);
+
+        // Check if the caller is an admin
+        // let adminstatus = await isAdmin(msg.caller);
+        // if (adminstatus == false) {
+        //     return #err(#UserNotAdmin); // We require the user to be admin
+        // };
+        contacts.delete(id);
+        return #ok(());
+    };
+
+    public query func listContacts() : async [(Types.ContactId, Types.Contact)] {
+        return Iter.toArray(contacts.entries());
+    };
+    
+    system func preupgrade() {
+    };
+
+    // Postupgrade function to restore the data from stable variables
+    system func postupgrade() {
     };
 }
