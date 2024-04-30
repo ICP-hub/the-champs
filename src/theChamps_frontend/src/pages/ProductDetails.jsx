@@ -11,10 +11,34 @@ import nft from "../assets/nft.png";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import MyProfileActivity from "../components/myProfile/MyProfileActivity";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { Principal } from "@dfinity/principal";
+import { useCanister } from "@connect2ic/react";
 
 const ProductDetails = () => {
   const [open, setOpen] = useState(false);
+  const { index, id } = useParams();
+  const [backend] = useCanister("backend");
+  const [nft, getNft] = useState("");
+
+  console.log("Second Last Value:", id);
+  console.log("Last Value:", index);
+
+  const getNftDetails = async () => {
+    try {
+      const canister_id = Principal.fromText(id);
+      const id1 = parseInt(index);
+
+      const res = await backend.getNFTdetails(canister_id, id1);
+      setTimeout(() => {}, timeout);
+
+      getNft(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log("nftdetails", nft);
+
   useEffect(() => {
     // Disable scroll when modal is open
     if (open) {
@@ -22,6 +46,7 @@ const ProductDetails = () => {
     } else {
       document.body.style.overflow = "auto";
     }
+    getNftDetails();
 
     // Cleanup: Enable scroll when component unmounts
     return () => {
@@ -94,7 +119,7 @@ const ProductDetails = () => {
                   className="
             text-gray-500 text-sm mt-4"
                 >
-                  By TheSalvare
+                  {"principal" || nft.owner.toText()}
                 </p>
               </div>
               <div className="text-center ">
