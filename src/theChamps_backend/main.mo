@@ -16,7 +16,7 @@ import Text "mo:base/Text";
 // import Helpers "./helper";
 
 actor Champs {
-     
+        
         // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
         let g = Source.Source();
         private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
@@ -184,13 +184,21 @@ actor Champs {
     };
 
     public shared ({caller = user}) func getsingleCollectiondetail(collection_id : Principal) : async Types.Dip721NonFungibleToken {
-        let nftcanisteractor = actor(Principal.toText(collection_id)) : actor {logoDip721 : () -> async Types.LogoResult; nameDip721 : () -> async Text; symbolDip721 : () -> async Text; getMaxLimitDip721 : () -> async Nat16;};
+        let nftcanisteractor = actor(Principal.toText(collection_id)) : actor {logoDip721 : () -> async Types.LogoResult; nameDip721 : () -> async Text; symbolDip721 : () -> async Text; getMaxLimitDip721 : () -> async Nat16; getCanisterId : () -> async Principal; bannerDip721 : () -> async Types.LogoResult; descriptionDip721 : () -> async Text;createdAtDip721 : () -> async Time.Time; updatedAtDip721 : () -> async Time.Time;};
         let logo = await nftcanisteractor.logoDip721();
         let name = await nftcanisteractor.nameDip721();
         let symbol = await nftcanisteractor.symbolDip721();
         let totalSupply = await nftcanisteractor.getMaxLimitDip721();
+        let description = await nftcanisteractor.descriptionDip721();
+        let banner = await nftcanisteractor.bannerDip721();
+        let createdAt = await nftcanisteractor.createdAtDip721();
+        let updatedAt = await nftcanisteractor.updatedAtDip721();
         let collection : Types.Dip721NonFungibleToken = {
             logo = logo;
+            bannerImage = banner;
+            description = description;
+            created_at = createdAt;
+            updated_at = updatedAt;    
             name = name;
             symbol = symbol;
             maxLimit = totalSupply;
@@ -203,13 +211,21 @@ actor Champs {
         var collection = List.nil<Types.CollectionDetials>();
         for (collections in nftcollectionMap.vals()){
             for (id in collections.vals()){
-                let nftcanisteractor = actor(Principal.toText(id)) : actor {logoDip721 : () -> async Types.LogoResult; nameDip721 : () -> async Text; symbolDip721 : () -> async Text; getMaxLimitDip721 : () -> async Nat16; getCanisterId : () -> async Principal;};
+                let nftcanisteractor = actor(Principal.toText(id)) : actor {logoDip721 : () -> async Types.LogoResult; nameDip721 : () -> async Text; symbolDip721 : () -> async Text; getMaxLimitDip721 : () -> async Nat16; getCanisterId : () -> async Principal; bannerDip721 : () -> async Types.LogoResult; descriptionDip721 : () -> async Text;createdAtDip721 : () -> async Time.Time; updatedAtDip721 : () -> async Time.Time;};
                 let logo = await nftcanisteractor.logoDip721();
                 let name = await nftcanisteractor.nameDip721();
                 let symbol = await nftcanisteractor.symbolDip721();
                 let totalSupply = await nftcanisteractor.getMaxLimitDip721();
+                let description = await nftcanisteractor.descriptionDip721();
+                let banner = await nftcanisteractor.bannerDip721();
+                let createdAt = await nftcanisteractor.createdAtDip721();
+                let updatedAt = await nftcanisteractor.updatedAtDip721();
                 let tempcollection : Types.Dip721NonFungibleToken = {
                     logo = logo;
+                    bannerImage = banner;
+                    description = description;
+                    created_at = createdAt;
+                    updated_at = updatedAt;    
                     name = name;
                     symbol = symbol;
                     maxLimit = totalSupply;
@@ -231,13 +247,21 @@ actor Champs {
     };
 
     public shared ({caller = user}) func getcollectiondetails(collectioncanisterid : Principal) : async Types.Dip721NonFungibleToken {
-        let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {logoDip721 : () -> async Types.LogoResult; nameDip721 : () -> async Text; symbolDip721 : () -> async Text; getMaxLimitDip721 : () -> async Nat16;};
+        let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {logoDip721 : () -> async Types.LogoResult; nameDip721 : () -> async Text; symbolDip721 : () -> async Text; getMaxLimitDip721 : () -> async Nat16; getCanisterId : () -> async Principal; bannerDip721 : () -> async Types.LogoResult; descriptionDip721 : () -> async Text;createdAtDip721 : () -> async Time.Time; updatedAtDip721 : () -> async Time.Time;};
         let logo = await nftcanisteractor.logoDip721();
         let name = await nftcanisteractor.nameDip721();
         let symbol = await nftcanisteractor.symbolDip721();
         let totalSupply = await nftcanisteractor.getMaxLimitDip721();
+        let description = await nftcanisteractor.descriptionDip721();
+        let banner = await nftcanisteractor.bannerDip721();
+        let createdAt = await nftcanisteractor.createdAtDip721();
+        let updatedAt = await nftcanisteractor.updatedAtDip721();
         let collection : Types.Dip721NonFungibleToken = {
             logo = logo;
+            bannerImage = banner;
+            description = description;
+            created_at = createdAt;
+            updated_at = updatedAt;    
             name = name;
             symbol = symbol;
             maxLimit = totalSupply;
@@ -323,7 +347,7 @@ actor Champs {
 
     // ******************************************* Contact US CRUD functions *************************************************************
 
-        public shared (msg) func createContact(co : Types.UserContact) : async Result.Result<(Types.Contact), Types.CreateContactError> {
+        public func createContact(co : Types.UserContact) : async Result.Result<(Types.Contact), Types.CreateContactError> {
 
         if (co.name == "") { return #err(#EmptyName) };
         if (co.email == "") { return #err(#EmptyEmail) };
