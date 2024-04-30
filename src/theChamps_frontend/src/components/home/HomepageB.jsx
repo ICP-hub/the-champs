@@ -9,7 +9,6 @@ import CustomButton from "../common/CustomButton";
 import { MdArrowOutward } from "react-icons/md";
 import FancyHeader from "../common/FancyHeader";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Principal } from "@dfinity/principal";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/grid";
@@ -25,9 +24,10 @@ import NFTApi from "../../api/NftApi";
 /*  @ <HomePageB /> : Soccer collection.
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageB = () => {
-  const { getAllCollections, isLoading, collections } = CollectionApi();
-  const { getCollectionWiseNFT, nftLoading, NFTlist } = NFTApi();
+  const { getAllCollections, collections } = CollectionApi();
+  const { getCollectionWiseNFT, NFTlist, nftLoading } = NFTApi();
   const [numColumns, setNumColumns] = useState(2);
+  const [finalLoading, setFinalLoading] = useState(true);
 
   const updateBreakpoints = () => {
     const width = window.innerWidth;
@@ -53,10 +53,17 @@ const HomePageB = () => {
 
   // Effect hook extract nft from collection
   useEffect(() => {
-    if (collections) {
-      collections.map((collect) => getCollectionWiseNFT(collect.canister_id));
+    if (collections && collections.length > 0) {
+      getCollectionWiseNFT(collections[0].canister_id)
+        .then(() => {
+          setFinalLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error fetching NFT for the first collection:", err);
+          setFinalLoading(false);
+        });
     }
-  }, [isLoading]);
+  }, [collections]);
 
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
@@ -64,7 +71,7 @@ const HomePageB = () => {
         <FancyHeader normal="Champ's" />
         <FancyHeader fancy="Special Collection of 20 Footballers" small />
       </div>
-      {isLoading ? (
+      {finalLoading ? (
         <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 px-8 gap-x-8 gap-y-8">
           {Array.from({ length: numColumns }).map((_, index) => (
             <CollectionLoader key={index} />

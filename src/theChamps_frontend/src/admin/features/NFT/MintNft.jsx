@@ -5,6 +5,8 @@ import { FaLastfm } from "react-icons/fa6";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { Form, useParams } from "react-router-dom";
+import { CiSquareRemove } from "react-icons/ci";
+import { IoIosAddCircleOutline } from "react-icons/io";
 
 const MintNft = () => {
   const [loading, setLoading] = useState(false);
@@ -22,21 +24,13 @@ const MintNft = () => {
     metadata: [
       {
         data: [{}],
-        keyValData: [
-          { key: "size", val: { Nat64Content: 123456 } },
-          { key: "format", val: { TextContent: "JPEG" } },
-          { key: "resolution", val: { Nat32Content: 1080 } },
-          { key: "quality", val: { Nat8Content: 95 } },
-          { key: "fileType", val: { TextContent: "image/jpeg" } },
-          { key: "tag", val: { TextContent: "landscape" } },
-          { key: "locationType", val: { Nat8Content: 4 } },
-          { key: "logo", val: { BlobContent: "http://logo_url.com" } },
-          { key: "symbol", val: { TextContent: "SYMB" } },
+        key_val_data: [
+          { key: "size", val: { Nat64Content: 32 } },
+          { key: "resolution", val: { TextContent: "testing" } },
         ],
-        purpose: "",
+        purpose: "Preview",
       },
     ],
-
     logo: "Additional Text 1",
     name: "Additional Text 2",
     symbol: "Additional Text 3",
@@ -51,51 +45,63 @@ const MintNft = () => {
       ...formData,
       metadata: [
         ...formData.metadata,
-        { data: "", keyValData: "", purpose: "Preview" },
+        { key_val_data: [], purpose: "Preview", data: "" },
       ],
     });
   };
 
   const handleRemoveMetadata = (index) => {
-    const updatedMetadata = [...formData.metadata];
-    updatedMetadata.splice(index, 1);
+    const updatedMetadata = formData.metadata.filter((_, i) => i !== index);
     setFormData({
       ...formData,
       metadata: updatedMetadata,
     });
   };
 
-  const handleMetadataChange = (event, index, field) => {
+  const handleChange = (event, index, field) => {
     const { name, value } = event.target;
     const updatedMetadata = [...formData.metadata];
-    if (field) {
-      updatedMetadata[index][field] = value;
-    } else {
-      updatedMetadata[index][name] = value;
-    }
+    updatedMetadata[index][field || name] = value;
     setFormData({
       ...formData,
       metadata: updatedMetadata,
     });
   };
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    // If the changed field is within the metadata object
-    if (name.startsWith("metadata.")) {
-      const updatedMetadata = {
-        ...formData.metadata,
-        [name.split(".")[1]]: value,
-      };
-      setFormData((prevData) => ({
-        ...prevData,
-        metadata: updatedMetadata,
-      }));
-    } else {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+
+  const handleMetadataKeyValuePairChange = (
+    event,
+    index,
+    subIndex,
+    property
+  ) => {
+    const { value } = event.target;
+    const updatedMetadata = [...formData.metadata];
+    updatedMetadata[index].key_val_data[subIndex][property] = value;
+    setFormData({
+      ...formData,
+      metadata: updatedMetadata,
+    });
+  };
+
+  const handleAddKeyValuePair = (index) => {
+    const updatedMetadata = [...formData.metadata];
+    updatedMetadata[index].key_val_data.push({ key: "", val: "" });
+    setFormData({
+      ...formData,
+      metadata: updatedMetadata,
+    });
+  };
+  const handleRemoveKeyValuePair = (index, subIndex) => {
+    const updatedMetadata = [...formData.metadata];
+    updatedMetadata[index].key_val_data.splice(subIndex, 1);
+    setFormData({
+      ...formData,
+      metadata: updatedMetadata,
+    });
+  };
+
+  const saveFormData = () => {
+    console.log(formData); // Send formData to the backend
   };
 
   const handleSubmit = async (e) => {
@@ -108,7 +114,7 @@ const MintNft = () => {
         formData.nftCanisterId,
         formData.to,
         formData.tokenowner,
-        formData.metadata,
+        formData.metadata, // Assuming formData.metadata is in the correct format
         formData.logo,
         formData.name,
         formData.symbol,
@@ -184,62 +190,119 @@ const MintNft = () => {
         </div>
         <div>
           <h1 className="md:text-xl text-sm font-semibold">META DATA</h1>
+
           {formData.metadata.map((metadataEntry, index) => (
-            <div key={index} className="w-50">
+            <div key={index}>
               <div>
-                <label
-                  htmlFor={`metadata-data-${index}`}
-                  className="md:text-lg text-sm"
-                >
-                  Data
-                </label>
+                <label htmlFor={`metadata-data-${index}`}>Data</label>
                 <input
                   type="text"
-                  required
                   name={`metadata-data-${index}`}
-                  id={`metadata-data-${index}`}
                   value={metadataEntry.data}
-                  onChange={(event) =>
-                    handleMetadataChange(event, index, "data")
-                  }
+                  onChange={(event) => handleChange(event, index, "data")}
                   className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
                 />
               </div>
-              <div>
-                <label
-                  htmlFor={`metadata-keyvaldata-${index}`}
-                  className="md:text-lg text-sm"
+
+              <h1 className="md:text-xl text-sm font-semibold mt-4">
+                key value data
+              </h1>
+
+              {metadataEntry.key_val_data.map((item, subIndex) => (
+                <div
+                  key={subIndex}
+                  className="flex gap-4 my-4 items-center justify-center"
                 >
-                  Metadata Key Value Data
-                </label>
-                <input
-                  type="text"
-                  required
-                  name={`metadata-keyvaldata-${index}`}
-                  id={`metadata-keyvaldata-${index}`}
-                  value={metadataEntry.keyValData}
-                  onChange={(event) =>
-                    handleMetadataChange(event, index, "keyValData")
-                  }
-                  className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor={`metadata-purpose-${index}`}
-                  className="md:text-lg text-sm"
-                >
+                  <div>
+                    <label htmlFor="name" className="md:text-lg text-sm ">
+                      key
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
+                      value={item.key}
+                      onChange={(event) =>
+                        handleMetadataKeyValuePairChange(
+                          event,
+                          index,
+                          subIndex,
+                          "key"
+                        )
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="name" className="md:text-lg text-sm">
+                      Select data type
+                    </label>
+                    <select
+                      className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
+                      value={Object.keys(item.val)[0]}
+                      onChange={(event) =>
+                        handleMetadataKeyValuePairChange(
+                          event,
+                          index,
+                          subIndex,
+                          "val"
+                        )
+                      }
+                    >
+                      <option value="">Select Data Type</option>
+                      <option value="Nat64Content">Nat64</option>
+                      <option value="Nat32Content">Nat32</option>
+                      <option value="Nat8Content">Nat8</option>
+                      <option value="NatContent">Nat</option>
+                      <option value="Nat16Content">Nat16</option>
+                      <option value="BlobContent">Blob</option>
+                      <option value="TextContent">Text</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="name" className="md:text-lg text-sm ">
+                      key value
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
+                      value={item.val}
+                      onChange={(event) =>
+                        handleMetadataKeyValuePairChange(
+                          event,
+                          index,
+                          subIndex,
+                          "val"
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center pt-6">
+                    <button
+                      className="uppercase text-sm md:text-[16px]   flex items-center justify-start gap-3  py-2 px-2 md:px-4 md:py-2 rounded-xl  bg:text-[#e1e1e1]  "
+                      type="button"
+                      onClick={() => handleRemoveKeyValuePair(index, subIndex)}
+                    >
+                      <CiSquareRemove className="w-8 h-8" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+              <button
+                className="uppercase text-sm md:text-[16px] bg-red-500 shadow-md dark:bg-red-500  flex items-center justify-start gap-3  py-2 px-2 md:px-4 md:py-2 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] "
+                type="button"
+                onClick={() => handleAddKeyValuePair(index)}
+              >
+                Add Key-Value Pair
+              </button>
+
+              <div className="mt-6">
+                <label htmlFor={`metadata-purpose-${index}`}>
                   Metadata Purpose
                 </label>
                 <select
-                  name={`metadata-purpose-${index}`}
-                  id={`metadata-purpose-${index}`}
-                  required
-                  value={metadataEntry.purpose}
-                  onChange={(event) =>
-                    handleMetadataChange(event, index, "purpose")
-                  }
                   className="w-full px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
+                  name={`metadata-purpose-${index}`}
+                  value={metadataEntry.purpose}
+                  onChange={(event) => handleChange(event, index, "purpose")}
                 >
                   <option value="Preview">Preview</option>
                   <option value="Rendered">Rendered</option>
@@ -250,20 +313,22 @@ const MintNft = () => {
                   <button
                     type="button"
                     onClick={() => handleRemoveMetadata(index)}
-                    className="text-red-600 font-semibold"
                   >
-                    Remove
+                    <CiSquareRemove />
                   </button>
                 )}
               </div>
             </div>
           ))}
           <button
+            className="uppercase bg-[#fff] mt-6 text-sm md:text-[16px] shadow-md dark:bg-[#2e2e48] border border-red-500  flex items-center justify-start gap-3 py-2 px-2 md:px-4 md:py-2 rounded-xl  "
             type="button"
             onClick={handleAddMetadata}
-            className="text-green-600 font-semibold"
           >
-            Add Metadata
+            Add meta deta
+          </button>
+          <button type="button" onClick={saveFormData}>
+            Save Form Data
           </button>
         </div>
         <div>

@@ -5,11 +5,12 @@ const NFTApi = () => {
   const [backend] = useCanister("backend");
   const [NFTlist, setNFTlist] = useState(null);
   const [nftLoading, setNFTLoading] = useState(false);
+  const [userNFT, setUserNFT] = useState(null);
   // Get NFTs by collection
-  const getCollectionWiseNFT = async (principal) => {
+  const getCollectionWiseNFT = async (canisterId) => {
     try {
       setNFTLoading(true);
-      const res = await backend.getcollectionwisenft(principal);
+      const res = await backend.getcollectionwisenft(canisterId);
       setNFTlist(res);
     } catch (err) {
       console.log("Error getting collectionwise nft", err);
@@ -18,7 +19,20 @@ const NFTApi = () => {
     }
   };
 
-  return { getCollectionWiseNFT, nftLoading, NFTlist };
+  // Get user NFT
+  const getUserNFT = async (ownerPrincipal) => {
+    try {
+      setNFTLoading(true);
+      const res = await backend.getusersnft(ownerPrincipal);
+      setUserNFT(res.Ok);
+    } catch (err) {
+      console.log("Error on getUserNFT :", err);
+    } finally {
+      setNFTLoading(false);
+    }
+  };
+
+  return { getCollectionWiseNFT, nftLoading, NFTlist, getUserNFT, userNFT };
 };
 
 export default NFTApi;
