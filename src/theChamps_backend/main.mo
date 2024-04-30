@@ -16,7 +16,6 @@ import Text "mo:base/Text";
 // import Helpers "./helper";
 
 actor Champs {
-     
         // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
         let g = Source.Source();
         private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
@@ -179,6 +178,17 @@ actor Champs {
                     };
                 };
                 return #Ok(List.toArray(results));
+            };
+        };
+    };
+
+    public func getusersfractionnft (user : Principal) : async [(Types.FractionalNFT,Principal)] {
+        switch (fractionalnftmap.get(user)){
+            case null {
+                return [];
+            };
+            case (?nft) {
+                return nft;
             };
         };
     };
