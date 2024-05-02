@@ -15,7 +15,7 @@ const MyProfileA = ({ onTabChange }) => {
   };
   const location = useLocation();
 
-  console.log(location.state, "hello");
+  // console.log(location.state, "hello");
 
   return (
     <div>

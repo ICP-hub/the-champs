@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CountryInput, Input, TelInput } from "../common/Inputs";
+import UserSendAPI from "../../api/UserSendApi";
+import { TailSpin } from "react-loader-spinner";
 
 const ContactForm = () => {
   const initialFormData = {
@@ -12,6 +14,8 @@ const ContactForm = () => {
   };
 
   const [formData, setFormData] = useState(initialFormData);
+  const { sendUserContact, isLoading } = UserSendAPI();
+  const [formSubmited, setFormSubmited] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,9 +36,18 @@ const ContactForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission here
-    console.log(formData);
-    setFormData(initialFormData); // Reset form data after submission
+    // console.log(formData);
+    sendUserContact(formData, setFormSubmited);
+    // setFormData(initialFormData); // Reset form data after submission
+
+    setFormSubmited(false);
   };
+
+  useEffect(() => {
+    if (formSubmited) {
+      setFormData(initialFormData);
+    }
+  }, [formSubmited]);
 
   return (
     <form
@@ -107,9 +120,22 @@ const ContactForm = () => {
 
       <button
         type="submit"
-        className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] max-w-max px-4 py-2 text-white rounded-lg"
+        className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] max-w-max px-4 py-2 text-white rounded-lg min-w-40"
       >
-        Submit Details
+        {isLoading ? (
+          <TailSpin
+            visible={true}
+            height="24"
+            width="24"
+            color="#524C42"
+            ariaLabel="tail-spin-loading"
+            radius="1"
+            wrapperStyle={{}}
+            wrapperClass="flex items-center justify-center"
+          />
+        ) : (
+          "Submit Details"
+        )}
       </button>
     </form>
   );

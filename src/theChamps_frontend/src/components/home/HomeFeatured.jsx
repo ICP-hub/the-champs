@@ -5,6 +5,7 @@ import FancyHeader from "../common/FancyHeader";
 import ProductCardLg from "../common/ProductCardLg";
 import CollectionApi from "../../api/CollectionApi";
 import { useEffect } from "react";
+import NotAvailable from "../common/NotAvailable";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomeFeatured /> : Homepage featured items.
@@ -25,7 +26,7 @@ const HomeFeatured = () => {
         </div>
       ) : (collections?.length ?? 0) === 0 ? (
         <div className="flex justify-center items-center">
-          No collections available.
+          <NotAvailable>No Collection Availbale</NotAvailable>
         </div>
       ) : (
         <div className="grid lg:grid-cols-2 gap-x-8 gap-y-8">

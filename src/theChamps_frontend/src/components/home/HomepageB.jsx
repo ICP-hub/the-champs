@@ -19,6 +19,8 @@ import { motion } from "framer-motion";
 import CollectionApi from "../../api/CollectionApi";
 import { useEffect, useState } from "react";
 import NFTApi from "../../api/NftApi";
+import { Link } from "react-router-dom";
+import NotAvailable from "../common/NotAvailable";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageB /> : Soccer collection.
@@ -50,7 +52,6 @@ const HomePageB = () => {
   useEffect(() => {
     getAllCollections();
   }, []);
-
   // Effect hook extract nft from collection
   useEffect(() => {
     if (collections && collections.length > 0) {
@@ -63,6 +64,9 @@ const HomePageB = () => {
           setFinalLoading(false);
         });
     }
+    if (collections) {
+      setFinalLoading(false);
+    }
   }, [collections]);
 
   return (
@@ -72,13 +76,13 @@ const HomePageB = () => {
         <FancyHeader fancy="Special Collection of 20 Footballers" small />
       </div>
       {finalLoading ? (
-        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 px-8 gap-x-8 gap-y-8">
+        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 md:px-8 px-2 gap-x-8 gap-y-8">
           {Array.from({ length: numColumns }).map((_, index) => (
             <CollectionLoader key={index} />
           ))}
         </div>
-      ) : collections && collections.length === 0 ? (
-        <div>No Collections Available</div>
+      ) : !NFTlist ? (
+        <NotAvailable>Featured NFT not available</NotAvailable>
       ) : (
         <div>
           <Swiper
@@ -132,11 +136,15 @@ const HomePageB = () => {
         </div>
       )}
 
-      <span className="flex justify-center gap-4 py-6">
-        <CustomButton>
-          View collections <MdArrowOutward size={24} />{" "}
-        </CustomButton>
-      </span>
+      {collections && collections.length === 0 ? null : (
+        <span className="flex justify-center gap-4 py-6">
+          <Link to="/collection">
+            <CustomButton>
+              View collections <MdArrowOutward size={24} />{" "}
+            </CustomButton>
+          </Link>
+        </span>
+      )}
     </div>
   );
 };
@@ -151,6 +159,7 @@ const NFTCard = ({ NFT, collection }) => {
     const img = NFT.metadata.map((item) => item.key_val_data);
     // console.log("This console is coming from HOMEPAGE B  NFT:", NFT);
     // console.log(Object.values(img));
+    // console.log(NFT);
   }, [NFT]);
 
   return (
