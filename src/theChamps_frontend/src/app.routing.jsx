@@ -23,6 +23,8 @@ import UpdateCollection from "./admin/features/collections/UpdateCollection";
 import NFTList from "./admin/features/NFT/NFTList";
 import SingleNFT from "./admin/features/NFT/SingleNFT";
 import User from "./admin/pages/User";
+import Contact from "./admin/features/contact/contact";
+import ContactDetail from "./admin/features/contact/ContactDetail";
 /**** Create Routes *****/
 const appRoutes = createBrowserRouter([
   { path: "/", element: <HomePage /> },
@@ -75,6 +77,14 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
+    path: "/details/:slug/:id",
+    element: (
+      <MainAdmin>
+        <SingleNFT />
+      </MainAdmin>
+    ),
+  },
+  {
     path: "/create/:slug",
     element: (
       <MainAdmin>
@@ -119,6 +129,22 @@ const appRoutes = createBrowserRouter([
     element: (
       <MainAdmin>
         <SingleNFT />
+      </MainAdmin>
+    ),
+  },
+  {
+    path: "/message",
+    element: (
+      <MainAdmin>
+        <Contact />
+      </MainAdmin>
+    ),
+  },
+  {
+    path: "/message/:slug",
+    element: (
+      <MainAdmin>
+        <ContactDetail />
       </MainAdmin>
     ),
   },

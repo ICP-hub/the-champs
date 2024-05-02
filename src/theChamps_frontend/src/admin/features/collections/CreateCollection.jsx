@@ -126,19 +126,42 @@ const CreateCollections = () => {
 
     setFormData(updatedFormData);
   };
-  const handleLogoDataChange = (event) => {
-    const { value } = event.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      record: {
-        ...prevState.record,
-        logo: {
-          ...prevState.record.logo,
-          data: value,
+  function imageToFileBlob(imageFile) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(imageFile);
+    });
+  }
+
+  const handleLogoDataChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const logoBlob = await imageToFileBlob(file);
+
+      setFormData({
+        ...formData,
+        record: {
+          ...formData.record,
+          logo: {
+            ...formData.record.logo,
+            data: logoBlob,
+          },
         },
-      },
-    }));
+      });
+      console.log("blob is ", logoBlob);
+    } catch (error) {
+      console.error("Error converting image to blob:", error);
+    }
   };
+
   const handleLogoTypeChange = (event) => {
     const { value } = event.target;
     setFormData((prevState) => ({
@@ -229,15 +252,15 @@ const CreateCollections = () => {
             Logo Data
           </label>
           <input
-            type="text"
+            type="file"
             id="logoData"
             name="logoData"
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            value={formData.record.logo.data}
             onChange={handleLogoDataChange}
             required
           />
         </div>
+
         <div className="w-full">
           <label
             htmlFor="logoType"

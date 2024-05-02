@@ -52,7 +52,6 @@ const MyProfileActivity = () => {
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-4 text-sm font-bold uppercase p-4 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] text-white rounded-lg">
         <span className="flex items-center justify-center">MINT #</span>
-        <span className="flex items-center justify-center">NRI</span>
         <span className="flex items-center justify-center">PRICE</span>
         <span className="flex items-center justify-center">TIME</span>
       </div>
@@ -69,7 +68,7 @@ const MyProfileActivity = () => {
 /*  @ <ActivityCard /> : Card to display activity 
 /* ----------------------------------------------------------------------------------------------------- */
 const ActivityCard = ({ activity }) => {
-  const { image, mintVal, nri, time, status } = activity;
+  const { image, mintVal, time, status } = activity;
 
   return (
     <div className="grid grid-cols-4 text-sm font-bold  bg-white border-2 p-4 rounded-lg">
@@ -81,7 +80,6 @@ const ActivityCard = ({ activity }) => {
         />
         <p>{mintVal}</p>
       </div>
-      <div className="flex items-center justify-center">{nri}</div>
       <div className="flex items-center justify-center">3</div>
       <div className="flex items-center justify-center flex-col gap-2">
         <p>{time}</p>

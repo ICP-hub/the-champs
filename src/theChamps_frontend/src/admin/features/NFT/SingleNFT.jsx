@@ -5,9 +5,11 @@ import profile from "../../assets/user.jpg";
 import { IoCopyOutline } from "react-icons/io5";
 import { FiLink, FiSearch } from "react-icons/fi";
 import { LuFilter } from "react-icons/lu";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
 import { BsFileText } from "react-icons/bs";
+import { useCanister } from "@connect2ic/react";
+import { Principal } from "@dfinity/principal";
 const SingleNFT = () => {
   const [copied, setCopied] = useState(false);
   const textToCopy =
@@ -21,29 +23,54 @@ const SingleNFT = () => {
       })
       .catch((err) => console.error("Failed to copy:", err));
   };
+  const [backend] = useCanister("backend");
+  const [isLoading, setIsLoading] = useState(true);
 
-  const sampleData = [
-    {
-      title: "Product 1",
-      category: "Category A",
-      status: "Active",
-      price: "$10",
-      inventory: 100,
-      image:
-        "https://img.freepik.com/free-vector/hand-drawn-nft-style-ape-illustration_23-2149622021.jpg?w=740&t=st=1713351871~exp=1713352471~hmac=ed679c41842035c86855182a5cdfd9b4317fac54471101d127d87f9cdd467412", // Sample NFT image link
-      slug: "product-1",
-    },
-    {
-      title: "Product 2",
-      category: "Category B",
-      status: "Paused",
-      price: "$20",
-      inventory: 50,
-      image:
-        "https://img.freepik.com/free-vector/hand-drawn-virtual-sports-illustration_23-2150581118.jpg?t=st=1713351989~exp=1713355589~hmac=121e9e0f3087dd1846af2c6832cffff96815d1016baa128800f8ef2bd443f93e&w=740", // Sample NFT image link
-      slug: "product-2",
-    },
-  ];
+  const [sampleData, setSampleData] = useState([]);
+  const param = useParams();
+
+  const canisterid = Principal.fromText(param.slug);
+
+  const getAllCollections = async () => {
+    try {
+      const data = await backend.getNFTdetails(canisterid, parseInt(param.id));
+      setSampleData(data);
+
+      setIsLoading(false);
+      console.log("nft data ", data);
+    } catch (error) {
+      console.log("reeegdf", error);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getAllCollections();
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [backend]);
+  // const sampleData = [
+  //   {
+  //     title: "Product 1",
+  //     category: "Category A",
+  //     status: "Active",
+  //     price: "$10",
+  //     inventory: 100,
+  //     image:
+  //       "https://img.freepik.com/free-vector/hand-drawn-nft-style-ape-illustration_23-2149622021.jpg?w=740&t=st=1713351871~exp=1713352471~hmac=ed679c41842035c86855182a5cdfd9b4317fac54471101d127d87f9cdd467412", // Sample NFT image link
+  //     slug: "product-1",
+  //   },
+  //   {
+  //     title: "Product 2",
+  //     category: "Category B",
+  //     status: "Paused",
+  //     price: "$20",
+  //     inventory: 50,
+  //     image:
+  //       "https://img.freepik.com/free-vector/hand-drawn-virtual-sports-illustration_23-2150581118.jpg?t=st=1713351989~exp=1713355589~hmac=121e9e0f3087dd1846af2c6832cffff96815d1016baa128800f8ef2bd443f93e&w=740", // Sample NFT image link
+  //     slug: "product-2",
+  //   },
+  // ];
   return (
     <div className="mx-4 md:py-8 md:px-6 p-2 flex flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-t-2xl mt-6">
       <div className="">
@@ -119,8 +146,32 @@ const SingleNFT = () => {
           ducimus, optio adipisci eum blanditiis asperiores neque cum tenetur
           earum porro at distinctio quod officia. Consectetur, vel eligendi.
         </p>
-        <div className="grid grid-cols-3 mt-4 gap-4">
-          <div className="shadow-2xl rounded-2xl flex flex-col items-center ">
+
+        <div className="flex">
+          {sampleData?.metadata?.map((metadataItem, metadataIndex) => (
+            <div
+              key={metadataIndex}
+              className="metadata-item grid grid-cols-3 mt-4 gap-4"
+            >
+              {metadataItem.key_val_data.map((keyValItem, keyValIndex) => (
+                <div
+                  key={keyValIndex}
+                  className="shadow-2xl line-clamp rounded-2xl flex flex-col items-center"
+                >
+                  <div className="bg-gray-200 w-full text-center text-black rounded-t-2xl">
+                    {keyValItem.key}
+                  </div>
+                  <div className="p-4 text-lg">
+                    {keyValItem.val.TextContent
+                      ? keyValItem.val.TextContent
+                      : Number(keyValItem.val.Nat64Content)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+
+          {/* <div className="shadow-2xl rounded-2xl flex flex-col items-center ">
             <div className="bg-gray-200 w-full text-center text-black rounded-t-2xl">
               flower
             </div>
@@ -143,19 +194,13 @@ const SingleNFT = () => {
               flower
             </div>
             <div className="p-4 text-lg">Dimond</div>
-          </div>
-          <div className="shadow-2xl rounded-2xl flex flex-col items-center ">
+          </div> */}
+          {/* <div className="shadow-2xl rounded-2xl flex flex-col items-center ">
             <div className="bg-gray-200 w-full text-center text-black rounded-t-2xl">
               flower
             </div>
             <div className="p-4 text-lg">Dimond</div>
-          </div>
-          <div className="shadow-2xl rounded-2xl flex flex-col items-center ">
-            <div className="bg-gray-200 w-full text-center text-black rounded-t-2xl">
-              flower
-            </div>
-            <div className="p-4 text-lg">Dimond</div>
-          </div>
+          </div> */}
         </div>
       </div>
 

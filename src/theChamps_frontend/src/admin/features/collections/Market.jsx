@@ -85,7 +85,7 @@ const Market = () => {
                 visible={true}
                 height="150"
                 width="150"
-                color="#FF7D57"
+                color="#EF4444"
                 ariaLabel="grid-loading"
                 radius="12.5"
                 wrapperStyle={{}}

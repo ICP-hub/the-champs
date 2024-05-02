@@ -1,9 +1,8 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
-
 import FancyHeader from "../common/FancyHeader";
-
+import { Link } from "react-router-dom";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageF /> : Subscribe email.
 /* ----------------------------------------------------------------------------------------------------- */
@@ -17,13 +16,12 @@ const HomePageF = () => {
           <span>exclusive drops & collectibles.</span>
         </p>
         <div className="flex gap-4 items-center justify-center max-sm:flex-col max-sm:mx-2">
-          <input
-            className="rounded-full outline-none border-2 px-5 py-3 max-sm:w-full"
-            placeholder="Enter your Email"
-          />
-          <button className="px-5 py-3 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] rounded-full text-white font-medium">
-            Subscribe
-          </button>
+          <Link
+            to="/contact"
+            className="px-5 py-3 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] rounded-full text-white font-medium"
+          >
+            Connect With Us
+          </Link>
         </div>
       </div>
     </div>

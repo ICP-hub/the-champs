@@ -34,11 +34,15 @@ const MyProfileContainerMain = () => {
     }
   }, [NFTlist]);
 
-  // const { collectionNFTMatch } = CollectionUtls();
+  useEffect(() => {
+    const nftOwnerFilter = () => {
+      if (NFTlist && NFTlist.length !== 0) {
+        NFTlist.map((nft) => console.log(nft.owner.toText()));
+      }
+    };
+    nftOwnerFilter();
+  }, [NFTlist]);
 
-  // console.log(collectionNFTMatch);
-
-  // console.log(activeTabIndex);
   const handleTabChange = (tabIndex) => {
     setActiveTabIndex(tabIndex);
   };
