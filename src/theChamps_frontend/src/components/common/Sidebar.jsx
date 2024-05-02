@@ -30,14 +30,14 @@ const Sidebar = ({ isOpen, toggle }) => {
             <h2 className="text-md    mb-4 text-gray-500 text-left ">
               Connect Wallet
             </h2>
-            <p className="text-left ml-2">
+            <p className="text-left ml-2 text-sm md:text-md ">
               Connect your wallet to buy and sell NFT’s directly from the
               marketplace.
             </p>
 
             <div className="flex items-center justify-center">
               <button
-                className="mt-4 button bg-opacity-100 text-white py-2 px-4 rounded-md w-[90%]"
+                className="mt-4 button bg-opacity-100  text-white py-2 px-2 rounded-md w-full md:w-[90%]"
                 onClick={() => open()} // Fix: Use arrow function or wrap setLogin(true) inside another function
                 style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.4)" }}
               >

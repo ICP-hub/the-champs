@@ -30,7 +30,6 @@ const ProductDetails = () => {
       const id1 = parseInt(index);
 
       const res = await backend.getNFTdetails(canister_id, id1);
-      setTimeout(() => {}, timeout);
 
       getNft(res);
     } catch (error) {

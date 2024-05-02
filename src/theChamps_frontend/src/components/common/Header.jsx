@@ -21,10 +21,12 @@ const Header = () => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+    setIsSidebarOpen(false);
   };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+    setIsMenuOpen(false);
   };
 
   const changeNavbarColor = () => {

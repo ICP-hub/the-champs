@@ -134,7 +134,8 @@ const ProductPage = ({ name }) => {
         const res = await backend.getcollectionwisenft(canister_id);
         console.log("hello");
         setCollection(res);
-        setSearchResults(collection);
+        setloading(false);
+        setSearchResults(res);
         console.log(res);
       } catch (error) {
         console.log(error);
@@ -142,17 +143,14 @@ const ProductPage = ({ name }) => {
     };
     getCollectionDetails();
     getCollectionWiseNft();
-    setTimeout(() => {
-      setloading(false);
-    }, 5000);
   }, [backend]);
 
   const handleSearch = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
 
-    const filteredResults = products.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase())
+    const filteredResults = collection.filter((item) =>
+      item.owner.toText().toLowerCase().includes(query.toLowerCase())
     );
     setSearchResults(filteredResults);
   };
@@ -161,11 +159,11 @@ const ProductPage = ({ name }) => {
     <>
       <Header />
       <div className=" mt-44 left-0 right-0  px-6 lg:px-24 ">
-        <div className="w-full relative">
+        <div className="w-full relative ">
           <img
             src="https://s3-alpha-sig.figma.com/img/ac74/2282/3c93bce880686ad33e4c8c4c5644d5e0?Expires=1713744000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qr7Oh2KsRERtw7A0vCclSNF5ddKhxj-1q~kpofC0nTvAnMk-AVqwA6kli2VfOfCOv0jvbfJqgbi8ClI8iLyBlTHSn1EXb5t3iIS-njfeAYBPUO3Ka8Vtl1zObA2iF1IzxW5Ll8hJQ~aR-xInjqC4sLsRqxXq~bhAaNmMfU9WzIEyc~PKRBynkifluczxgalTm19gla91e4~xW~xVw4RvPw1kGCtSpJyE2N9G0eXpM5YgEHf4x8TVW4XCglDiuv6V0T14IldKzt~mJ-5D1j1pcoh6SuKnK0lQmJchlSeFgbD-rPYqx8PmcRwqz2aGvj2iEvBvYTXf6h1oYLdI93QN6g__"
             alt=""
-            className="w-full h-60 rounded-xl object-cover"
+            className="w-full h-60 rounded-xl object-cover hidden md:block"
           />
           <div className="md:flex">
             <div className="md:absolute md:top-32 mt-12 md:mt-0  md:w-1/4  w-full md:left-16">
@@ -184,7 +182,7 @@ const ProductPage = ({ name }) => {
                 aperiam nulla, corporis in! Ullam eaque odit neque voluptatum
                 fuga rerum cumque animi!
               </div>
-              <div className="mt-12 w-1/2 flex gap-4  ">
+              <div className="mt-12 md:w-1/2 flex gap-4  ">
                 <div className=" w-1/4 text-center text-sm space-y-2">
                   <p>LISTINGS</p>
                   <button className=" w-full  button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
@@ -234,10 +232,8 @@ const ProductPage = ({ name }) => {
             <>
               {grid ? (
                 <div className="grid grid-cols-1  px-6 lg:px-24  sm:grid-cols-2  lg:grid-cols-3  gap-12 mt-4 justify-center">
-                  {collection.map((product, index) => (
-                    <Link to={`/collections/${id}/${index}`}>
-                      <ProductCard key={product.id} product={product} />
-                    </Link>
+                  {searchResults.map((product, index) => (
+                    <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
               ) : (

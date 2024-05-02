@@ -1,12 +1,63 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { CiHeart } from "react-icons/ci";
 import toast, { Toaster } from "react-hot-toast";
 const notify = () => toast("Here is your toast.");
 import { motion } from "framer-motion";
 import ReadMore from "../common/ReadMore";
+import { useParams } from "react-router";
+import { useCanister } from "@connect2ic/react";
+import { Principal } from "@dfinity/principal";
 
 const ProductCard = ({ product }) => {
+  const { id } = useParams();
+  const [backend] = useCanister("backend");
+  const [favourites, setFavourites] = useState();
+  const [productInFavourites, setProductInFavourites] = useState(false);
+
+  const addToFavourites = async () => {
+    try {
+      const canister_id = Principal.fromText(id);
+      const res = await backend.addfavourite(canister_id, parseInt(product.id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(favourites, "favourites");
+
+  const getFavourites = async () => {
+    try {
+      const res = await backend.getfavourites();
+
+      setFavourites(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(favourites, "favourites");
+
+  useEffect(() => {
+    getFavourites();
+
+    if (favourites != null) {
+      const isProductInWishlist = favourites.some(
+        (item) => item.id === product.id
+      );
+      setProductInFavourites(isProductInWishlist);
+    }
+  }, [product, favourites]);
+
+  const removeFavourites = async () => {
+    try {
+      const res = backend.removefavourite(parseInt(product.id));
+      console.log("item successfully remove from favourites");
+      toast.success("item successfully remove from favourites");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div
       className="border   rounded-xl overflow-hidden "
@@ -24,7 +75,34 @@ const ProductCard = ({ product }) => {
       <div className="p-2 mx-2">
         <div className="flex justify-between font-bold items-center">
           <h2 className="text-lg font-semibold mb-2">product 1</h2>
-          <CiHeart size={32} />
+          {productInFavourites ? (
+            <button onClick={removeFavourites}>
+              {" "}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 115.77 122.88"
+                width="30"
+                height="25"
+                className="gradient-icon"
+              >
+                <defs>
+                  <linearGradient id="gradient" x1="0" y1="0" x2="100%" y2="0">
+                    <stop offset="0%" stopColor="#FC001E" />
+                    <stop offset="100%" stopColor="#FF7D57" />
+                  </linearGradient>
+                </defs>
+                <path
+                  fill="url(#gradient)"
+                  d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z"
+                />
+              </svg>
+            </button>
+          ) : (
+            <button onClick={addToFavourites}>
+              {" "}
+              <CiHeart size={32} />
+            </button>
+          )}
         </div>
         <p className="text-gray-500 text-sm">
           <ReadMore text={product.owner.toText()} maxLength={20} />
