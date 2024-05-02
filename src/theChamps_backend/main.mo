@@ -13,13 +13,16 @@ import UUID "mo:uuid/UUID";
 import Source "mo:uuid/async/SourceV4";
 import Time "mo:base/Time";
 import Text "mo:base/Text";
+import Typestoken "../DIP-20/types";
 // import Helpers "./helper";
 
 actor Champs {
-    // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
-    let g = Source.Source();
-    private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal, Principal.hash);
-    private var stavlenftcollectionMap : [(Principal, [Principal])] = [];
+
+        // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
+        let g = Source.Source();
+        // stores collection canister id of the user
+        private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
+        private var stavlenftcollectionMap : [(Principal, [Principal])] = [];
 
     private var favourites = TrieMap.TrieMap<Principal, [Types.Nft]>(Principal.equal, Principal.hash);
     private var stablefavourites : [(Principal, [Types.Nft])] = [];
@@ -27,11 +30,11 @@ actor Champs {
     private var contacts = TrieMap.TrieMap<Types.ContactId, Types.Contact>(Text.equal, Text.hash);
     private stable var stablecontacts : [(Types.ContactId, Types.Contact)] = [];
 
-    private var fractionalnftmap = TrieMap.TrieMap<Principal, [(Types.FractionalNFT, Principal)]>(Principal.equal, Principal.hash);
-
-    public func idQuick() : async Principal {
-        return Principal.fromActor(Champs);
-    };
+        private var fractionalnftmap = TrieMap.TrieMap<Principal, [(Types.FractionalNFT,Principal)]>(Principal.equal,Principal.hash);
+        
+        public func idQuick() : async Principal { 
+            return Principal.fromActor(Champs);
+        };
 
     public shared ({ caller = user }) func whoami() : async Principal {
         return user;
@@ -71,85 +74,84 @@ actor Champs {
     //     return "Tokens transferred";
     // };
 
-    public shared ({ caller = user }) func FractionalizeNFt(
-        nftcanisterid : Principal,
-        to : Principal,
-        tokenowner : Principal,
-        metadata : Types.MetadataDesc,
-        _logo : Text,
-        _name : Text,
-        _symbol : Text,
-        _decimals : Nat8,
-        _totalSupply : Nat,
-        _owner : Principal,
-        _fee : Nat,
-    ) : async Types.FractionalNFTResult {
-        Debug.print(debug_show (Cycles.balance()));
-        Debug.print(debug_show (user));
-        let collection_canister_id = nftcollectionMap.get(user);
-        switch (collection_canister_id) {
-            case (null) {
-                return #Err(#CollectionNotFound);
-            };
-            case (?id) {
-                let nftcanisteractor = actor (Principal.toText(nftcanisterid)) : actor {
-                    mintDip721 : (to : Principal, metadata : Types.MetadataDesc) -> async Types.MintReceipt;
+        public shared ({caller = user}) func FractionalizeNFt(
+            nftcanisterid : Principal,
+            to : Principal,
+            tokenowner : Principal,
+            metadata : Types.MetadataDesc,
+            _logo : Text,
+            _name: Text,
+            _symbol: Text,
+            _decimals: Nat8,
+            _totalSupply: Nat,
+            _owner: Principal,
+            _fee : Nat 
+            ) : async Types.FractionalNFTResult {
+            Debug.print(debug_show(Cycles.balance()));
+            Debug.print(debug_show(user));
+            let collection_canister_id  = nftcollectionMap.get(user);
+            switch (collection_canister_id){
+                case (null) {
+                    return #Err(#CollectionNotFound);
                 };
-                let mintednft = await nftcanisteractor.mintDip721(to, metadata);
-                switch (mintednft) {
-                    case (#Err(index)) {
-                        throw Error.reject(debug_show (index));
-                    };
-                    case (#Ok(newnft)) {
-                        Debug.print(debug_show (newnft));
+                case (?id) {  
+                    let nftcanisteractor = actor(Principal.toText(nftcanisterid)) : actor {mintDip721 : (to : Principal , metadata : Types.MetadataDesc ) -> async Types.MintReceipt};
+                    let mintednft = await nftcanisteractor.mintDip721(to, metadata);
+                    switch(mintednft){
+                        case (#Err(index)) {
+                            throw Error.reject(debug_show(index));
+                        };
+                        case (#Ok(newnft)){
+                        Debug.print(debug_show(newnft));
                         Cycles.add(100_500_000_000);
                         let fractiontokens = await DIP20ActorClass.Token(
-                            _logo,
-                            _name,
-                            _symbol,
-                            _decimals,
-                            _totalSupply,
-                            _owner,
-                            _fee,
-                        );
-                        let amountAccepted = await fractiontokens.wallet_receive();
-                        let minttokens = await fractiontokens.mint(tokenowner, _totalSupply);
-                        Debug.print(debug_show (minttokens));
-                        let tokencanister : Principal = await fractiontokens.getCanisterId();
-                        Debug.print(debug_show (tokencanister));
-                        let tokenmetadata = {
-                            logo = _logo;
-                            name = _name;
-                            symbol = _symbol;
-                            decimals = _decimals;
-                            totalSupply = _totalSupply;
-                            owner = _owner;
-                            fee = _fee;
-                        };
-                        let nftdata = await getNFTdetails(nftcanisterid, newnft.token_id);
-
-                        let fractionNftDetails : Types.FractionalNFT = {
-                            nft = nftdata;
-                            fractional_token = tokenmetadata;
-                        };
-                        switch (fractionalnftmap.get(user)) {
-                            case null {
-                                let newfractionalnft = [(fractionNftDetails, tokencanister)];
-                                fractionalnftmap.put(user, newfractionalnft);
-                                return #Ok(fractionNftDetails);
-                            };
-                            case (?nft) {
-                                let temp = List.push((fractionNftDetails, tokencanister), List.fromArray(nft));
-                                fractionalnftmap.put(user, List.toArray(temp));
-                                return #Ok(fractionNftDetails);
-                            };
-                        };
-                        return #Ok(fractionNftDetails);
+                        _logo,
+                        _name,
+                        _symbol,
+                        _decimals,
+                        _totalSupply,
+                        _owner,
+                        _fee
+                    );
+                    let amountAccepted = await fractiontokens.wallet_receive();
+                    let minttokens = await fractiontokens.mint(tokenowner, _totalSupply);
+                    Debug.print(debug_show(minttokens));
+                    let tokencanister : Principal = await fractiontokens.getCanisterId();
+                    Debug.print(debug_show(tokencanister));
+                    let tokenmetadata = {
+                        logo = _logo;
+                        name = _name;
+                        symbol = _symbol;
+                        decimals = _decimals;
+                        totalSupply = _totalSupply;
+                        owner = _owner;
+                        fee = _fee;
                     };
+
+                    let nftdata = await getNFTdetails(nftcanisterid, newnft.token_id);
+                    
+                    let fractionNftDetails : Types.FractionalNFT = {
+                        nft = nftdata;
+                        fractional_token = tokenmetadata;
+                    };
+                    switch(fractionalnftmap.get(to)){
+                        case null {
+                            let newfractionalnft = [(fractionNftDetails,tokencanister)];
+                            fractionalnftmap.put(to, newfractionalnft);
+                            return #Ok(fractionNftDetails);
+                        };
+                        case (?nft){
+                            let temp = List.push((fractionNftDetails,tokencanister), List.fromArray(nft));
+                            fractionalnftmap.put(to, List.toArray(temp));
+                            return #Ok(fractionNftDetails);
+                        };
+                    };
+                    return #Ok(fractionNftDetails);
+                    }
+                    }
                 };
             };
         };
-    };
 
     public func getusersnft(user : Principal) : async Types.MetadataResultArray {
         var results = List.nil<Types.MetadataDesc>();
@@ -195,6 +197,17 @@ actor Champs {
             };
         };
     };
+
+    public shared({caller = user}) func getallfractionalnfts () : async [(Types.FractionalNFT,Principal)] {
+        var results = List.nil<(Types.FractionalNFT,Principal)>(); 
+        for (nft in fractionalnftmap.vals()){
+            for (fractionalnft in nft.vals()){
+                results := List.push(fractionalnft, results);
+            };
+        };
+        return List.toArray(results);
+    };
+
 
     public shared ({ caller = user }) func getsingleCollectiondetail(collection_id : Principal) : async Types.Dip721NonFungibleToken {
         let nftcanisteractor = actor (Principal.toText(collection_id)) : actor {
@@ -340,7 +353,7 @@ actor Champs {
         };
     };
 
-    public shared ({ caller = user }) func getNFTdetails(collectioncanisterid : Principal, tokenid : Types.TokenId) : async Types.Nft {
+    public shared ({ caller = user }) func getNFTdetails(collectioncanisterid : Principal, tokenid : Types.TokenId ) : async Types.Nft {
         let nftcanisteractor = actor (Principal.toText(collectioncanisterid)) : actor {
             getNFT : (token_id : Types.TokenId) -> async Types.NftResult;
         };
@@ -354,6 +367,26 @@ actor Champs {
             };
         };
     };
+
+    public shared ({caller = user}) func getFractionalNftDetails (tokenid : Types.TokenId, tokencanister : Principal, collectioncanisterid : Principal) : async Types.FractionalNFT {
+        let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {getNFT : (token_id: Types.TokenId) -> async Types.NftResult;};
+        let fractiontokencanisteractor = actor(Principal.toText(tokencanister)) : actor {getMetadata : () -> async Typestoken.Metadata;};
+        let metadata:Types.NftResult = await nftcanisteractor.getNFT(tokenid);
+        switch(metadata){
+            case (#Err(index)) {
+                throw Error.reject(debug_show(index));
+            };
+            case (#Ok(data)) {
+                let tokenmetadata = await fractiontokencanisteractor.getMetadata();
+                let fractionalNftDetails : Types.FractionalNFT = {
+                    nft = data;
+                    fractional_token = tokenmetadata;
+                };
+                return fractionalNftDetails;
+            };
+        };
+    };
+        
 
     // ******************************************* Contact US CRUD functions *************************************************************
 
@@ -371,6 +404,7 @@ actor Champs {
             email = co.email;
             contact_number = co.contact_number;
             message = co.message;
+            country = co.country;
             time_created = Time.now();
             time_updated = Time.now();
         };
@@ -403,6 +437,7 @@ actor Champs {
                     contact_number = v.contact_number;
                     message = v.message;
                     read = read;
+                    country = v.country;
                     time_created = v.time_created;
                     // only update time_updated
                     time_updated = Time.now();
@@ -438,5 +473,7 @@ actor Champs {
     system func preupgrade() {};
 
     // Postupgrade function to restore the data from stable variables
-    system func postupgrade() {};
-};
+    system func postupgrade() {
+    };
+}
+

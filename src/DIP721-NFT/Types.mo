@@ -174,6 +174,7 @@ module {
         email : Text;
         message : Text;
         contact_number : Text;
+        country : Text;
     };
 
     public type Contact = UserContact and {
