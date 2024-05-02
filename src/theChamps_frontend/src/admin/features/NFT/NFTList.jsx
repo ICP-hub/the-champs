@@ -17,11 +17,12 @@ const NFTList = () => {
   const [sampleData, setSampleData] = useState([]);
   const param = useParams();
   const canisterid = Principal.fromText(param.slug);
-
+  const [id, setid] = useState("");
   const getAllCollections = async () => {
     try {
       const data = await backend.getcollectionwisenft(canisterid);
       setSampleData(data);
+      setid(data?.id);
       setIsLoading(false);
       console.log("nft data ", data);
     } catch (error) {
@@ -35,6 +36,7 @@ const NFTList = () => {
     }, 1000);
     return () => clearTimeout(timer);
   }, [backend]);
+
   const handleSearchInputChange = (event) => {
     const value = event.target.value;
     setSearchQuery(value);
@@ -125,7 +127,7 @@ const NFTList = () => {
                       <div className="flex justify-between gap-2 mx-2  my-2">
                         <div className="bg-transparent">
                           <Link
-                            to={`/users/:sdf/collection-detail/${item.slug}`}
+                            to={`/details/${param.slug}/${item?.id}`}
                             className="uppercase dark:bg-[#2e2e48] bg-[#fff]  flex items-center justify-start gap-3 px-2 py-1 rounded-xl  bg:text-[#e1e1e1]"
                           >
                             View

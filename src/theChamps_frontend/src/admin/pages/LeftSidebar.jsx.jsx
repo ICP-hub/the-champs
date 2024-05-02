@@ -107,6 +107,21 @@ const LeftSidebar = ({ isSidebarOpen, closeSidebar }) => {
               <span className="   font-medium ml-2 ">Users</span>
             </NavLink>
           </li>
+          <li className="menu-item xl:flex xl:items-center xl:justify-center  mb-4">
+            <NavLink
+              to="/message"
+              className={({ isActive }) =>
+                isActive
+                  ? "w-full shadow-md   bg-gradient-to-r from-[#FC001E] to-[#FF7D57] h-12 flex items-center justify-start gap-3 p-3 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] "
+                  : "w-full hover:bg-[#f6f6f6] dark:hover:bg-[#525270] h-12 flex items-center justify-start gap-3 p-3 rounded-xl text-[#808191] bg:text-[#e1e1e1] "
+              }
+            >
+              <span className="flex items-center">
+                <MdOutlineGridView size={18} />
+              </span>
+              <span className="   font-medium ml-2 ">Message</span>
+            </NavLink>
+          </li>
         </ul>
       </div>
       <div className="mt-auto">
@@ -126,7 +141,7 @@ const LeftSidebar = ({ isSidebarOpen, closeSidebar }) => {
               <span className="   font-medium ml-2 ">Settings</span>
             </NavLink>
           </li> */}
-          <li className="mb-4 last:mb-0 md:flex md:items-center md:justify-center">
+          <li className="mb-1 last:mb-0 md:flex md:items-center md:justify-center">
             <NavLink
               className={
                 "w-full  h-12 flex items-center justify-start gap-3 p-3 rounded-xl text-[#808191] bg:text-[#e1e1e1] 2xl:p-1 2xl:w-9 2xl:h-9 2xl:rounded-md"
@@ -137,12 +152,22 @@ const LeftSidebar = ({ isSidebarOpen, closeSidebar }) => {
                   <RxAvatar size={20} /> <h1>Ritesh</h1>
                 </span>
                 <button className="flex items-center">
-                  <span className="  font-medium ml-2 ">
+                  <span className="  font-medium ml-16 ">
                     <MdOutlineLogout size={20} />
                   </span>
                 </button>
               </div>
             </NavLink>
+          </li>
+          <li className=" last:mb-0 md:flex md:items-center md:justify-center">
+            <Link
+              to={"/"}
+              className={
+                "w-full uppercase  flex items-center justify-start  py-1 px-3 rounded-xl text-[#808191] bg:text-[#e1e1e1] 2xl:p-1 2xl:w-9 2xl:h-9 2xl:rounded-md"
+              }
+            >
+              Switch to main site
+            </Link>
           </li>
         </ul>
       </div>
