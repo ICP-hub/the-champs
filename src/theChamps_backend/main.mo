@@ -24,7 +24,7 @@ actor Champs {
         private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
         private var stavlenftcollectionMap : [(Principal, [Principal])] = [];
 
-    private var favourites = TrieMap.TrieMap<Principal, [Types.Nft]>(Principal.equal, Principal.hash);
+    private var favourites = TrieMap.TrieMap<Principal, [(Types.Nft,Principal)]>(Principal.equal, Principal.hash);
     private var stablefavourites : [(Principal, [Types.Nft])] = [];
 
     private var contacts = TrieMap.TrieMap<Types.ContactId, Types.Contact>(Text.equal, Text.hash);
@@ -301,11 +301,11 @@ actor Champs {
                 let userfavourites = favourites.get(user);
                 switch (userfavourites) {
                     case null {
-                        favourites.put(user, [data]);
+                        favourites.put(user, [(data,collectioncanisterid)]);
                         return "Favourite added";
                     };
                     case (?favourite) {
-                        let temp : List.List<Types.Nft> = List.push(data, List.fromArray(favourite));
+                        let temp : List.List<(Types.Nft,Principal)> = List.push((data,collectioncanisterid), List.fromArray(favourite));
                         favourites.put(user, List.toArray(temp));
                         return "Favourite added";
                     };
@@ -314,7 +314,7 @@ actor Champs {
         };
     };
 
-    public shared ({ caller = user }) func getfavourites() : async [Types.Nft] {
+    public shared ({ caller = user }) func getfavourites() : async [(Types.Nft,Principal)] {
         let userfavourites = favourites.get(user);
         switch (userfavourites) {
             case null {
@@ -333,22 +333,10 @@ actor Champs {
                 return "Favourite not found";
             };
             case (?favourite) {
-                let temp : List.List<Types.Nft> = List.fromArray(favourite);
-                let newlist : List.List<Types.Nft> = List.filter<Types.Nft>(temp, func x : Bool { x.id != tokenid });
+                let temp : List.List<(Types.Nft,Principal)> = List.fromArray(favourite);
+                let newlist : List.List<(Types.Nft,Principal)> = List.filter<(Types.Nft,Principal)>(temp, func x : Bool { x.0.id != tokenid });
                 favourites.put(user, List.toArray(newlist));
                 return "Favourite removed";
-            };
-        };
-    };
-
-    public shared ({ caller = user }) func getallfavourites() : async [Types.Nft] {
-        let userfavourites = favourites.get(user);
-        switch (userfavourites) {
-            case null {
-                return [];
-            };
-            case (?favourite) {
-                return favourite;
             };
         };
     };
