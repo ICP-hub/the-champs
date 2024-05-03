@@ -190,6 +190,7 @@ const CreateCollections = () => {
 
       if (result.ok) {
         console.log("Collection created successfully!", result);
+        toast.success("Collection created successfully!");
       } else {
         console.error("Collection creation failed:", result);
       }
