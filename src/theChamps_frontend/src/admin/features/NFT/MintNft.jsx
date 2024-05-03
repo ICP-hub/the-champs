@@ -8,6 +8,7 @@ import { Form, useParams } from "react-router-dom";
 import { CiSquareRemove } from "react-icons/ci";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
+import toast from "react-hot-toast";
 const MintNft = () => {
   const [loading, setLoading] = useState(false);
   const param = useParams();
@@ -23,9 +24,9 @@ const MintNft = () => {
     tokenOwner: userid,
     metadata: [
       {
-        data: [],
-        key_val_data: [{ key: "", val: [{ nat8: 8 }] }],
-        purpose: "Rendered",
+        key_val_data: [{ key: "", val: "" }],
+        purpose: { Rendered: null },
+        data: 0,
       },
     ],
     _logo: "",
@@ -37,41 +38,81 @@ const MintNft = () => {
     _fee: 0,
   });
 
-  const handleAddMetadata = () => {
-    setFormData({
-      ...formData,
-      metadata: [
-        ...formData.metadata,
-        {
-          key_val_data: [{ key: "", val: "" }],
-          purpose: "Preview",
-          data: "",
-        },
-      ],
-    });
-  };
+  const handleDataChange = (event) => {
+    const { value } = event.target;
 
-  const handleRemoveMetadata = (index) => {
-    const updatedMetadata = [...formData.metadata];
-    updatedMetadata.splice(index, 1);
-    setFormData({
-      ...formData,
-      metadata: updatedMetadata,
-    });
-  };
-
-  const handleChange = (event, index, field) => {
-    const { name, value } = event.target;
-    const updatedMetadata = [...formData.metadata];
-    if (field) {
-      updatedMetadata[index][field] = value;
-    } else {
-      updatedMetadata[index][name] = value;
+    const parsedValue = parseInt(value);
+    if (isNaN(parsedValue) || parsedValue < 0 || parsedValue > 255) {
+      console.error(
+        "Invalid input for data. Please enter a number between 0 and 255."
+      );
+      return;
     }
+
+    const updatedMetadata = [...formData.metadata];
+    updatedMetadata[0].data = Uint8Array.from([parsedValue]);
     setFormData({
       ...formData,
       metadata: updatedMetadata,
     });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const metadata = formData.metadata.map((item) => {
+        const data = item.data ? Uint8Array.from(item.data) : [];
+        const keyValData = item.key_val_data.map((keyValue) => {
+          let valContent;
+          switch (keyValue.key) {
+            case "size":
+              valContent = { Nat64Content: keyValue.val };
+              break;
+            case "format":
+            case "fileType":
+            case "tag":
+            case "symbol":
+              valContent = { TextContent: keyValue.val };
+              break;
+
+            default:
+              valContent = { TextContent: keyValue.val };
+          }
+          return { key: keyValue.key, val: valContent };
+        });
+        return { data, key_val_data: keyValData, purpose: item.purpose };
+      });
+
+      const result = await backend.FractionalizeNFt(
+        formData.nftCanisterId,
+        formData.to,
+        formData.tokenOwner,
+        metadata,
+        formData._logo,
+        formData._name,
+        formData._symbol,
+        parseInt(formData._decimals),
+        parseInt(formData._totalSupply),
+        formData._owner,
+        parseInt(formData._fee)
+      );
+
+      if (result.Ok) {
+        console.log("Fractionalization result:", result.Ok);
+
+        toast.success("Fractionalization successful!");
+      } else {
+        console.error("Fractionalization failed:", result.Err);
+
+        toast.error("Fractionalization failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error fractionalizing NFT:", error);
+
+      showErrorMessage(
+        "An error occurred while fractionalizing the NFT. Please try again."
+      );
+    }
   };
 
   const handleMetadataKeyValuePairChange = (
@@ -106,48 +147,27 @@ const MintNft = () => {
       metadata: updatedMetadata,
     });
   };
-
-  const saveFormData = () => {
-    console.log(formData); // Send formData to the backend
+  const handleAddMetadata = () => {
+    setFormData({
+      ...formData,
+      metadata: [
+        ...formData.metadata,
+        {
+          key_val_data: [{ key: "", val: "" }],
+          purpose: "Preview",
+          data: "",
+        },
+      ],
+    });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(formData); // Logging formData for debugging purposes
-
-    try {
-      const result = await backend.FractionalizeNFt({
-        // Constructing an object to pass as an argument to backend.FractionalizeNFt
-        nftCanisterId: formData.nftCanisterId,
-        to: formData.to,
-        tokenOwner: formData.tokenOwner,
-        metadata: formData.metadata.map((data) => ({
-          data: data.data,
-          key_val_data: data.key_val_data[{ key: "", val: [{ nat8: 8 }] }],
-          purpose: "Rendered",
-        })),
-        _logo: formData._logo,
-        _name: formData._name,
-        _symbol: formData._symbol,
-        _decimals: parseInt(formData._decimals),
-        _totalSupply: parseInt(formData._totalSupply),
-        _owner: formData._owner,
-        _fee: parseInt(formData._fee),
-      });
-
-      console.log(formData); // Logging formData again (possibly for debugging)
-
-      if (result.Ok) {
-        console.log("Fractionalization result:", result.Ok);
-        // Handle successful fractionalization
-      } else {
-        console.error("Fractionalization failed:", result.Err);
-        // Handle fractionalization failure
-      }
-    } catch (error) {
-      console.error("Error fractionalizing NFT:", error);
-      // Handle error
-    }
+  const handleRemoveMetadata = (index) => {
+    const updatedMetadata = [...formData.metadata];
+    updatedMetadata.splice(index, 1);
+    setFormData({
+      ...formData,
+      metadata: updatedMetadata,
+    });
   };
 
   return (
@@ -191,7 +211,7 @@ const MintNft = () => {
               className=" px-3 py-2 dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] focus:outline-none rounded-lg  border boder-[#565674]"
               type="text"
               value={record.data}
-              onChange={(e) => handleChange(e, index, "data")}
+              onChange={(e) => handleDataChange(e, index)}
             />
           </label>
           {record.key_val_data.map((keyValuePair, subIndex) => (
