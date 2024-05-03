@@ -1,19 +1,20 @@
-import NFTActorClass "../DIP721-NFT/Nft";
-import Cycles "mo:base/ExperimentalCycles";
-import Principal "mo:base/Principal";
 import Debug "mo:base/Debug";
 import Error "mo:base/Error";
-import Types "../DIP721-NFT/Types";
-import DIP20ActorClass "../DIP-20/token";
-import List "mo:base/List";
-import TrieMap "mo:base/TrieMap";
-import Result "mo:base/Result";
+import Cycles "mo:base/ExperimentalCycles";
 import Iter "mo:base/Iter";
-import UUID "mo:uuid/UUID";
-import Source "mo:uuid/async/SourceV4";
-import Time "mo:base/Time";
+import List "mo:base/List";
+import Principal "mo:base/Principal";
+import Result "mo:base/Result";
 import Text "mo:base/Text";
+import Time "mo:base/Time";
+import TrieMap "mo:base/TrieMap";
+import Source "mo:uuid/async/SourceV4";
+import UUID "mo:uuid/UUID";
+
+import DIP20ActorClass "../DIP-20/token";
 import Typestoken "../DIP-20/types";
+import NFTActorClass "../DIP721-NFT/Nft";
+import Types "../DIP721-NFT/Types";
 // import Helpers "./helper";
 
 actor Champs {
