@@ -16,6 +16,7 @@ const ContactForm = () => {
   const [formData, setFormData] = useState(initialFormData);
   const { sendUserContact, isLoading } = UserSendAPI();
   const [formSubmited, setFormSubmited] = useState(false);
+  const [phone, setPhone] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,6 +38,8 @@ const ContactForm = () => {
     e.preventDefault();
     // Handle form submission here
     // console.log(formData);
+    // Add phone number to formData:
+    formData.phoneNumber = phone.getNumber();
     sendUserContact(formData, setFormSubmited);
     // setFormData(initialFormData); // Reset form data after submission
 
@@ -101,7 +104,7 @@ const ContactForm = () => {
             }
           />
         ))}
-      <TelInput />
+      <TelInput setPhone={setPhone} />
       <CountryInput value={formData.country} onChange={handleCountryChange} />
       <div>
         <label>Additional Details</label>

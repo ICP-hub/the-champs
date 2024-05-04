@@ -55,7 +55,7 @@ const HomePageB = () => {
   // Effect hook extract nft from collection
   useEffect(() => {
     if (collections && collections.length > 0) {
-      getCollectionWiseNFT(collections[0].canister_id)
+      getCollectionWiseNFT(collections[1].canister_id)
         .then(() => {
           setFinalLoading(false);
         })
@@ -69,6 +69,8 @@ const HomePageB = () => {
     }
   }, [collections]);
 
+  console.log(collections);
+
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
       <div className="flex gap-2 max-md:flex-col">
@@ -81,7 +83,7 @@ const HomePageB = () => {
             <CollectionLoader key={index} />
           ))}
         </div>
-      ) : !NFTlist ? (
+      ) : NFTlist && NFTlist?.length === 0 ? (
         <NotAvailable>Featured NFT not available</NotAvailable>
       ) : (
         <div>

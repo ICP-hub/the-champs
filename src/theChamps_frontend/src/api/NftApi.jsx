@@ -12,6 +12,7 @@ const NFTApi = () => {
       setNFTLoading(true);
       const res = await backend.getcollectionwisenft(canisterId);
       setNFTlist(res);
+      console.log(res);
     } catch (err) {
       console.log("Error getting collectionwise nft", err);
     } finally {
@@ -25,6 +26,7 @@ const NFTApi = () => {
       setNFTLoading(true);
       const res = await backend.getusersnft(ownerPrincipal);
       setUserNFT(res.Ok);
+      console.log("get nft", res);
     } catch (err) {
       console.log("Error on getUserNFT :", err);
     } finally {

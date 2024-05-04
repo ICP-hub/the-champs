@@ -7,15 +7,17 @@ const UserSendAPI = () => {
   const [isLoading, setIsLoading] = useState(false);
   //createContact
   const sendUserContact = async (userData, setFormSubmited) => {
-    // console.log(userData);
+    const data = {
+      country: userData.country,
+      name: userData.firstName + " " + userData.lastName,
+      email: userData.email,
+      contact_number: userData.phoneNumber,
+      message: userData.additionalDetails,
+    };
+
     try {
       setIsLoading(true);
-      const res = await backend.createContact({
-        name: userData.firstName + " " + userData.lastName,
-        email: userData.email,
-        contact_number: userData.phoneNumber,
-        message: userData.additionalDetails,
-      });
+      const res = await backend.createContact(data);
       console.log("Response form sendUserContact", res);
       setFormSubmited(true);
       toast.success("Submitted Successfully! We'll contact you soon!");

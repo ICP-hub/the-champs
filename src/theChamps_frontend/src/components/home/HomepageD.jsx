@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 /*  @ <HomePageD /> : Counts wallet, artists, value.
 /* ----------------------------------------------------------------------------------------------------- */
 const dataBlocks = [
-  { value: "400", label: "Wallets Connected", unit: "k+" },
-  { value: "400", label: "Wallets Connected", unit: "k+" },
-  { value: "230", label: "Creative artists", unit: "+" },
-  { value: "3", label: "Estimated value", unit: "x" },
+  { value: "400", label: "Total Users", unit: "k+" },
+  { value: "400", label: "Total Collections", unit: "k+" },
+  { value: "230", label: "Total NFTs", unit: "+" },
+  { value: "3", label: "NFT sales", unit: "x" },
 ];
 
 const HomePageD = () => {

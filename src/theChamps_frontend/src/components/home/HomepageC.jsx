@@ -20,8 +20,8 @@ const ChooseCard = ({ imageSrc, title, description, custom }) => {
       className={`border-2 rounded-2xl px-6 py-12 flex flex-col gap-8 max-md:gap-4 ${custom}  border__animation`}
     >
       <img src={imageSrc} alt="choose" className="max-h-[50px] max-w-[50px]" />
-      <h1 className="font-bold text-3xl max-[900px]:text-2xl">{title}</h1>
-      <p className="text-[#7B7583] text-lg">{description}</p>
+      <h1 className="font-bold text-2xl max-[900px]:text-xl">{title}</h1>
+      <p className="text-[#7B7583]">{description}</p>
     </div>
   );
 };
@@ -33,27 +33,27 @@ const HomePageC = () => {
   const chooseCardsData = [
     {
       imageSrc: choose1,
-      title: "Huge collection",
+      title: "Exclusive Access to Iconic Players",
       description:
-        "A collection of 890 unique Nerkos built to go beyond the digital space",
-    },
-    {
-      imageSrc: choose2,
-      title: "High quality",
-      description:
-        "The nerko’s collection includes dozens of rare costumes ands colorways of artist's.",
-    },
-    {
-      imageSrc: choose3,
-      title: "Top resource",
-      description:
-        "Tasty design resources made with care for each pixel. NFTs and game resources.",
+        "Gain access to a curated selection of iconic football player NFTs, representing legendary figures from past and present. Our platform offers a unique opportunity to own digital collectibles of your favorite players, immortalized on the blockchain forever.",
     },
     {
       imageSrc: choose4,
-      title: "Big community",
+      title: "Personalized Fan Experience",
       description:
-        "Be part of a community of nerko owners and create user generated items.",
+        "Tailor your fan experience to suit your preferences and interests. Customize your profile, set notifications for player auctions and club updates, and receive personalized recommendations based on your collecting habits and favorite players. Our platform puts you in control of your football journey.        ",
+    },
+    {
+      imageSrc: choose2,
+      title: "Transparent and Secure Transactions",
+      description:
+        "Our platform utilizes blockchain technology to ensure transparent and secure transactions. Each football player NFT is minted on the Ethereum blockchain, providing immutable ownership records and eliminating the risk of counterfeit or fraudulent activity.        ",
+    },
+    {
+      imageSrc: choose3,
+      title: "Commitment to Quality and Excellence",
+      description:
+        "We are committed to delivering a high-quality, user-friendly platform that exceeds your expectations. Our team of experienced developers, designers, and football enthusiasts works tirelessly to ensure that your experience on our platform is seamless, enjoyable, and rewarding. Join us and elevate your football collecting experience to new heights.        ",
     },
   ];
 

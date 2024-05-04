@@ -33,14 +33,12 @@ const Setup = () => {
             Setup and connect your wallet.
           </h1>
           <p className="text-[#7B7583]">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit Metamask or
-            any wallet ipsam temporibus.
+            The initial step involves setting up and connecting your digital
+            wallet to our platform. This facilitates secure storage and
+            management of cryptocurrency assets, enabling seamless transactions
+            within our ecosystem.
           </p>
-          <p className="text-[#7B7583]">
-            Use Trust Wallet, Metamask or any wallet to connect to multiple
-            chains the app.
-          </p>
-          <button className="cursor-pointer flex items-center gap-4 font-bold pt-6">
+          <button className="cursor-pointer flex items-center gap-4 font-bold pt-6 mt-auto">
             Learn More
             <MdArrowOutward size={24} />
           </button>
@@ -52,18 +50,17 @@ const Setup = () => {
             02
           </span>
           <h1 className="font-bold lg:text-[56px] max-lg:text-3xl">
-            Create your own digital artwork
+            Discover Iconic Players NFT
           </h1>
           <p className="text-[#7B7583]">
-            Quality comes first. we took our time to plan out everything and
-            build our production pipeline for a good quality artwork's & digital
-            artwork.
+            Upon accessing our platform, users are presented with an array of
+            opportunities to explore. They can peruse through meticulously
+            curated collections featuring iconic football player NFTs and
+            prestigious club memberships. This process allows individuals to
+            identify and engage with entities aligning with their preferences
+            and interests.
           </p>
-          <p className="text-[#7B7583]">
-            Starting the production on the procedurally generated planets and
-            the smart contract for minting.
-          </p>
-          <button className="cursor-pointer flex items-center gap-4 font-bold pt-6">
+          <button className="cursor-pointer flex items-center gap-4 font-bold pt-6 mt-auto">
             Learn More
             <MdArrowOutward size={24} />
           </button>
@@ -77,14 +74,15 @@ const Setup = () => {
             03
           </span>
           <h1 className="font-bold lg:text-[56px] max-lg:text-3xl">
-            Choose a platform to sell your NFT
+            Purchase Your Footplayer NFT
           </h1>
           <p className="text-[#7B7583]">
-            Earn ETH and BIT for all your NFTs that you sell on our marketplace.
-          </p>
-          <p className="text-[#7B7583]">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Recusandae
-            doloremque a officiis quasi autem!
+            Following the discovery phase, users proceed to acquire their
+            desired football player NFT or club membership. This transaction is
+            executed with utmost security and efficiency, wherein users select
+            the desired asset, proceed to checkout, and complete the purchase
+            using their connected wallet. This seamless process ensures that
+            users swiftly and securely obtain ownership of their chosen assets.
           </p>
           <button className="cursor-pointer flex items-center gap-4 font-bold pt-6">
             Learn More

@@ -37,7 +37,7 @@ const MyProfileContainerMain = () => {
   useEffect(() => {
     const nftOwnerFilter = () => {
       if (NFTlist && NFTlist.length !== 0) {
-        NFTlist.map((nft) => console.log(nft.owner.toText()));
+        NFTlist.map((nft) => console.log(nft));
       }
     };
     nftOwnerFilter();

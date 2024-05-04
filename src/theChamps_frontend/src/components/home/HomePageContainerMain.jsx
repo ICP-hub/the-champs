@@ -36,8 +36,8 @@ const HomepageContainerMain = () => {
       <CustomDivide />
       <HomePageF />
       <CustomDivide />
-      <HomePageG />
-      <CustomDivide />
+      {/* <HomePageG />
+      <CustomDivide /> */}
       <HomePageH />
       <CustomDivide />
       <HomePageI />

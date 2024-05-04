@@ -17,6 +17,7 @@ import circle from "../../assets/icons/circle.svg";
 import circle2 from "../../assets/icons/circle-02.svg";
 
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageA /> : Homepage top.
 /* ----------------------------------------------------------------------------------------------------- */
@@ -43,9 +44,11 @@ const HomePageALeft = () => {
         celebrities is joining the NFT space on Champ.
       </div>
       <span className="mt-10">
-        <CustomButton>
-          Buy Now <MdArrowOutward size={24} />
-        </CustomButton>
+        <Link to="/collection">
+          <CustomButton>
+            Buy Now <MdArrowOutward size={24} />
+          </CustomButton>
+        </Link>
       </span>
       <HomePageALeftCommunityCounter />
     </div>
@@ -66,8 +69,8 @@ const HomePageALeftCommunityCounter = () => {
         ))}
       </div>
       <div className="">
-        <p className="font-bold text-[32px]">47k+</p>
-        <p className="font-normal text-xs text-[#7B7583]">Community members</p>
+        <p className="font-bold text-[32px]">20k+</p>
+        <p className="font-normal text-xs text-[#7B7583]">Total NFT's</p>
       </div>
     </div>
   );
