@@ -13,7 +13,7 @@ import { Grid } from "react-loader-spinner";
 const NFTList = () => {
   const [backend] = useCanister("backend");
   const [isLoading, setIsLoading] = useState(true);
-
+  const copied = false;
   const [sampleData, setSampleData] = useState([]);
   const param = useParams();
   const canisterid = Principal.fromText(param.slug);
@@ -45,7 +45,69 @@ const NFTList = () => {
 
   return (
     <div className="mx-4 md:py-8 md:px-6 p-2 flex flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-t-2xl mt-6">
-      <h1 className="text-xl  mx-4 mb-6 font-semibold"> NFT Collection Name</h1>
+      <div className="h-[600px]">
+        <div
+          className="rounded-2xl h-full"
+          style={{
+            backgroundImage: `url(${herobg})`,
+            height: "312px",
+            width: "full",
+          }}
+        >
+          <div className="flex gap-2 w-full">
+            <div className="dark:bg-[#2e2e48] bg-[#fff] w-[360px] px-4 pt-4 pb-10 rounded-t-2xl shadow-2xl mt-[200px] mx-6">
+              <div style={{ height: "300px" }} className="relative">
+                <img
+                  src={profile}
+                  alt=""
+                  className="w-full h-full object-cover rounded-2xl"
+                />
+                <div className=" flex items-center mt-3 justify-center">
+                  <div className="flex gap-4 items-center justify-evenly text-lg text-[#FC001E]">
+                    <FaXTwitter />
+                    <FaLinkedin />
+                    <FaInstagram />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="px-4 mt-[330px]">
+              <div className="flex flex-col   mb-4">
+                <div className="flex items-center justify-between mb-1">
+                  <h1 className="text-2xl font-semibold line-clamp-1 ">
+                    Collection Name
+                  </h1>
+                  <h4>Created April 2024</h4>
+                </div>
+                <div className="flex  gap-6 items-center">
+                  <h6 className="text-sm  line-clamp-1 ">Collection id</h6>
+                  <button
+                    // onClick={copyToClipboard}
+                    className="uppercase bg-[#fff] text-sm  shadow-md dark:bg-[#2e2e48] text-[#FC001E]   flex items-center justify-start gap-3  rounded-xl  "
+                  >
+                    {copied ? <IoCopyOutline /> : <IoCopyOutline />}
+                  </button>
+                </div>
+              </div>
+              <p className="">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores
+                temporibus quod reprehenderit sapiente at id et, vel possimus
+                deserunt magni!
+              </p>
+              {/* <div className="flex gap-4  justify-end mt-6">
+                <button className="uppercase bg-[#fff] text-sm md:text-[16px] shadow-md dark:bg-[#2e2e48] border border-[#FC001E]  flex items-center justify-start gap-3 py-2 px-2 md:px-4 md:py-2 rounded-xl  ">
+                  cancel
+                </button>
+
+                <button className="uppercase text-sm md:text-[16px] bg-gradient-to-r from-[#FC001E] to-[#FF7D57] shadow-md   flex items-center justify-start gap-3 py-2 px-2 md:px-4 md:py-2 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] ">
+                  Update Profile
+                </button>
+              </div> */}
+            </div>
+          </div>
+        </div>
+      </div>
       <div>
         <div className="flex w-full gap-4 mb-6">
           <div className="flex w-full items-center gap-2 bg-[#fff] text-xl md:text-[16px] shadow-md dark:bg-[#2e2e48] border border-red-500 py-2 px-4 rounded-2xl">
@@ -77,7 +139,7 @@ const NFTList = () => {
           ) : sampleData.length > 0 ? (
             <div className="grid md:grid-cols-3 grid-cols-1 gap-4 ">
               {sampleData.map((item, index) => (
-                <div>
+                <div key={index}>
                   <div
                     className=" w-full h-80 flex flex-col justify-between rounded-xl  "
                     style={{

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { useDropzone } from "react-dropzone";
-import { TbSquareRoundedChevronLeft } from "react-icons/tb";
+import { TbDisabled, TbSquareRoundedChevronLeft } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { TailSpin } from "react-loader-spinner";
+import toast from "react-hot-toast";
 const CreateCollections = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -15,11 +16,15 @@ const CreateCollections = () => {
   const userid = Principal.fromText(
     "5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe"
   );
+
   const options = [];
   for (let i = 1; i <= 50; i += 0.5) {
     options.push({ value: i.toFixed(1), label: `${i}%` });
   }
 
+  const sendback = () => {
+    navigate(-1);
+  };
   const handlechange = (e) => {
     const { name, value } = e.target;
     setFormdata((prevData) => ({
@@ -99,7 +104,7 @@ const CreateCollections = () => {
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    principal: userid,
+    principal: "",
     record: {
       maxLimit: "",
       logo: {
@@ -113,7 +118,7 @@ const CreateCollections = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const updatedFormData = { ...formData }; // Create a copy to avoid mutation
+    const updatedFormData = { ...formData };
 
     // Handle both top-level and nested field updates
     const parts = name.split(".");
@@ -139,12 +144,50 @@ const CreateCollections = () => {
     });
   }
 
+  const getFileType = (file) => {
+    // Extract file extension
+    const fileNameParts = file.name.split(".");
+    const fileExtension = fileNameParts[fileNameParts.length - 1].toLowerCase();
+
+    // Map common image file extensions to MIME types
+    const extensionToTypeMap = {
+      png: "image/png",
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      gif: "image/gif",
+      // Add more mappings as needed
+    };
+
+    // Look up MIME type based on file extension
+    const mimeType = extensionToTypeMap[fileExtension];
+    if (mimeType) {
+      return mimeType;
+    } else {
+      // If MIME type is not found, default to the file's type
+      return file.type;
+    }
+  };
+
   const handleLogoDataChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    const maxSizeInBytes = 1024 * 1024;
+    if (file.size > maxSizeInBytes) {
+      console.error(
+        "Selected file is too large. Please select an image file less than or equal to 1 MB."
+      );
+      toast.error("Please select an image file less than or equal to 1 MB");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      console.error("Selected file is not an image.");
+      return;
+    }
 
     try {
       const logoBlob = await imageToFileBlob(file);
+      const fileType = getFileType(file);
 
       setFormData({
         ...formData,
@@ -153,6 +196,7 @@ const CreateCollections = () => {
           logo: {
             ...formData.record.logo,
             data: logoBlob,
+            logo_type: fileType,
           },
         },
       });
@@ -161,7 +205,6 @@ const CreateCollections = () => {
       console.error("Error converting image to blob:", error);
     }
   };
-
   const handleLogoTypeChange = (event) => {
     const { value } = event.target;
     setFormData((prevState) => ({
@@ -185,7 +228,10 @@ const CreateCollections = () => {
         ...record,
         maxLimit: parseInt(record.maxLimit),
       };
-      const result = await backend.createcollection(principal, parsedRecord);
+      const result = await backend.createcollection(
+        Principal.fromText(principal),
+        parsedRecord
+      );
       console.log("Collection creation result:", result);
 
       if (result.ok) {
@@ -228,6 +274,7 @@ const CreateCollections = () => {
               value={formData.principal}
               onChange={handleChange}
               required
+              isabled={loading}
             />
           </div>
           <div className="w-full">
@@ -242,6 +289,7 @@ const CreateCollections = () => {
               value={formData.record.maxLimit}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
         </div>
@@ -250,7 +298,7 @@ const CreateCollections = () => {
             htmlFor="logoData"
             className="md:text-lg text-sm font-semibold"
           >
-            Logo Data
+            Logo Img
           </label>
           <input
             type="file"
@@ -259,6 +307,7 @@ const CreateCollections = () => {
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             onChange={handleLogoDataChange}
             required
+            disabled={loading}
           />
         </div>
 
@@ -270,6 +319,7 @@ const CreateCollections = () => {
             Logo Type <br />
           </label>
           <input
+            readOnly
             type="text"
             id="logoType"
             name="logoType"
@@ -277,6 +327,7 @@ const CreateCollections = () => {
             value={formData.record.logo.logo_type}
             onChange={handleLogoTypeChange}
             required
+            disabled={loading}
           />
         </div>
 
@@ -292,6 +343,7 @@ const CreateCollections = () => {
             value={formData.record.name}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </div>
         <div className="w-full">
@@ -306,228 +358,30 @@ const CreateCollections = () => {
             value={formData.record.symbol}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </div>
-        {/* <div className="w-full">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Website URL*
-          </label>
-          <input
-            type="text"
-            id="name"
-            required
-            name="lastname"
-            value={formData.lastname}
-            onChange={handlechange}
-            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg  dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-          />
-        </div>
-        <h1 className="text-xl mt-8 mb-2">Social Links</h1>
-        <div className="flex gap-4">
-          <div className="w-full">
-            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-              Telegram
-            </label>
-            <input
-              type="text"
-              id="name"
-              required
-              name="lastname"
-              value={formData.lastname}
-              onChange={handlechange}
-              className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg  dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            />
-          </div>
-          <div className="w-full">
-            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-              Discord
-            </label>
-            <input
-              type="text"
-              id="name"
-              required
-              name="lastname"
-              value={formData.lastname}
-              onChange={handlechange}
-              className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg  dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            />
-          </div>
-        </div>
-        <div className="flex gap-4">
-          <div className="w-full">
-            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-              Twitter
-            </label>
-            <input
-              type="text"
-              id="name"
-              required
-              name="lastname"
-              value={formData.lastname}
-              onChange={handlechange}
-              className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg  dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            />
-          </div>
-          <div className="w-full">
-            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-              Medium
-            </label>
-            <input
-              type="text"
-              id="name"
-              required
-              name="lastname"
-              value={formData.lastname}
-              onChange={handlechange}
-              className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg  dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            />
-          </div>
-        </div>
-        <h1 className="text-xl">Images</h1>
-        <div className="w-full">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Avatar - square image (which will be cropped to a circle).* <br />
-            <span className="text-sm">
-              Please provide at 150x150 as a JPG or PNG
-            </span>
-          </label>
-          <section className="container">
-            <div
-              {...getRootProps({
-                className:
-                  "dropzone dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] border boder-[#565674] p-4 rounded-lg",
-              })}
-            >
-              <input {...getInputProps()} />
-              <p className="text-gray-400">
-                Drag 'n' drop some files here, or click to select files
-              </p>
-            </div>
-            <aside className="flex flex-wrap mt-4">{thumbs}</aside>
-          </section>
-          <span className="text-sm">
-            Image should be a square .jpg, .png, .svg, or .gif
-          </span>
-        </div>
-        <div className="w-full">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Collection Banner <br />
-            <span className="text-sm">
-              Images should be 1200px wide and 200px high. (If larger will be
-              cropped around to fit).
-            </span>
-          </label>
-          <section className="container">
-            <div
-              {...getRootProps({
-                className:
-                  "dropzone dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] border boder-[#565674] p-4 rounded-lg",
-              })}
-            >
-              <input {...getInputProps()} />
-              <p className="text-gray-400">
-                Drag 'n' drop some files here, or click to select files
-              </p>
-            </div>
-            <aside className="flex flex-wrap mt-4">{thumbs}</aside>
-          </section>
-        </div>
-        <div className="w-full">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Collection Image*
-            <br />
-            <span className="text-sm">Please provide at 350x200 as a JPG</span>
-          </label>
-          <section className="container">
-            <div
-              {...getRootProps({
-                className:
-                  "dropzone dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a] border boder-[#565674] p-4 rounded-lg",
-              })}
-            >
-              <input {...getInputProps()} />
-              <p className="text-gray-400">
-                Drag 'n' drop some files here, or click to select files
-              </p>
-            </div>
-            <aside className="flex flex-wrap mt-4">{thumbs}</aside>
-          </section>
-          <span className="text-sm">
-            Image should be a square .jpg, .png, .svg, or .gif
-          </span>
-        </div>
-        <h1 className="text-xl ">Payment Information</h1>
-        <div className="w-full">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Creator fee (% royalty on secondary sales)* <br />{" "}
-            <span className="text-sm">
-              The Creator Royalty is the percentage royalty you will take from
-              secondary sales in the market. We recommend 2.5% or less for most
-              projects.
-            </span>
-          </label>
-          <select
-            name="roylity"
-            id=""
-            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-          >
-            <option value="">Select Royality</option>
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="w-full">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Wallet address to receive ICP* <br />{" "}
-            <span className="text-sm">
-              This must be a wallet address, not principal ID. This is where you
-              will receive primary sale proceeds (ICP), and secondary market
-              royalties (ICP).
-            </span>
-          </label>
-          <input
-            type="text"
-            id="name"
-            required
-            name="lastname"
-            value={formData.lastname}
-            onChange={handlechange}
-            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-          />
-        </div>
-        <div className="w-full">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Wallet address to receive NFTs* <br />{" "}
-            <span className="text-sm">
-              This must be a wallet address, not principal ID. This is where you
-              will receive team NFTs and surplus NFTs from your launch.
-            </span>
-          </label>
-          <input
-            type="text"
-            id="name"
-            required
-            name="lastname"
-            value={formData.lastname}
-            onChange={handlechange}
-            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-          />
-        </div> */}
 
         <div className="flex gap-4 justify-end">
-          <button className="uppercase bg-[#fff] shadow-md dark:bg-[#2e2e48] border border-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl   ">
+          <button
+            onClick={sendback}
+            disabled={loading}
+            className={`uppercase bg-[#fff] shadow-md dark:bg-[#2e2e48] border border-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl ${
+              loading && "opacity-50"
+            } `}
+          >
             cancle
           </button>
           <button
+            disabled={loading}
             type="submit"
-            className="uppercase bg-red-500 shadow-md dark:bg-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] "
+            className={`uppercase bg-red-500 shadow-md dark:bg-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] ${
+              loading && "opacity-50"
+            } `}
           >
             {loading ? (
-              <div className="flex gap-3 items-center">
-                Createing Collection
+              <div className="flex gap-3 items-center ">
+                Creating Collection
                 <TailSpin
                   height="15"
                   width="15"

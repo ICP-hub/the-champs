@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Table from "../../utils/Table";
 import { AiOutlineTable, AiOutlineAppstore } from "react-icons/ai"; // Import AiOutlineTable and AiOutlineAppstore icons
-import { IoHeart } from "react-icons/io5";
+import { IoCopyOutline, IoHeart } from "react-icons/io5";
 import { useCanister } from "@connect2ic/react";
 import { BallTriangle, Grid, Vortex } from "react-loader-spinner";
 import notfound from "../../assets/notfound.jpeg";
+import { Principal } from "@dfinity/principal";
+import profile from "../../assets/profile.jpg";
 const Market = () => {
   const [displayMode, setDisplayMode] = useState("row");
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,6 +17,17 @@ const Market = () => {
 
   const [sampleData, setSampleData] = useState([]);
 
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = (itemcanister_id) => {
+    navigator.clipboard
+      .writeText(itemcanister_id)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      })
+      .catch((err) => console.error("Failed to copy:", err));
+  };
   const getAllCollections = async () => {
     try {
       const data = await backend.getallcollections();
@@ -59,10 +72,8 @@ const Market = () => {
             name=""
             id=""
           >
-            <option value="">Last day</option>
-            <option value="">Last 7 days</option>
-            <option value="">Last 30 days</option>
-            <option value="">Last month</option>
+            <option value="">Newest</option>
+            <option value="">Oldest</option>
           </select>
           <div className="flex gap-4">
             <Link
@@ -110,35 +121,72 @@ const Market = () => {
                         <div className="">
                           <img
                             className="rounded-full w-9 h-9"
-                            src={item?.data?.symbol}
+                            src={profile}
                             alt=""
                           />
                         </div>
-                        <div>
-                          <h4 className="text-sm"> {item?.data?.name}</h4>
+                        <div className="flex items-center gap-1">
+                          <h4 className="text-sm ">
+                            {" "}
+                            {(item?.canister_id).toString().slice(0, 4) + "..."}
+                          </h4>
+                          <button
+                            onClick={() =>
+                              copyToClipboard(item?.canister_id.toString())
+                            }
+                            className="uppercase  text-sm shadow-md  text-[#FF7D57] flex items-center justify-start gap-3 rounded-xl"
+                          >
+                            {copied ? <IoCopyOutline /> : <IoCopyOutline />}
+                          </button>
                         </div>
                       </div>
                       <div className="dark:bg-[#38385470] bg-[#ffffff30] p-2 rounded-full">
-                        <h1> Admin*</h1>
+                        <h1>
+                          {" "}
+                          MaxLmt :{" "}
+                          <span className="text-[#FF7D57]">
+                            {item?.data?.maxLimit}
+                          </span>
+                        </h1>
                       </div>
                     </div>
                     <div className=" dark:bg-[#38385470] bg-[#ffffff30]  mx-2 p-1 mt-auto mb-2 rounded-2xl ">
                       <div className="flex justify-between  ">
                         <div>
                           <div className="flex flex-col mx-2">
-                            <span className="  text-[16px]">Website URL*</span>
+                            <span className="  text-[16px]">
+                              Collection Name
+                            </span>
                             <span className="font-semibold text-[16px] ">
-                              <a href="https://t4vpt-6qaaa-aaaak-aff6q-cai.icp0.io/">
-                                Link
-                              </a>
+                              <h1>{item?.data?.name}</h1>
                             </span>
                           </div>
                         </div>
                         <div>
                           <div className="flex flex-col mx-2">
-                            <span className="  text-[16px]">Max Limit</span>
+                            <span className="  text-[16px]">Collection Id</span>
                             <span className="font-semibold text-[16px] ">
-                              {item?.data?.maxLimit}
+                              <div className="flex items-center gap-1">
+                                <h4 className="text-sm ">
+                                  {" "}
+                                  {(item?.canister_id).toString().slice(0, 8) +
+                                    "..."}
+                                </h4>
+                                <button
+                                  onClick={() =>
+                                    copyToClipboard(
+                                      item?.canister_id.toString()
+                                    )
+                                  }
+                                  className="uppercase  text-sm shadow-md  text-[#FF7D57] flex items-center justify-start gap-3 rounded-xl"
+                                >
+                                  {copied ? (
+                                    <IoCopyOutline />
+                                  ) : (
+                                    <IoCopyOutline />
+                                  )}
+                                </button>
+                              </div>
                             </span>
                           </div>
                         </div>
