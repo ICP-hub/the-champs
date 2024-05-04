@@ -12,6 +12,7 @@ import Result "mo:base/Result";
 import Types "./Types";
 import Cycles "mo:base/ExperimentalCycles";
 import Time "mo:base/Time";
+import Debug "mo:base/Debug";
 
 shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibleToken) = Self {
   stable var transactionId: Types.TransactionId = 0;
@@ -40,6 +41,7 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
   };
 
   public shared ({caller}) func addcustodians(custodian: Principal) : async Result.Result<Types.AddCustodian,Types.AddCustodianError> {
+    Debug.print("Caller" # debug_show( caller));
     if (not List.some(custodians, func (c : Principal) : Bool { c == caller })) {
       return #err(#Unauthorized);
     } else if (List.some(custodians, func (c : Principal) : Bool { c == custodian })) {
@@ -202,9 +204,9 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
   };
 
   public shared func mintDip721(to: Principal, metadata: Types.MetadataDesc) : async Types.MintReceipt {
-    // if (not List.some(custodians, func (custodian : Principal) : Bool { custodian == to })) {
-    //   return #Err(#Unauthorized);
-    // };
+    if (not List.some(custodians, func (custodian : Principal) : Bool { custodian == to })) {
+      return #Err(#Unauthorized);
+    };
 
     let newId = Nat64.fromNat(List.size(nfts));
     let nft : Types.Nft = {
