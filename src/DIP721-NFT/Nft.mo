@@ -11,6 +11,7 @@ import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Types "./Types";
 import Cycles "mo:base/ExperimentalCycles";
+import Time "mo:base/Time";
 
 shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibleToken) = Self {
   stable var transactionId: Types.TransactionId = 0;
@@ -20,6 +21,10 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
   stable var name : Text = init.name;  
   stable var symbol : Text = init.symbol;
   stable var maxLimit : Nat16 = init.maxLimit;
+  stable var banner : Types.LogoResult = init.banner;
+  stable var description : Text = init.description;
+  stable var created_at : Time.Time = init.created_at;
+  stable var featured : Bool = init.featured;
   private stable var capacity = 1000000000000000000;
   private stable var balance = Cycles.balance();
 
@@ -125,6 +130,22 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
     return Nat64.fromNat(
       List.size(nfts)
     );
+  };
+
+  public query func bannerDip721() : async Types.LogoResult {
+    return banner;
+  };
+
+  public query func descriptionDip721() : async Text {
+    return description;
+  };
+
+  public query func createdAtDip721() : async Time.Time {
+    return created_at;
+  };
+
+  public query func featuredDip721() : async Bool {
+    return featured;
   };
 
   public query func getMetadataDip721(token_id: Types.TokenId) : async Types.MetadataResult {

@@ -1,19 +1,20 @@
-import NFTActorClass "../DIP721-NFT/Nft";
-import Cycles "mo:base/ExperimentalCycles";
-import Principal "mo:base/Principal";
 import Debug "mo:base/Debug";
 import Error "mo:base/Error";
-import Types "../DIP721-NFT/Types";
-import DIP20ActorClass "../DIP-20/token";
-import List "mo:base/List";
-import TrieMap "mo:base/TrieMap";
-import Result "mo:base/Result";
+import Cycles "mo:base/ExperimentalCycles";
 import Iter "mo:base/Iter";
-import UUID "mo:uuid/UUID";
-import Source "mo:uuid/async/SourceV4";
-import Time "mo:base/Time";
+import List "mo:base/List";
+import Principal "mo:base/Principal";
+import Result "mo:base/Result";
 import Text "mo:base/Text";
+import Time "mo:base/Time";
+import TrieMap "mo:base/TrieMap";
+import Source "mo:uuid/async/SourceV4";
+import UUID "mo:uuid/UUID";
+
+import DIP20ActorClass "../DIP-20/token";
 import Typestoken "../DIP-20/types";
+import NFTActorClass "../DIP721-NFT/Nft";
+import Types "../DIP721-NFT/Types";
 // import Helpers "./helper";
 
 actor Champs {
@@ -24,13 +25,13 @@ actor Champs {
         private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
         private var stavlenftcollectionMap : [(Principal, [Principal])] = [];
 
-    private var favourites = TrieMap.TrieMap<Principal, [(Types.Nft,Principal)]>(Principal.equal, Principal.hash);
-    private var stablefavourites : [(Principal, [Types.Nft])] = [];
+        private var favourites = TrieMap.TrieMap<Principal, [(Types.Nft,Principal)]>(Principal.equal, Principal.hash);
+        private var stablefavourites : [(Principal, [Types.Nft])] = [];
 
-    private var contacts = TrieMap.TrieMap<Types.ContactId, Types.Contact>(Text.equal, Text.hash);
-    private stable var stablecontacts : [(Types.ContactId, Types.Contact)] = [];
+        private var contacts = TrieMap.TrieMap<Types.ContactId, Types.Contact>(Text.equal, Text.hash);
+        private stable var stablecontacts : [(Types.ContactId, Types.Contact)] = [];
 
-        private var fractionalnftmap = TrieMap.TrieMap<Principal, [(Types.FractionalNFT,Principal)]>(Principal.equal,Principal.hash);
+        private var fractionalnftmap = TrieMap.TrieMap<Principal, [(Principal,Types.FractionalNFT,Principal)]>(Principal.equal,Principal.hash);
         
         public func idQuick() : async Principal { 
             return Principal.fromActor(Champs);
@@ -131,17 +132,18 @@ actor Champs {
                     let nftdata = await getNFTdetails(nftcanisterid, newnft.token_id);
                     
                     let fractionNftDetails : Types.FractionalNFT = {
+                        collectionid = nftcanisterid;
                         nft = nftdata;
                         fractional_token = tokenmetadata;
                     };
                     switch(fractionalnftmap.get(to)){
                         case null {
-                            let newfractionalnft = [(fractionNftDetails,tokencanister)];
+                            let newfractionalnft = [(nftcanisterid,fractionNftDetails,tokencanister)];
                             fractionalnftmap.put(to, newfractionalnft);
                             return #Ok(fractionNftDetails);
                         };
                         case (?nft){
-                            let temp = List.push((fractionNftDetails,tokencanister), List.fromArray(nft));
+                            let temp = List.push((nftcanisterid,fractionNftDetails,tokencanister), List.fromArray(nft));
                             fractionalnftmap.put(to, List.toArray(temp));
                             return #Ok(fractionNftDetails);
                         };
@@ -187,7 +189,7 @@ actor Champs {
         };
     };
 
-    public func getusersfractionnft(user : Principal) : async [(Types.FractionalNFT, Principal)] {
+    public func getusersfractionnft(user : Principal) : async [(Principal,Types.FractionalNFT, Principal)] {
         switch (fractionalnftmap.get(user)) {
             case null {
                 return [];
@@ -198,8 +200,8 @@ actor Champs {
         };
     };
 
-    public shared({caller = user}) func getallfractionalnfts () : async [(Types.FractionalNFT,Principal)] {
-        var results = List.nil<(Types.FractionalNFT,Principal)>(); 
+    public shared({caller = user}) func getallfractionalnfts () : async [(Principal,Types.FractionalNFT,Principal)] {
+        var results = List.nil<(Principal,Types.FractionalNFT,Principal)>(); 
         for (nft in fractionalnftmap.vals()){
             for (fractionalnft in nft.vals()){
                 results := List.push(fractionalnft, results);
@@ -215,16 +217,28 @@ actor Champs {
             nameDip721 : () -> async Text;
             symbolDip721 : () -> async Text;
             getMaxLimitDip721 : () -> async Nat16;
+            bannerDip721 : () -> async Types.LogoResult;
+            descriptionDip721 : () -> async Text;
+            createdAtDip721 : () -> async Time.Time;
+            featuredDip721 : () -> async Bool;
         };
         let logo = await nftcanisteractor.logoDip721();
         let name = await nftcanisteractor.nameDip721();
         let symbol = await nftcanisteractor.symbolDip721();
         let totalSupply = await nftcanisteractor.getMaxLimitDip721();
+        let banner = await nftcanisteractor.bannerDip721();
+        let description = await nftcanisteractor.descriptionDip721();
+        let createdAt = await nftcanisteractor.createdAtDip721();
+        let featured = await nftcanisteractor.featuredDip721();
         let collection : Types.Dip721NonFungibleToken = {
             logo = logo;
             name = name;
             symbol = symbol;
             maxLimit = totalSupply;
+            banner = banner;
+            description = description;
+            created_at = createdAt;
+            featured = false;
         };
         return collection;
     };
@@ -239,16 +253,28 @@ actor Champs {
                     symbolDip721 : () -> async Text;
                     getMaxLimitDip721 : () -> async Nat16;
                     getCanisterId : () -> async Principal;
+                    bannerDip721 : () -> async Types.LogoResult;
+                    descriptionDip721 : () -> async Text;
+                    createdAtDip721 : () -> async Time.Time;
+                    featuredDip721 : () -> async Bool;
                 };
                 let logo = await nftcanisteractor.logoDip721();
                 let name = await nftcanisteractor.nameDip721();
                 let symbol = await nftcanisteractor.symbolDip721();
                 let totalSupply = await nftcanisteractor.getMaxLimitDip721();
+                let banner = await nftcanisteractor.bannerDip721();
+                let description = await nftcanisteractor.descriptionDip721();
+                let createdAt = await nftcanisteractor.createdAtDip721();
+                let featured = await nftcanisteractor.featuredDip721();
                 let tempcollection : Types.Dip721NonFungibleToken = {
                     logo = logo;
                     name = name;
                     symbol = symbol;
                     maxLimit = totalSupply;
+                    banner = banner;
+                    description = description;
+                    created_at = createdAt;
+                    featured = featured;
                 };
                 let collection_details : Types.CollectionDetials = {
                     canister_id = id;
@@ -260,30 +286,47 @@ actor Champs {
         return List.toArray(collection);
     };
 
-    public shared ({ caller = user }) func getcollectionwisenft(collectioncanisterid : Principal) : async [Types.Nft] {
-        let nftcanisteractor = actor (Principal.toText(collectioncanisterid)) : actor {
-            getallNFT : () -> async [Types.Nft];
+    public shared ({ caller = user }) func getcollectionwisefractionalnft(collectioncanisterid : Principal) : async [Types.FractionalNFT] {
+        var collectionnft : List.List<(Types.FractionalNFT)> = List.nil<Types.FractionalNFT>();
+        for (nft in fractionalnftmap.vals()){
+            for (fractionalnft in nft.vals()){
+                if (fractionalnft.0 == collectioncanisterid){
+                    collectionnft := List.push(fractionalnft.1, collectionnft);
+                };
+            };
         };
-        let nfts = await nftcanisteractor.getallNFT();
-        return nfts;
+        return List.toArray(collectionnft);
     };
 
+    
     public shared ({ caller = user }) func getcollectiondetails(collectioncanisterid : Principal) : async Types.Dip721NonFungibleToken {
         let nftcanisteractor = actor (Principal.toText(collectioncanisterid)) : actor {
             logoDip721 : () -> async Types.LogoResult;
             nameDip721 : () -> async Text;
             symbolDip721 : () -> async Text;
             getMaxLimitDip721 : () -> async Nat16;
+            bannerDip721 : () -> async Types.LogoResult;
+            descriptionDip721 : () -> async Text;
+            createdAtDip721 : () -> async Time.Time;
+            featuredDip721 : () -> async Bool;
         };
         let logo = await nftcanisteractor.logoDip721();
         let name = await nftcanisteractor.nameDip721();
         let symbol = await nftcanisteractor.symbolDip721();
         let totalSupply = await nftcanisteractor.getMaxLimitDip721();
+        let banner = await nftcanisteractor.bannerDip721();
+        let description = await nftcanisteractor.descriptionDip721();
+        let createdAt = await nftcanisteractor.createdAtDip721();
+        let featured = await nftcanisteractor.featuredDip721();
         let collection : Types.Dip721NonFungibleToken = {
             logo = logo;
             name = name;
             symbol = symbol;
             maxLimit = totalSupply;
+            banner = banner;
+            description = description;
+            created_at = createdAt;
+            featured = featured;
         };
         return collection;
     };
@@ -367,6 +410,7 @@ actor Champs {
             case (#Ok(data)) {
                 let tokenmetadata = await fractiontokencanisteractor.getMetadata();
                 let fractionalNftDetails : Types.FractionalNFT = {
+                    collectionid = collectioncanisterid;
                     nft = data;
                     fractional_token = tokenmetadata;
                 };
@@ -457,6 +501,11 @@ actor Champs {
     public query func listContacts() : async [(Types.ContactId, Types.Contact)] {
         return Iter.toArray(contacts.entries());
     };
+
+
+    // ********************************************** Buy and Transfer of tokens *************************************************************
+
+
 
     system func preupgrade() {};
 

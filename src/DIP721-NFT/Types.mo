@@ -12,9 +12,13 @@ import Types "../DIP-20/types";
 module {
   public type Dip721NonFungibleToken = {
     logo: LogoResult;
+    banner: LogoResult;
+    description: Text;
+    created_at: Time.Time;
     name: Text;
     symbol: Text;
     maxLimit : Nat16;
+    featured: Bool;
   };
 
   public type TokenDetails = Result<Dip721NonFungibleToken, ApiError>;
@@ -30,8 +34,6 @@ module {
     nft: Nft;
     fractional_token : Types.Metadata;
   };
-
-
 
   public type FractionalNFTError = {
     #CollectionNotFound;
