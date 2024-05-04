@@ -41,9 +41,19 @@ actor Champs {
         return user;
     };
 
-    public shared ({ caller = user }) func createcollection( metadata : Types.Dip721NonFungibleToken) : async (Principal,[Principal]) {
+    public shared ({ caller = user }) func createcollection( logo: Types.LogoResult, banner: Types.LogoResult, description: Text, name: Text, symbol: Text, maxLimit : Nat16,featured: Bool)  : async (Principal,[Principal]) {
         Cycles.add<system>(100_500_000_000);
         Debug.print(debug_show (user));
+        let metadata : Types.Dip721NonFungibleToken = {
+            logo = logo;
+            banner = banner;
+            description = description;
+            created_at  = Time.now();
+            name = name;
+            symbol = symbol;
+            maxLimit = maxLimit;
+            featured = featured;
+        };
         let nftcollection = await NFTActorClass.Dip721NFT(Principal.fromActor(Champs), metadata);
         ignore await nftcollection.wallet_receive();
         let collection_canister_id = await nftcollection.getCanisterId();
