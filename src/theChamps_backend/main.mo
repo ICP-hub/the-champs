@@ -369,15 +369,15 @@ actor Champs {
         };
     };
 
-    public shared ({ caller = user }) func removefavourite(tokenid : Types.TokenId) : async Text {
+    public shared ({ caller = user }) func removefavourite(collection_id : Principal, tokenid : Types.TokenId) : async Text {
         let userfavourites = favourites.get(user);
         switch (userfavourites) {
             case null {
-                return "Favourite not found";
+                return "There are no favouites added yet !";
             };
             case (?favourite) {
                 let temp : List.List<(Types.Nft,Principal)> = List.fromArray(favourite);
-                let newlist : List.List<(Types.Nft,Principal)> = List.filter<(Types.Nft,Principal)>(temp, func x : Bool { x.0.id != tokenid });
+                let newlist : List.List<(Types.Nft,Principal)> = List.filter<(Types.Nft,Principal)>(temp, func x : Bool { x.0.id != tokenid and x.1 != collection_id});
                 favourites.put(user, List.toArray(newlist));
                 return "Favourite removed";
             };
