@@ -24,6 +24,7 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
   stable var banner : Types.LogoResult = init.banner;
   stable var description : Text = init.description;
   stable var created_at : Time.Time = init.created_at;
+  stable var featured : Bool = init.featured;
   private stable var capacity = 1000000000000000000;
   private stable var balance = Cycles.balance();
 
@@ -141,6 +142,10 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
 
   public query func createdAtDip721() : async Time.Time {
     return created_at;
+  };
+
+  public query func featuredDip721() : async Bool {
+    return featured;
   };
 
   public query func getMetadataDip721(token_id: Types.TokenId) : async Types.MetadataResult {

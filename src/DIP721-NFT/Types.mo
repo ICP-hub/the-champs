@@ -18,6 +18,7 @@ module {
     name: Text;
     symbol: Text;
     maxLimit : Nat16;
+    featured: Bool;
   };
 
   public type TokenDetails = Result<Dip721NonFungibleToken, ApiError>;
@@ -33,8 +34,6 @@ module {
     nft: Nft;
     fractional_token : Types.Metadata;
   };
-
-
 
   public type FractionalNFTError = {
     #CollectionNotFound;
