@@ -9,22 +9,26 @@ import ReadMore from "../common/ReadMore";
 import { useParams } from "react-router";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
+import { TailSpin } from "react-loader-spinner";
 
 const ProductCard = ({ product }) => {
   const { id } = useParams();
   const [backend] = useCanister("backend");
   const [favourites, setFavourites] = useState();
   const [productInFavourites, setProductInFavourites] = useState(false);
+  const [loading, setLoading] = useState();
 
   const addToFavourites = async () => {
     try {
+      setLoading(true);
       const canister_id = Principal.fromText(id);
       const res = await backend.addfavourite(canister_id, parseInt(product.id));
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
-  console.log(favourites, "favourites");
 
   const getFavourites = async () => {
     try {
@@ -35,14 +39,14 @@ const ProductCard = ({ product }) => {
       console.log(error);
     }
   };
-  console.log(favourites, "favourites");
+  //console.log(favourites[0][1].toText(), "favourites");
 
   useEffect(() => {
     getFavourites();
 
     if (favourites != null) {
       const isProductInWishlist = favourites.some(
-        (item) => item.id === product.id
+        (item) => item[0].id === product.id && item[1].toText() === id
       );
       setProductInFavourites(isProductInWishlist);
     }
@@ -50,11 +54,14 @@ const ProductCard = ({ product }) => {
 
   const removeFavourites = async () => {
     try {
+      setLoading(true);
       const res = backend.removefavourite(parseInt(product.id));
       console.log("item successfully remove from favourites");
       toast.success("item successfully remove from favourites");
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,33 +82,54 @@ const ProductCard = ({ product }) => {
       <div className="p-2 mx-2">
         <div className="flex justify-between font-bold items-center">
           <h2 className="text-lg font-semibold mb-2">product 1</h2>
-          {productInFavourites ? (
-            <button onClick={removeFavourites}>
-              {" "}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 115.77 122.88"
-                width="30"
-                height="25"
-                className="gradient-icon"
-              >
-                <defs>
-                  <linearGradient id="gradient" x1="0" y1="0" x2="100%" y2="0">
-                    <stop offset="0%" stopColor="#FC001E" />
-                    <stop offset="100%" stopColor="#FF7D57" />
-                  </linearGradient>
-                </defs>
-                <path
-                  fill="url(#gradient)"
-                  d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z"
-                />
-              </svg>
+          {loading ? (
+            <button>
+              <TailSpin
+                height="8%"
+                width="8%"
+                color="black"
+                ariaLabel="tail-spin-loading"
+                radius="1"
+                visible={true}
+              />
             </button>
           ) : (
-            <button onClick={addToFavourites}>
-              {" "}
-              <CiHeart size={32} />
-            </button>
+            <>
+              {productInFavourites ? (
+                <button onClick={removeFavourites}>
+                  {" "}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 115.77 122.88"
+                    width="30"
+                    height="25"
+                    className="gradient-icon"
+                  >
+                    <defs>
+                      <linearGradient
+                        id="gradient"
+                        x1="0"
+                        y1="0"
+                        x2="100%"
+                        y2="0"
+                      >
+                        <stop offset="0%" stopColor="#FC001E" />
+                        <stop offset="100%" stopColor="#FF7D57" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      fill="url(#gradient)"
+                      d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z"
+                    />
+                  </svg>
+                </button>
+              ) : (
+                <button onClick={addToFavourites}>
+                  {" "}
+                  <CiHeart size={32} />
+                </button>
+              )}
+            </>
           )}
         </div>
         <p className="text-gray-500 text-sm">

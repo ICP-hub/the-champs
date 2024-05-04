@@ -111,6 +111,7 @@ const ProductPage = ({ name }) => {
   const [loading, setloading] = useState(true);
   const { id } = useParams();
   const [searchQuery, setSearchQuery] = useState();
+  const [loading2, setLoading2] = useState();
   const [searchResults, setSearchResults] = useState(products);
   const [collectionDetails, setCollectionDetails] = useState("");
 
@@ -163,16 +164,16 @@ const ProductPage = ({ name }) => {
           <img
             src="https://s3-alpha-sig.figma.com/img/ac74/2282/3c93bce880686ad33e4c8c4c5644d5e0?Expires=1713744000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qr7Oh2KsRERtw7A0vCclSNF5ddKhxj-1q~kpofC0nTvAnMk-AVqwA6kli2VfOfCOv0jvbfJqgbi8ClI8iLyBlTHSn1EXb5t3iIS-njfeAYBPUO3Ka8Vtl1zObA2iF1IzxW5Ll8hJQ~aR-xInjqC4sLsRqxXq~bhAaNmMfU9WzIEyc~PKRBynkifluczxgalTm19gla91e4~xW~xVw4RvPw1kGCtSpJyE2N9G0eXpM5YgEHf4x8TVW4XCglDiuv6V0T14IldKzt~mJ-5D1j1pcoh6SuKnK0lQmJchlSeFgbD-rPYqx8PmcRwqz2aGvj2iEvBvYTXf6h1oYLdI93QN6g__"
             alt=""
-            className="w-full h-60 rounded-xl object-cover hidden md:block"
+            className="w-full  h-60 rounded-xl object-cover  "
           />
           <div className="md:flex">
-            <div className="md:absolute md:top-32 mt-12 md:mt-0  md:w-1/4  w-full md:left-16">
+            <div className="absolute md:top-32 top-0 p-4 md:mt-0  md:w-1/4  w-full md:left-16">
               <Card nftgeek={nftgeek} toniq={toniq} />
             </div>
-            <div className=" absolute right-0 md:w-[65%] mt-8">
+            <div className=" md:absolute right-0 md:w-[65%] mt-48 md:mt-8">
               {" "}
               <h1 className="text-3xl text-left font-bold font-sans mb-4 gap-1 ">
-                <span className="relative  text-transparent  bg-gradient-to-r  from-[#FC001E] to-[#FF7D57] bg-clip-text">
+                <span className=" md:relative text-transparent  bg-gradient-to-r  from-[#FC001E] to-[#FF7D57] bg-clip-text">
                   {collectionDetails.name}
                 </span>
               </h1>

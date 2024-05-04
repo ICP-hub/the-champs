@@ -21,12 +21,11 @@ const CollectionPage = ({ name }) => {
       try {
         const res = await backend.getallcollections();
         setCollection(res);
-        console.log(res);
         setSearchResults(res);
-        setLoading(false); // Set loading to false when data is fetched
+        setLoading(false);
       } catch (error) {
         console.log(error);
-        setLoading(false); // Set loading to false even if there's an error
+        setLoading(false);
       }
     };
     getAllCollection();
@@ -40,6 +39,13 @@ const CollectionPage = ({ name }) => {
       item.data.name.toLowerCase().includes(query.toLowerCase())
     );
     setSearchResults(filteredResults);
+  };
+
+  const handleSort = () => {
+    const sortedResults = [...searchResults].sort((a, b) =>
+      a.data.name.localeCompare(b.data.name)
+    );
+    setSearchResults(sortedResults);
   };
 
   return (
@@ -59,7 +65,6 @@ const CollectionPage = ({ name }) => {
             </span>
           </h1>
           <div className="search-bar px-6 lg:px-24 relative z-10">
-            {/* sticky top-24 */}
             <Searchbar
               grid={grid}
               setGrid={setGrid}

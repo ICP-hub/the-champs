@@ -14,6 +14,7 @@ import MyProfileActivity from "../components/myProfile/MyProfileActivity";
 import { Link, useParams } from "react-router-dom";
 import { Principal } from "@dfinity/principal";
 import { useCanister } from "@connect2ic/react";
+import { TailSpin } from "react-loader-spinner";
 
 const ProductDetails = () => {
   const [open, setOpen] = useState(false);
@@ -123,7 +124,6 @@ const ProductDetails = () => {
               </div>
               <div className="text-center ">
                 <CiHeart size={28} />
-                25
               </div>
             </div>
             <div className="flex justify-between  mt-6">
