@@ -41,7 +41,7 @@ actor Champs {
         return user;
     };
 
-    public shared ({ caller = user }) func createcollection( logo: Types.LogoResult, banner: Types.LogoResult, description: Text, name: Text, symbol: Text, maxLimit : Nat16,featured: Bool)  : async (Principal,[Principal]) {
+    public shared ({ caller = user }) func createcollection( logo: Types.LogoResult, banner: Types.LogoResult, description: Text, name: Text, symbol: Text, maxLimit : Nat16,featured: Bool)  : async (Principal,Principal) {
         Cycles.add<system>(100_500_000_000);
         Debug.print(debug_show (user));
         let metadata : Types.Dip721NonFungibleToken = {
@@ -66,13 +66,13 @@ actor Champs {
             case null {
                 let newcolletions = [collection_canister_id];
                 nftcollectionMap.put(user, newcolletions);
-                return (user,newcolletions);
+                return (user,collection_canister_id);
             };
             case (?collections) {
                 Debug.print( "The current existing Collections are these : " # debug_show (collections));
                 let temp = List.push(collection_canister_id, List.fromArray(collections));
                 nftcollectionMap.put(user, List.toArray(temp));
-                return (user, List.toArray(temp));
+                return (user, collection_canister_id);
             };
         };
     };
