@@ -319,7 +319,7 @@ const CreateCollections = () => {
             htmlFor="logoData"
             className="md:text-lg text-sm font-semibold"
           >
-            Banner img Img
+            Banner img
           </label>
           <input
             type="file"
