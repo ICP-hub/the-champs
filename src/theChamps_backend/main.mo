@@ -10,7 +10,6 @@ import Time "mo:base/Time";
 import TrieMap "mo:base/TrieMap";
 import Source "mo:uuid/async/SourceV4";
 import UUID "mo:uuid/UUID";
-
 import DIP20ActorClass "../DIP-20/token";
 import Typestoken "../DIP-20/types";
 import NFTActorClass "../DIP721-NFT/Nft";
@@ -18,6 +17,7 @@ import Types "../DIP721-NFT/Types";
 // import Helpers "./helper";
 
 actor Champs {
+        
 
         // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
         let g = Source.Source();
@@ -87,7 +87,6 @@ actor Champs {
         public shared ({caller = user}) func FractionalizeNFt(
             nftcanisterid : Principal,
             to : Principal,
-            tokenowner : Principal,
             metadata : Types.MetadataDesc,
             _logo : Text,
             _name: Text,
@@ -123,8 +122,13 @@ actor Champs {
                         _fee
                     );
                     ignore await fractiontokens.wallet_receive();
-                    let minttokens = await fractiontokens.mint(tokenowner, _totalSupply);
+                    let minttokens = await fractiontokens.mint(_owner, _totalSupply);
+                    let champs = await idQuick();
+                    
+                    
                     Debug.print(debug_show(minttokens));
+                    let approve = await fractiontokens.approve(champs, _totalSupply);
+                    Debug.print("THe output of the approve function is : " # debug_show(approve));
                     let tokencanister : Principal = await fractiontokens.getCanisterId();
                     Debug.print(debug_show(tokencanister));
                     let tokenmetadata = {
@@ -162,6 +166,19 @@ actor Champs {
                 };
             };
         };
+
+    public shared ({caller = user}) func buytokens ( tokencanisterid : Principal, from : Principal, to : Principal, amount : Nat) : async Typestoken.TxReceipt {
+        let tokencansiter_actor = actor(Principal.toText(tokencanisterid)) : actor {transferFrom : (from : Principal, to : Principal, amount : Nat) -> async Typestoken.TxReceipt};
+        let tokens = await tokencansiter_actor.transferFrom(from, to, amount);
+        switch (tokens){
+            case (#Err(index)) {
+                throw Error.reject(debug_show(index));
+            };
+            case (#Ok(data)) {
+                return #Ok(data);
+            }; 
+        };
+    };
 
     public func getusersnft(user : Principal) : async Types.MetadataResultArray {
         var results = List.nil<Types.MetadataDesc>();
@@ -285,6 +302,7 @@ actor Champs {
                     featured = featured;
                 };
                 let collection_details : Types.CollectionDetials = {
+
                     canister_id = id;
                     data = tempcollection;
                 };

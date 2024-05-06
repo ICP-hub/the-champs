@@ -7,16 +7,22 @@ dfx start --background --clean
 dfx deploy theChamps_backend
 
 dfx canister call theChamps_backend createcollection \
-"(
-    principal\"$(dfx identity get-principal)\", 
+"( 
     record {
-        maxLimit = 5000:nat16; 
         logo = record {
             data = \"Your logo text here\"; 
             logo_type = \"Your logo type here\"
-        }; 
+        };
+        banner = record {
+            data = \"Your banner text here\"; 
+            logo_type = \"Your banner type here\"
+        };
+        description = \"Your collection description here\";
+        created_at = 123456789:nat64;
         name = \"Your collection name here\"; 
-        symbol = \"Your collection symbol here\"
+        symbol = \"Your collection symbol here\";
+        maxLimit = 5000:nat16; 
+        featured = true;
     }
 )"
 
