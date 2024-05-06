@@ -111,6 +111,10 @@ const CreateCollections = () => {
         data: "",
         logo_type: "",
       },
+      banner: {
+        data: "",
+        logo_type: "",
+      },
       name: "",
       symbol: "",
     },
@@ -310,22 +314,19 @@ const CreateCollections = () => {
             disabled={loading}
           />
         </div>
-
         <div className="w-full">
           <label
-            htmlFor="logoType"
+            htmlFor="logoData"
             className="md:text-lg text-sm font-semibold"
           >
-            Logo Type <br />
+            Banner img Img
           </label>
           <input
-            readOnly
-            type="text"
-            id="logoType"
-            name="logoType"
+            type="file"
+            id="logoData"
+            name="logoData"
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            value={formData.record.logo.logo_type}
-            onChange={handleLogoTypeChange}
+            onChange={handleLogoDataChange}
             required
             disabled={loading}
           />
