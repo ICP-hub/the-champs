@@ -93,7 +93,6 @@ actor Champs {
             _symbol: Text,
             _decimals: Nat8,
             _totalSupply: Nat,
-            _owner: Principal,
             _fee : Nat 
             ) : async Types.FractionalNFTResult {
             Debug.print(debug_show(Cycles.balance()));
@@ -105,6 +104,7 @@ actor Champs {
                 case (?id) {  
                     let nftcanisteractor = actor(Principal.toText(nftcanisterid)) : actor {mintDip721 : (to : Principal , metadata : Types.MetadataDesc ) -> async Types.MintReceipt};
                     let mintednft = await nftcanisteractor.mintDip721(to, metadata);
+                    let champs = await idQuick();
                     switch(mintednft){
                         case (#Err(index)) {
                             throw Error.reject(debug_show(index));
@@ -118,14 +118,11 @@ actor Champs {
                         _symbol,
                         _decimals,
                         _totalSupply,
-                        _owner,
+                        champs,
                         _fee
                     );
                     ignore await fractiontokens.wallet_receive();
-                    let minttokens = await fractiontokens.mint(_owner, _totalSupply);
-                    let champs = await idQuick();
-                    
-                    
+                    let minttokens = await fractiontokens.mint(champs, _totalSupply);
                     Debug.print(debug_show(minttokens));
                     let approve = await fractiontokens.approve(champs, _totalSupply);
                     Debug.print("THe output of the approve function is : " # debug_show(approve));
@@ -137,7 +134,7 @@ actor Champs {
                         symbol = _symbol;
                         decimals = _decimals;
                         totalSupply = _totalSupply;
-                        owner = _owner;
+                        owner = champs;
                         fee = _fee;
                     };
 
