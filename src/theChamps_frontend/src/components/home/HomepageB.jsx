@@ -69,7 +69,7 @@ const HomePageB = () => {
     }
   }, [collections]);
 
-  console.log(collections);
+  // console.log(collections);
 
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
