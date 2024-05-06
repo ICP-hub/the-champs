@@ -85,11 +85,6 @@ const Market = () => {
           </div>
         </div>
         <div className="w-full">
-          {/* {displayMode === "row" && (
-          //   <Table columns={columns} data={sampleData} />
-          // )} */}
-          {/* // {displayMode === "column" && ( */}
-
           {isLoading ? (
             <div className="flex justify-center h-80 items-center">
               <Grid

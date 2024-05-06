@@ -1,30 +1,16 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { MdOutlineKeyboardArrowDown, MdShoppingCart } from "react-icons/md";
-import { MdCollections, MdAddShoppingCart } from "react-icons/md";
-import { IoMdHeart } from "react-icons/io";
 import Avatar from "boring-avatars";
 import IcpLogo from "../../assets/IcpLogo";
-import { LuRefreshCcw } from "react-icons/lu";
-import { FaCopy } from "react-icons/fa";
-import { CiSearch } from "react-icons/ci";
-import { RiMoneyDollarBoxLine } from "react-icons/ri";
-import { IoMdLock } from "react-icons/io";
-import { FaMagnifyingGlass } from "react-icons/fa6";
 import ReadMore from "./ReadMore";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-import {
-  ConnectButton,
-  ConnectDialog,
-  useConnect,
-  useDialog,
-} from "@connect2ic/react";
-
-import { RiArrowUpDownFill } from "react-icons/ri";
-import toast, { Toaster } from "react-hot-toast";
+import { useBalance, useConnect } from "@connect2ic/react";
+import toast from "react-hot-toast";
 import useClipboard from "react-use-clipboard";
+import IconWrapper from "../common/IconWrapper";
+import { MdDashboard } from "react-icons/md";
 
 const SidebarMain = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,7 +18,27 @@ const SidebarMain = () => {
   const [isCopied, setCopied] = useClipboard(principal, {
     successDuration: 1000,
   });
+
+  // For realtime balance :
+  const [assets] = useBalance();
+  const [realBal, setRealBal] = useState(0);
+
   const navigate = useNavigate();
+
+  // Effect for displaying real balance : Filter keep icp for now : Modify as required
+  useEffect(
+    function () {
+      if (assets) {
+        assets.map((wallet) => {
+          if (wallet.name === "ICP") {
+            setRealBal(wallet.amount);
+          }
+        });
+      }
+    },
+    [principal]
+  );
+
   return (
     <div className="py-4 mt-24 ">
       {/* Your sidebar content goes here */}
@@ -263,7 +269,7 @@ const SidebarMain = () => {
         </div>
       )}
       <p className="text-center gap-1  flex items-center justify-center w-full my-4 mt-6 px-4">
-        <IcpLogo size={18} /> 0
+        <IcpLogo size={18} /> {realBal}
       </p>
 
       {/* <div className="flex items-center justify-center ">
@@ -396,6 +402,12 @@ l0 -1881 -257 257 c-142 141 -272 263 -290 272 -35 18 -128 21 -166 7 -40 -16
             </svg>
             Activity
           </button>
+          <Link to="/admin" className="flex gap-8 py-4 items-center">
+            <IconWrapper>
+              <MdDashboard size={28} />
+            </IconWrapper>
+            Dashboard
+          </Link>
         </div>
       </div>
     </div>
