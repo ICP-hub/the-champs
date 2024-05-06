@@ -51,4 +51,19 @@ module {
         owner : Principal;
         fee : Nat;
     };
+
+        public type TxReceipt = {
+        #Ok: Nat;
+        #Err: {
+            #InsufficientAllowance;
+            #InsufficientBalance;
+            #ErrorOperationStyle;
+            #Unauthorized;
+            #LedgerTrap;
+            #ErrorTo;
+            #Other: Text;
+            #BlockUsed;
+            #AmountTooSmall;
+        };
+    };
 };    

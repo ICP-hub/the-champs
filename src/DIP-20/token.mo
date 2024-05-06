@@ -21,6 +21,7 @@ import Text "mo:base/Text";
 import ExperimentalCycles "mo:base/ExperimentalCycles";
 import Cap "./cap/Cap";
 import Root "./cap/Root";
+import Debug "mo:base/Debug";
 
 shared(msg) actor class Token(
     _logo: Text,
@@ -36,20 +37,7 @@ shared(msg) actor class Token(
     type TxRecord = Types.TxRecord;
 
     // returns tx index or error msg
-    public type TxReceipt = {
-        #Ok: Nat;
-        #Err: {
-            #InsufficientAllowance;
-            #InsufficientBalance;
-            #ErrorOperationStyle;
-            #Unauthorized;
-            #LedgerTrap;
-            #ErrorTo;
-            #Other: Text;
-            #BlockUsed;
-            #AmountTooSmall;
-        };
-    };
+
 
     private stable var owner_ : Principal = _owner;
     private stable var logo_ : Text = _logo;
@@ -150,7 +138,7 @@ shared(msg) actor class Token(
     */
 
     /// Transfers value amount of tokens to Principal to.
-    public shared(msg) func transfer(to: Principal, value: Nat) : async TxReceipt {
+    public shared(msg) func transfer(to: Principal, value: Nat) : async Types.TxReceipt {
         if (_balanceOf(msg.caller) < value + fee) { return #Err(#InsufficientBalance); };
         _chargeFee(msg.caller, fee);
         _transfer(msg.caller, to, value);
@@ -167,9 +155,11 @@ shared(msg) actor class Token(
     };
 
     /// Transfers value amount of tokens from Principal from to Principal to.
-    public shared(msg) func transferFrom(from: Principal, to: Principal, value: Nat) : async TxReceipt {
+    public shared(msg) func transferFrom(from: Principal, to: Principal, value: Nat) : async Types.TxReceipt {
+        Debug.print(" Caller for the transferFrom function in the DIP20 funcgible token :"# debug_show(msg.caller));
         if (_balanceOf(from) < value + fee) { return #Err(#InsufficientBalance); };
         let allowed : Nat = _allowance(from, msg.caller);
+        Debug.print(" Allowed amount for the transferFrom function in the DIP20 funcgible token :"# debug_show(allowed));
         if (allowed < value + fee) { return #Err(#InsufficientAllowance); };
         _chargeFee(from, fee);
         _transfer(from, to, value);
@@ -201,7 +191,7 @@ shared(msg) actor class Token(
 
     /// Allows spender to withdraw from your account multiple times, up to the value amount.
     /// If this function is called again it overwrites the current allowance with value.
-    public shared(msg) func approve(spender: Principal, value: Nat) : async TxReceipt {
+    public shared(msg) func approve(spender: Principal, value: Nat) : async Types.TxReceipt {
         if(_balanceOf(msg.caller) < fee) { return #Err(#InsufficientBalance); };
         _chargeFee(msg.caller, fee);
         let v = value + fee;
@@ -231,7 +221,8 @@ shared(msg) actor class Token(
         return #Ok(txcounter - 1);
     };
 
-    public shared(msg) func mint(to: Principal, value: Nat): async TxReceipt {
+    public shared(msg) func mint(to: Principal, value: Nat): async Types.TxReceipt {
+        Debug.print(" Caller for the mint function in the DIP20 funcgible token :"# debug_show(msg.caller));
         if(msg.caller != owner_) {
             return #Err(#Unauthorized);
         };
@@ -250,7 +241,7 @@ shared(msg) actor class Token(
         return #Ok(txcounter - 1);
     };
 
-    public shared(msg) func burn(amount: Nat): async TxReceipt {
+    public shared(msg) func burn(amount: Nat): async Types.TxReceipt {
         let from_balance = _balanceOf(msg.caller);
         if(from_balance < amount) {
             return #Err(#InsufficientBalance);
