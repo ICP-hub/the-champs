@@ -8,6 +8,8 @@ const ProductCardLg = ({ prod }) => {
     initial: { scale: 1.01 },
   };
 
+  // console.log(prod);
+
   return (
     <div className="rounded-2xl p-6 border-2 border__animation">
       <div className="grid grid-cols-3 gap-x-8">
@@ -17,7 +19,7 @@ const ProductCardLg = ({ prod }) => {
             initial="initial"
             whileHover="hover"
             src={soccer3}
-            alt={prod.data.name}
+            alt={prod.details.name}
             className="rounded-2xl h-full object-cover  z-[1]"
           ></motion.img>
         </div>
@@ -47,16 +49,16 @@ const ProductCardLg = ({ prod }) => {
       <div className="pt-6">
         <div className="flex justify-between">
           <div className="flex flex-col">
-            <h1 className="font-bold text-2xl">{prod.data.name}</h1>
+            <h1 className="font-bold text-2xl">{prod.details.name}</h1>
             <p className="text-sm text-[#7B7583] font-normal">
-              By {prod.canister_id.toText()}
+              By {prod.canisterId}
             </p>
           </div>
           {/* <CiHeart size={48} className="cursor-pointer" /> */}
         </div>
         <div className="flex justify-between pt-6 gap-4 text-sm">
           <Link
-            to={`/collections/${prod.canister_id.toText()}`}
+            to={`/collections/${prod.canisterId}`}
             className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57]  text-white cursor-pointer  rounded-lg w-full z-[1]"
           >
             View Collection

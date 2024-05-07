@@ -55,7 +55,7 @@ const HomePageB = () => {
   // Effect hook extract nft from collection
   useEffect(() => {
     if (collections && collections.length > 0) {
-      console.log(collections);
+      // console.log(collections);
       // getCollectionWiseNFT(collections[1].canister_id)
       //   .then(() => {
       //     setFinalLoading(false);
