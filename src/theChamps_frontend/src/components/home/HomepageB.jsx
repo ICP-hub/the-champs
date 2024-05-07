@@ -55,15 +55,17 @@ const HomePageB = () => {
   // Effect hook extract nft from collection
   useEffect(() => {
     if (collections && collections.length > 0) {
-      // console.log(collections);
-      // getCollectionWiseNFT(collections[1].canister_id)
-      //   .then(() => {
-      //     setFinalLoading(false);
-      //   })
-      //   .catch((err) => {
-      //     console.error("Error fetching NFT for the first collection:", err);
-      //     setFinalLoading(false);
-      //   });
+      const featuredCollections = collections.filter(
+        (collection) => collection.details.featured
+      );
+      getCollectionWiseNFT(featuredCollections[0].canisterId)
+        .then((data) => {
+          setFinalLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error fetching NFT for the first collection:", err);
+          setFinalLoading(false);
+        });
     }
     if (collections) {
       setFinalLoading(false);

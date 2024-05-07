@@ -51,14 +51,14 @@ const ProductCardLg = ({ prod }) => {
           <div className="flex flex-col">
             <h1 className="font-bold text-2xl">{prod.details.name}</h1>
             <p className="text-sm text-[#7B7583] font-normal">
-              By {prod.canisterId}
+              By {prod.canisterId.toText()}
             </p>
           </div>
           {/* <CiHeart size={48} className="cursor-pointer" /> */}
         </div>
         <div className="flex justify-between pt-6 gap-4 text-sm">
           <Link
-            to={`/collections/${prod.canisterId}`}
+            to={`/collections/${prod.canisterId.toText()}`}
             className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57]  text-white cursor-pointer  rounded-lg w-full z-[1]"
           >
             View Collection
