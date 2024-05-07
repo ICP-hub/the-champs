@@ -50,7 +50,7 @@ const activityData = [
 const MyProfileActivity = () => {
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-4 text-sm font-bold uppercase p-4 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] text-white rounded-lg">
+      <div className="grid grid-cols-3 text-sm font-bold uppercase p-4 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] text-white rounded-lg">
         <span className="flex items-center justify-center">MINT #</span>
         <span className="flex items-center justify-center">PRICE</span>
         <span className="flex items-center justify-center">TIME</span>

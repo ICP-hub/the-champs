@@ -11,6 +11,7 @@ const CollectionApi = () => {
       setIsLoading(true);
       const res = await backend.getallcollections();
       setAllCollections(res);
+      // console.log("getAllCollections :", res);
     } catch (err) {
       console.log("Error fetching getAllCollections");
     } finally {

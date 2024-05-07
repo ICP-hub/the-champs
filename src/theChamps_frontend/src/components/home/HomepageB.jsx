@@ -55,25 +55,24 @@ const HomePageB = () => {
   // Effect hook extract nft from collection
   useEffect(() => {
     if (collections && collections.length > 0) {
-      getCollectionWiseNFT(collections[1].canister_id)
-        .then(() => {
-          setFinalLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching NFT for the first collection:", err);
-          setFinalLoading(false);
-        });
+      console.log(collections);
+      // getCollectionWiseNFT(collections[1].canister_id)
+      //   .then(() => {
+      //     setFinalLoading(false);
+      //   })
+      //   .catch((err) => {
+      //     console.error("Error fetching NFT for the first collection:", err);
+      //     setFinalLoading(false);
+      //   });
     }
     if (collections) {
       setFinalLoading(false);
     }
   }, [collections]);
 
-  // console.log(collections);
-
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
-      <div className="flex gap-2 max-md:flex-col">
+      {/* <div className="flex gap-2 max-md:flex-col">
         <FancyHeader normal="Champ's" />
         <FancyHeader fancy="Special Collection of 20 Footballers" small />
       </div>
@@ -146,7 +145,7 @@ const HomePageB = () => {
             </CustomButton>
           </Link>
         </span>
-      )}
+      )} */}
     </div>
   );
 };
