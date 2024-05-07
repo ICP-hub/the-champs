@@ -177,12 +177,7 @@ const ProductPage = ({ name }) => {
                   {collectionDetails.name}
                 </span>
               </h1>
-              <div>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quam
-                voluptas ea, culpa dolorem maxime, quisquam veritatis cupiditate
-                aperiam nulla, corporis in! Ullam eaque odit neque voluptatum
-                fuga rerum cumque animi!
-              </div>
+              <div>{collectionDetails.description}</div>
               <div className="mt-12 md:w-1/2 flex gap-4  ">
                 <div className=" w-1/4 text-center text-sm space-y-2">
                   <p>LISTINGS</p>

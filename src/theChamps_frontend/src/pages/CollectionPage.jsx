@@ -7,6 +7,7 @@ import Footer from "../components/common/Footer";
 import { motion } from "framer-motion";
 import { useCanister } from "@connect2ic/react";
 import ProducrCardLgLoader from "../components/productcomponent/ProducrCardLgLoader";
+import CollectionApi from "../api/CollectionApi";
 
 const CollectionPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
@@ -14,36 +15,39 @@ const CollectionPage = ({ name }) => {
   const [collection, setCollection] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState();
+  const { getAllCollections, isLoading, collections } = CollectionApi();
   const [searchResults, setSearchResults] = useState([]);
+  const [search, setSearch] = useState(false);
 
   useEffect(() => {
-    const getAllCollection = async () => {
-      try {
-        const res = await backend.getallcollections();
-        setCollection(res);
-        setSearchResults(res);
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-        setLoading(false);
-      }
-    };
-    getAllCollection();
-  }, [backend]);
+    getAllCollections();
 
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+  }, [backend]);
+  console.log(collections);
   const handleSearch = (e) => {
+    setSearch(true);
     const query = e.target.value;
     setSearchQuery(query);
 
-    const filteredResults = collection.filter((item) =>
-      item.data.name.toLowerCase().includes(query.toLowerCase())
+    const filteredResults = collections.filter((item) =>
+      item.details.name.toLowerCase().includes(query.toLowerCase())
     );
     setSearchResults(filteredResults);
   };
 
   const handleSort = () => {
     const sortedResults = [...searchResults].sort((a, b) =>
-      a.data.name.localeCompare(b.data.name)
+      a.details.name.localeCompare(b.details.name)
+    );
+    setSearchResults(sortedResults);
+  };
+
+  const handleSortByPrice = () => {
+    const sortedResults = [...searchResults].sort(
+      (a, b) => parseInt(a.data.created_at) - parseInt(b.data.created_at)
     );
     setSearchResults(sortedResults);
   };
@@ -70,6 +74,9 @@ const CollectionPage = ({ name }) => {
               setGrid={setGrid}
               value={searchQuery}
               handleSearch={handleSearch}
+              collection={collections}
+              setSearchResults={setSearchResults}
+              setSearch={setSearch}
             />
           </div>
 
@@ -79,7 +86,7 @@ const CollectionPage = ({ name }) => {
                 <ProducrCardLgLoader key={index} />
               ))}
             </div>
-          ) : collection.length === 0 ? (
+          ) : collections.length === 0 ? (
             <div className="text-center mt-8 px-6 lg:px-24 h-screen flex justify-center items-center">
               <button className="px-4 py-2  cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
                 No collection found
@@ -87,9 +94,20 @@ const CollectionPage = ({ name }) => {
             </div>
           ) : (
             <div className="grid min-[948px]:grid-cols-2 gap-x-8 gap-y-8 mt-8 px-6 lg:px-24">
-              {searchResults.map((prod, index) => (
-                <ProductCardLg prod={prod} key={index} />
-              ))}
+              {search ? (
+                <>
+                  {searchResults.map((prod, index) => (
+                    <ProductCardLg prod={prod} key={index} />
+                  ))}
+                </>
+              ) : (
+                <>
+                  {" "}
+                  {collections.map((prod, index) => (
+                    <ProductCardLg prod={prod} key={index} />
+                  ))}
+                </>
+              )}
             </div>
           )}
         </div>
