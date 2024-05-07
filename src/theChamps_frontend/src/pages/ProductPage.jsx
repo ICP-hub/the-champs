@@ -121,8 +121,6 @@ const ProductPage = ({ name }) => {
       const res = await backend.getcollectiondetails(canister_id);
       console.log("hello");
       setCollectionDetails(res);
-
-      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -132,10 +130,11 @@ const ProductPage = ({ name }) => {
     const getCollectionWiseNft = async () => {
       try {
         const canister_id = Principal.fromText(id);
-        const res = await backend.getcollectionwisenft(canister_id);
+        const res = await backend.getcollectionwisefractionalnft(canister_id);
         console.log("hello");
         setCollection(res);
         setloading(false);
+        console.log(res);
         setSearchResults(res);
         console.log(res);
       } catch (error) {

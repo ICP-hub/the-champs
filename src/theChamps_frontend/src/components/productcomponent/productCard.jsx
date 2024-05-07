@@ -22,7 +22,10 @@ const ProductCard = ({ product }) => {
     try {
       setLoading(true);
       const canister_id = Principal.fromText(id);
-      const res = await backend.addfavourite(canister_id, parseInt(product.id));
+      const res = await backend.addfavourite(
+        canister_id,
+        parseInt(product.nft.id)
+      );
     } catch (error) {
       console.log(error);
     } finally {
@@ -46,7 +49,7 @@ const ProductCard = ({ product }) => {
 
     if (favourites != null) {
       const isProductInWishlist = favourites.some(
-        (item) => item[0].id === product.id && item[1].toText() === id
+        (item) => item[0].id === product.nft.id && item[1].toText() === id
       );
       setProductInFavourites(isProductInWishlist);
     }
@@ -55,7 +58,11 @@ const ProductCard = ({ product }) => {
   const removeFavourites = async () => {
     try {
       setLoading(true);
-      const res = backend.removefavourite(parseInt(product.id));
+      const canister_id = Principal.fromText(id);
+      const res = backend.removefavourite(
+        canister_id,
+        parseInt(product.nft.id)
+      );
       console.log("item successfully remove from favourites");
       toast.success("item successfully remove from favourites");
     } catch (error) {
@@ -133,7 +140,10 @@ const ProductCard = ({ product }) => {
           )}
         </div>
         <p className="text-gray-500 text-sm">
-          <ReadMore text={product.owner.toText()} maxLength={20} />
+          <ReadMore
+            text={product.fractional_token.owner.toText()}
+            maxLength={20}
+          />
         </p>
         <div className="flex justify-between  mb-4">
           <p className="mt-4    bg-opacity-100  py-2   rounded-md w-[50%]">
