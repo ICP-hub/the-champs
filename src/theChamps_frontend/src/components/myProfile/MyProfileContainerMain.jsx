@@ -20,28 +20,29 @@ const MyProfileContainerMain = () => {
     getAllCollections();
   }, []);
 
-  useEffect(() => {
-    if (collections && collections.length !== 0) {
-      collections.map((collection) =>
-        getCollectionWiseNFT(collection.canister_id)
-      );
-    }
-  }, [collections]);
+  console.log(collections);
+  // useEffect(() => {
+  //   if (collections && collections.length !== 0) {
+  //     collections.map((collection) =>
+  //       getCollectionWiseNFT(collection.canisterId)
+  //     );
+  //   }
+  // }, [collections]);
 
-  useEffect(() => {
-    if (NFTlist && NFTlist.length !== 0) {
-      NFTlist.map((data) => getUserNFT(data.owner));
-    }
-  }, [NFTlist]);
+  // useEffect(() => {
+  //   if (NFTlist && NFTlist.length !== 0) {
+  //     NFTlist.map((data) => getUserNFT(data.owner));
+  //   }
+  // }, [NFTlist]);
 
-  useEffect(() => {
-    const nftOwnerFilter = () => {
-      if (NFTlist && NFTlist.length !== 0) {
-        NFTlist.map((nft) => console.log(nft));
-      }
-    };
-    nftOwnerFilter();
-  }, [NFTlist]);
+  // useEffect(() => {
+  //   const nftOwnerFilter = () => {
+  //     if (NFTlist && NFTlist.length !== 0) {
+  //       NFTlist.map((nft) => console.log(nft));
+  //     }
+  //   };
+  //   nftOwnerFilter();
+  // }, [NFTlist]);
 
   const handleTabChange = (tabIndex) => {
     setActiveTabIndex(tabIndex);

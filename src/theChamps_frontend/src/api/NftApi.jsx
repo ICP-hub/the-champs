@@ -12,7 +12,7 @@ const NFTApi = () => {
       setNFTLoading(true);
       const res = await backend.getcollectionwisefractionalnft(canisterId);
       setNFTlist(res);
-      console.log(res);
+      // console.log(res);
     } catch (err) {
       console.log("Error getting collectionwise nft", err);
     } finally {

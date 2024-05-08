@@ -59,7 +59,7 @@ const HomePageB = () => {
         (collection) => collection.details.featured
       );
       getCollectionWiseNFT(featuredCollections[0].canisterId)
-        .then((data) => {
+        .then(() => {
           setFinalLoading(false);
         })
         .catch((err) => {
@@ -72,9 +72,11 @@ const HomePageB = () => {
     }
   }, [collections]);
 
+  // console.log(NFTlist);
+
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
-      {/* <div className="flex gap-2 max-md:flex-col">
+      <div className="flex gap-2 max-md:flex-col">
         <FancyHeader normal="Champ's" />
         <FancyHeader fancy="Special Collection of 20 Footballers" small />
       </div>
@@ -147,7 +149,7 @@ const HomePageB = () => {
             </CustomButton>
           </Link>
         </span>
-      )} */}
+      )}
     </div>
   );
 };
@@ -159,11 +161,13 @@ const NFTCard = ({ NFT, collection }) => {
   const [image, setImage] = useState(null);
 
   useEffect(() => {
-    const img = NFT.metadata.map((item) => item.key_val_data);
+    // const img = NFT.metadata.map((item) => item.key_val_data);
     // console.log("This console is coming from HOMEPAGE B  NFT:", NFT);
     // console.log(Object.values(img));
     // console.log(NFT);
   }, [NFT]);
+  // console.log(NFT.nft.owner.toText());
+  // console.log(NFT);
 
   return (
     <motion.div
@@ -173,11 +177,11 @@ const NFTCard = ({ NFT, collection }) => {
       <img src={soccer1} alt="image" className="rounded-2xl object-contain" />
       <div className="flex flex-col">
         <h1 className="text-[28px] font-bold line-clamp-1">
-          {NFT.owner.toText()}
+          {NFT.nft.owner.toText()}
         </h1>
         {/* Static collection pick for now we can show featured later */}
         <p className="text-[15px] text-[#7B7583]">
-          By {collection[0].data.name}
+          {/* By {collection[0].data.name} */}
         </p>
       </div>
     </motion.div>

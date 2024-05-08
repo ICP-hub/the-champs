@@ -71,7 +71,7 @@ const ActivityCard = ({ activity }) => {
   const { image, mintVal, time, status } = activity;
 
   return (
-    <div className="grid grid-cols-4 text-sm font-bold  bg-white border-2 p-4 rounded-lg">
+    <div className="grid grid-cols-3 text-sm font-bold  bg-white border-2 p-4 rounded-lg">
       <div className="flex gap-2 items-center justify-center">
         <img
           src={image}
