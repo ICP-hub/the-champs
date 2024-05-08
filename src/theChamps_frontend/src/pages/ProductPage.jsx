@@ -16,6 +16,8 @@ import ProductLists from "../components/productcomponent/ProductList";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import ProductCardLoader from "../components/productcomponent/ProductCardLoader";
+import placeholderImg from "../assets/CHAMPS.png";
+
 const products = [
   {
     id: 1,
@@ -161,13 +163,13 @@ const ProductPage = ({ name }) => {
       <div className=" mt-44 left-0 right-0  px-6 lg:px-24 ">
         <div className="w-full relative ">
           <img
-            src="https://s3-alpha-sig.figma.com/img/ac74/2282/3c93bce880686ad33e4c8c4c5644d5e0?Expires=1713744000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qr7Oh2KsRERtw7A0vCclSNF5ddKhxj-1q~kpofC0nTvAnMk-AVqwA6kli2VfOfCOv0jvbfJqgbi8ClI8iLyBlTHSn1EXb5t3iIS-njfeAYBPUO3Ka8Vtl1zObA2iF1IzxW5Ll8hJQ~aR-xInjqC4sLsRqxXq~bhAaNmMfU9WzIEyc~PKRBynkifluczxgalTm19gla91e4~xW~xVw4RvPw1kGCtSpJyE2N9G0eXpM5YgEHf4x8TVW4XCglDiuv6V0T14IldKzt~mJ-5D1j1pcoh6SuKnK0lQmJchlSeFgbD-rPYqx8PmcRwqz2aGvj2iEvBvYTXf6h1oYLdI93QN6g__"
+            src={collectionDetails?.banner?.data ? collectionDetails?.banner?.data : placeholderImg}
             alt=""
             className="w-full  h-60 rounded-xl object-cover  "
           />
           <div className="md:flex">
             <div className="absolute md:top-32 top-0 p-4 md:mt-0  md:w-1/4  w-full md:left-16">
-              <Card nftgeek={nftgeek} toniq={toniq} />
+              <Card nftgeek={nftgeek} toniq={toniq} logo={collectionDetails?.logo?.data} />
             </div>
             <div className=" md:absolute right-0 md:w-[65%] mt-48 md:mt-8">
               {" "}

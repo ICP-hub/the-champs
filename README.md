@@ -1,13 +1,36 @@
 # theChamps
 
-run on node 16, dfx 0.18.0
+
+- **run on node 16, dfx 0.18.0
+
+
+- install package & dfx start command
+
+```bash
 npm install
 dfx start --clean
+```
 
-==deploy locally==
+- all commands for deploy locally
+
+```bash
 dfx generate
 cp src/declarations/theChamps_backend/* .dfx/local/canisters/theChamps_backend/
 dfx deploy
+```
+
+- deploy on network(for admin user)
+
+```bash
+dfx deploy --network ic
+```
+
+
+
+
+
+
+
 
 Welcome to your new theChamps project and to the internet computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
 
