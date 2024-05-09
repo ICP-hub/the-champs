@@ -348,7 +348,7 @@ shared(msg) actor class Token(
         deployTime: Time.Time;
         holderNumber: Nat;
         cycles: Nat;
-    };
+    };  
     public query func getTokenInfo(): async TokenInfo {
         {
             metadata = {
@@ -418,6 +418,15 @@ shared(msg) actor class Token(
 
     public query func getCanisterId() : async Principal {
         return Principal.fromActor(this);
+    };
+
+    public shared ({caller = user}) func getTransactions(page : ?Nat32 ) : async { data : [Root.Event]; page : Nat32; } {
+        let c = switch(cap) {
+            case(?c) { c };
+            case(_) { Cap.Cap(Principal.fromActor(this), 2_000_000_000_000) };
+        };
+        let alltransactions = await c.getalltransactions(page);
+       return alltransactions;
     };
 
     /*

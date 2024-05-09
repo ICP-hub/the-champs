@@ -11,7 +11,7 @@ import IC "IC";
 
 module {
     public class Cap(canister_id: Principal, creation_cycles: Nat) {
-        let router_id = "lj532-6iaaa-aaaah-qcc7a-cai";
+        let router_id = "lj532-6iaaa-aaaah-qcc7a-cai"; 
 
         var rootBucket: ?Text = null;
         let ic: IC.ICActor = actor("aaaaa-aa");
@@ -58,6 +58,18 @@ module {
             #ok(insert_response)
         };
 
+     public func getalltransactions( page : ?Nat32) : async Root.GetTransactionsResponseBorrowed  {
+            await awaitForHandshake();
+
+            let root = switch(rootBucket) {
+                case(?r) { r };
+                case(_) { Prelude.unreachable() };
+            };
+            let rb: Root.Self = actor(root);
+
+            let transaction_response = await rb.get_transactions({page = page ; witness = false});
+            return transaction_response;
+        };
 
         /// Returns the principal of the root canister
         public func performHandshake(): async () {
@@ -86,7 +98,7 @@ module {
                     };
 
                     // Add cycles and perform the create call
-                    Cycles.add(creation_cycles);
+                    Cycles.add<system>(creation_cycles);
                     let create_response = await ic.create_canister(params);
 
                     // Install the cap code
@@ -122,5 +134,6 @@ module {
                 return;
             }
         }
-    };
+    
+}
 }
