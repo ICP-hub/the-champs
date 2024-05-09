@@ -8,4 +8,10 @@ module {
     #invalidTransaction;
     #unsupportedResponse;
   };
+
+  public type GetAllTransactionError= {
+    #unsupportedResponse;
+    #notransactionfound;
+  };
+
 }

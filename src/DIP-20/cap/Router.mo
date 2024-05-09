@@ -23,7 +23,7 @@ module {
   public type Witness = { certificate : [Nat8]; tree : [Nat8] };
   public type Self = actor {
     deploy_plug_bucket : shared (Principal, Nat64) -> async ();
-    get_index_canisters : shared query WithWitnessArg -> async GetIndexCanistersResponse;
+    get_inden_coex_canisters : shared query WithWitnessArg -> async GetIndexCanistersResponse;
     get_token_contract_root_bucket : shared query GetTokenContractRootBucketArg -> async GetTokenContractRootBucketResponse;
     get_user_root_buckets : shared query GetUserRootBucketsArg -> async GetUserRootBucketsResponse;
     insert_new_users : shared (Principal, [Principal]) -> async ();

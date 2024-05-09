@@ -14,6 +14,7 @@ import DIP20ActorClass "../DIP-20/token";
 import Typestoken "../DIP-20/types";
 import NFTActorClass "../DIP721-NFT/Nft";
 import Types "../DIP721-NFT/Types";
+import Root "../DIP-20/cap/Root";
 // import Helpers "./helper";
 
 actor Champs {
@@ -140,7 +141,7 @@ actor Champs {
 
                     let nftdata = await getNFTdetails(nftcanisterid, newnft.token_id);
                     
-                    let fractionNftDetails : Types.FractionalNFT = {
+                    let fractionNftDetails : Types.FractionalNFT = {  
                         collectionid = nftcanisterid;
                         nft = nftdata;
                         fractional_token = tokenmetadata;
@@ -167,6 +168,19 @@ actor Champs {
     public shared ({caller = user}) func buytokens ( tokencanisterid : Principal, from : Principal, to : Principal, amount : Nat) : async Typestoken.TxReceipt {
         let tokencansiter_actor = actor(Principal.toText(tokencanisterid)) : actor {transferFrom : (from : Principal, to : Principal, amount : Nat) -> async Typestoken.TxReceipt};
         let tokens = await tokencansiter_actor.transferFrom(from, to, amount);
+        switch (tokens){
+            case (#Err(index)) {
+                throw Error.reject(debug_show(index));
+            };
+            case (#Ok(data)) {
+                return #Ok(data);
+            }; 
+        };
+    };
+
+    public shared ({caller = user}) func tranfertokens ( tokencanisterid : Principal, to : Principal, amount : Nat) : async Typestoken.TxReceipt {
+        let tokencansiter_actor = actor(Principal.toText(tokencanisterid)) : actor {transfer : (to : Principal, amount : Nat) -> async Typestoken.TxReceipt};
+        let tokens = await tokencansiter_actor.transfer(to, amount);
         switch (tokens){
             case (#Err(index)) {
                 throw Error.reject(debug_show(index));
@@ -211,6 +225,12 @@ actor Champs {
         };
     };
 
+    public shared ({caller = user}) func getalltransactions(tokencanisterid : Principal, page : ?Nat32) : async Root.GetTransactionsResponseBorrowed{
+        let tokencansiter_actor = actor(Principal.toText(tokencanisterid)) : actor {getTransactions : (?Nat32) -> async Root.GetTransactionsResponseBorrowed};
+        let transactions = await tokencansiter_actor.getTransactions(page);
+        return transactions;
+    };
+
     public func getusersfractionnft(user : Principal) : async [(Principal,Types.FractionalNFT, Principal)] {
         switch (fractionalnftmap.get(user)) {
             case null {
@@ -235,79 +255,22 @@ actor Champs {
 
     public shared ({ caller = user }) func getsingleCollectiondetail(collection_id : Principal) : async Types.Dip721NonFungibleToken {
         let nftcanisteractor = actor (Principal.toText(collection_id)) : actor {
-            logoDip721 : () -> async Types.LogoResult;
-            nameDip721 : () -> async Text;
-            symbolDip721 : () -> async Text;
-            getMaxLimitDip721 : () -> async Nat16;
-            bannerDip721 : () -> async Types.LogoResult;
-            descriptionDip721 : () -> async Text;
-            createdAtDip721 : () -> async Time.Time;
-            featuredDip721 : () -> async Bool;
+            getDIP721details : () -> async Types.Dip721NonFungibleToken;
         };
-        let logo = await nftcanisteractor.logoDip721();
-        let name = await nftcanisteractor.nameDip721();
-        let symbol = await nftcanisteractor.symbolDip721();
-        let totalSupply = await nftcanisteractor.getMaxLimitDip721();
-        let banner = await nftcanisteractor.bannerDip721();
-        let description = await nftcanisteractor.descriptionDip721();
-        let createdAt = await nftcanisteractor.createdAtDip721();
-        let featured = await nftcanisteractor.featuredDip721();
+        let collectiondetails = await nftcanisteractor.getDIP721details();
         let collection : Types.Dip721NonFungibleToken = {
-            logo = logo;
-            name = name;
-            symbol = symbol;
-            maxLimit = totalSupply;
-            banner = banner;
-            description = description;
-            created_at = createdAt;
-            featured = featured;
+            logo = collectiondetails.logo;
+            name = collectiondetails.name;
+            symbol = collectiondetails.symbol;
+            maxLimit = collectiondetails.maxLimit;
+            banner = collectiondetails.banner;
+            description = collectiondetails.description;
+            created_at = collectiondetails.created_at;
+            featured = collectiondetails.featured;
         };
         return collection;
     };
 
-    // public shared ({ caller = admin }) func getallcollections() : async [T] {
-    //     var collection = List.nil<Types.CollectionDetials>();
-    //     for (collections in nftcollectionMap.vals()) {
-    //         for (id in collections.vals()) {
-    //             let nftcanisteractor = actor (Principal.toText(id)) : actor {
-    //                 logoDip721 : () -> async Types.LogoResult;
-    //                 nameDip721 : () -> async Text;
-    //                 symbolDip721 : () -> async Text;
-    //                 getMaxLimitDip721 : () -> async Nat16;
-    //                 getCanisterId : () -> async Principal;
-    //                 bannerDip721 : () -> async Types.LogoResult;
-    //                 descriptionDip721 : () -> async Text;
-    //                 createdAtDip721 : () -> async Time.Time;
-    //                 featuredDip721 : () -> async Bool;
-    //             };
-    //             let logo = await nftcanisteractor.logoDip721();
-    //             let name = await nftcanisteractor.nameDip721();
-    //             let symbol = await nftcanisteractor.symbolDip721();
-    //             let totalSupply = await nftcanisteractor.getMaxLimitDip721();
-    //             let banner = await nftcanisteractor.bannerDip721();
-    //             let description = await nftcanisteractor.descriptionDip721();
-    //             let createdAt = await nftcanisteractor.createdAtDip721();
-    //             let featured = await nftcanisteractor.featuredDip721();
-    //             let tempcollection : Types.Dip721NonFungibleToken = {
-    //                 logo = logo;
-    //                 name = name;
-    //                 symbol = symbol;
-    //                 maxLimit = totalSupply;
-    //                 banner = banner;
-    //                 description = description;
-    //                 created_at = createdAt;
-    //                 featured = featured;
-    //             };
-    //             let collection_details : Types.CollectionDetials = {
-
-    //                 canister_id = id;
-    //                 data = tempcollection;
-    //             };
-    //             collection := List.push(collection_details, collection);
-    //         };
-    //     };
-    //     return List.toArray(collection);
-    // };
 
     public query func getallCollectionids() : async [(Principal, [Principal])] {
         return Iter.toArray(nftcollectionMap.entries());
@@ -327,33 +290,17 @@ actor Champs {
 
     
     public shared ({ caller = user }) func getcollectiondetails(collectioncanisterid : Principal) : async Types.Dip721NonFungibleToken {
-        let nftcanisteractor = actor (Principal.toText(collectioncanisterid)) : actor {
-            logoDip721 : () -> async Types.LogoResult;
-            nameDip721 : () -> async Text;
-            symbolDip721 : () -> async Text;
-            getMaxLimitDip721 : () -> async Nat16;
-            bannerDip721 : () -> async Types.LogoResult;
-            descriptionDip721 : () -> async Text;
-            createdAtDip721 : () -> async Time.Time;
-            featuredDip721 : () -> async Bool;
-        };
-        let logo = await nftcanisteractor.logoDip721();
-        let name = await nftcanisteractor.nameDip721();
-        let symbol = await nftcanisteractor.symbolDip721();
-        let totalSupply = await nftcanisteractor.getMaxLimitDip721();
-        let banner = await nftcanisteractor.bannerDip721();
-        let description = await nftcanisteractor.descriptionDip721();
-        let createdAt = await nftcanisteractor.createdAtDip721();
-        let featured = await nftcanisteractor.featuredDip721();
+        let nftcanisteractor = actor (Principal.toText(collectioncanisterid)) : actor {getDIP721details : () -> async Types.Dip721NonFungibleToken;};
+        let collectiondetails = await nftcanisteractor.getDIP721details();
         let collection : Types.Dip721NonFungibleToken = {
-            logo = logo;
-            name = name;
-            symbol = symbol;
-            maxLimit = totalSupply;
-            banner = banner;
-            description = description;
-            created_at = createdAt;
-            featured = featured;
+            logo = collectiondetails.logo;
+            name = collectiondetails.name;
+            symbol = collectiondetails.symbol;
+            maxLimit = collectiondetails.maxLimit;
+            banner = collectiondetails.banner;
+            description = collectiondetails.description;
+            created_at = collectiondetails.created_at;
+            featured = collectiondetails.featured;
         };
         return collection;
     };
