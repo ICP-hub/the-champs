@@ -1,40 +1,57 @@
 import { useCanister } from "@connect2ic/react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { getCollectionwiseNft } from "../../../redux/reducers/nftReducer";
 
 const NFTApi = () => {
   const [backend] = useCanister("backend");
-  const [NFTlist, setNFTlist] = useState(null);
   const [nftLoading, setNFTLoading] = useState(false);
-  const [userNFT, setUserNFT] = useState(null);
-  // Get NFTs by collection
-  const getCollectionWiseNFT = async (canisterId) => {
+  const dispatch = useDispatch();
+
+  // Get single nft by canister id
+  const getSingleCollectionWiseNFT = async (canisterId) => {
     try {
       setNFTLoading(true);
       const res = await backend.getcollectionwisefractionalnft(canisterId);
-      setNFTlist(res);
-      // console.log(res);
+      console.log("single collection nft", res);
     } catch (err) {
-      console.log("Error getting collectionwise nft", err);
+      console.log("Error getting collectionwise nft (single)", err);
     } finally {
       setNFTLoading(false);
+    }
+  };
+
+  // Get All NFTs by collection
+  const getAllCollectionWiseNFT = async (collectionIds) => {
+    if (collectionIds) {
+      try {
+        setNFTLoading(true);
+        const promises = collectionIds.map((collectionId) =>
+          backend
+            .getcollectionwisefractionalnft(collectionId)
+            .then((response) => ({ collectionId, nfts: response }))
+            .catch((error) => {
+              console.error(
+                `Error getting NFTs for collection ${collectionId}`,
+                error
+              );
+              return { collectionId, nfts: [], error };
+            })
+        );
+        const results = await Promise.all(promises);
+        dispatch(getCollectionwiseNft(results));
+        // console.log(results);
+      } catch (err) {
+        console.error("Error getting collectionwise NFT (All)", err);
+      } finally {
+        setNFTLoading(false);
+      }
     }
   };
 
   // Get user NFT
-  const getUserNFT = async (ownerPrincipal) => {
-    try {
-      setNFTLoading(true);
-      const res = await backend.getusersnft(ownerPrincipal);
-      setUserNFT(res.Ok);
-      // console.log("get nft", res);
-    } catch (err) {
-      console.log("Error on getUserNFT :", err);
-    } finally {
-      setNFTLoading(false);
-    }
-  };
 
-  return { getCollectionWiseNFT, nftLoading, NFTlist, getUserNFT, userNFT };
+  return { getAllCollectionWiseNFT, nftLoading };
 };
 
 export default NFTApi;

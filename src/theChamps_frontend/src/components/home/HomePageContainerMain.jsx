@@ -10,7 +10,7 @@ import HomePageC from "./HomepageC";
 import HomePageD from "./HomepageD";
 import HomePageE from "./HomepageE";
 import HomePageF from "./HomepageF";
-import HomePageG from "./HomepageG";
+// import HomePageG from "./HomepageG";
 import HomePageH from "./HomepageH";
 import HomePageI from "./HomepageI";
 import HomePageJ from "./HomepageJ";

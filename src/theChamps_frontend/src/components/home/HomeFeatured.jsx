@@ -6,12 +6,14 @@ import ProductCardLg from "../common/ProductCardLg";
 import CollectionApi from "../../api/CollectionApi";
 import { useEffect } from "react";
 import NotAvailable from "../common/NotAvailable";
+import { useSelector } from "react-redux";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomeFeatured /> : Homepage featured items.
 /* ----------------------------------------------------------------------------------------------------- */
 const HomeFeatured = () => {
-  const { getAllCollections, isLoading, collections } = CollectionApi();
+  const { getAllCollections, isLoading } = CollectionApi();
+  const collectionSelector = useSelector((state) => state.collections);
 
   useEffect(() => {
     getAllCollections();
@@ -24,15 +26,17 @@ const HomeFeatured = () => {
         <div className="flex justify-center items-center">
           Loading collections...
         </div>
-      ) : (collections?.length ?? 0) === 0 ? (
+      ) : (collectionSelector.featuredCollections?.length ?? 0) === 0 ? (
         <div className="flex justify-center items-center">
           <NotAvailable>No Collection Availbale</NotAvailable>
         </div>
       ) : (
         <div className="grid lg:grid-cols-2 gap-x-8 gap-y-8">
-          {collections.slice(0, 2).map((collection, index) => (
-            <ProductCardLg prod={collection} key={index} />
-          ))}
+          {collectionSelector.featuredCollections
+            .slice(0, 2)
+            .map((collection, index) => (
+              <ProductCardLg prod={collection} key={index} />
+            ))}
         </div>
       )}
     </div>

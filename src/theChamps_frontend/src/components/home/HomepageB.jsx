@@ -27,13 +27,14 @@ import { useSelector } from "react-redux";
 /*  @ <HomePageB /> : Soccer collection.
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageB = () => {
-  const { getAllCollections, collections } = CollectionApi();
-  const { getCollectionWiseNFT, NFTlist, nftLoading } = NFTApi();
+  const { getAllCollectionIds } = CollectionApi();
   const [numColumns, setNumColumns] = useState(2);
-  const [finalLoading, setFinalLoading] = useState(true);
+  const { getAllCollectionWiseNFT } = NFTApi();
+  // const [finalLoading, setFinalLoading] = useState(true);
 
-  const collectionData = useSelector((state) => console.log(state));
+  const nftData = useSelector((state) => state.nftData);
 
+  console.log("This is coming from HomepageB ", nftData);
   const updateBreakpoints = () => {
     const width = window.innerWidth;
     if (width >= 1024) {
@@ -53,108 +54,92 @@ const HomePageB = () => {
 
   // Effect hook get collection onLoad;
   useEffect(() => {
-    getAllCollections();
+    getAllCollectionIds();
   }, []);
-  // Effect hook extract nft from collection
+
+  // Effect : nft data fetch
   useEffect(() => {
-    if (collections && collections.length > 0) {
-      const featuredCollections = collections.filter(
-        (collection) => collection.details.featured
-      );
-      getCollectionWiseNFT(featuredCollections[0].canisterId)
-        .then(() => {
-          setFinalLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching NFT for the first collection:", err);
-          setFinalLoading(false);
-        });
-    }
-    if (collections) {
-      setFinalLoading(false);
-    }
-  }, [collections]);
+    getAllCollectionWiseNFT(nftData.collectionIds);
+  }, [nftData.collectionIds]);
 
-  // console.log(NFTlist);
+  // return (
+  //   <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
+  //     <div className="flex gap-2 max-md:flex-col">
+  //       <FancyHeader normal="Champ's" />
+  //       <FancyHeader fancy="Special Collection of 20 Footballers" small />
+  //     </div>
+  //     {finalLoading ? (
+  //       <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 md:px-8 px-2 gap-x-8 gap-y-8">
+  //         {Array.from({ length: numColumns }).map((_, index) => (
+  //           <CollectionLoader key={index} />
+  //         ))}
+  //       </div>
+  //     ) : NFTlist && NFTlist?.length === 0 ? (
+  //       <NotAvailable>Featured NFT not available</NotAvailable>
+  //     ) : (
+  //       <div>
+  //         <Swiper
+  //           spaceBetween={30}
+  //           pagination={{
+  //             clickable: true,
+  //           }}
+  //           keyboard={{
+  //             enabled: true,
+  //           }}
+  //           navigation={true}
+  //           modules={[Grid, Pagination, Navigation, Keyboard]}
+  //           breakpoints={{
+  //             0: {
+  //               slidesPerView: 1,
+  //               grid: {
+  //                 rows: 2,
+  //                 fill: "row",
+  //               },
+  //             },
+  //             640: {
+  //               slidesPerView: 2,
+  //               grid: {
+  //                 rows: 2,
+  //                 fill: "row",
+  //               },
+  //             },
+  //             768: {
+  //               slidesPerView: 3,
+  //               grid: {
+  //                 rows: 2,
+  //                 fill: "row",
+  //               },
+  //             },
+  //             1024: {
+  //               slidesPerView: 4,
+  //               grid: {
+  //                 rows: 2,
+  //                 fill: "row",
+  //               },
+  //             },
+  //           }}
+  //           className="mySwiper"
+  //         >
+  //           {NFTlist?.map((NFT, index) => (
+  //             <SwiperSlide key={index}>
+  //               <NFTCard key={index} NFT={NFT} collection={collections} />
+  //             </SwiperSlide>
+  //           ))}
+  //         </Swiper>
+  //       </div>
+  //     )}
 
-  return (
-    <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
-      <div className="flex gap-2 max-md:flex-col">
-        <FancyHeader normal="Champ's" />
-        <FancyHeader fancy="Special Collection of 20 Footballers" small />
-      </div>
-      {finalLoading ? (
-        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 md:px-8 px-2 gap-x-8 gap-y-8">
-          {Array.from({ length: numColumns }).map((_, index) => (
-            <CollectionLoader key={index} />
-          ))}
-        </div>
-      ) : NFTlist && NFTlist?.length === 0 ? (
-        <NotAvailable>Featured NFT not available</NotAvailable>
-      ) : (
-        <div>
-          <Swiper
-            spaceBetween={30}
-            pagination={{
-              clickable: true,
-            }}
-            keyboard={{
-              enabled: true,
-            }}
-            navigation={true}
-            modules={[Grid, Pagination, Navigation, Keyboard]}
-            breakpoints={{
-              0: {
-                slidesPerView: 1,
-                grid: {
-                  rows: 2,
-                  fill: "row",
-                },
-              },
-              640: {
-                slidesPerView: 2,
-                grid: {
-                  rows: 2,
-                  fill: "row",
-                },
-              },
-              768: {
-                slidesPerView: 3,
-                grid: {
-                  rows: 2,
-                  fill: "row",
-                },
-              },
-              1024: {
-                slidesPerView: 4,
-                grid: {
-                  rows: 2,
-                  fill: "row",
-                },
-              },
-            }}
-            className="mySwiper"
-          >
-            {NFTlist?.map((NFT, index) => (
-              <SwiperSlide key={index}>
-                <NFTCard key={index} NFT={NFT} collection={collections} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-      )}
-
-      {collections && collections.length === 0 ? null : (
-        <span className="flex justify-center gap-4 py-6">
-          <Link to="/collection">
-            <CustomButton>
-              View collections <MdArrowOutward size={24} />{" "}
-            </CustomButton>
-          </Link>
-        </span>
-      )}
-    </div>
-  );
+  //     {collections && collections.length === 0 ? null : (
+  //       <span className="flex justify-center gap-4 py-6">
+  //         <Link to="/collection">
+  //           <CustomButton>
+  //             View collections <MdArrowOutward size={24} />{" "}
+  //           </CustomButton>
+  //         </Link>
+  //       </span>
+  //     )}
+  //   </div>
+  // );
 };
 
 /* ----------------------------------------------------------------------------------------------------- */
