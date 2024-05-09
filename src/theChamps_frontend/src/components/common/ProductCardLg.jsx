@@ -1,11 +1,27 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import soccer3 from "../../assets/images/soccer-3.jpeg";
+import { useState } from "react";
 const ProductCardLg = ({ prod }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const handleCardFlip = () => {
+    setIsFlipped(!isFlipped);
+  };
   // motion variants
   const imgVariants = {
     hover: { scale: 1.1, transition: { duration: 0.2, ease: "easeInOut" } },
     initial: { scale: 1.01 },
+  };
+  const flipVariants = {
+    front: {
+      rotateY: 0,
+      transition: { duration: 0.6 },
+    },
+    back: {
+      rotateY: 180,
+      transition: { duration: 0.6 },
+    },
   };
 
   // console.log(prod);
@@ -14,14 +30,25 @@ const ProductCardLg = ({ prod }) => {
     <div className="rounded-2xl p-6 border-2 border__animation">
       <div className="grid grid-cols-3 gap-x-8">
         <div className="col-span-2 overflow-hidden rounded-2xl">
-          <motion.img
-            variants={imgVariants}
-            initial="initial"
-            whileHover="hover"
-            src={soccer3}
-            alt={prod.details.name}
-            className="rounded-2xl h-full object-cover  z-[1]"
-          ></motion.img>
+          <motion.div
+            animate={isFlipped ? "back" : "front"}
+            variants={flipVariants}
+            className="relative w-full h-full flip-card-inner"
+          >
+            <motion.img
+              variants={imgVariants}
+              initial="initial"
+              whileHover="hover"
+              src={soccer3}
+              alt={prod.details.name}
+              className="rounded-2xl h-full w-full object-cover absolute backface-hidden"
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-white backface-hidden back">
+              <div className="p-4">
+                <p>Collection Description</p>
+              </div>
+            </div>
+          </motion.div>
         </div>
         <div className="grid grid-rows-2 gap-y-8">
           <div className="overflow-hidden rounded-2xl">
@@ -63,8 +90,11 @@ const ProductCardLg = ({ prod }) => {
           >
             View Collection
           </Link>
-          <button className="px-4 py-2  cursor-pointer rounded-lg w-full productcardlgborder z-[1]">
-            More Info
+          <button
+            className="px-4 py-2  cursor-pointer rounded-lg w-full productcardlgborder z-[1]"
+            onClick={handleCardFlip}
+          >
+            {isFlipped ? "Back" : "More Info"}
           </button>
         </div>
       </div>

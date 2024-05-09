@@ -1,18 +1,33 @@
 // Sidebar.js
-import React, { useState, useEffect } from "react";
+import { useEffect } from "react";
 import SidebarMain from "./SidebarMain";
 import {
-  ConnectButton,
   ConnectDialog,
+  useBalance,
   useConnect,
   useDialog,
 } from "@connect2ic/react";
-import toast from "react-hot-toast";
+import { login, logout } from "../../../../redux/reducers/authReducer";
+import { useDispatch } from "react-redux";
 
 const Sidebar = ({ isOpen, toggle }) => {
-  const [login, setLogin] = useState(false);
   const { open } = useDialog();
-  const { principal, isConnected, disconnect } = useConnect();
+  const { principal, isConnected } = useConnect();
+  // For realtime plug balance :
+  const [assets] = useBalance();
+  const dispatch = useDispatch();
+
+  // Effect for setting userInfo : redux
+  useEffect(() => {
+    if (principal) {
+      const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
+      const icpBal = icpWallet ? icpWallet.amount : 0;
+      // console.log(icpBal);
+      dispatch(login({ plugPrincipal: principal, plugBalance: icpBal }));
+    } else {
+      dispatch(logout());
+    }
+  }, [principal, assets]);
 
   return (
     <>

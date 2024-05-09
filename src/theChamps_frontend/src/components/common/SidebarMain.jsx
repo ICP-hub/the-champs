@@ -6,11 +6,12 @@ import ReadMore from "./ReadMore";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-import { useBalance, useConnect } from "@connect2ic/react";
+import { useConnect } from "@connect2ic/react";
 import toast from "react-hot-toast";
 import useClipboard from "react-use-clipboard";
 import IconWrapper from "../common/IconWrapper";
 import { MdDashboard } from "react-icons/md";
+import { useSelector } from "react-redux";
 
 const SidebarMain = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,25 +20,27 @@ const SidebarMain = () => {
     successDuration: 1000,
   });
 
-  // For realtime balance :
-  const [assets] = useBalance();
-  const [realBal, setRealBal] = useState(0);
-
+  // const [realBal, setRealBal] = useState(0);
   const navigate = useNavigate();
 
+  // Redux : authSlice
+  const userInfo = useSelector((state) => state.auth);
+
   // Effect for displaying real balance : Filter keep icp for now : Modify as required
-  useEffect(
-    function () {
-      if (assets) {
-        assets.map((wallet) => {
-          if (wallet.name === "ICP") {
-            setRealBal(wallet.amount);
-          }
-        });
-      }
-    },
-    [principal]
-  );
+  // useEffect(
+  //   function () {
+  //     if (assets) {
+  //       assets.map((wallet) => {
+  //         if (wallet.name === "ICP") {
+  //           setRealBal(wallet.amount);
+  //         }
+  //       });
+  //     }
+  //   },
+  //   [principal]
+  // );
+
+  // console.log(userInfo);
 
   return (
     <div className="py-4 mt-24 ">
@@ -269,7 +272,7 @@ const SidebarMain = () => {
         </div>
       )}
       <p className="text-center gap-1  flex items-center justify-center w-full my-4 mt-6 px-4">
-        <IcpLogo size={18} /> {realBal}
+        <IcpLogo size={18} /> {userInfo.userPlugBalance}
       </p>
 
       {/* <div className="flex items-center justify-center ">

@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import NFTApi from "../../api/NftApi";
 import { Link } from "react-router-dom";
 import NotAvailable from "../common/NotAvailable";
+import { useSelector } from "react-redux";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageB /> : Soccer collection.
@@ -30,6 +31,8 @@ const HomePageB = () => {
   const { getCollectionWiseNFT, NFTlist, nftLoading } = NFTApi();
   const [numColumns, setNumColumns] = useState(2);
   const [finalLoading, setFinalLoading] = useState(true);
+
+  const collectionData = useSelector((state) => console.log(state));
 
   const updateBreakpoints = () => {
     const width = window.innerWidth;
