@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { useCanister } from "@connect2ic/react";
 import ProducrCardLgLoader from "../components/productcomponent/ProducrCardLgLoader";
 import CollectionApi from "../api/CollectionApi";
+import { useSelector } from "react-redux";
 
 const CollectionPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
@@ -15,24 +16,24 @@ const CollectionPage = ({ name }) => {
   const [collection, setCollection] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState();
-  const { getAllCollections, isLoading, collections } = CollectionApi();
+
   const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState(false);
+  const { getAllCollections, isLoading } = CollectionApi();
+  const collectionSelector = useSelector((state) => state.collections);
+  console.log(collectionSelector);
 
   useEffect(() => {
     getAllCollections();
+    setLoading(false);
+  }, []);
 
-    setTimeout(() => {
-      setLoading(false);
-    }, 5000);
-  }, [backend]);
-  console.log(collections);
   const handleSearch = (e) => {
     setSearch(true);
     const query = e.target.value;
     setSearchQuery(query);
 
-    const filteredResults = collections.filter((item) =>
+    const filteredResults = collectionSelector.allCollections.filter((item) =>
       item.details.name.toLowerCase().includes(query.toLowerCase())
     );
     setSearchResults(filteredResults);
@@ -74,7 +75,7 @@ const CollectionPage = ({ name }) => {
               setGrid={setGrid}
               value={searchQuery}
               handleSearch={handleSearch}
-              collection={collections}
+              collection={collectionSelector.allCollections}
               setSearchResults={setSearchResults}
               setSearch={setSearch}
             />
@@ -86,7 +87,7 @@ const CollectionPage = ({ name }) => {
                 <ProducrCardLgLoader key={index} />
               ))}
             </div>
-          ) : collections.length === 0 ? (
+          ) : collectionSelector.allCollections?.length === 0 ? (
             <div className="text-center mt-8 px-6 lg:px-24 h-screen flex justify-center items-center">
               <button className="px-4 py-2  cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
                 No collection found
@@ -96,14 +97,14 @@ const CollectionPage = ({ name }) => {
             <div className="grid min-[948px]:grid-cols-2 gap-x-8 gap-y-8 mt-8 px-6 lg:px-24">
               {search ? (
                 <>
-                  {searchResults.map((prod, index) => (
+                  {searchResults?.map((prod, index) => (
                     <ProductCardLg prod={prod} key={index} />
                   ))}
                 </>
               ) : (
                 <>
                   {" "}
-                  {collections.map((prod, index) => (
+                  {collectionSelector.allCollections?.map((prod, index) => (
                     <ProductCardLg prod={prod} key={index} />
                   ))}
                 </>

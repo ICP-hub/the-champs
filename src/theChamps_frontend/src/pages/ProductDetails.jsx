@@ -13,31 +13,43 @@ import Footer from "../components/common/Footer";
 import MyProfileActivity from "../components/myProfile/MyProfileActivity";
 import { Link, useParams } from "react-router-dom";
 import { Principal } from "@dfinity/principal";
-import { useCanister } from "@connect2ic/react";
+import { useCanister, useTransfer } from "@connect2ic/react";
 import { TailSpin } from "react-loader-spinner";
+import placeholderimg from "../assets/CHAMPS.png";
+const usePaymentTransfer = () => {
+  // Receiver address will be in .env file : for now dev id
+  const [transfer] = useTransfer({
+    to: "uktss-xp5gu-uwif5-hfpwu-rujms-foroa-4zdkd-ofspf-uqqre-wxqyj-cqe",
+    amount: Number(20),
+  });
+  return transfer;
+};
 
 const ProductDetails = () => {
   const [open, setOpen] = useState(false);
   const { index, id } = useParams();
   const [backend] = useCanister("backend");
   const [nft, getNft] = useState("");
+  const [confirm, setConfirm] = useState(true);
 
   console.log("Second Last Value:", id);
   console.log("Last Value:", index);
 
+  const paymentAddressForTransfer = usePaymentTransfer(20);
   const getNftDetails = async () => {
     try {
       const canister_id = Principal.fromText(id);
       const id1 = parseInt(index);
 
-      const res = await backend.getNFTdetails(canister_id, id1);
+      const res = await backend.getcollectionwisefractionalnft(canister_id);
 
-      getNft(res);
+      console.log(res[index]);
+
+      getNft(res[index]);
     } catch (error) {
       console.log(error);
     }
   };
-  console.log("nftdetails", nft);
 
   useEffect(() => {
     // Disable scroll when modal is open
@@ -52,20 +64,25 @@ const ProductDetails = () => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [open]);
+  }, [open, backend, nft]);
+
+  const handler = () => {
+    setOpen(!open);
+    setConfirm(true);
+  };
   return (
     <>
       <Header />
       <div className="md:mt-44 mt-44 left-0 right-0 gap-8 px-6 lg:px-24">
         {open && (
           <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
-            <div className=" mt-20  md:w-[28%]  bg-white p-8 pb-4  ">
+            <div className=" mt-20  md:w-[28%] rounded-xl bg-white p-8 pb-4  ">
               <p className="text-center font-bold text-sm">
                 You are about to make a purchase!
               </p>
               <div className="flex items-center justify-center mt-4">
                 <img
-                  src={nft}
+                  src={placeholderimg}
                   alt=""
                   className="w-1/2 h-40  rounded-lg shadow-2xl  "
                 />
@@ -83,15 +100,34 @@ const ProductDetails = () => {
                 reversed. By clicking confirm you show acceptance to our{" "}
                 <span className="text-[#FC001E] underline">
                   {" "}
-                  Terms of Service
+                  Terms and Service
                 </span>
                 .
               </div>
-              <div className="flex items-center justify-end mt-8 text-md text-gray-400 font-medium">
-                <button className="mr-8" onClick={() => setOpen(!open)}>
+              <div className="flex items-center justify-between mt-8 text-md text-gray-400 font-medium">
+                <button className="mr-8" onClick={handler}>
                   Cancel
                 </button>
-                <button className="text-[#FC001E] ">Confirm</button>
+                {confirm ? (
+                  <button
+                    className="text-[#FC001E] "
+                    onClick={() => setConfirm(false)}
+                  >
+                    Confirm
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => paymentAddressForTransfer()}
+                      className=" bg-opacity-100  text-black  border-[1.5px] border-[#FC001E]   rounded-md  px-3 py-2 text-md flex items-center justify-center bg-gradient-to-r hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white "
+                    >
+                      Plug wallet
+                    </button>
+                    <button className="  bg-opacity-100 text-black border-[1.5px]  border-[#FC001E] rounded-md  px-3 py-2 text-md flex items-center justify-center bg-gradient-to-r hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white ">
+                      Go Pay
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -112,14 +148,14 @@ const ProductDetails = () => {
               <div className="">
                 <h1 className="text-3xl font-bold font-sans   ">
                   <span className=" text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
-                    NFT Name
+                    {nft?.fractional_token?.name}
                   </span>
                 </h1>
                 <p
                   className="
             text-gray-500 text-sm mt-4"
                 >
-                  {"principal" || nft.owner.toText()}
+                  By {nft?.fractional_token?.owner.toText()}
                 </p>
               </div>
               <div className="text-center ">

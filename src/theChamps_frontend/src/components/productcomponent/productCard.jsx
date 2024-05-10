@@ -88,7 +88,9 @@ const ProductCard = ({ product }) => {
       </div>
       <div className="p-2 mx-2">
         <div className="flex justify-between font-bold items-center">
-          <h2 className="text-lg font-semibold mb-2">product 1</h2>
+          <h2 className="text-lg font-semibold mb-2">
+            {product.fractional_token.name}
+          </h2>
           {loading ? (
             <button>
               <TailSpin

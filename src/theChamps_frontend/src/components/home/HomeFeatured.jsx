@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 const HomeFeatured = () => {
   const { getAllCollections, isLoading } = CollectionApi();
   const collectionSelector = useSelector((state) => state.collections);
+ 
 
   useEffect(() => {
     getAllCollections();

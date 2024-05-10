@@ -1,11 +1,10 @@
-import React from "react";
+import React, { Fragment, useState } from "react";
 import { CiSearch, CiFilter } from "react-icons/ci";
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useRef, useState } from "react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { IoGridOutline } from "react-icons/io5";
 import { CiBoxList } from "react-icons/ci";
 import toast from "react-hot-toast";
+
 const Searchbar = ({
   grid,
   setGrid,
@@ -23,39 +22,52 @@ const Searchbar = ({
   };
 
   const handleSortByName = () => {
-    setSearch(true);
-    const sortedResults = [...collection].sort((a, b) =>
-      a.details.name.localeCompare(b.details.name)
-    );
-
-    setSearchResults(sortedResults);
+    setSelectedOption("name");
   };
 
   const handleSortByNameReverse = () => {
-    setSearch(true);
-    const sortedResults = [...collection].sort((a, b) =>
-      b.details.name.localeCompare(a.details.name)
-    );
-    setSearchResults(sortedResults);
+    setSelectedOption("name_reverse");
   };
 
   const handleSortByDate = () => {
-    setSearch(true);
-    const sortedResults = [...collection].sort((a, b) => {
-      const dateA = Number(BigInt(a.details.created_at) / BigInt(1000000));
-      const dateB = Number(BigInt(b.details.created_at) / BigInt(1000000));
-      return dateB - dateA;
-    });
-    setSearchResults(sortedResults);
+    setSelectedOption("date");
   };
 
   const handleSortByDateReverse = () => {
+    setSelectedOption("date_reverse");
+  };
+
+  const applyFilters = () => {
     setSearch(true);
-    const sortedResults = [...collection].sort((a, b) => {
-      const dateA = Number(BigInt(a.details.created_at) / BigInt(1000000));
-      const dateB = Number(BigInt(b.details.created_at) / BigInt(1000000));
-      return dateA - dateB;
-    });
+    let sortedResults;
+    switch (selectedOption) {
+      case "name":
+        sortedResults = [...collection].sort((a, b) =>
+          a.details.name.localeCompare(b.details.name)
+        );
+        break;
+      case "name_reverse":
+        sortedResults = [...collection].sort((a, b) =>
+          b.details.name.localeCompare(a.details.name)
+        );
+        break;
+      case "date":
+        sortedResults = [...collection].sort((a, b) => {
+          const dateA = Number(BigInt(a.details.created_at) / BigInt(1000000));
+          const dateB = Number(BigInt(b.details.created_at) / BigInt(1000000));
+          return dateB - dateA;
+        });
+        break;
+      case "date_reverse":
+        sortedResults = [...collection].sort((a, b) => {
+          const dateA = Number(BigInt(a.details.created_at) / BigInt(1000000));
+          const dateB = Number(BigInt(b.details.created_at) / BigInt(1000000));
+          return dateA - dateB;
+        });
+        break;
+      default:
+        sortedResults = collection;
+    }
     setSearchResults(sortedResults);
   };
 
@@ -76,16 +88,10 @@ const Searchbar = ({
             onChange={handleSearch}
           />
         </div>
-        {/* <div className="flex text-xl items-center justify-center  gap-2 border-[1.5px]  border-gray-400 rounded-md  px-3 py-2 lg:w-[12%] mb-12 overflow-hidden">
-            <div className="text-3xl">
-                <CiFilter />
-            </div>
-            Filters
-            </div>{" "} */}
-        <div className=" lg:w-[12%]  ">
+        <div className=" lg:w-[12%] ">
           <Menu as="div" className="relative inline-block text-left w-full ">
             <div>
-              <Menu.Button className=" flex text-xl items-center justify-center  gap-2 border-[1px]  border-gray-400 rounded-md  px-3 md:py-2 lg:w-full  overflow-hidden ">
+              <Menu.Button className="flex text-xl items-center justify-center gap-2 border-[1px] border-gray-400 rounded-md px-3 md:py-2 lg:w-full overflow-hidden ">
                 <div className="md:text-3xl">
                   <CiFilter />
                 </div>
@@ -101,41 +107,59 @@ const Searchbar = ({
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute right-0 mt-2 w-[330px] bg-gradient-to-r from-purple-50 to-pink-50    origin-top-right divide-y  divide-gray-100 rounded-3xl bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                <div className="px-1 py-1 ">
+              <Menu.Items className="absolute right-0 mt-2 w-[330px] bg-gradient-to-r from-purple-50 to-pink-50 origin-top-right divide-y divide-gray-100 rounded-3xl bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                <div className="px-1 py-1">
                   <div className="m-6 text-center">
-                    <h1 className="text-md  text-left font-medium">By Name</h1>
+                    <h1 className="text-md text-left font-medium">By Name</h1>
                     <button
-                      className="mt-2  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300   bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg"
+                      className={`mt-2 flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300 bg-gradient-to-r hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg ${
+                        selectedOption === "name"
+                          ? "bg-gradient-to-r from-[#FF7D57] to-[#FC001E] border-white text-white"
+                          : ""
+                      }`}
                       onClick={handleSortByName}
                     >
                       Sort by Name(A TO Z)
                     </button>
                     <button
-                      className="mt-2 flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300   bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg"
+                      className={`mt-2 flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300 bg-gradient-to-r hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg ${
+                        selectedOption === "name_reverse"
+                          ? "bg-gradient-to-r from-[#FF7D57] to-[#FC001E] border-white text-white"
+                          : ""
+                      }`}
                       onClick={handleSortByNameReverse}
                     >
                       Sort by Name(Z to A)
                     </button>
                   </div>
-                  <div className="m-6 mt-2  text-center">
-                    <h1 className="text-md  text-left font-medium">Sort By</h1>
+                  <div className="m-6 mt-2 text-center">
+                    <h1 className="text-md text-left font-medium">Sort By</h1>
                     <button
-                      className="mt-2  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300   bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg"
+                      className={`mt-2 flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300 bg-gradient-to-r hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg ${
+                        selectedOption === "date"
+                          ? "bg-gradient-to-r from-[#FF7D57] to-[#FC001E] border-white text-white"
+                          : ""
+                      }`}
                       onClick={handleSortByDate}
                     >
                       Recent Creations
                     </button>
                     <button
-                      className="mt-2  flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300  bg-gradient-to-r   hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg"
+                      className={`mt-2 flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300 bg-gradient-to-r hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg ${
+                        selectedOption === "date_reverse"
+                          ? "bg-gradient-to-r from-[#FF7D57] to-[#FC001E] border-white text-white"
+                          : ""
+                      }`}
                       onClick={handleSortByDateReverse}
                     >
                       Latest Creations
                     </button>
                   </div>
-
                   <div className="m-6 text-center">
-                    <button className="  flex items-center w-full justify-center  px-3 py-2 border-[1.5px]   button border-white text-white rounded-lg ">
+                    <button
+                      className="flex items-center w-full justify-center px-3 py-2 border-[1.5px] button border-white text-white rounded-lg bg-gradient-to-r from-[#FF7D57] to-[#FC001E]"
+                      onClick={applyFilters}
+                    >
                       Apply Filters
                     </button>
                   </div>
@@ -146,7 +170,7 @@ const Searchbar = ({
         </div>
         {gridrequired && (
           <button
-            className="flex text-xl items-center justify-center   border-[1px]  border-gray-400 rounded-md   lg:w-[5%]  sm:w-10 md:h-12 h-8 overflow-hidden"
+            className="flex text-xl items-center justify-center border-[1px] border-gray-400 rounded-md lg:w-[5%] sm:w-10 md:h-12 h-8 overflow-hidden"
             onClick={() => setGrid(!grid)}
           >
             {grid ? <CiBoxList size={24} /> : <IoGridOutline />}

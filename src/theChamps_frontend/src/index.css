@@ -114,6 +114,12 @@
   background-clip: padding-box, border-box;
   background-origin: padding-box, border-box;
 }
+.border-gradient {
+  /* Replace these gradient colors with your desired gradient */
+  border-image: linear-gradient(to right, #ff7d57, #fc001e);
+  border-image-slice: 1;
+  border-radius: 6px;
+}
 
 .nav-menu {
   position: relative;

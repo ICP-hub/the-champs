@@ -136,7 +136,7 @@ const ProductPage = ({ name }) => {
         console.log("hello");
         setCollection(res);
         setloading(false);
-        console.log(res);
+
         setSearchResults(res);
         console.log(res);
       } catch (error) {
@@ -152,7 +152,7 @@ const ProductPage = ({ name }) => {
     setSearchQuery(query);
 
     const filteredResults = collection.filter((item) =>
-      item.owner.toText().toLowerCase().includes(query.toLowerCase())
+      item.fractional_token.name.toLowerCase().includes(query.toLowerCase())
     );
     setSearchResults(filteredResults);
   };
@@ -163,13 +163,21 @@ const ProductPage = ({ name }) => {
       <div className=" mt-44 left-0 right-0  px-6 lg:px-24 ">
         <div className="w-full relative ">
           <img
-            src={collectionDetails?.banner?.data ? collectionDetails?.banner?.data : placeholderImg}
+            src={
+              collectionDetails?.banner?.data
+                ? collectionDetails?.banner?.data
+                : placeholderImg
+            }
             alt=""
             className="w-full  h-60 rounded-xl object-cover  "
           />
           <div className="md:flex">
             <div className="absolute md:top-32 top-0 p-4 md:mt-0  md:w-1/4  w-full md:left-16">
-              <Card nftgeek={nftgeek} toniq={toniq} logo={collectionDetails?.logo?.data} />
+              <Card
+                nftgeek={nftgeek}
+                toniq={toniq}
+                logo={collectionDetails?.logo?.data}
+              />
             </div>
             <div className=" md:absolute right-0 md:w-[65%] mt-48 md:mt-8">
               {" "}

@@ -58,7 +58,7 @@ const CollectionApi = () => {
             dispatch(
               getAllCollectionData({
                 canisterId: data.map((i) => i.canisterId),
-                allCollections: data.map((i) => i.details),
+                allCollections: data.map((i) => i),
                 featuredCollections: data.filter(
                   (collection) => collection.details.featured
                 ),
