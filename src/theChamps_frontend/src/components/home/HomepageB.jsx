@@ -32,6 +32,7 @@ const HomePageB = () => {
   const { getAllCollectionWiseNFT } = NFTApi();
   // const [finalLoading, setFinalLoading] = useState(true);
 
+  const collectionData = useSelector((state) => console.log(state.collections));
   const nftData = useSelector((state) => state.nftData);
 
   console.log("This is coming from HomepageB ", nftData);
