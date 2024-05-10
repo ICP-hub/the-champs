@@ -22,7 +22,7 @@ actor Champs {
         let g = Source.Source();
         // stores collection canister id of the user
         private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
-        private var stablenftcollectionMap : [(Principal, [Principal])] = [];
+        private var stablenftcollectionMap :[(Principal, [Principal])] = [];
 
         private var favourites = TrieMap.TrieMap<Principal, [(Types.Nft,Principal)]>(Principal.equal, Principal.hash);
         private var stablefavourites : [(Principal, [(Types.Nft,Principal)])] = [];
@@ -412,6 +412,10 @@ actor Champs {
             case (?favourite) {
                 let temp : List.List<(Types.Nft,Principal)> = List.fromArray(favourite);
                 let newlist : List.List<(Types.Nft,Principal)> = List.filter<(Types.Nft,Principal)>(temp, func x : Bool { x.0.id != tokenid and x.1 != collection_id});
+                let array = List.toArray(newlist);
+                Debug.trap(debug_show({
+                    array
+                }));
                 favourites.put(user, List.toArray(newlist));
                 return "Favourite removed";
             };
@@ -563,21 +567,11 @@ actor Champs {
 
     // Postupgrade function to restore the data from stable variables
     system func postupgrade() {
-        for (entry in stablenftcollectionMap.vals()){
-            nftcollectionMap.put(entry.0, entry.1);
-        };
 
-        for (entry in stablefavourites.vals()){
-            favourites.put(entry.0, entry.1);
-        };
-
-        for (entry in stablecontacts.vals()){
-            contacts.put(entry.0, entry.1);
-        };
-
-        for (entry in stablefractionalnftmap.vals()){
-            fractionalnftmap.put(entry.0, entry.1);
-        }; 
+        nftcollectionMap :=  TrieMap.fromEntries(stablenftcollectionMap.vals() , Principal.equal,Principal.hash);
+        favourites := TrieMap.fromEntries(stablefavourites.vals(), Principal.equal, Principal.hash);
+        contacts := TrieMap.fromEntries(stablecontacts.vals(), Text.equal, Text.hash);
+        fractionalnftmap := TrieMap.fromEntries(stablefractionalnftmap.vals(), Principal.equal, Principal.hash);
     };
 
 
