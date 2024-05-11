@@ -14,7 +14,6 @@ import { useSelector } from "react-redux";
 const HomeFeatured = () => {
   const { getAllCollections, isLoading } = CollectionApi();
   const collectionSelector = useSelector((state) => state.collections);
- 
 
   useEffect(() => {
     getAllCollections();
@@ -36,7 +35,9 @@ const HomeFeatured = () => {
           {collectionSelector.featuredCollections
             .slice(0, 3)
             .map((collection, index) => (
-              <ProductCardLg prod={collection} key={index} />
+              <div>
+                <ProductCardLg prod={collection} key={index} />
+              </div>
             ))}
         </div>
       )}
