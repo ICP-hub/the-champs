@@ -16,6 +16,22 @@ import { Principal } from "@dfinity/principal";
 import { useCanister, useTransfer } from "@connect2ic/react";
 import { TailSpin } from "react-loader-spinner";
 import placeholderimg from "../assets/CHAMPS.png";
+import { RadioGroup } from "@headlessui/react";
+
+const plans = [
+  {
+    name: "Plug Wallet",
+    value: "plug-wallet",
+  },
+  {
+    name: "Fiat Payment",
+    value: "fiat-payment",
+  },
+  // {
+  //   name: "Pay with paypal",
+  //   value: "paypal-payment",
+  // },
+];
 const usePaymentTransfer = () => {
   // Receiver address will be in .env file : for now dev id
   const [transfer] = useTransfer({
@@ -31,6 +47,7 @@ const ProductDetails = () => {
   const [backend] = useCanister("backend");
   const [nft, getNft] = useState("");
   const [confirm, setConfirm] = useState(true);
+  let [selected, setSelected] = useState(plans[0]);
 
   console.log("Second Last Value:", id);
   console.log("Last Value:", index);
@@ -76,7 +93,7 @@ const ProductDetails = () => {
       <div className="md:mt-44 mt-44 left-0 right-0 gap-8 px-6 lg:px-24">
         {open && (
           <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
-            <div className=" mt-20  md:w-[28%] rounded-xl bg-white p-8 pb-4  ">
+            <div className=" mt-16  md:w-[28%]  relative z-50 rounded-xl bg-white p-8 pb-4  ">
               <p className="text-center font-bold text-sm">
                 You are about to make a purchase!
               </p>
@@ -84,18 +101,67 @@ const ProductDetails = () => {
                 <img
                   src={placeholderimg}
                   alt=""
-                  className="w-1/2 h-40  rounded-lg shadow-2xl  "
+                  className="w-1/2 h-40  rounded-lg shadow-md
+                    "
                 />
               </div>
               <p className="text-center text-gray-400 mt-4 text-sm">
                 You are about to purchase this NFT from your connected wallet.
               </p>
-              <div className="border-[1px] mt-4 border-gray-200 w-full"></div>
+              <div className="border-[1px] mt-2 mb-4 border-gray-200 w-full"></div>
+              <RadioGroup>
+                <RadioGroup.Label className="text-black xl:text-sm  text-xs font-semibold uppercase tracking-wider w-full">
+                  Payment Method
+                </RadioGroup.Label>
+                <div className="grid xl:grid-cols-2 grid-cols-2 gap-4 pt-2  max-sm:flex max-sm:flex-col font-medium">
+                  {plans.map((plan) => (
+                    <RadioGroup.Option
+                      key={plan.name}
+                      value={plan}
+                      className={({ active, checked }) =>
+                        `border-2 p-3 rounded-xl text-sm uppercase ${
+                          checked
+                            ? " button text-white  border-none "
+                            : "bg-white"
+                        }`
+                      }
+                    >
+                      {({ checked }) => (
+                        <RadioGroup.Label className="flex justify-between w-full ml-2 items-center">
+                          <p>{plan.name}</p>
+                          {checked && (
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              className="h-6 w-6"
+                            >
+                              <circle
+                                cx={12}
+                                cy={12}
+                                r={12}
+                                fill="#fff"
+                                opacity="0.2"
+                              />
+                              <path
+                                d="M7 13l3 3 7-7"
+                                stroke="#fff"
+                                strokeWidth={1.5}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          )}
+                        </RadioGroup.Label>
+                      )}
+                    </RadioGroup.Option>
+                  ))}
+                </div>
+              </RadioGroup>
               <div className="flex items-center justify-between font-bold text-sm mt-4">
-                <p>Total:</p>
+                <p>TOTAL:</p>
                 <p>$5.54</p>
               </div>
-              <div className="mt-4 text-center text-gray-400 text-xs">
+              <div className="mt-2 text-center text-gray-400 text-xs">
                 This process may take a minute. Transactions can not be
                 reversed. By clicking confirm you show acceptance to our{" "}
                 <span className="text-[#FC001E] underline">
@@ -104,30 +170,17 @@ const ProductDetails = () => {
                 </span>
                 .
               </div>
-              <div className="flex items-center justify-between mt-8 text-md text-gray-400 font-medium">
+              <div className="flex items-center justify-end mt-4 text-md text-gray-400 font-medium">
                 <button className="mr-8" onClick={handler}>
                   Cancel
                 </button>
-                {confirm ? (
-                  <button
-                    className="text-[#FC001E] "
-                    onClick={() => setConfirm(false)}
-                  >
-                    Confirm
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => paymentAddressForTransfer()}
-                      className=" bg-opacity-100  text-black  border-[1.5px] border-[#FC001E]   rounded-md  px-3 py-2 text-md flex items-center justify-center bg-gradient-to-r hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white "
-                    >
-                      Plug wallet
-                    </button>
-                    <button className="  bg-opacity-100 text-black border-[1.5px]  border-[#FC001E] rounded-md  px-3 py-2 text-md flex items-center justify-center bg-gradient-to-r hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white ">
-                      Go Pay
-                    </button>
-                  </>
-                )}
+
+                <button
+                  className="text-[#FC001E] "
+                  onClick={() => setConfirm(false)}
+                >
+                  Confirm
+                </button>
               </div>
             </div>
           </div>
