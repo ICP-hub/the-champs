@@ -30,7 +30,7 @@ const Market = () => {
   };
   const getAllCollections = async () => {
     try {
-      const data = await backend.getallcollections();
+      const data = await backend.getallCollectionids();
       setSampleData(data);
       setIsLoading(false);
       console.log("data", data);
@@ -123,11 +123,11 @@ const Market = () => {
                         <div className="flex items-center gap-1">
                           <h4 className="text-sm ">
                             {" "}
-                            {(item?.canister_id).toString().slice(0, 4) + "..."}
+                            {/* {(item?._Principal).toString().slice(0, 4) + "..."} */}
                           </h4>
                           <button
                             onClick={() =>
-                              copyToClipboard(item?.canister_id.toString())
+                              copyToClipboard(item?._Principal.toString())
                             }
                             className="uppercase  text-sm shadow-md  text-[#FF7D57] flex items-center justify-start gap-3 rounded-xl"
                           >
@@ -164,14 +164,12 @@ const Market = () => {
                               <div className="flex items-center gap-1">
                                 <h4 className="text-sm ">
                                   {" "}
-                                  {(item?.canister_id).toString().slice(0, 8) +
+                                  {(item?._Principal).toString().slice(0, 8) +
                                     "..."}
                                 </h4>
                                 <button
                                   onClick={() =>
-                                    copyToClipboard(
-                                      item?.canister_id.toString()
-                                    )
+                                    copyToClipboard(item?._Principal.toString())
                                   }
                                   className="uppercase  text-sm shadow-md  text-[#FF7D57] flex items-center justify-start gap-3 rounded-xl"
                                 >
@@ -189,7 +187,7 @@ const Market = () => {
                       <div className="flex justify-between gap-2 mx-2  my-2">
                         <div className="bg-transparent">
                           <Link
-                            to={`/details/${item?.canister_id.toString()}`}
+                            to={`/details/${item?._Principal.toString()}`}
                             className="uppercase dark:bg-[#2e2e48] bg-[#fff]  flex items-center justify-start gap-3 px-2 py-1 rounded-xl  bg:text-[#e1e1e1]"
                           >
                             view
@@ -197,7 +195,7 @@ const Market = () => {
                         </div>
                         <div className="">
                           <Link
-                            to={`/create/${item?.canister_id.toString()}`}
+                            to={`/create/${item?._Principal.toString()}`}
                             className="uppercase bg-red-500  shadow-md dark:bg-red-500  flex items-center justify-start gap-3 px-2 py-1 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] "
                           >
                             Mint

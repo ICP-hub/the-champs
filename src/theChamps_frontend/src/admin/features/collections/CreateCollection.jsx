@@ -3,110 +3,32 @@ import Select from "react-select";
 import { useDropzone } from "react-dropzone";
 import { TbDisabled, TbSquareRoundedChevronLeft } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
-import { useCanister } from "@connect2ic/react";
+import { useCanister, useConnect, useDialog } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { TailSpin } from "react-loader-spinner";
 import toast from "react-hot-toast";
+import Toggle from "react-toggle";
+
 const CreateCollections = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [files, setFiles] = useState([]);
   const [selectedRoyalty, setSelectedRoyalty] = useState("");
-  const userid = Principal.fromText(
-    "5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe"
-  );
-
-  const options = [];
-  for (let i = 1; i <= 50; i += 0.5) {
-    options.push({ value: i.toFixed(1), label: `${i}%` });
-  }
+  const { principal } = useConnect();
+  // const userid = Principal.fromText(
+  //   "5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe"
+  // );
 
   const sendback = () => {
     navigate(-1);
   };
-  const handlechange = (e) => {
-    const { name, value } = e.target;
-    setFormdata((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedImage(URL.createObjectURL(file));
-  };
-
-  const thumbsContainer = {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 16,
-  };
-
-  const thumb = {
-    display: "inline-flex",
-    borderRadius: 2,
-    border: "1px solid #eaeaea",
-    marginBottom: 8,
-    marginRight: 8,
-    width: 100,
-    height: 100,
-    padding: 4,
-    boxSizing: "border-box",
-  };
-
-  const thumbInner = {
-    display: "flex",
-    minWidth: 0,
-    overflow: "hidden",
-  };
-
-  const img = {
-    display: "block",
-    width: "auto",
-    height: "100%",
-  };
-
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: "image/*",
-    onDrop: (acceptedFiles) => {
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          })
-        )
-      );
-    },
-  });
-
-  const thumbs = files.map((file) => (
-    <div style={thumb} key={file.name}>
-      <div style={thumbInner}>
-        <img
-          src={file.preview}
-          style={img}
-          onLoad={() => URL.revokeObjectURL(file.preview)}
-        />
-      </div>
-    </div>
-  ));
-
-  useEffect(() => {
-    return () => {
-      files.forEach((file) => URL.revokeObjectURL(file.preview));
-    };
-  }, [files]);
 
   const [backend] = useCanister("backend");
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    principal: "",
     record: {
-      maxLimit: "",
       logo: {
         data: "",
         logo_type: "",
@@ -115,16 +37,27 @@ const CreateCollections = () => {
         data: "",
         logo_type: "",
       },
+      description: "",
       name: "",
       symbol: "",
+      maxLimit: 0,
+      featured: false,
     },
   });
+
+  const handleCheeseChange = () => {
+    setFormData({
+      ...formData,
+      record: {
+        ...formData.record,
+        featured: !formData.record.featured,
+      },
+    });
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     const updatedFormData = { ...formData };
-
-    // Handle both top-level and nested field updates
     const parts = name.split(".");
     if (parts.length === 1) {
       updatedFormData[name] = value;
@@ -149,25 +82,20 @@ const CreateCollections = () => {
   }
 
   const getFileType = (file) => {
-    // Extract file extension
     const fileNameParts = file.name.split(".");
     const fileExtension = fileNameParts[fileNameParts.length - 1].toLowerCase();
 
-    // Map common image file extensions to MIME types
     const extensionToTypeMap = {
       png: "image/png",
       jpg: "image/jpeg",
       jpeg: "image/jpeg",
       gif: "image/gif",
-      // Add more mappings as needed
     };
 
-    // Look up MIME type based on file extension
     const mimeType = extensionToTypeMap[fileExtension];
     if (mimeType) {
       return mimeType;
     } else {
-      // If MIME type is not found, default to the file's type
       return file.type;
     }
   };
@@ -202,9 +130,52 @@ const CreateCollections = () => {
             data: logoBlob,
             logo_type: fileType,
           },
+          banner: {
+            ...formData.record.logo,
+            data: logoBlob,
+            logo_type: fileType,
+          },
         },
       });
-      console.log("blob is ", logoBlob);
+      console.log("blob is for logo", logoBlob);
+    } catch (error) {
+      console.error("Error converting image to blob:", error);
+    }
+  };
+
+  const handleBannerDataChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const maxSizeInBytes = 1024 * 1024;
+    if (file.size > maxSizeInBytes) {
+      console.error(
+        "Selected file is too large. Please select an image file less than or equal to 1 MB."
+      );
+      toast.error("Please select an image file less than or equal to 1 MB");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      console.error("Selected file is not an image.");
+      return;
+    }
+
+    try {
+      const bannerBlob = await imageToFileBlob(file);
+      const fileType = getFileType(file);
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        record: {
+          ...prevFormData.record,
+          banner: {
+            ...prevFormData.record.banner,
+            data: bannerBlob,
+            logo_type: fileType,
+          },
+        },
+      }));
+      console.log("blob is for banner", bannerBlob);
     } catch (error) {
       console.error("Error converting image to blob:", error);
     }
@@ -222,23 +193,32 @@ const CreateCollections = () => {
       },
     }));
   };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       setLoading(true);
-      const { principal, record } = formData;
+      const { record } = formData;
       const parsedRecord = {
         ...record,
         maxLimit: parseInt(record.maxLimit),
       };
+      if (!parsedRecord.logo.data) {
+        console.error("Logo data is missing.");
+        return;
+      }
+      console.log("data is ", formData);
       const result = await backend.createcollection(
-        Principal.fromText(principal),
-        parsedRecord
+        parsedRecord.logo,
+        parsedRecord.banner,
+        parsedRecord.description,
+        parsedRecord.name,
+        parsedRecord.symbol,
+        parsedRecord.maxLimit,
+        parsedRecord.featured
       );
       console.log("Collection creation result:", result);
 
-      if (result.ok) {
+      if (result.principal) {
         console.log("Collection created successfully!", result);
         toast.success("Collection created successfully!");
       } else {
@@ -266,7 +246,7 @@ const CreateCollections = () => {
       </div>
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="flex justify-between gap-4">
-          <div className="w-full">
+          {/* <div className="w-full">
             <label htmlFor="name" className="md:text-lg text-sm font-semibold">
               Principal
             </label>
@@ -279,6 +259,21 @@ const CreateCollections = () => {
               onChange={handleChange}
               required
               isabled={loading}
+            />
+          </div> */}
+          <div className="w-full">
+            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
+              Collection Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="record.name"
+              className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+              value={formData.record.name}
+              onChange={handleChange}
+              required
+              disabled={loading}
             />
           </div>
           <div className="w-full">
@@ -296,6 +291,25 @@ const CreateCollections = () => {
               disabled={loading}
             />
           </div>
+        </div>
+
+        <div className="w-full">
+          <label
+            htmlFor="description"
+            className="md:text-lg text-sm font-semibold"
+          >
+            Description
+          </label>
+          <input
+            type="text"
+            id="description"
+            name="record.description"
+            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+            value={formData.description}
+            onChange={handleChange}
+            required
+            disabled={loading}
+          />
         </div>
         <div className="w-full">
           <label
@@ -316,37 +330,22 @@ const CreateCollections = () => {
         </div>
         <div className="w-full">
           <label
-            htmlFor="logoData"
+            htmlFor="bannerData"
             className="md:text-lg text-sm font-semibold"
           >
-            Banner img
+            Banner Img
           </label>
           <input
             type="file"
-            id="logoData"
-            name="logoData"
+            id="bannerData"
+            name="bannerData"
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            onChange={handleLogoDataChange}
+            onChange={handleBannerDataChange}
             required
             disabled={loading}
           />
         </div>
 
-        <div className="w-full">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Collection Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="record.name"
-            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            value={formData.record.name}
-            onChange={handleChange}
-            required
-            disabled={loading}
-          />
-        </div>
         <div className="w-full">
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
             Symbol
@@ -360,6 +359,17 @@ const CreateCollections = () => {
             onChange={handleChange}
             required
             disabled={loading}
+          />
+        </div>
+        <div className="w-full flex gap-5 pt-5 items-center">
+          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
+            Featured
+          </label>
+          <Toggle
+            className=" px-3 py-2  focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+            id="featured"
+            defaultChecked={formData.record.featured}
+            onChange={handleCheeseChange}
           />
         </div>
 
