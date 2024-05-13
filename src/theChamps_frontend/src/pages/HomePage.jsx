@@ -9,7 +9,6 @@ const HomePage = () => {
     <>
       <Header />
       <motion.div
-        className="mt-28"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}

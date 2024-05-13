@@ -35,7 +35,7 @@ const HomeFeatured = () => {
           {collectionSelector.featuredCollections
             .slice(0, 3)
             .map((collection, index) => (
-              <div>
+              <div key={index}>
                 <ProductCardLg prod={collection} key={index} />
               </div>
             ))}
