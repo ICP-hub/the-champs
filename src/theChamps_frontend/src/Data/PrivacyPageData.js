@@ -30,3 +30,5 @@ const privacyPolicyData = [
       "Donec id dolor non mauris consequat consequat. Quisque feugiat odio vitae enim ultrices, eget dignissim arcu fermentum. Donec blandit mi a dui malesuada, nec dictum velit tempor. Nullam in nisi nec purus ullamcorper euismod nec eu risus. Duis aliquet malesuada libero a scelerisque. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla facilisi. Vivamus molestie, lectus nec auctor ultricies, purus odio rutrum lacus, a egestas ipsum leo vel sapien.",
   },
 ];
+
+export default privacyPolicyData;
