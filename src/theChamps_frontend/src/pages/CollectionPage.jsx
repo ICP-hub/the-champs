@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Searchbar from "../components/common/Searchbar";
-import ProductCardLg from "../components/common/ProductCardLg";
+import ProductCardLg from "../components/common/ProductCardLg1";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 import { motion } from "framer-motion";
@@ -81,13 +81,13 @@ const CollectionPage = ({ name }) => {
             />
           </div>
 
-          {loading ? (
+          {isLoading ? (
             <div className="grid lg:grid-cols-2 xl:grid-cols-2 gap-8 max-lg:grid-cols-2 mt-8 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
               {Array.from({ length: 9 }, (_, index) => (
                 <ProducrCardLgLoader key={index} />
               ))}
             </div>
-          ) : collectionSelector.allCollections?.length === 0 ? (
+          ) : collectionSelector.allCollections == null ? (
             <div className="text-center mt-8 px-6 lg:px-24 h-screen flex justify-center items-center">
               <button className="px-4 py-2  cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
                 No collection found

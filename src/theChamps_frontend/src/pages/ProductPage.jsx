@@ -187,7 +187,13 @@ const ProductPage = ({ name }) => {
                 </span>
               </h1>
               <div>{collectionDetails.description}</div>
-              <div className="mt-12 md:w-1/2 flex gap-4  ">
+              <div className="mt-12 md:w-1/2 flex gap-4  flex-wrap ">
+                <div className=" w-1/4 text-center text-sm space-y-2">
+                  <p>VOLUME</p>
+                  <button className=" w-full  button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
+                    184
+                  </button>
+                </div>
                 <div className=" w-1/4 text-center text-sm space-y-2">
                   <p>LISTINGS</p>
                   <button className=" w-full  button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
@@ -203,6 +209,12 @@ const ProductPage = ({ name }) => {
                 <div className=" w-1/4 text-center text-sm space-y-2">
                   <p>MINTED</p>
                   <button className=" w-full button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
+                    184
+                  </button>
+                </div>
+                <div className=" w-1/4 text-center text-sm space-y-2">
+                  <p>ROYAL</p>
+                  <button className=" w-full  button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
                     184
                   </button>
                 </div>

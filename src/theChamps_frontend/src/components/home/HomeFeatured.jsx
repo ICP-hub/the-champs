@@ -7,6 +7,7 @@ import CollectionApi from "../../api/CollectionApi";
 import { useEffect } from "react";
 import NotAvailable from "../common/NotAvailable";
 import { useSelector } from "react-redux";
+import ProducrCardLgLoader from "../productcomponent/ProducrCardLgLoader";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomeFeatured /> : Homepage featured items.
@@ -14,7 +15,6 @@ import { useSelector } from "react-redux";
 const HomeFeatured = () => {
   const { getAllCollections, isLoading } = CollectionApi();
   const collectionSelector = useSelector((state) => state.collections);
- 
 
   useEffect(() => {
     getAllCollections();
@@ -24,12 +24,14 @@ const HomeFeatured = () => {
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
       <FancyHeader normal="View" fancy="All our collections" small />
       {isLoading ? (
-        <div className="flex justify-center items-center">
-          Loading collections...
+        <div className="grid lg:grid-cols-2 xl:grid-cols-2 gap-8 max-lg:grid-cols-2 mt-8 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
+          {Array.from({ length: 2 }, (_, index) => (
+            <ProducrCardLgLoader key={index} />
+          ))}
         </div>
       ) : (collectionSelector.featuredCollections?.length ?? 0) === 0 ? (
         <div className="flex justify-center items-center">
-          <NotAvailable>No Collection Availbale</NotAvailable>
+          <NotAvailable>No Collection Available</NotAvailable>
         </div>
       ) : (
         <div className="grid lg:grid-cols-2 gap-x-8 gap-y-8">
