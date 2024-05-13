@@ -3,6 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  box-sizing: border-box;
+}
+
 .custom-box {
   position: fixed;
 
@@ -338,4 +342,29 @@
 
 .back {
   transform: rotateY(180deg);
+}
+
+.navigation:hover {
+  background-color: rgba(221, 221, 221, 0.4);
+  transition: all 0.5s ease 0s;
+}
+
+.scrollBox {
+  height: 600px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  text-align: justify;
+}
+
+.scrollBox::-webkit-scrollbar {
+  display: none;
+}
+
+@media screen and (max-width: 900px) {
+  .scrollBox {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: justify;
+  }
 }

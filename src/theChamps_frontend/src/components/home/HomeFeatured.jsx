@@ -34,11 +34,13 @@ const HomeFeatured = () => {
           <NotAvailable>No Collection Available</NotAvailable>
         </div>
       ) : (
-        <div className="grid lg:grid-cols-2 gap-x-8 gap-y-8">
+        <div className="grid lg:grid-cols-3 gap-x-8 gap-y-8">
           {collectionSelector.featuredCollections
-            .slice(0, 2)
+            .slice(0, 3)
             .map((collection, index) => (
-              <ProductCardLg prod={collection} key={index} />
+              <div key={index}>
+                <ProductCardLg prod={collection} key={index} />
+              </div>
             ))}
         </div>
       )}
