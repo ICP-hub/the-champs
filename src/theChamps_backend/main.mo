@@ -16,7 +16,7 @@ import NFTActorClass "../DIP721-NFT/Nft";
 import Types "../DIP721-NFT/Types";
 import Root "../DIP-20/cap/Root";
 import Admin "./Admin/admin";
-
+import UsersTypes "./Users/Types";
 actor Champs {
         // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
         let g = Source.Source();
@@ -32,6 +32,9 @@ actor Champs {
 
         private var fractionalnftmap = TrieMap.TrieMap<Principal, [(Principal,Types.FractionalNFT,Principal)]>(Principal.equal,Principal.hash);
         private var stablefractionalnftmap : [(Principal, [(Principal,Types.FractionalNFT,Principal)])] = [];
+
+        private var users = TrieMap.TrieMap<Principal, UsersTypes.User>(Principal.equal, Principal.hash);
+        private var stableusers : [(Principal, UsersTypes.User)] = [];
 
         public func idQuick() : async Principal { 
             return Principal.fromActor(Champs);
@@ -544,6 +547,8 @@ actor Champs {
         return #ok(());
     };
 
+    
+
     public shared ({caller = user}) func listContacts() : async [(Types.ContactId, Types.Contact)] {
         let adminstatus = await Admin.isAdmin(user);
         if (adminstatus == false) {
@@ -552,10 +557,57 @@ actor Champs {
         return Iter.toArray(contacts.entries());
     };
 
+    // *********************************************** users functions *************************************************************
+        
+    public shared ({ caller }) func updateUser(u : UsersTypes.User) : async Result.Result<(UsersTypes.User), UsersTypes.UpdateUserError> {
+        /*  if (Principal.isAnonymous(msg.caller)) {
+      return #err(#UserNotAuthenticated); // We require the user to be authenticated,
+    }; */
+        if (u.email == "") { return #err(#EmptyEmail) };
+        if (u.firstName == "") { return #err(#EmptyFirstName) };
+        if (u.lastName == "") { return #err(#EmptyLastName) };
+
+        let user = {
+            id = caller;
+            profileimage = u.profileimage;
+            firstName = u.firstName;
+            lastName = u.lastName;
+            email = u.email;
+            discord = u.discord;
+            twitter = u.twitter;
+            telegram = u.telegram;
+        };
+        users.put(caller, user);
+        return #ok(user);
+    };
+
+    public shared query ({ caller }) func getUserdetailsbycaller() : async Result.Result<UsersTypes.User, UsersTypes.GetUserError> {
+        let user = users.get(caller);
+        return Result.fromOption(user, #UserNotFound);
+    };
+
+    public shared query func getUserdetailsbyid(id : Principal) : async Result.Result<UsersTypes.User, UsersTypes.GetUserError> {
+        let user = users.get(id);
+        return Result.fromOption(user, #UserNotFound);
+    };
+
+    public query func listUsers() : async [(Principal, UsersTypes.User)] {
+        return Iter.toArray(users.entries());
+    };
 
     // ********************************************** Buy and Transfer of tokens *************************************************************
 
-
+    public query func getallstats () : async UsersTypes.Statsdata {
+        let totalusers = users.size();
+        let totalcollections = nftcollectionMap.size();
+        let totalfractionalnfts = fractionalnftmap.size();
+        let stats : UsersTypes.Statsdata = {
+            totalusers = totalusers;
+            totalCollections = totalcollections;
+            totalnfts = totalfractionalnfts;
+        };
+        return stats;
+    };
 
     system func preupgrade() {
         stablenftcollectionMap := Iter.toArray(nftcollectionMap.entries());
