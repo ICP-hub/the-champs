@@ -29,6 +29,7 @@
     "heroicons-react": "^1.4.1",
     "intl-tel-input": "^21.1.4",
     "react-copy-to-clipboard": "^5.1.0",
+    "react-countup": "^6.5.3",
     "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.4.1",
     "react-loader-spinner": "^6.1.6",
