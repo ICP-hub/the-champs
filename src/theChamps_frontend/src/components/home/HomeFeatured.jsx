@@ -24,8 +24,8 @@ const HomeFeatured = () => {
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
       <FancyHeader normal="View" fancy="All our collections" small />
       {isLoading ? (
-        <div className="grid lg:grid-cols-2 xl:grid-cols-2 gap-8 max-lg:grid-cols-2 mt-8 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
-          {Array.from({ length: 2 }, (_, index) => (
+        <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 max-lg:grid-cols-2 mt-8 max-sm:grid-cols-1  ">
+          {Array.from({ length: 3 }, (_, index) => (
             <ProducrCardLgLoader key={index} />
           ))}
         </div>

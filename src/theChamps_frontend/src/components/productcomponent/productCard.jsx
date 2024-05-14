@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { CiHeart } from "react-icons/ci";
 import toast, { Toaster } from "react-hot-toast";
@@ -7,17 +6,22 @@ const notify = () => toast("Here is your toast.");
 import { motion } from "framer-motion";
 import ReadMore from "../common/ReadMore";
 import { useParams } from "react-router";
-import { useCanister } from "@connect2ic/react";
+import { useCanister, useBalance } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { TailSpin } from "react-loader-spinner";
 import image from "../../assets/images/soccer-1.jpeg";
+import { RiErrorWarningLine } from "react-icons/ri";
+import IconWrapper from "../common/IconWrapper";
 
 const ProductCard = ({ product }) => {
   const { id } = useParams();
   const [backend] = useCanister("backend");
+
   const [favourites, setFavourites] = useState();
   const [productInFavourites, setProductInFavourites] = useState(false);
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false); // State to manage modal visibility
+  const [assets] = useBalance();
 
   const addToFavourites = async () => {
     try {
@@ -34,6 +38,9 @@ const ProductCard = ({ product }) => {
     }
   };
 
+  const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
+  console.log(icpWallet?.amount, "balance");
+
   const getFavourites = async () => {
     try {
       const res = await backend.getfavourites();
@@ -43,7 +50,6 @@ const ProductCard = ({ product }) => {
       console.log(error);
     }
   };
-  //console.log(favourites[0][1].toText(), "favourites");
 
   useEffect(() => {
     getFavourites();
@@ -70,6 +76,16 @@ const ProductCard = ({ product }) => {
       console.log(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleBuyNow = () => {
+    // Check if user has sufficient balance
+    if (icpWallet?.amount <= 0) {
+      setShowModal(true);
+    } else {
+      // Proceed with the buy now action
+      notify(); // Or any other action
     }
   };
 
@@ -154,12 +170,30 @@ const ProductCard = ({ product }) => {
           </p>
           <button
             className="mt-4   button   bg-opacity-100 text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
-            onClick={notify}
+            onClick={handleBuyNow} // Call handleBuyNow function when button is clicked
           >
             Buy now
           </button>
         </div>
       </div>
+
+      {/* Modal for insufficient balance */}
+      {showModal && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
+          <div className="bg-white p-4 rounded-lg flex flex-col space-x-5 space-y-8 items-center justify-center">
+            <IconWrapper>
+              <RiErrorWarningLine size={36} />
+            </IconWrapper>
+            <p>You don't have sufficient balance to buy this nft.</p>
+            <button
+              className="mt-2 px-4 py-2 button bg-blue-500 text-white rounded-lg"
+              onClick={() => setShowModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

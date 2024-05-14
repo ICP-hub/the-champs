@@ -17,6 +17,7 @@ import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import ProductCardLoader from "../components/productcomponent/ProductCardLoader";
 import placeholderImg from "../assets/CHAMPS.png";
+import IcpLogo from "../assets/IcpLogo";
 
 const products = [
   {
@@ -187,34 +188,34 @@ const ProductPage = ({ name }) => {
                 </span>
               </h1>
               <div>{collectionDetails.description}</div>
-              <div className="mt-12 md:w-1/2 flex gap-4  flex-wrap ">
+              <div className="mt-12 md:w-2/3 flex gap-4  flex-wrap ">
                 <div className=" w-1/4 text-center text-sm space-y-2">
                   <p>VOLUME</p>
-                  <button className=" w-full  button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
+                  <button className=" w-full  bg-gray-100  bg-opacity-100  text-[#7B7583] py-1  gap-1  rounded-lg   text-md flex items-center justify-center">
+                    <IcpLogo /> 184
+                  </button>
+                </div>
+                <div className=" w-1/4 text-center text-sm space-y-2">
+                  <p>LISTING</p>
+                  <button className=" w-full  bg-gray-100  bg-opacity-100  text-[#7B7583] py-1.5 rounded-lg    text-md flex items-center justify-center">
                     184
                   </button>
                 </div>
                 <div className=" w-1/4 text-center text-sm space-y-2">
-                  <p>LISTINGS</p>
-                  <button className=" w-full  button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
-                    184
-                  </button>
-                </div>
-                <div className=" w-1/4 text-center text-sm space-y-2">
-                  <p>AVG.PRICE</p>
-                  <button className=" w-full  button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
-                    184
+                  <p>FLOOR PRICE</p>
+                  <button className=" w-full   bg-gray-100 bg-opacity-100  text-[#7B7583] py-1 gap-1  rounded-lg    text-md flex items-center justify-center">
+                    <IcpLogo /> 184
                   </button>
                 </div>
                 <div className=" w-1/4 text-center text-sm space-y-2">
                   <p>MINTED</p>
-                  <button className=" w-full button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
+                  <button className=" w-full   py-1.5  bg-gray-100 bg-opacity-100  text-[#7B7583]  rounded-md    text-md flex items-center justify-center">
                     184
                   </button>
                 </div>
                 <div className=" w-1/4 text-center text-sm space-y-2">
-                  <p>ROYAL</p>
-                  <button className=" w-full  button bg-opacity-100 text-white py-1   rounded-md    text-md flex items-center justify-center">
+                  <p>ROYALTIES</p>
+                  <button className=" w-full    py-1.5  bg-gray-100 bg-opacity-100  text-[#7B7583] rounded-md    text-md flex items-center justify-center">
                     184
                   </button>
                 </div>
@@ -230,7 +231,7 @@ const ProductPage = ({ name }) => {
               {name}
             </span>
           </h1>
-          <div className="  search-bar  px-6 lg:px-24 relative z-10">
+          <div className="    px-6 lg:px-24 relative z-10">
             <Searchbar
               grid={grid}
               setGrid={setGrid}

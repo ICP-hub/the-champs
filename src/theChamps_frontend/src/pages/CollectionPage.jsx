@@ -9,6 +9,7 @@ import { useCanister } from "@connect2ic/react";
 import ProducrCardLgLoader from "../components/productcomponent/ProducrCardLgLoader";
 import CollectionApi from "../api/CollectionApi";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router";
 
 const CollectionPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
@@ -22,6 +23,7 @@ const CollectionPage = ({ name }) => {
   const { getAllCollections, isLoading } = CollectionApi();
   const collectionSelector = useSelector((state) => state.collections);
   console.log(collectionSelector);
+  const { id } = useParams();
 
   useEffect(() => {
     getAllCollections();
@@ -63,13 +65,13 @@ const CollectionPage = ({ name }) => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="z-0">
+        <div className="z-0 mt-44">
           <h1 className="text-5xl font-bold font-sans mb-12 gap-1  px-6 lg:px-24 ">
             <span className="relative  text-transparent ml-2 bg-gradient-to-r   from-[#FC001E] to-[#FF7D57] bg-clip-text">
               {name}
             </span>
           </h1>
-          <div className="search-bar px-6 lg:px-24 relative z-10">
+          <div className="  px-6 lg:px-24 relative z-10">
             <Searchbar
               grid={grid}
               setGrid={setGrid}
