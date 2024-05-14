@@ -8,6 +8,8 @@ import { Principal } from "@dfinity/principal";
 import { TailSpin } from "react-loader-spinner";
 import toast from "react-hot-toast";
 import Toggle from "react-toggle";
+// import { useCanister } from "@connect2ic/react";
+// import * as nft from "../../../.dfx/local/canisters/theChamps_nft";
 
 const CreateCollections = () => {
   const navigate = useNavigate();
@@ -15,59 +17,50 @@ const CreateCollections = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [files, setFiles] = useState([]);
   const [selectedRoyalty, setSelectedRoyalty] = useState("");
-  const { principal } = useConnect();
+
   // const userid = Principal.fromText(
   //   "5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe"
   // );
 
+  // console.log("nft is backend", nft);
   const sendback = () => {
     navigate(-1);
   };
+  const { principal, isConnected } = useConnect();
 
   const [backend] = useCanister("backend");
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    record: {
-      logo: {
-        data: "",
-        logo_type: "",
-      },
-      banner: {
-        data: "",
-        logo_type: "",
-      },
-      description: "",
-      name: "",
-      symbol: "",
-      maxLimit: 0,
-      featured: false,
+    logo: {
+      data: "",
+      logo_type: "",
     },
+    banner: {
+      data: "",
+      logo_type: "",
+    },
+    description: "",
+    name: "",
+    symbol: "",
+    maxLimit: "",
+    featured: false,
   });
-
   const handleCheeseChange = () => {
-    setFormData({
-      ...formData,
-      record: {
-        ...formData.record,
-        featured: !formData.record.featured,
-      },
-    });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      featured: !prevFormData.featured,
+    }));
   };
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    const updatedFormData = { ...formData };
-    const parts = name.split(".");
-    if (parts.length === 1) {
-      updatedFormData[name] = value;
-    } else {
-      const [recordField, nestedField] = parts;
-      updatedFormData.record[nestedField] = value;
-    }
-
-    setFormData(updatedFormData);
+    const { name, value, type, checked } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
+
   function imageToFileBlob(imageFile) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -121,22 +114,13 @@ const CreateCollections = () => {
       const logoBlob = await imageToFileBlob(file);
       const fileType = getFileType(file);
 
-      setFormData({
-        ...formData,
-        record: {
-          ...formData.record,
-          logo: {
-            ...formData.record.logo,
-            data: logoBlob,
-            logo_type: fileType,
-          },
-          banner: {
-            ...formData.record.logo,
-            data: logoBlob,
-            logo_type: fileType,
-          },
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        logo: {
+          data: logoBlob,
+          logo_type: fileType,
         },
-      });
+      }));
       console.log("blob is for logo", logoBlob);
     } catch (error) {
       console.error("Error converting image to blob:", error);
@@ -166,13 +150,9 @@ const CreateCollections = () => {
 
       setFormData((prevFormData) => ({
         ...prevFormData,
-        record: {
-          ...prevFormData.record,
-          banner: {
-            ...prevFormData.record.banner,
-            data: bannerBlob,
-            logo_type: fileType,
-          },
+        banner: {
+          data: bannerBlob,
+          logo_type: fileType,
         },
       }));
       console.log("blob is for banner", bannerBlob);
@@ -180,54 +160,45 @@ const CreateCollections = () => {
       console.error("Error converting image to blob:", error);
     }
   };
-  const handleLogoTypeChange = (event) => {
-    const { value } = event.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      record: {
-        ...prevState.record,
-        logo: {
-          ...prevState.record.logo,
-          logo_type: value,
-        },
-      },
-    }));
-  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      setLoading(true);
-      const { record } = formData;
-      const parsedRecord = {
-        ...record,
-        maxLimit: parseInt(record.maxLimit),
-      };
-      if (!parsedRecord.logo.data) {
-        console.error("Logo data is missing.");
-        return;
-      }
-      console.log("data is ", formData);
-      const result = await backend.createcollection(
-        parsedRecord.logo,
-        parsedRecord.banner,
-        parsedRecord.description,
-        parsedRecord.name,
-        parsedRecord.symbol,
-        parsedRecord.maxLimit,
-        parsedRecord.featured
-      );
-      console.log("Collection creation result:", result);
+    if (isConnected) {
+      try {
+        setLoading(true);
 
-      if (result.principal) {
-        console.log("Collection created successfully!", result);
-        toast.success("Collection created successfully!");
-      } else {
-        console.error("Collection creation failed:", result);
+        if (!formData.logo.data || !formData.banner.data) {
+          console.error("Logo or banner data is missing.");
+          return;
+        }
+
+        console.log("formData:", formData);
+        console.log("Submitting collection creation request...");
+        const result = await backend.createcollection(
+          formData.logo,
+          formData.banner,
+          formData.description,
+          formData.name,
+          formData.symbol,
+          parseInt(formData.maxLimit),
+          formData.featured
+        );
+
+        console.log("Collection creation result:", result);
+
+        if (result.principal) {
+          console.log("Collection created successfully!", result);
+          toast.success("Collection created successfully!");
+        }
+      } catch (error) {
+        console.error("Error creating collection:", error);
+        toast.error("Error creating collection. Please try again.");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error creating collection:", error);
-    } finally {
-      setLoading(false);
+    } else {
+      toast.error("Login to Continue...");
+      navigate("/");
     }
   };
 
@@ -268,9 +239,9 @@ const CreateCollections = () => {
             <input
               type="text"
               id="name"
-              name="record.name"
+              name="name"
               className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-              value={formData.record.name}
+              value={formData.name}
               onChange={handleChange}
               required
               disabled={loading}
@@ -283,9 +254,9 @@ const CreateCollections = () => {
             <input
               type="number"
               id="maxLimit"
-              name="record.maxLimit"
+              name="maxLimit"
               className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-              value={formData.record.maxLimit}
+              value={formData.maxLimit}
               onChange={handleChange}
               required
               disabled={loading}
@@ -303,7 +274,7 @@ const CreateCollections = () => {
           <input
             type="text"
             id="description"
-            name="record.description"
+            name="description"
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             value={formData.description}
             onChange={handleChange}
@@ -353,9 +324,9 @@ const CreateCollections = () => {
           <input
             type="text"
             id="symbol"
-            name="record.symbol"
+            name="symbol"
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            value={formData.record.symbol}
+            value={formData.symbol}
             onChange={handleChange}
             required
             disabled={loading}
@@ -368,7 +339,7 @@ const CreateCollections = () => {
           <Toggle
             className=" px-3 py-2  focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             id="featured"
-            defaultChecked={formData.record.featured}
+            defaultChecked={formData.featured}
             onChange={handleCheeseChange}
           />
         </div>

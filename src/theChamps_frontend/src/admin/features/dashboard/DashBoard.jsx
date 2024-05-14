@@ -17,6 +17,9 @@ import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
 import { MdOutlineMenu } from "react-icons/md";
 import Model from "../../pages/Model";
 import { Toaster, toast } from "react-hot-toast";
+import { useCanister } from "@connect2ic/react";
+import { TailSpin } from "react-loader-spinner";
+import CountUp from "react-countup";
 
 const DashBoard = () => {
   function openModal() {
@@ -30,8 +33,105 @@ const DashBoard = () => {
         background: "#FC001E",
       },
     });
+
+  const [backend] = useCanister("backend");
+  const [collections, setCollections] = useState([]);
+  const [NFTs, setNFTs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [totalSale, setTotalSale] = useState(0);
+
+  useEffect(() => {
+    listAll();
+  }, []);
+
+  const listAll = async () => {
+    try {
+      setLoading(true);
+      const item = await backend.getallCollectionids();
+      setCollections(item);
+      const item2 = await backend.getallfractionalnfts();
+      setNFTs(item2);
+      const totalSale = item2.reduce((accumulator, currentItem) => {
+        return accumulator + currentItem[1]?.subTotalAmount;
+      }, 0);
+      setTotalSale(totalSale);
+
+      // const item6 = await backend.listContacts();
+      // setContacts(item6);
+    } catch (error) {
+      console.error("Error listing all:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="flex flex-col md:flex-row items-center justify-between gap-4  flex-wrap  md:px-6 md:p-0 p-2 mt-6">
+      <div className="grid grid-cols-1  md:grid-cols-3 w-full gap-4  ">
+        <div className="  dark:text-[#e0e0e0] text-[#676767] box-s dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl p-4">
+          <div className="">
+            <h1 className="font-medium text-xl  mb-2">Total Collections</h1>
+            {loading ? (
+              <TailSpin
+                height="24"
+                width="24"
+                color="#F87171"
+                ariaLabel="tail-spin-loading"
+                radius="1"
+                visible={true}
+              />
+            ) : (
+              <CountUp
+                delay={2}
+                end={(users && users?.length) || 0}
+                className="font-semibold text-2xl"
+              />
+            )}
+          </div>
+        </div>
+        <div className=" w-full dark:text-[#e0e0e0] text-[#676767] box-s dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl p-4">
+          <div className="">
+            <h1 className="font-medium text-xl  mb-2">Total NFTs</h1>
+            {loading ? (
+              <TailSpin
+                height="24"
+                width="24"
+                color="#F87171"
+                ariaLabel="tail-spin-loading"
+                radius="1"
+                visible={true}
+              />
+            ) : (
+              <CountUp
+                delay={2}
+                end={(users && users?.length) || 0}
+                className="font-semibold text-2xl"
+              />
+            )}
+          </div>
+        </div>
+        <div className=" w-full dark:text-[#e0e0e0] text-[#676767] box-s dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl p-4">
+          <div className="">
+            <h1 className="font-medium text-xl  mb-2">Total Users</h1>
+            {loading ? (
+              <TailSpin
+                height="24"
+                width="24"
+                color="#F87171"
+                ariaLabel="tail-spin-loading"
+                radius="1"
+                visible={true}
+              />
+            ) : (
+              <CountUp
+                delay={2}
+                end={(users && users?.length) || 0}
+                className="font-semibold text-2xl"
+              />
+            )}
+          </div>
+        </div>
+      </div>
       <div className="flex flex-col md:flex-row  w-full justify-between">
         <div className="md:w-4/6 w-full dark:text-[#e0e0e0] text-[#676767] box-s dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl p-4">
           <div className="flex justify-between items-center gap-2 mb-4">
