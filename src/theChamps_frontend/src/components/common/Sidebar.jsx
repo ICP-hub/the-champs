@@ -29,14 +29,15 @@ const Sidebar = () => {
     <>
       <ConnectDialog dark={false} />
       <div className="w-full h-screen p-4">
-        {isConnected ? <IsUserAthenticated /> : <UserNotAuthenticated />}
-        {/* <IsUserAthenticated /> */}
+        {isConnected ? <UserAthenticated /> : <UserNotAuthenticated />}
+        {/* <UserAthenticated /> */}
+        {/* <UserNotAuthenticated /> */}
       </div>
     </>
   );
 };
 
-const IsUserAthenticated = () => {
+const UserAthenticated = () => {
   return (
     <div>
       <h1 className="text-sm md:text-md text-gray-500 text-left min-w-max">

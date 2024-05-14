@@ -12,7 +12,9 @@ import NFTApi from "../../api/NftApi";
 /* ----------------------------------------------------------------------------------------------------- */
 const MyProfileContainerMain = () => {
   const { state } = useLocation();
-  const [activeTabIndex, setActiveTabIndex] = useState(state);
+  const [activeTabIndex, setActiveTabIndex] = useState(
+    state ? state : "Profile"
+  );
   const { getAllCollections, collections } = CollectionApi();
   const { getCollectionWiseNFT, NFTlist, getUserNFT, userNFT } = NFTApi();
 
@@ -20,7 +22,7 @@ const MyProfileContainerMain = () => {
     getAllCollections();
   }, []);
 
-  console.log(collections);
+  // console.log(collections);
   // useEffect(() => {
   //   if (collections && collections.length !== 0) {
   //     collections.map((collection) =>
@@ -49,9 +51,9 @@ const MyProfileContainerMain = () => {
   };
 
   return (
-    <div className="md:px-24 px-6">
+    <div className="md:px-24 p-6">
       <MyProfileA onTabChange={handleTabChange} />
-      <MyProfileB activeTabIndex={activeTabIndex} userNFT={userNFT} />
+      <MyProfileB activeTabIndex={activeTabIndex} />
     </div>
   );
 };
