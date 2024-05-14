@@ -59,7 +59,7 @@
 
 .bg-champs-main {
   background-image: url("./assets/bg.png");
-  background-size: contain;
+  background-size: fit-content;
   background-repeat: no-repeat;
 }
 
@@ -350,7 +350,7 @@
 }
 
 .scrollBox {
-  height: 600px;
+  /* height: 600px; */
   overflow-x: hidden;
   overflow-y: auto;
   text-align: justify;

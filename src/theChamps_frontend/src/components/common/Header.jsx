@@ -36,7 +36,6 @@ const Header = () => {
     }
   };
 
-  console.log("2", document.body.innerWidth);
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -120,12 +119,13 @@ const NavLinkItem = ({ to, text }) => {
 const HeaderIcon = ({ onToggle }) => {
   return (
     <div className="flex items-center">
-      <div
+      <motion.div
+        whileTap={{ scale: 0.9 }}
         className="min-w-max px-4 md:px-7 py-2 rounded-md cursor-pointer button flex"
         onClick={onToggle}
       >
         <FaWallet size={24} color="white" />
-      </div>
+      </motion.div>
       <span className="lg:hidden cursor-pointer  hover:bg-gray-300 rounded-full p-2 transition-all duration-200">
         <HiOutlineBars4 size={32} />
       </span>

@@ -101,7 +101,7 @@ const Searchbar = ({
           <input
             type="text"
             placeholder="Search our collection"
-            className="bg-transparent    outline-none  w-full"
+            className="bg-transparent   outline-none  w-full"
             value={value}
             onChange={handleSearch}
           />
