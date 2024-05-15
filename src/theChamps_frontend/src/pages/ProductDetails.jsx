@@ -13,7 +13,7 @@ import Footer from "../components/common/Footer";
 import MyProfileActivity from "../components/myProfile/MyProfileActivity";
 import { Link, useParams } from "react-router-dom";
 import { Principal } from "@dfinity/principal";
-import { useCanister, useTransfer } from "@connect2ic/react";
+import { useCanister, useTransfer, useConnect } from "@connect2ic/react";
 import { TailSpin } from "react-loader-spinner";
 import placeholderimg from "../assets/CHAMPS.png";
 import { RadioGroup } from "@headlessui/react";
@@ -36,8 +36,9 @@ const usePaymentTransfer = () => {
   // Receiver address will be in .env file : for now dev id
   const [transfer] = useTransfer({
     to: "uktss-xp5gu-uwif5-hfpwu-rujms-foroa-4zdkd-ofspf-uqqre-wxqyj-cqe",
-    amount: Number(20),
+    amount: Number(0),
   });
+
   return transfer;
 };
 
@@ -48,9 +49,7 @@ const ProductDetails = () => {
   const [nft, getNft] = useState("");
   const [confirm, setConfirm] = useState(true);
   let [selected, setSelected] = useState(plans[0]);
-
-  console.log("Second Last Value:", id);
-  console.log("Last Value:", index);
+  const { principal, disconnect } = useConnect();
 
   const paymentAddressForTransfer = usePaymentTransfer(20);
   const getNftDetails = async () => {
@@ -60,9 +59,28 @@ const ProductDetails = () => {
 
       const res = await backend.getcollectionwisefractionalnft(canister_id);
 
-      console.log(res[index]);
-
       getNft(res[index]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const buyTokens = async () => {
+    try {
+      const canister_id = Principal.fromText("dzh22-nuaaa-aaaaa-qaaoa-cai");
+      const canister_id2 = Principal.fromText("d6g4o-amaaa-aaaaa-qaaoq-cai");
+      const user_id = "bkyz2-fmaaa-aaaaa-qaaaq-cai";
+      const user_id2 = Principal.fromText(user_id);
+
+      console.log("hello");
+      const res = await backend.buytokens(
+        user_id2,
+        canister_id2,
+        canister_id,
+        1
+      );
+
+      console.log(res, "hello");
     } catch (error) {
       console.log(error);
     }
@@ -82,6 +100,17 @@ const ProductDetails = () => {
       document.body.style.overflow = "auto";
     };
   }, [open, backend, nft]);
+
+  const handleConfirm = () => {
+    // Call usePaymentTransfer function only if the selected plan is "Plug Wallet"
+    if (selected.value === "plug-wallet") {
+      paymentAddressForTransfer(); // Call the usePaymentTransfer function
+
+      buyTokens();
+    }
+    setOpen(!open);
+    setConfirm(true);
+  };
 
   const handler = () => {
     setOpen(!open);
@@ -175,10 +204,7 @@ const ProductDetails = () => {
                   Cancel
                 </button>
 
-                <button
-                  className="text-[#FC001E] "
-                  onClick={() => setConfirm(false)}
-                >
+                <button className="text-[#FC001E] " onClick={handleConfirm}>
                   Confirm
                 </button>
               </div>
