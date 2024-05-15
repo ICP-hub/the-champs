@@ -41,13 +41,13 @@ actor Champs {
         };
 
     public shared ({ caller = user }) func createcollection( logo: Types.LogoResult, banner: Types.LogoResult, description: Text, name: Text, symbol: Text, maxLimit : Nat16,featured: Bool)  : async (Principal,Principal) {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
-        let adminstatus = await Admin.isAdmin(user);
-        if (adminstatus == false) {
-            throw Error.reject("User is not an admin");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
+        // let adminstatus = await Admin.isAdmin(user);
+        // if (adminstatus == false) {
+        //     throw Error.reject("User is not an admin");
+        // };
         Cycles.add<system>(100_500_000_000);
         Debug.print(debug_show (user));
         let metadata : Types.Dip721NonFungibleToken = {
@@ -100,20 +100,20 @@ actor Champs {
             _decimals: Nat8,
             _totalSupply: Nat,
             _fee : Nat 
-            ) : async Types.FractionalNFTResult {
-            if (Principal.isAnonymous(user)) {
-                throw Error.reject("User is not authenticated");
-            };
-            let adminstatus = await Admin.isAdmin(user);
-            if (adminstatus == false) {
-                throw Error.reject("User is not an admin");
-            };
+            ) : async (Types.FractionalNFTResult,Principal) {
+            // if (Principal.isAnonymous(user)) {
+            //     throw Error.reject("User is not authenticated");
+            // };
+            // let adminstatus = await Admin.isAdmin(user);
+            // if (adminstatus == false) {
+            //     throw Error.reject("User is not an admin");
+            // };
 
             Debug.print(debug_show(Cycles.balance()));
             let collection_canister_id  = nftcollectionMap.get(user);
             switch (collection_canister_id){
                 case (null) {
-                    return #Err(#CollectionNotFound);
+                    return (#Err(#CollectionNotFound),Principal.fromActor(Champs));
                 };
                 case (?id) {  
                     let nftcanisteractor = actor(Principal.toText(nftcanisterid)) : actor {mintDip721 : (to : Principal , metadata : Types.MetadataDesc ) -> async Types.MintReceipt};
@@ -163,15 +163,15 @@ actor Champs {
                         case null {
                             let newfractionalnft = [(nftcanisterid,fractionNftDetails,tokencanister)];
                             fractionalnftmap.put(to, newfractionalnft);
-                            return #Ok(fractionNftDetails);
+                            return (#Ok(fractionNftDetails),tokencanister);
                         };
                         case (?nft){
                             let temp = List.push((nftcanisterid,fractionNftDetails,tokencanister), List.fromArray(nft));
                             fractionalnftmap.put(to, List.toArray(temp));
-                            return #Ok(fractionNftDetails);
+                            return (#Ok(fractionNftDetails),tokencanister);
                         };
                     };
-                    return #Ok(fractionNftDetails);
+                    return (#Ok(fractionNftDetails),tokencanister);
                     }
                     }
                 };
@@ -179,9 +179,9 @@ actor Champs {
         };
 
     public shared ({caller = user}) func buytokens ( tokencanisterid : Principal, from : Principal, to : Principal, amount : Nat) : async Typestoken.TxReceipt {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
 
         let tokencansiter_actor = actor(Principal.toText(tokencanisterid)) : actor {transferFrom : (from : Principal, to : Principal, amount : Nat) -> async Typestoken.TxReceipt};
         let tokens = await tokencansiter_actor.transferFrom(from, to, amount);
@@ -196,9 +196,9 @@ actor Champs {
     };
 
     public shared ({caller = user}) func tranfertokens ( tokencanisterid : Principal, to : Principal, amount : Nat) : async Typestoken.TxReceipt {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
         let tokencansiter_actor = actor(Principal.toText(tokencanisterid)) : actor {transfer : (to : Principal, amount : Nat) -> async Typestoken.TxReceipt};
         let tokens = await tokencansiter_actor.transfer(to, amount);
         switch (tokens){
@@ -212,9 +212,9 @@ actor Champs {
     };
 
     public func getusersnft(user : Principal) : async Types.MetadataResultArray {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
         
         var results = List.nil<Types.MetadataDesc>();
         switch (nftcollectionMap.get(user)) {
@@ -250,9 +250,9 @@ actor Champs {
     };
 
     public shared ({caller = user}) func getalltransactions(tokencanisterid : Principal, page : ?Nat32) : async Root.GetTransactionsResponseBorrowed{
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
         
         let tokencansiter_actor = actor(Principal.toText(tokencanisterid)) : actor {getTransactions : (?Nat32) -> async Root.GetTransactionsResponseBorrowed};
         let transactions = await tokencansiter_actor.getTransactions(page);
@@ -260,9 +260,9 @@ actor Champs {
     };
 
     public func getusersfractionnft(user : Principal) : async [(Principal,Types.FractionalNFT, Principal)] {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
         switch (fractionalnftmap.get(user)) {
             case null {
                 return [];
@@ -274,9 +274,9 @@ actor Champs {
     };
 
     public shared({caller = user}) func getallfractionalnfts () : async [(Principal,Types.FractionalNFT,Principal)] {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
 
         let adminstatus = await Admin.isAdmin(user);
         if (adminstatus == false) {
@@ -293,9 +293,9 @@ actor Champs {
 
 
     public shared ({ caller = user }) func getsingleCollectiondetail(collection_id : Principal) : async Types.Dip721NonFungibleToken {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
 
         let nftcanisteractor = actor (Principal.toText(collection_id)) : actor {
             getDIP721details : () -> async Types.Dip721NonFungibleToken;
@@ -319,16 +319,16 @@ actor Champs {
         return Iter.toArray(nftcollectionMap.entries());
     };
 
-    public shared ({ caller = user }) func getcollectionwisefractionalnft(collectioncanisterid : Principal) : async [Types.FractionalNFT] {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+    public shared ({ caller = user }) func getcollectionwisefractionalnft(collectioncanisterid : Principal) : async [(Types.FractionalNFT,Principal)] {
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
         
-        var collectionnft : List.List<(Types.FractionalNFT)> = List.nil<Types.FractionalNFT>();
+        var collectionnft : List.List<(Types.FractionalNFT,Principal)> = List.nil<(Types.FractionalNFT,Principal)>();
         for (nft in fractionalnftmap.vals()){
             for (fractionalnft in nft.vals()){
                 if (fractionalnft.0 == collectioncanisterid){
-                    collectionnft := List.push(fractionalnft.1, collectionnft);
+                    collectionnft := List.push((fractionalnft.1, fractionalnft.2), collectionnft);
                 };
             };
         };
@@ -337,9 +337,9 @@ actor Champs {
 
     
     public shared ({ caller = user }) func getcollectiondetails(collectioncanisterid : Principal) : async Types.Dip721NonFungibleToken {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
         
         let nftcanisteractor = actor (Principal.toText(collectioncanisterid)) : actor {getDIP721details : () -> async Types.Dip721NonFungibleToken;};
         let collectiondetails = await nftcanisteractor.getDIP721details();
@@ -357,9 +357,9 @@ actor Champs {
     };
 
     public shared ({ caller = user }) func addfavourite(collectioncanisterid : Principal, tokenid : Types.TokenId) : async Text {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
         
         let nftcanisteractor = actor (Principal.toText(collectioncanisterid)) : actor {
             getNFT : (token_id : Types.TokenId) -> async Types.NftResult;
@@ -387,9 +387,9 @@ actor Champs {
     };
 
     public shared ({ caller = user }) func getfavourites() : async [(Types.Nft,Principal)] {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
 
         let userfavourites = favourites.get(user);
         switch (userfavourites) {
@@ -403,9 +403,9 @@ actor Champs {
     };
 
     public shared ({ caller = user }) func removefavourite(collection_id : Principal, tokenid : Types.TokenId) : async Text {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+            // throw Error.reject("User is not authenticated");
+        // };
         
         let userfavourites = favourites.get(user);
         switch (userfavourites) {
@@ -444,9 +444,9 @@ actor Champs {
     };
 
     public shared ({caller = user}) func getFractionalNftDetails (tokenid : Types.TokenId, tokencanister : Principal, collectioncanisterid : Principal) : async Types.FractionalNFT {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
 
         let nftcanisteractor = actor(Principal.toText(collectioncanisterid)) : actor {getNFT : (token_id: Types.TokenId) -> async Types.NftResult;};
         let fractiontokencanisteractor = actor(Principal.toText(tokencanister)) : actor {getMetadata : () -> async Typestoken.Metadata;};
@@ -471,9 +471,9 @@ actor Champs {
     // ******************************************* Contact US CRUD functions *************************************************************
 
     public shared ({caller = user}) func createContact(co : Types.UserContact) : async Result.Result<(Types.Contact), Types.CreateContactError> {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
 
         if (co.name == "") { return #err(#EmptyName) };
         if (co.email == "") { return #err(#EmptyEmail) };
