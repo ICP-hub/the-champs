@@ -45,19 +45,10 @@ const appRoutes = createBrowserRouter([
   { path: "/privacy-policy", element: <PrivacyPolicy /> },
   { path: "/Terms-and-services", element: <TermsAndService /> },
   { path: "/how-it-works", element: <HowItWorks /> },
+
   {
     path: "/admin",
     element: (
-      <AdminDashboard />
-      // <MainAdmin>
-      //   <DashBoard />
-      // </MainAdmin>
-    ),
-  },
-  {
-    path: "/admin2",
-    element: (
-      // <AdminDashboard />
       <MainAdmin>
         <DashBoard />
       </MainAdmin>
