@@ -5,9 +5,13 @@ import profile from "../../assets/user.jpg";
 import { IoCopyOutline } from "react-icons/io5";
 import { FiSearch } from "react-icons/fi";
 import { LuFilter } from "react-icons/lu";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useCanister } from "@connect2ic/react";
 const UserDashboard = () => {
   const [copied, setCopied] = useState(false);
+  const param = useParams();
+  const [backend] = useCanister("backend");
+
   const textToCopy =
     "5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe";
   const copyToClipboard = () => {
@@ -18,6 +22,65 @@ const UserDashboard = () => {
         setTimeout(() => setCopied(false), 1500);
       })
       .catch((err) => console.error("Failed to copy:", err));
+  };
+  const [user, setUser] = useState(null);
+  const [formData, setFormData] = useState({
+    firstname: "",
+    email: "",
+    lastname: "",
+
+    twitter: "",
+    discord: "",
+    profileimage: "",
+    telegram: "",
+  });
+  const getUserdetail = async () => {
+    try {
+      const data = await backend.getUserdetailsbyid(param.slug);
+      if (data.ok) {
+        setFormData({
+          firstname: data.ok.firstname,
+          email: data.ok.email,
+          twitter: data.ok.twitter,
+          discord: data.ok.discord,
+          profileimage: data.ok.profileimage,
+          telegram: data.ok.telegram,
+        });
+        setUser(data.ok);
+        console.log(data.ok);
+      }
+      setIsLoading(false);
+      console.log("data", data);
+    } catch (error) {
+      console.log("reeegdf", error);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getUserdetail();
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [backend]);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      setLoading(true);
+    } catch (error) {
+      console.error("Error creating collection:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleDelete = async (event) => {
+    event.preventDefault();
+    try {
+      setLoading(true);
+    } catch (error) {
+      console.error("Error creating collection:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const sampleData = [

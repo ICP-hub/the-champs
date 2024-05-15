@@ -4,10 +4,6 @@
       "main": "src/theChamps_backend/main.mo",
       "type": "motoko"
     },
-    "theChamps_nft": {
-      "main": "src/DIP721-NFT/Nft.mo",
-      "type": "motoko"
-    },
     "theChamps_frontend": {
       "dependencies": [
         "theChamps_backend"

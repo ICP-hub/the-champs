@@ -343,7 +343,7 @@ const DashBoard = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col md:flex-row w-full">
+      {/* <div className="flex flex-col md:flex-row w-full">
         <div className="md:w-2/5 w-full dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] px-4 py-4 rounded-2xl my-4">
           <h4 className="uppercase text-xl font-semibold  py-1">
             Recent transition
@@ -457,7 +457,7 @@ const DashBoard = () => {
             <span className="">Sat</span>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

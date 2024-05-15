@@ -1,57 +1,79 @@
-import React from "react";
-import Table, { DetailButton } from "../utils/Table";
+import React, { useEffect, useMemo, useState } from "react";
+import Table, { DetailButton, DetailButton2 } from "../utils/Table";
 import { Link } from "react-router-dom";
 import "regenerator-runtime/runtime";
+import { useCanister } from "@connect2ic/react";
+import { Grid } from "react-loader-spinner";
+import { Principal } from "@dfinity/principal";
 
 const User = () => {
+  const [backend] = useCanister("backend");
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [sampleData, setSampleData] = useState([]);
+
+  const getlistUsers = async () => {
+    try {
+      const data = await backend.listUsers();
+      setSampleData(data);
+      setIsLoading(false);
+      console.log("data", data);
+    } catch (error) {
+      console.log("reeegdf");
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getlistUsers();
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [backend]);
   const columns = React.useMemo(
     () => [
       {
         Header: "Name",
-        accessor: "title",
+        accessor: "firstName",
       },
       {
-        Header: "Type",
-        accessor: "category",
+        Header: "email",
+        accessor: "email",
       },
       {
-        Header: "Total nft",
-        accessor: "totalnft",
+        Header: "discord",
+        accessor: "discord",
       },
       {
         Header: "Detail",
-        accessor: "slug",
-        Cell: ({ value }) => <DetailButton value={value} />,
+        accessor: "id",
+        Cell: ({ value }) => <DetailButton2 value={value} />,
       },
     ],
     []
   );
 
-  const sampleData = [
-    {
-      title: "rutba",
-      category: "creator",
-      status: "Active",
-      totalnft: "8",
-      inventory: "sgfsgjfdg34fsdgfdgdsd",
-      image:
-        "https://img.freepik.com/free-vector/hand-drawn-nft-style-ape-illustration_23-2149622021.jpg?w=740&t=st=1713351871~exp=1713352471~hmac=ed679c41842035c86855182a5cdfd9b4317fac54471101d127d87f9cdd467412", // Sample NFT image link
-      slug: "product-1",
-    },
-    {
-      title: "Ritesh",
-      category: "minner",
-      status: "Paused",
-      totalnft: "6",
-      inventory: "54gfg54fdgfd5g4fd5g",
-      image:
-        "https://img.freepik.com/free-vector/hand-drawn-virtual-sports-illustration_23-2150581118.jpg?t=st=1713351989~exp=1713355589~hmac=121e9e0f3087dd1846af2c6832cffff96815d1016baa128800f8ef2bd443f93e&w=740", // Sample NFT image link
-      slug: "product-2",
-    },
-  ];
+  const data = useMemo(() => sampleData, [sampleData]);
+  // Get data from the second element of each sub-array
+  const extractedData = data.map(([key, data]) => data);
+  console.log(extractedData);
   return (
     <div className=" mx-4 md:py-8 md:px-6 p-2 flex h-screen flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl  mt-6">
-      <Table columns={columns} data={sampleData} />
+      {isLoading ? (
+        <div className="flex justify-center h-80 items-center">
+          <Grid
+            visible={true}
+            height="150"
+            width="150"
+            color="#EF4444"
+            ariaLabel="grid-loading"
+            radius="12.5"
+            wrapperStyle={{}}
+            wrapperClass="grid-wrapper"
+          />
+        </div>
+      ) : (
+        <Table columns={columns} data={extractedData} />
+      )}
     </div>
   );
 };

@@ -157,7 +157,11 @@ const CreateCollections = () => {
       }));
       console.log("blob is for banner", bannerBlob);
     } catch (error) {
+      // Handle potential errors during file processing here (optional)
       console.error("Error converting image to blob:", error);
+      toast.error(
+        "An error occurred while processing the image. Please try again."
+      );
     }
   };
 
@@ -352,7 +356,7 @@ const CreateCollections = () => {
               loading && "opacity-50"
             } `}
           >
-            cancle
+            cancel
           </button>
           <button
             disabled={loading}

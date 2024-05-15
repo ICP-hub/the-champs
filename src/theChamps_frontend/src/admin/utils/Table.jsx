@@ -18,6 +18,7 @@ import {
 } from "react-icons/hi";
 import { BsSortNumericDown } from "react-icons/bs";
 import { IoIosSearch } from "react-icons/io";
+import { Principal } from "@dfinity/principal";
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -55,6 +56,17 @@ export const DetailButton = ({ value }) => {
   return (
     <Link
       to={value}
+      className="bg-red-500 text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium"
+    >
+      Detail
+    </Link>
+  );
+};
+export const DetailButton2 = ({ value }) => {
+  const principal = value.toText();
+  return (
+    <Link
+      to={principal}
       className="bg-red-500 text-md tracking-wide py-2 px-4 rounded-xl text-white font-medium"
     >
       Detail
