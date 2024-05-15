@@ -28,11 +28,16 @@ const MyProfileB = ({ activeTabIndex }) => {
   }
 
   if (activeTabIndex === "My NFTs") {
+    const filterOptions = [
+      { value: "all", label: "all" },
+      { value: "listed", label: "listed(selling)" },
+      { value: "unlisted", label: "unlisted(purchased)" },
+    ];
     return (
       <div className="flex flex-col">
         <div className="flex w-full items-center pb-4">
           <ProfileSearch />
-          <ProfileFilter />
+          <ProfileFilter filterOptions={filterOptions} />
         </div>
         <MyProfileNFT />
       </div>
@@ -44,7 +49,7 @@ const MyProfileB = ({ activeTabIndex }) => {
       <div className="flex flex-col">
         <div className="flex w-full items-center pb-4">
           <ProfileSearch />
-          <ProfileFilter />
+          {/* <ProfileFilter /> */}
         </div>
         <MyFav />
       </div>
@@ -52,11 +57,16 @@ const MyProfileB = ({ activeTabIndex }) => {
   }
 
   if (activeTabIndex === "Activity") {
+    const filterOptions = [
+      { value: "all", label: "all" },
+      { value: "purchase", label: "purchase" },
+      { value: "sales", label: "sales" },
+    ];
     return (
       <div className="flex flex-col">
         <div className="flex w-full items-center pb-4">
           <ProfileSearch />
-          <ProfileFilter />
+          <ProfileFilter filterOptions={filterOptions} />
         </div>
         <MyProfileActivity />
       </div>

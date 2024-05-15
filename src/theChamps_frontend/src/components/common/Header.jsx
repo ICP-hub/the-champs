@@ -29,10 +29,10 @@ const Header = () => {
     setIsSidenavOpen((prev) => !prev);
     if (isSidenavOpen) {
       controls.start({ x: 288, transition: { duration: 0.4 } });
-      document.body.style.overflow = "auto";
+      document.documentElement.style.overflowY = "auto";
     } else {
       controls.start({ x: 0, transition: { duration: 0.4 }, opacity: 1 });
-      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
     }
   };
 

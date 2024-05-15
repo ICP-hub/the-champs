@@ -1,10 +1,12 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiFilter } from "react-icons/fi";
-import { motion, useAnimation } from "framer-motion";
-const ProfileFilter = () => {
-  const controls = useAnimation();
+
+const ProfileFilter = ({ filterOptions }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const openMenu = () => {
-    controls.start({ x: -100 });
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
@@ -16,20 +18,47 @@ const ProfileFilter = () => {
       >
         <FiFilter size={28} color="white" />
       </motion.div>
-      <motion.div animate={controls} className="absolute bg-white p-4">
-        filter
-      </motion.div>
-      {/* <motion.div whileTap={{ scale: 0.9 }} className="cursor-pointer">
-        <div className="flex items-center border bg-white relative md:rounded-md border-gray-400 rounded-full cursor-pointer -z-10">
-          <span className="relative p-[6px] rounded-l-md">
-            <TfiFilter size={24} color="white" />
-            <span className="absolute top-0 bottom-0 right-0 left-0 max-md:rounded-md bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] md:rounded-l-md -z-10"></span>
-          </span>
-          <div className="rounded-r-md hidden px-2 md:flex h-full">
-            <span className="text-sm font-medium italic">Filter</span>
-          </div>
+      <AnimatePresence>
+        {isMenuOpen ? (
+          <motion.div
+            initial={{ y: -100, opacity: 0 }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              transition: { ease: "anticipate", duration: 0.2 },
+            }}
+            exit={{
+              y: -100,
+              opacity: 0,
+              transition: { ease: "anticipate", duration: 0.2 },
+            }}
+            className="absolute right-12"
+          >
+            <FilterCard filterOptions={filterOptions} />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const FilterCard = ({ filterOptions }) => {
+  return (
+    <div className="filter-card flex flex-col bg-white">
+      <span className="text-sm text-gray-400 px-4 p-2">Filter</span>
+      {filterOptions.map((option) => (
+        <div className="flex items-center" key={option.value}>
+          <label className="flex items-center cursor-pointer hover:bg-gray-200 text-sm font-medium min-w-max px-6 py-3">
+            <input
+              type="radio"
+              name="filter"
+              value={option.value}
+              style={{ marginTop: "2px" }}
+            />
+            <span className="ml-2">{option.label}</span>
+          </label>
         </div>
-      </motion.div> */}
+      ))}
     </div>
   );
 };
