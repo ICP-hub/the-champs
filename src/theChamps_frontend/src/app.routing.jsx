@@ -25,7 +25,6 @@ import SingleNFT from "./admin/features/NFT/SingleNFT";
 import User from "./admin/pages/User";
 import Contact from "./admin/features/contact/contact";
 import ContactDetail from "./admin/features/contact/ContactDetail";
-import AdminDashboard from "./Dashboard/admin-dashboard";
 /**** Create Routes *****/
 const appRoutes = createBrowserRouter([
   { path: "/", element: <HomePage /> },

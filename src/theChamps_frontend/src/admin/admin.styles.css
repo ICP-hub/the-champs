@@ -1,0 +1,125 @@
+.layout {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+}
+
+.layout > * {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.navigation {
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  top: 0;
+  width: 280px;
+  min-width: 280px;
+  max-width: 280px;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  z-index: 200;
+}
+
+/* Animations */
+.navigation.animations-enabled {
+  transition-duration: 400ms;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-property: visibility, margin-left, margin-right, transform, width,
+    max-width, min-width;
+}
+
+/* Wrapper */
+.navigation .navigation-wrapper,
+.navigation.animations-enabled .navigation-wrapper {
+  transition-duration: 400ms;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-property: width, max-width, min-width;
+}
+
+/* Over mode */
+.navigation.mode-over {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+}
+
+.navigation.mode-side {
+  margin-left: -280px;
+}
+
+/* Over mode */
+.navigation.mode-over.position-left {
+  left: 0;
+  transform: translate3d(-100%, 0, 0);
+}
+
+/* Opened state */
+.navigation.opened {
+  /* Side mode */
+  .navigation.mode-side {
+    margin-left: 0;
+  }
+}
+
+/* Over mode */
+.navigation.mode-over.position-left.opened {
+  transform: translate3d(0, 0, 0);
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  width: 100%;
+  justify-content: space-between;
+  z-index: 50;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.overlay-display {
+  position: fixed; /* Change to fixed to cover the entire viewport */
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 170; /* Ensure this is higher than other elements */
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.themeSettings {
+  top: 275px;
+  width: auto;
+  position: fixed;
+  padding: 8px;
+}
+
+.navigation-items {
+  padding: 12px;
+  border-radius: 6px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.navigation-items:hover {
+  background: #525270;
+}
+.navigation-items:focus {
+  background: linear-gradient(60.27deg, #fc001e 0%, #ff7d57 100%);
+}
+
+.active {
+  background: linear-gradient(60.27deg, #fc001e 0%, #ff7d57 100%);
+}

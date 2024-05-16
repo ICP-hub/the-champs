@@ -121,7 +121,7 @@ const CreateCollections = () => {
           logo_type: fileType,
         },
       }));
-      console.log("blob is for logo", logoBlob);
+      // console.log("blob is for logo", logoBlob);
     } catch (error) {
       console.error("Error converting image to blob:", error);
     }
@@ -155,7 +155,7 @@ const CreateCollections = () => {
           logo_type: fileType,
         },
       }));
-      console.log("blob is for banner", bannerBlob);
+      // console.log("blob is for banner", bannerBlob);
     } catch (error) {
       // Handle potential errors during file processing here (optional)
       console.error("Error converting image to blob:", error);
@@ -176,11 +176,11 @@ const CreateCollections = () => {
           return;
         }
 
-        console.log("formData:", formData);
+        // console.log("formData:", formData);
         console.log("Submitting collection creation request...");
         const result = await backend.createcollection(
-          formData.logo,
-          formData.banner,
+          { data: formData.logo.data, logo_type: formData.logo.logo_type },
+          { data: formData.banner.data, logo_type: formData.banner.logo_type },
           formData.description,
           formData.name,
           formData.symbol,
@@ -200,9 +200,6 @@ const CreateCollections = () => {
       } finally {
         setLoading(false);
       }
-    } else {
-      toast.error("Login to Continue...");
-      navigate("/");
     }
   };
 
