@@ -7,6 +7,7 @@ import { FiSearch } from "react-icons/fi";
 import { LuFilter } from "react-icons/lu";
 import { Link, useParams } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
+import { Principal } from "@dfinity/principal";
 const UserDashboard = () => {
   const [copied, setCopied] = useState(false);
   const param = useParams();
@@ -34,6 +35,7 @@ const UserDashboard = () => {
     profileimage: "",
     telegram: "",
   });
+
   const getUserdetail = async () => {
     try {
       const data = await backend.getUserdetailsbyid(param.slug);

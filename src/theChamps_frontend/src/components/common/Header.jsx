@@ -110,7 +110,7 @@ const HeaderContent = () => {
 
 const NavLinkItem = ({ to, text }) => {
   return (
-    <Link to={to} className={`px-6 py-3 font-bold navigation rounded-lg`}>
+    <Link to={to} className={`px-6 py-3 font-bold home-navigation rounded-lg`}>
       {text}
     </Link>
   );

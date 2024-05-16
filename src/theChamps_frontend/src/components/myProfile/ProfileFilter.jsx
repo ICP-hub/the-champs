@@ -48,7 +48,7 @@ const FilterCard = ({ filterOptions }) => {
       <span className="text-sm text-gray-400 px-4 p-2">Filter</span>
       {filterOptions.map((option) => (
         <div className="flex items-center" key={option.value}>
-          <label className="flex items-center cursor-pointer hover:bg-gray-200 text-sm font-medium min-w-max px-6 py-3">
+          <label className="flex items-center cursor-pointer hover:bg-gray-200 text-sm font-medium w-full min-w-max px-6 py-3">
             <input
               type="radio"
               name="filter"

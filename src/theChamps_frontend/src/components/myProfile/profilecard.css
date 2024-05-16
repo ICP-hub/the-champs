@@ -3,7 +3,7 @@
 .card img {
   border-radius: 50%;
 }
-body,
+
 .card,
 .stats {
   display: flex;

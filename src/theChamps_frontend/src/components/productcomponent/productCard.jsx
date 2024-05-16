@@ -106,7 +106,7 @@ const ProductCard = ({ product }) => {
       <div className="p-2 mx-2">
         <div className="flex justify-between font-bold items-center">
           <h2 className="text-lg font-semibold mb-2">
-            {product.fractional_token.name}
+            {product[0]?.fractional_token?.name}
           </h2>
           {loading ? (
             <button>
@@ -160,7 +160,7 @@ const ProductCard = ({ product }) => {
         </div>
         <p className="text-gray-500 text-sm">
           <ReadMore
-            text={product.fractional_token.owner.toText()}
+            text={product[0]?.fractional_token?.owner?.toText()}
             maxLength={20}
           />
         </p>

@@ -13,7 +13,7 @@ import Footer from "../components/common/Footer";
 import MyProfileActivity from "../components/myProfile/MyProfileActivity";
 import { Link, useParams } from "react-router-dom";
 import { Principal } from "@dfinity/principal";
-import { useCanister, useTransfer } from "@connect2ic/react";
+import { useCanister, useTransfer, useConnect } from "@connect2ic/react";
 import { TailSpin } from "react-loader-spinner";
 import placeholderimg from "../assets/CHAMPS.png";
 import { RadioGroup } from "@headlessui/react";
@@ -36,8 +36,9 @@ const usePaymentTransfer = () => {
   // Receiver address will be in .env file : for now dev id
   const [transfer] = useTransfer({
     to: "uktss-xp5gu-uwif5-hfpwu-rujms-foroa-4zdkd-ofspf-uqqre-wxqyj-cqe",
-    amount: Number(20),
+    amount: Number(0),
   });
+
   return transfer;
 };
 
@@ -48,9 +49,8 @@ const ProductDetails = () => {
   const [nft, getNft] = useState("");
   const [confirm, setConfirm] = useState(true);
   let [selected, setSelected] = useState(plans[0]);
-
-  console.log("Second Last Value:", id);
-  console.log("Last Value:", index);
+  const { principal, disconnect } = useConnect();
+  const [loading, setLoading] = useState(false);
 
   const paymentAddressForTransfer = usePaymentTransfer(20);
   const getNftDetails = async () => {
@@ -60,11 +60,36 @@ const ProductDetails = () => {
 
       const res = await backend.getcollectionwisefractionalnft(canister_id);
 
-      console.log(res[index]);
-
       getNft(res[index]);
+      console.log(res[index]);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const buyTokens = async () => {
+    try {
+      setLoading(true);
+      const canister_id = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
+      const canister_id2 = Principal.fromText("bd3sg-teaaa-aaaaa-qaaba-cai");
+
+      const user_id2 = Principal.fromText("2vxsx-fae");
+      console.log(canister_id, "principle 1");
+      console.log(canister_id2, "principle 2");
+      console.log(user_id2, "principle 3");
+
+      const res = await backend.buytokens(
+        nft[1],
+        nft[0]?.fractional_token?.owner,
+        user_id2,
+        1
+      );
+
+      console.log(res, "hello");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,6 +108,17 @@ const ProductDetails = () => {
     };
   }, [open, backend, nft]);
 
+  const handleConfirm = () => {
+    // Call usePaymentTransfer function only if the selected plan is "Plug Wallet"
+    if (selected.value === "plug-wallet") {
+      paymentAddressForTransfer(); // Call the usePaymentTransfer function
+
+      buyTokens();
+    }
+    setOpen(!open);
+    setConfirm(true);
+  };
+
   const handler = () => {
     setOpen(!open);
     setConfirm(true);
@@ -90,6 +126,11 @@ const ProductDetails = () => {
   return (
     <>
       <Header />
+      {loading && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
+          <TailSpin color="#FC001E" height={80} width={80} />
+        </div>
+      )}
       <div className="md:mt-44 mt-44 left-0 right-0 gap-8 px-6 lg:px-24">
         {open && (
           <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
@@ -175,10 +216,7 @@ const ProductDetails = () => {
                   Cancel
                 </button>
 
-                <button
-                  className="text-[#FC001E] "
-                  onClick={() => setConfirm(false)}
-                >
+                <button className="text-[#FC001E] " onClick={handleConfirm}>
                   Confirm
                 </button>
               </div>
@@ -201,14 +239,14 @@ const ProductDetails = () => {
               <div className="">
                 <h1 className="text-3xl font-bold font-sans   ">
                   <span className=" text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
-                    {nft?.fractional_token?.name}
+                    {nft[0]?.fractional_token?.name}
                   </span>
                 </h1>
                 <p
                   className="
             text-gray-500 text-sm mt-4"
                 >
-                  By {nft?.fractional_token?.owner.toText()}
+                  By {nft[0]?.fractional_token?.owner.toText()}
                 </p>
               </div>
               <div className="text-center ">

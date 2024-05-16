@@ -1,0 +1,73 @@
+/* Themes */
+body.light,
+body .light {
+  --base: #000000;
+  --default: #0f172a;
+  --divider: #e2e8f0;
+  --dividers: #e2e8f0;
+  --disabled: #94a3b8;
+  --disabled-button: #94a3b8;
+  --disabled-text: #94a3b8;
+  --elevation: #000000;
+  --hint-text: #94a3b8;
+  --text-secondary: #64748b;
+  --icon: #64748b;
+  --icons: #64748b;
+  --text: #e1e1e1;
+  --slider-min: #1e293b;
+  --slider-off: #cbd5e1;
+  --slider-off-active: #94A3B;
+  --status-bar: #cbd5e1;
+  --app-bar: #ffffff;
+  --background: #f1f5f9;
+  --hover: rgba(148, 163, 184, 0.12);
+  --card: #ffffff;
+  --dialog: #ffffff;
+  --disabled-button: rgba(148, 163, 184, 0.38);
+  --raised-button: #ffffff;
+  --focused-button: #64748b;
+  --selected-button: #e2e8f0;
+  --selected-disabled-button: #e2e8f0;
+  --disabled-button-toggle: #cbd5e1;
+  --unselected-chip: #e2e8f0;
+  --disabled-list-option: #cbd5e1;
+  --tooltip: #1e293b;
+  --text-all: #ffffff;
+}
+
+body.dark,
+body .dark {
+  --base: #ffffff;
+  --default: #0f172a;
+  --divider: rgba(241, 245, 249, 0.12);
+  --dividers: rgba(241, 245, 249, 0.12);
+  --disabled: #475569;
+  --disabled-button: #1e293b;
+  --disabled-text: #475569;
+  --elevation: #000000;
+  --hint-text: #64748b;
+  --text-secondary: #94a3b8;
+  --icon: #f1f5f9;
+  --icons: #f1f5f9;
+  --mat-icon: #94a3b8;
+  --text: #ffffff;
+  --slider-min: #ffffff;
+  --slider-off: #64748b;
+  --slider-off-active: #94a3b8;
+  --status-bar: #0f172a;
+  --app-bar: #0f172a;
+  --background: #383854;
+  --hover: rgba(255, 255, 255, 0.05);
+  --card: #1e293b;
+  --dialog: #1e293b;
+  --disabled-button: rgba(15, 23, 42, 0.38);
+  --raised-button: #0f172a;
+  --focused-button: #e2e8f0;
+  --selected-button: rgba(255, 255, 255, 0.05);
+  --selected-disabled-button: #1e293b;
+  --disabled-button-toggle: #0f172a;
+  --unselected-chip: #475569;
+  --disabled-list-option: #e2e8f0;
+  --tooltip: #64748b;
+  --text-all: #ffffff;
+}

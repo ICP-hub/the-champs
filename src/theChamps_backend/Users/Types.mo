@@ -1,13 +1,12 @@
 module {
     public type User = {
-        id : Principal;
         profileimage : Text;
         firstName : Text;
         lastName : Text;
         email : Text;
-        twitter : ?Text;
-        discord : ?Text;
-        telegram : ?Text;
+        twitter : Text;
+        discord : Text;
+        telegram : Text;
     };
 
     public type UpdateUserError = {
@@ -28,7 +27,7 @@ module {
         #EmptyFirstName;
         #EmptyLastName;
     };
-    
+
     public type Statsdata = {
         totalusers : Int;
         totalCollections : Int;
@@ -40,3 +39,5 @@ module {
     };
 
 }
+
+

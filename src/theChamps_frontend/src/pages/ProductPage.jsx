@@ -137,6 +137,7 @@ const ProductPage = ({ name }) => {
         console.log("hello");
         setCollection(res);
         setloading(false);
+        console.log(res, "fractional nft");
 
         setSearchResults(res);
         console.log(res);

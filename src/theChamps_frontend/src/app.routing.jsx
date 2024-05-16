@@ -44,6 +44,7 @@ const appRoutes = createBrowserRouter([
   { path: "/privacy-policy", element: <PrivacyPolicy /> },
   { path: "/Terms-and-services", element: <TermsAndService /> },
   { path: "/how-it-works", element: <HowItWorks /> },
+
   {
     path: "/admin",
     element: (
