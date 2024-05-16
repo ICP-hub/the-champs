@@ -8,6 +8,7 @@ import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import TrieMap "mo:base/TrieMap";
+import Blob "mo:base/Blob";
 import Source "mo:uuid/async/SourceV4";
 import UUID "mo:uuid/UUID";
 import DIP20ActorClass "../DIP-20/token";
@@ -17,12 +18,22 @@ import Types "../DIP721-NFT/Types";
 import Root "../DIP-20/cap/Root";
 import Admin "./Admin/admin";
 import UsersTypes "./Users/Types";
+import Api "./Users/Api";
+import ICRC "./ICRC";
+import Float "mo:base/Float";
+import Nat64 "mo:base/Nat64";
+import Int64 "mo:base/Int64";
+
 actor Champs {
-    // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
-    let g = Source.Source();
-    // stores collection canister id of the user
-    private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal, Principal.hash);
-    private var stablenftcollectionMap : [(Principal, [Principal])] = [];
+
+        // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
+        let g = Source.Source();
+        stable let icpLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+        stable let ckbtcLedger = "r7inp-6aaaa-aaaaa-aaabq-cai";
+        // stores collection canister id of the user
+        private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal,Principal.hash);
+        private var stablenftcollectionMap :[(Principal, [Principal])] = [];
+
 
     private var favourites = TrieMap.TrieMap<Principal, [(Types.Nft, Principal)]>(Principal.equal, Principal.hash);
     private var stablefavourites : [(Principal, [(Types.Nft, Principal)])] = [];
@@ -40,7 +51,15 @@ actor Champs {
         return Principal.fromActor(Champs);
     };
 
-    public shared ({ caller = user }) func createcollection(logo : Types.LogoResult, banner : Types.LogoResult, description : Text, name : Text, symbol : Text, maxLimit : Nat16, featured : Bool) : async (Principal, Principal) {
+
+        public func checkisadmin (caller : Principal) : async Bool {
+            let adminstatus = await Admin.isAdmin(caller);
+            return adminstatus;
+        };
+
+
+
+        public shared ({ caller = user }) func createcollection( logo: Types.LogoResult, banner: Types.LogoResult, description: Text, name: Text, symbol: Text, maxLimit : Nat16,featured: Bool)  : async (Principal,Principal) {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
@@ -48,7 +67,7 @@ actor Champs {
         // if (adminstatus == false) {
         //     throw Error.reject("User is not an admin");
         // };
-        Cycles.add<system>(100_500_000_000);
+        Cycles.add<system>(500_500_000_000);
         Debug.print(debug_show (user));
         let metadata : Types.Dip721NonFungibleToken = {
             logo = logo;
@@ -58,7 +77,7 @@ actor Champs {
             name = name;
             symbol = symbol;
             maxLimit = maxLimit;
-            featured = featured;
+            featured = featured;   
         };
         let nftcollection = await NFTActorClass.Dip721NFT(Principal.fromActor(Champs), metadata);
         ignore await nftcollection.wallet_receive();
@@ -83,51 +102,46 @@ actor Champs {
         };
     };
 
-    // public shared ({caller = user}) func TransferDIP20tokens (to : Principal, amount : Nat) : async Text {
-    //     let fractiontokens = await DIP20ActorClass.Token();
-    //     let amountAccepted = await fractiontokens.wallet_receive();
-    //     let transfer = await fractiontokens.transfer(to, amount);
-    //     return "Tokens transferred";
-    // };
 
-    public shared ({ caller = user }) func FractionalizeNFt(
-        nftcanisterid : Principal,
-        to : Principal,
-        metadata : Types.MetadataDesc,
-        _logo : Text,
-        _name : Text,
-        _symbol : Text,
-        _decimals : Nat8,
-        _totalSupply : Nat,
-        _fee : Nat,
-    ) : async (Types.FractionalNFTResult, Principal) {
-        // if (Principal.isAnonymous(user)) {
-        //     throw Error.reject("User is not authenticated");
-        // };
-        // let adminstatus = await Admin.isAdmin(user);
-        // if (adminstatus == false) {
-        //     throw Error.reject("User is not an admin");
-        // };
 
-        Debug.print(debug_show (Cycles.balance()));
-        let collection_canister_id = nftcollectionMap.get(user);
-        switch (collection_canister_id) {
-            case (null) {
-                return (#Err(#CollectionNotFound), Principal.fromActor(Champs));
-            };
-            case (?id) {
-                let nftcanisteractor = actor (Principal.toText(nftcanisterid)) : actor {
-                    mintDip721 : (to : Principal, metadata : Types.MetadataDesc) -> async Types.MintReceipt;
+        public shared ({caller = user}) func FractionalizeNFt(
+            nftcanisterid : Principal,
+            to : Principal,
+            metadata : Types.MetadataDesc,
+            priceinusd : Float,
+            _logo : Text,
+            _name: Text,
+            _symbol: Text,
+            _decimals: Nat8,
+            _totalSupply: Nat,
+            _fee : Nat 
+            ) : async (Types.FractionalNFTResult,Principal) {
+            // if (Principal.isAnonymous(user)) {
+            //     throw Error.reject("User is not authenticated");
+            // };
+            // let adminstatus = await Admin.isAdmin(user);
+            // if (adminstatus == false) {
+            //     throw Error.reject("User is not an admin");
+            // };
+
+            Debug.print(debug_show(Cycles.balance()));
+            let collection_canister_id  = nftcollectionMap.get(user);
+            switch (collection_canister_id){
+                case (null) {
+                    return (#Err(#CollectionNotFound),Principal.fromActor(Champs));
                 };
-                let mintednft = await nftcanisteractor.mintDip721(to, metadata);
-                let champs = await idQuick();
-                switch (mintednft) {
-                    case (#Err(index)) {
-                        throw Error.reject(debug_show (index));
-                    };
-                    case (#Ok(newnft)) {
-                        Debug.print(debug_show (newnft));
-                        Cycles.add<system>(100_500_000_000);
+                case (?id) {  
+                    let nftcanisteractor = actor(Principal.toText(nftcanisterid)) : actor {mintDip721 : (to : Principal , metadata : Types.MetadataDesc , priceinusd : Float ) -> async Types.MintReceipt};
+                    let mintednft = await nftcanisteractor.mintDip721(to, metadata, priceinusd);
+                    let champs = await idQuick();
+                    switch(mintednft){
+                        case (#Err(index)) {
+                            throw Error.reject(debug_show(index));
+                        };
+                        case (#Ok(newnft)){
+                        Debug.print(debug_show(newnft));
+                        Cycles.add<system>(500_000_000_000);
+
                         let fractiontokens = await DIP20ActorClass.Token(
                             _logo,
                             _name,
@@ -154,12 +168,19 @@ actor Champs {
                             fee = _fee;
                         };
 
-                        let nftdata = await getNFTdetails(nftcanisterid, newnft.token_id);
-
-                        let fractionNftDetails : Types.FractionalNFT = {
-                            collectionid = nftcanisterid;
-                            nft = nftdata;
-                            fractional_token = tokenmetadata;
+                    let nftdata = await getNFTdetails(nftcanisterid, newnft.token_id);
+                    let testSupply = Nat64.fromNat(_totalSupply);
+                    let fractionNftDetails : Types.FractionalNFT = {  
+                        collectionid = nftcanisterid;
+                        nft = nftdata;
+                        fractional_token = tokenmetadata;
+                        price_per_share = priceinusd/Float.fromInt64(Int64.fromNat64(Nat64.fromNat(_totalSupply)));
+                    };
+                    switch(fractionalnftmap.get(to)){
+                        case null {
+                            let newfractionalnft = [(nftcanisterid,fractionNftDetails,tokencanister)];
+                            fractionalnftmap.put(to, newfractionalnft);
+                            return (#Ok(fractionNftDetails),tokencanister);
                         };
                         switch (fractionalnftmap.get(to)) {
                             case null {
@@ -255,7 +276,9 @@ actor Champs {
         };
     };
 
-    public shared ({ caller = user }) func getalltransactions(tokencanisterid : Principal, page : ?Nat32) : async Root.GetTransactionsResponseBorrowed {
+
+    public shared ({caller = user})  func getalltransactions(tokencanisterid : Principal, page : ?Nat32) : async Root.GetTransactionsResponseBorrowed{
+
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
@@ -470,6 +493,7 @@ actor Champs {
                     collectionid = collectioncanisterid;
                     nft = data;
                     fractional_token = tokenmetadata;
+                    price_per_share = data.priceinusd/Float.fromInt64(Int64.fromNat64(Nat64.fromNat(tokenmetadata.totalSupply)));
                 };
                 return fractionalNftDetails;
             };
@@ -600,6 +624,22 @@ actor Champs {
         return Iter.toArray(users.entries());
     };
 
+
+    func icrc2_transferFrom(ledgerId : Text, transferfrom : Principal, transferto : Principal, amount : Nat) : async ICRC.Result_2 {
+
+        let ledger = actor (ledgerId) : ICRC.Token;
+        await ledger.icrc2_transfer_from({
+            spender_subaccount = null;
+            from = {owner = transferfrom; subaccount = null};
+            to = {owner = transferto; subaccount = null};
+            amount;
+            fee = null;
+            memo = null;
+            created_at_time = null;
+        });
+
+    };
+
     // ********************************************** Buy and Transfer of tokens *************************************************************
 
     public query func getallstats() : async UsersTypes.Statsdata {
@@ -631,4 +671,69 @@ actor Champs {
         fractionalnftmap := TrieMap.fromEntries(stablefractionalnftmap.vals(), Principal.equal, Principal.hash);
     };
 
-};
+
+
+    // ******************************************************************************************************************************
+
+     public func get_icp_usd_exchange() : async Text {
+
+        let ic : Api.IC = actor ("aaaaa-aa");
+
+        let url = "https://api.coinbase.com/v2/exchange-rates?currency=USD";
+
+        let request_headers = [
+            {name = "Accept"; value = "*/*"},
+            {name = "User-Agent"; value = url},
+        ];
+        let transform_context : Api.TransformContext = {
+            function = transform;
+            context = Blob.fromArray([]);
+        };
+
+        let http_request : Api.HttpRequestArgs = {
+            url = url;
+            max_response_bytes = null; //optional for request
+            headers = request_headers;
+            body = null; //optional for request
+            method = #get;
+            transform = ?transform_context;
+        };
+
+        Cycles.add<system>(20_949_972_000);
+
+        let http_response : Api.HttpResponsePayload = await ic.http_request(http_request);
+
+        let response_body : Blob = Blob.fromArray(http_response.body);
+        let decoded_text : Text = switch (Text.decodeUtf8(response_body)) {
+            case (null) {"No value returned"};
+            case (?y) {y};
+        };
+
+        decoded_text;
+    };
+
+    public query func transform(raw : Api.TransformArgs) : async Api.CanisterHttpResponsePayload {
+        let transformed : Api.CanisterHttpResponsePayload = {
+            status = raw.response.status;
+            body = raw.response.body;
+            headers = [
+                {
+                    name = "Content-Security-Policy";
+                    value = "default-src 'self'";
+                },
+                {name = "Referrer-Policy"; value = "strict-origin"},
+                {name = "Permissions-Policy"; value = "geolocation=(self)"},
+                {
+                    name = "Strict-Transport-Security";
+                    value = "max-age=63072000";
+                },
+                {name = "X-Frame-Options"; value = "DENY"},
+                {name = "X-Content-Type-Options"; value = "nosniff"},
+            ];
+        };
+        transformed;
+    };
+
+
+}
+
