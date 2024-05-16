@@ -27,12 +27,12 @@ const ProfileSection = () => {
               </IconWrapper>
               <span className="font-medium">Collected</span>
             </button>
-            <div className={commonLinkStyle}>
+            {/* <div className={commonLinkStyle}>
               <IconWrapper>
                 <IoMdCart size={28} />
               </IconWrapper>
               <span className="font-medium">Selling</span>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="border-2 rounded-2xl overflow-hidden">
