@@ -63,7 +63,7 @@ const HomePageB = () => {
 
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
-      <div className="flex gap-2 max-md:flex-col">
+      <div className="flex gap-2 max-md:flex-col justify-center">
         <FancyHeader normal="Champ's" />
         <FancyHeader fancy="Special Collection of 20 Footballers" small />
       </div>

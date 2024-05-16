@@ -24,8 +24,8 @@ const HomeFeatured = () => {
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
       <FancyHeader normal="View" fancy="All our collections" small />
       {isLoading ? (
-        <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 max-lg:grid-cols-2 mt-8 max-sm:grid-cols-1  ">
-          {Array.from({ length: 3 }, (_, index) => (
+        <div className="grid lg:grid-cols-1 xl:grid-cols-1 gap-8 max-lg:grid-cols-1 mt-8 max-sm:grid-cols-1  ">
+          {Array.from({ length: 2 }, (_, index) => (
             <ProducrCardLgLoader key={index} />
           ))}
         </div>
@@ -34,9 +34,9 @@ const HomeFeatured = () => {
           <NotAvailable>No Collection Available</NotAvailable>
         </div>
       ) : (
-        <div className="grid lg:grid-cols-3 gap-x-8 gap-y-8">
+        <div className="grid lg:grid-cols-1 gap-x-8 gap-y-8">
           {collectionSelector.featuredCollections
-            .slice(0, 3)
+            .slice(0, 2)
             .map((collection, index) => (
               <div key={index}>
                 <ProductCardLg prod={collection} key={index} />

@@ -84,8 +84,8 @@ const CollectionPage = ({ name }) => {
           </div>
 
           {isLoading ? (
-            <div className="grid lg:grid-cols-2 xl:grid-cols-2 gap-8 max-lg:grid-cols-2 mt-8 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
-              {Array.from({ length: 9 }, (_, index) => (
+            <div className="grid lg:grid-cols-1 xl:grid-cols-1 gap-8 max-lg:grid-cols-1 mt-8 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
+              {Array.from({ length: 2 }, (_, index) => (
                 <ProducrCardLgLoader key={index} />
               ))}
             </div>
@@ -96,7 +96,7 @@ const CollectionPage = ({ name }) => {
               </button>
             </div>
           ) : (
-            <div className="grid min-[948px]:grid-cols-2 gap-x-8 gap-y-8 mt-8 px-6 lg:px-24">
+            <div className="grid min-[948px]:grid-cols-1 gap-x-8 gap-y-8 mt-8 px-6 lg:px-24">
               {search ? (
                 <>
                   {searchResults?.map((prod, index) => (
@@ -114,14 +114,14 @@ const CollectionPage = ({ name }) => {
             </div>
           )}
         </div>
-        <div className="flex items-center justify-center w-full mt-12 gap-2 text-gray-300">
+        {/* <div className="flex items-center justify-center w-full mt-12 gap-2 text-gray-300">
           <div className="border border-gray-400 rounded-full p-1 hover:bg-gray-400">
             <IoIosArrowBack size={20} />
           </div>
           <div className="border border-gray-400 rounded-full p-1 hover:bg-gray-400">
             <IoIosArrowForward size={20} />
           </div>
-        </div>
+        </div> */}
       </motion.div>
       <Footer />
     </>
