@@ -35,4 +35,8 @@ module {
         totalnfts : Int;
     };
 
+    public type TransactionsDtetails = {
+        
+    };
+
 }

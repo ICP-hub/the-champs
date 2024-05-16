@@ -33,6 +33,7 @@ module {
   public type FractionalNFT = {
     nft: Nft;
     fractional_token : Types.Metadata;
+    price_per_share : Float;
   };
 
   public type FractionalNFTError = {
@@ -99,6 +100,8 @@ module {
     metadata: MetadataDesc;
     locked: Bool;
     forsale: Bool;
+    listed : Bool;
+    priceinusd : Float;
   };
 
   public type CollectionDetials = {
