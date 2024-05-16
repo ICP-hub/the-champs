@@ -11,7 +11,7 @@ import Toggle from "react-toggle";
 // import { useCanister } from "@connect2ic/react";
 // import * as nft from "../../../.dfx/local/canisters/theChamps_nft";
 
-const CreateCollections = () => {
+const CreateCollections = ({ handleCreate, setFormSubmitted }) => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
@@ -167,7 +167,8 @@ const CreateCollections = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (isConnected) {
+    // Change later
+    if (!isConnected) {
       try {
         setLoading(true);
 
@@ -177,7 +178,7 @@ const CreateCollections = () => {
         }
 
         // console.log("formData:", formData);
-        console.log("Submitting collection creation request...");
+        // console.log("Submitting collection creation request...");
         const result = await backend.createcollection(
           { data: formData.logo.data, logo_type: formData.logo.logo_type },
           { data: formData.banner.data, logo_type: formData.banner.logo_type },
@@ -187,13 +188,13 @@ const CreateCollections = () => {
           parseInt(formData.maxLimit),
           formData.featured
         );
-
-        console.log("Collection creation result:", result);
-
+        // console.log("Collection creation result:", result);
         if (result.principal) {
           console.log("Collection created successfully!", result);
-          toast.success("Collection created successfully!");
         }
+        toast.success("Collection created successfully!");
+        handleCreate();
+        setFormSubmitted((prev) => !prev);
       } catch (error) {
         console.error("Error creating collection:", error);
         toast.error("Error creating collection. Please try again.");
@@ -204,12 +205,12 @@ const CreateCollections = () => {
   };
 
   return (
-    <div className="mx-4 md:py-8 md:px-6 p-2  flex flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-t-2xl mt-6">
+    <div className="mx-4 md:py-8 md:px-6 p-2  flex flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-lg mt-6">
       <div className="mb-6">
         <h1 className="text-xl font-bold">
           <div className="flex gap-4 items-center">
             <TbSquareRoundedChevronLeft
-              onClick={() => navigate(-1)}
+              onClick={handleCreate}
               className="w-6 h-6 cursor-pointer"
             />
             Create Collection
@@ -347,7 +348,7 @@ const CreateCollections = () => {
 
         <div className="flex gap-4 justify-end">
           <button
-            onClick={sendback}
+            onClick={handleCreate}
             disabled={loading}
             className={`uppercase bg-[#fff] shadow-md dark:bg-[#2e2e48] border border-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl ${
               loading && "opacity-50"

@@ -88,9 +88,6 @@ const LeftSidebar = ({ isOpen }) => {
             <div className="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal">
               Admin Name
             </div>
-            <div className="w-full mt-0.5 whitespace-nowrap text-ellipsis overflow-hidden text-center text-md leading-normal text-secondary">
-              admin@mail.com
-            </div>
           </div>
         </div>
         {navItems.map(({ path, icon, text }) => (
