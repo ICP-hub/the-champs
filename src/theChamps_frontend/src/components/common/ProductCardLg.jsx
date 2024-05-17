@@ -123,7 +123,7 @@ const ProductCardLg = ({ prod }) => {
               variants={imgVariants}
               initial="initial"
               whileHover="hover"
-              src={prod.details.image || PlaceholderImg}
+              src={prod.details.logo.data || PlaceholderImg}
               alt={prod.details.name}
               className="rounded-2xl object-cover  z-[1]"
             ></motion.img>
@@ -205,20 +205,20 @@ const ProductCardLg = ({ prod }) => {
       <div className="p-6 absolute top-0 h-full w-full backface-hidden back flex flex-col">
         <div>Collection description</div>
         <div className="flex justify-end w-full pt-6 gap-4 text-sm mt-auto">
-         <div className="w-full md:w-1/2 flex gap-4">
-         <Link
-            to={`/collections/${prod.canisterId.toText()}`}
-            className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57]  text-white cursor-pointer  rounded-lg w-full z-[1]"
-          >
-            View Collection
-          </Link>
-          <button
-            className="px-4 py-2  cursor-pointer rounded-lg w-full productcardlgborder"
-            onClick={handleCardFlip}
-          >
-            Back
-          </button>
-         </div>
+          <div className="w-full md:w-1/2 flex gap-4">
+            <Link
+              to={`/collections/${prod.canisterId.toText()}`}
+              className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57]  text-white cursor-pointer  rounded-lg w-full z-[1]"
+            >
+              View Collection
+            </Link>
+            <button
+              className="px-4 py-2  cursor-pointer rounded-lg w-full productcardlgborder"
+              onClick={handleCardFlip}
+            >
+              Back
+            </button>
+          </div>
         </div>
       </div>
     </motion.div>

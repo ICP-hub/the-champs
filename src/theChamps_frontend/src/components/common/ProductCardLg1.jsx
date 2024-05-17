@@ -43,7 +43,7 @@ const ProductCardLg = ({ prod }) => {
               variants={imgVariants}
               initial="initial"
               whileHover="hover"
-              src={prod.details.image || PlaceholderImg}
+              src={ prod.details.logo.data || PlaceholderImg}
               alt={prod.details.name}
               className="rounded-2xl object-cover  z-[1]"
             ></motion.img>

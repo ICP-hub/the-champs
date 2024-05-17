@@ -17,6 +17,8 @@ import { useCanister, useTransfer, useConnect } from "@connect2ic/react";
 import { TailSpin } from "react-loader-spinner";
 import placeholderimg from "../assets/CHAMPS.png";
 import { RadioGroup } from "@headlessui/react";
+import IcpLogo from "../assets/IcpLogo";
+import toast from "react-hot-toast";
 
 const plans = [
   {
@@ -32,11 +34,11 @@ const plans = [
   //   value: "paypal-payment",
   // },
 ];
-const usePaymentTransfer = () => {
+const usePaymentTransfer = (fee) => {
   // Receiver address will be in .env file : for now dev id
   const [transfer] = useTransfer({
     to: "uktss-xp5gu-uwif5-hfpwu-rujms-foroa-4zdkd-ofspf-uqqre-wxqyj-cqe",
-    amount: Number(0),
+    amount: Number(fee),
   });
 
   return transfer;
@@ -52,7 +54,9 @@ const ProductDetails = () => {
   const { principal, disconnect } = useConnect();
   const [loading, setLoading] = useState(false);
 
-  const paymentAddressForTransfer = usePaymentTransfer(20);
+  const paymentAddressForTransfer = usePaymentTransfer(
+    parseInt(nft[0]?.fractional_token?.fee)
+  );
   const getNftDetails = async () => {
     try {
       const canister_id = Principal.fromText(id);
@@ -70,13 +74,8 @@ const ProductDetails = () => {
   const buyTokens = async () => {
     try {
       setLoading(true);
-      const canister_id = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
-      const canister_id2 = Principal.fromText("bd3sg-teaaa-aaaaa-qaaba-cai");
 
       const user_id2 = Principal.fromText("2vxsx-fae");
-      console.log(canister_id, "principle 1");
-      console.log(canister_id2, "principle 2");
-      console.log(user_id2, "principle 3");
 
       const res = await backend.buytokens(
         nft[1],
@@ -86,6 +85,10 @@ const ProductDetails = () => {
       );
 
       console.log(res, "hello");
+      if (res) {
+        setLoading(false);
+        toast.success("nft purchased successfully");
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -125,24 +128,28 @@ const ProductDetails = () => {
   };
   return (
     <>
-      <Header />
+      {!open && <Header />}
       {loading && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
           <TailSpin color="#FC001E" height={80} width={80} />
         </div>
       )}
-      <div className="md:mt-44 mt-44 left-0 right-0 gap-8 px-6 lg:px-24">
+      <div className="md:mt-44 mt-8 left-0 right-0 gap-8 px-6 lg:px-24">
         {open && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
-            <div className=" mt-16  md:w-[28%]  relative z-50 rounded-xl bg-white p-8 pb-4  ">
+          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-80  ">
+            <div className="   md:w-[28%]    w-[75%]   rounded-xl bg-white p-8 pt-4 pb-4  ">
               <p className="text-center font-bold text-sm">
                 You are about to make a purchase!
               </p>
               <div className="flex items-center justify-center mt-4">
                 <img
-                  src={placeholderimg}
+                  src={
+                    nft[0]?.fractional_token?.logo
+                      ? nft[0]?.fractional_token?.logo
+                      : placeholderimg
+                  }
                   alt=""
-                  className="w-1/2 h-40  rounded-lg shadow-md
+                  className="w-1/2 md:h-40 h-20 rounded-lg shadow-md
                     "
                 />
               </div>
@@ -200,9 +207,12 @@ const ProductDetails = () => {
               </RadioGroup>
               <div className="flex items-center justify-between font-bold text-sm mt-4">
                 <p>TOTAL:</p>
-                <p>$5.54</p>
+                <p className="flex items-center gap-1">
+                  <IcpLogo size={16} />
+                  {parseInt(nft[0]?.fractional_token?.fee)}
+                </p>
               </div>
-              <div className="mt-2 text-center text-gray-400 text-xs">
+              <div className="mt-2 md:block hidden text-center text-gray-400 text-xs">
                 This process may take a minute. Transactions can not be
                 reversed. By clicking confirm you show acceptance to our{" "}
                 <span className="text-[#FC001E] underline">
@@ -226,12 +236,19 @@ const ProductDetails = () => {
 
         <div className="md:flex gap-8">
           <div className="md:w-1/4 w-full  mb-16 ">
-            <Card nftgeek={nftgeek} toniq={toniq} />
+            <Card
+              nftgeek={nftgeek}
+              toniq={toniq}
+              logo={nft[0]?.fractional_token?.logo}
+            />
           </div>
           <div className=" gap-8 md:w-3/4  ">
             <div className="flex items-center gap-4">
-              <IoArrowBack />
-              <Link to="/collection" className="text-xl font-medium">
+              <Link
+                to="/collection"
+                className="text-xl font-medium flex items-center gap-2"
+              >
+                <IoArrowBack />
                 Back to Collections
               </Link>
             </div>
@@ -254,9 +271,11 @@ const ProductDetails = () => {
               </div>
             </div>
             <div className="flex justify-between  mt-6">
-              <div className="">
-                <span className="font-medium">$24</span>
-                <s className="ml-1 text-gray-400 text-xs">70</s>
+              <div className=" flex">
+                <span className="font-lg flex items-center gap-1">
+                  <IcpLogo size={24} />
+                  {parseInt(nft[0]?.fractional_token?.fee)}
+                </span>
               </div>
               <div>
                 <button
@@ -294,8 +313,8 @@ const ProductDetails = () => {
                     <div className="flex gap-2 flex-wrap mb-2">
                       <FaRegUserCircle />
                       <p className="text-sm font-bold">owner : </p>
-                      <span className="text-sm  text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text font-bold">
-                        xu4ui-cp5wm...
+                      <span className="text-sm  text-transparent truncate w-20 bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text font-bold">
+                        {nft[0]?.nft?.owner.toText()}
                       </span>
                     </div>
                     <div className="flex gap-2">

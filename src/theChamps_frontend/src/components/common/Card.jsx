@@ -6,7 +6,7 @@ const Card = ({ nftgeek, toniq, logo }) => {
   return (
     <>
       <div
-        className="bg-white rounded-xl w-full h-[400px] overflow-hidden"
+        className="bg-white rounded-xl w-full  aspect-square overflow-hidden"
         style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.4)" }}
       >
         <div className="w-full h-full">

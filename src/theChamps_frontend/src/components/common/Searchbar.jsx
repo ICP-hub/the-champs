@@ -160,7 +160,7 @@ const Searchbar = ({
                       }`}
                       onClick={handleSortByDate}
                     >
-                      Recent Creations
+                      Newest Creations
                     </button>
                     <button
                       className={`mt-2 flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300 bg-gradient-to-r hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg ${
@@ -170,7 +170,7 @@ const Searchbar = ({
                       }`}
                       onClick={handleSortByDateReverse}
                     >
-                      Latest Creations
+                      Oldest Creations
                     </button>
                   </div>
                   <div className="m-6 text-center">

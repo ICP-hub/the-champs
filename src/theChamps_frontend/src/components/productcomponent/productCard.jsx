@@ -6,14 +6,17 @@ const notify = () => toast("Here is your toast.");
 import { motion } from "framer-motion";
 import ReadMore from "../common/ReadMore";
 import { useParams } from "react-router";
-import { useCanister, useBalance } from "@connect2ic/react";
+import { useCanister, useBalance, useConnect } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { TailSpin } from "react-loader-spinner";
 import image from "../../assets/images/soccer-1.jpeg";
 import { RiErrorWarningLine } from "react-icons/ri";
 import IconWrapper from "../common/IconWrapper";
+import placeHolderImg from "../../assets/CHAMPS.png";
+import { Link } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
+  const { isConnected } = useConnect();
   const { id } = useParams();
   const [backend] = useCanister("backend");
 
@@ -29,7 +32,7 @@ const ProductCard = ({ product }) => {
       const canister_id = Principal.fromText(id);
       const res = await backend.addfavourite(
         canister_id,
-        parseInt(product.nft.id)
+        parseInt(product[0].nft.id)
       );
     } catch (error) {
       console.log(error);
@@ -39,7 +42,6 @@ const ProductCard = ({ product }) => {
   };
 
   const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
-  console.log(icpWallet?.amount, "balance");
 
   const getFavourites = async () => {
     try {
@@ -56,7 +58,7 @@ const ProductCard = ({ product }) => {
 
     if (favourites != null) {
       const isProductInWishlist = favourites.some(
-        (item) => item[0].id === product.nft.id && item[1].toText() === id
+        (item) => item[0].id === product[0].nft.id && item[1].toText() === id
       );
       setProductInFavourites(isProductInWishlist);
     }
@@ -80,12 +82,16 @@ const ProductCard = ({ product }) => {
   };
 
   const handleBuyNow = () => {
-    // Check if user has sufficient balance
-    if (icpWallet?.amount <= 0) {
-      setShowModal(true);
+    if (isConnected) {
+      // Check if user has sufficient balance
+      if (icpWallet?.amount <= 0) {
+        setShowModal(true);
+      } else {
+        // Proceed with the buy now action
+        notify(); // Or any other action
+      }
     } else {
-      // Proceed with the buy now action
-      notify(); // Or any other action
+      toast.success("please login first");
     }
   };
 
@@ -95,13 +101,15 @@ const ProductCard = ({ product }) => {
       style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
     >
       <div className="overflow-hidden">
-        <motion.img
-          whileHover={{ scale: 1.1 }}
-          transition={{ duration: 0.2, ease: "easeInOut" }}
-          src={image}
-          alt=""
-          className="rounded-t-lg h-full object-cover cursor-pointer overflow-hidden "
-        ></motion.img>
+        <Link to={`/collections/${id}/${product[0].nft.id}`}>
+          <motion.img
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            src={placeHolderImg || product[0]?.fractional_token.logo}
+            alt=""
+            className="rounded-t-lg h-full object-cover cursor-pointer overflow-hidden "
+          ></motion.img>
+        </Link>
       </div>
       <div className="p-2 mx-2">
         <div className="flex justify-between font-bold items-center">
@@ -166,10 +174,10 @@ const ProductCard = ({ product }) => {
         </p>
         <div className="flex justify-between  mb-4">
           <p className="mt-4    bg-opacity-100  py-2   rounded-md w-[50%]">
-            $29
+            {parseInt(product[0]?.fractional_token.fee)}
           </p>
           <button
-            className="mt-4   button   bg-opacity-100 text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
+            className="mt-4   button z-10   bg-opacity-100 text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
             onClick={handleBuyNow} // Call handleBuyNow function when button is clicked
           >
             Buy now
