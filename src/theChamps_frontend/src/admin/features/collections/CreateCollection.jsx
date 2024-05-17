@@ -170,7 +170,7 @@ const CreateCollections = ({ handleCreate, setFormSubmitted }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!isConnected) {
+    if (isConnected) {
       try {
         setLoading(true);
 
