@@ -2,9 +2,9 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
-import Setup1 from "../../assets/images/setup-1.png";
-import Setup2 from "../../assets/images/setup-2.png";
-import Setup3 from "../../assets/images/setup-3.png";
+import Setup1 from "../../assets/images/nft-1.png";
+import Setup2 from "../../assets/images/nft-2.png";
+import Setup3 from "../../assets/images/nft-3.png";
 import { MdArrowOutward } from "react-icons/md";
 import FancyHeader from "../common/FancyHeader";
 

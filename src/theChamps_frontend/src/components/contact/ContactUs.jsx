@@ -6,6 +6,8 @@ import "./contact.css";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import { motion } from "framer-motion";
+import image from "../../assets/images/nft-4.png";
+
 const ContactUs = () => {
   return (
     <>
@@ -27,12 +29,15 @@ const ContactUs = () => {
           </div>
           <div className="grid lg:grid-cols-2">
             <ContactForm />
-            <Player
+            {/* <Player
               src={ContactAnimation}
               className="player contact-aside h-full w-full max-lg:order-first"
               loop
               autoplay
-            />
+            /> */}
+            <div className="max-md:order-first">
+        <img src={image} alt="about" />
+      </div>
           </div>
         </div>
       </motion.div>

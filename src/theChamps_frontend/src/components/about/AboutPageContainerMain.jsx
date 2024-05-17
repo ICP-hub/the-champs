@@ -22,7 +22,9 @@ const AboutPageContainerMain = () => {
         </div>
         <p className="font-medium">{aboutData.description}</p>
       </div>
-      <div className="max-md:order-first">image</div>
+      <div className="max-md:order-first">
+        <img src={aboutData.image} alt="about" />
+      </div>
     </motion.div>
   );
 };
