@@ -44,6 +44,7 @@ module.exports = {
         unselectedchip: "var(--unselected-chip)",
         disabledlistoption: "var(--disabled-list-option)",
         tooltip: "var(--tooltip)",
+        textall: "var(--textall)",
       },
     },
   },

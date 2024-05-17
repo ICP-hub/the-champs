@@ -32,7 +32,7 @@ body .light {
   --unselected-chip: #e2e8f0;
   --disabled-list-option: #cbd5e1;
   --tooltip: #1e293b;
-  --text-all: #ffffff;
+  --textall: #0f172a;
 }
 
 body.dark,
@@ -58,7 +58,7 @@ body .dark {
   --app-bar: #0f172a;
   --background: #383854;
   --hover: rgba(255, 255, 255, 0.05);
-  --card: #1e293b;
+  --card: #2e2e48;
   --dialog: #1e293b;
   --disabled-button: rgba(15, 23, 42, 0.38);
   --raised-button: #0f172a;
@@ -69,5 +69,5 @@ body .dark {
   --unselected-chip: #475569;
   --disabled-list-option: #e2e8f0;
   --tooltip: #64748b;
-  --text-all: #ffffff;
+  --textall: #ffffff;
 }
