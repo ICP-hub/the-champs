@@ -170,40 +170,40 @@ const CreateCollections = ({ handleCreate, setFormSubmitted }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (isConnected) {
-      try {
-        setLoading(true);
+    // if (isConnected) {
+    try {
+      setLoading(true);
 
-        if (!formData.logo.data || !formData.banner.data) {
-          console.error("Logo or banner data is missing.");
-          return;
-        }
-
-        // console.log("formData:", formData);
-        // console.log("Submitting collection creation request...");
-        const result = await backend.createcollection(
-          { data: formData.logo.data, logo_type: formData.logo.logo_type },
-          { data: formData.banner.data, logo_type: formData.banner.logo_type },
-          formData.description,
-          formData.name,
-          formData.symbol,
-          parseInt(formData.maxLimit),
-          formData.featured
-        );
-        // console.log("Collection creation result:", result);
-        if (result.principal) {
-          console.log("Collection created successfully!", result);
-        }
-        toast.success("Collection created successfully!");
-        handleCreate();
-        setFormSubmitted((prev) => !prev);
-      } catch (error) {
-        console.error("Error creating collection:", error);
-        toast.error("Error creating collection. Please try again.");
-      } finally {
-        setLoading(false);
+      if (!formData.logo.data || !formData.banner.data) {
+        console.error("Logo or banner data is missing.");
+        return;
       }
+
+      // console.log("formData:", formData);
+      // console.log("Submitting collection creation request...");
+      const result = await backend.createcollection(
+        { data: formData.logo.data, logo_type: formData.logo.logo_type },
+        { data: formData.banner.data, logo_type: formData.banner.logo_type },
+        formData.description,
+        formData.name,
+        formData.symbol,
+        parseInt(formData.maxLimit),
+        formData.featured
+      );
+      // console.log("Collection creation result:", result);
+      if (result.principal) {
+        console.log("Collection created successfully!", result);
+      }
+      toast.success("Collection created successfully!");
+      handleCreate();
+      setFormSubmitted((prev) => !prev);
+    } catch (error) {
+      console.error("Error creating collection:", error);
+      toast.error("Error creating collection. Please try again.");
+    } finally {
+      setLoading(false);
     }
+    // }
   };
 
   return (
