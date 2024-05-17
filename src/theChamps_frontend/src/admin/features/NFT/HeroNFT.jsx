@@ -23,30 +23,31 @@ const HeroNFT = () => {
   const submitForm = async () => {
     try {
       const res = await backend.FractionalizeNFt(
-        Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai"),
-        Principal.fromText("2vxsx-fae"),
+        Principal.fromText("br5f7-7uaaa-aaaaa-qaaca-cai"), // First principal argument
+        Principal.fromText("2vxsx-fae"), // Second principal argument
         [
           {
-            data: [101],
+            data: [101], // vec nat8
             key_val_data: [
               {
-                key: "exampleKey3",
-                val: { TextContent: "one" },
+                key: "exampleKey3", // text
+                val: { TextContent: "one" }, // TextContent variant
               },
             ],
-            purpose: { Preview: null },
+            purpose: { Preview: null }, // purpose variant
           },
         ],
-        "Text1",
-        "Text1",
-        "Text1",
-        1,
-        2,
-        3
+        123, // priceusd
+        "text3", // text
+        "text1", // text
+        "text2", // text (logo, name, symbol)
+        1, // nat8 (fee)
+        2, // nat (decimals)
+        3 // nat (totalSupply),
       );
-      console.log("response nft sumbit", res);
+      console.log("response nft submit", res);
     } catch (err) {
-      console.log(err);
+      console.log("Error Creating NFT", err);
     }
   };
 

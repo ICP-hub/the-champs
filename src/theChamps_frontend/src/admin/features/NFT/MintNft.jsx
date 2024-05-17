@@ -29,6 +29,7 @@ const initialFormValues = {
       purpose: { Preview: null, Rendered: null },
     },
   ],
+  priceInUsd: "",
   fee: "",
   decimals: "",
   owner: "",
@@ -77,6 +78,7 @@ const MintNft = () => {
         FinalData.collectionId,
         FinalData.ownerId,
         FinalData.metaData,
+        Number(FinalData.priceInUsd),
         FinalData.name,
         FinalData.owner,
         FinalData.symbol,
@@ -226,8 +228,8 @@ const MintNft = () => {
           <input
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             type="number"
-            name="fee"
-            value={formData.fee}
+            name="priceInUsd"
+            value={formData.priceInUsd}
             onChange={handleChange}
           />
         </div>
@@ -271,6 +273,16 @@ const MintNft = () => {
             </div>
           ))}
         </div>
+        <label htmlFor="name" className="md:text-lg text-sm font-semibold">
+          Processing Fee :
+        </label>
+        <input
+          className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+          type="number"
+          name="fee"
+          value={formData.fee}
+          onChange={handleChange}
+        />
         <div>
           <label htmlFor="purpose" className="md:text-lg text-sm font-semibold">
             Select Purpose:
