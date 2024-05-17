@@ -104,8 +104,8 @@ const ViewCollections = ({ isLoading }) => {
         collectionData &&
         collectionData?.allCollections?.length > 0 && (
           <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-x-4 gap-y-8">
-            {collectionData.allCollections.map((collection) => (
-              <CollectionCard collection={collection} />
+            {collectionData.allCollections.map((collection, index) => (
+              <CollectionCard collection={collection} key={index} />
             ))}
           </div>
         )}
@@ -135,9 +135,12 @@ const CollectionCard = ({ collection }) => {
         </p>
       </div>
       <div className="flex justify-between px-2 py-6 text-sm font-medium gap-4">
-        <button className="px-4 py-2 bg-appbar border rounded-md hover:bg-hover w-full">
+        <Link
+          to={`/admin/create-nft/${collection.canisterId.toText()}`}
+          className="px-4 py-2 bg-appbar border rounded-md hover:bg-hover w-full flex items-center justify-center"
+        >
           View
-        </button>
+        </Link>
         <button className="px-4 py-2 button rounded-md text-white w-full">
           Mint
         </button>

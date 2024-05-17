@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { useDropzone } from "react-dropzone";
+import { easeInOut, motion } from "framer-motion";
 
 const UploadNFTImg = () => {
   const [name, setName] = useState("");
@@ -93,7 +94,15 @@ const UploadNFTImg = () => {
   }, [files]);
 
   return (
-    <div className="mx-4 md:py-8 md:px-6 p-2 flex flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff]  dark:shadow-[#323257] rounded-t-2xl mt-6">
+    <motion.div
+      initial={{ x: 100, opacity: 0 }}
+      animate={{
+        x: 0,
+        opacity: 1,
+        transition: { ease: "easeInOut" },
+      }}
+      className="mx-4 md:py-8 md:px-6 p-2 flex flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff]  dark:shadow-[#323257] rounded-t-2xl mt-6"
+    >
       <div className="mb-6">
         <h1 className="text-2xl font-bold mb-4">Upload Asset</h1>
         <p>
@@ -220,7 +229,7 @@ const UploadNFTImg = () => {
           </button>
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

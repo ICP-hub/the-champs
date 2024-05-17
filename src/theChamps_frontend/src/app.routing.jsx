@@ -86,7 +86,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "/create/:slug",
+    path: "admin/create-nft/:slug",
     element: (
       <MainAdmin>
         <HeroNFT />

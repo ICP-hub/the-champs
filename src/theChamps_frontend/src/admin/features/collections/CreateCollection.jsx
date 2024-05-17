@@ -64,7 +64,10 @@ const CreateCollections = ({ handleCreate, setFormSubmitted }) => {
   function imageToFileBlob(imageFile) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => {
+      reader.onload = (e) => {
+        const arrayBuffer = e.target.result;
+        const blob = new Blob([arrayBuffer], { type: files.type });
+        console.log(blob);
         resolve(reader.result);
       };
       reader.onerror = (error) => {
