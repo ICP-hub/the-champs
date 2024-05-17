@@ -104,7 +104,7 @@ actor Champs {
 
 
 
-        public shared ({caller = user}) func FractionalizeNFt(
+ public shared ({caller = user}) func FractionalizeNFt(
             nftcanisterid : Principal,
             to : Principal,
             metadata : Types.MetadataDesc,
@@ -141,32 +141,31 @@ actor Champs {
                         case (#Ok(newnft)){
                         Debug.print(debug_show(newnft));
                         Cycles.add<system>(500_000_000_000);
-
                         let fractiontokens = await DIP20ActorClass.Token(
-                            _logo,
-                            _name,
-                            _symbol,
-                            _decimals,
-                            _totalSupply,
-                            champs,
-                            _fee,
-                        );
-                        ignore await fractiontokens.wallet_receive();
-                        let minttokens = await fractiontokens.mint(champs, _totalSupply);
-                        Debug.print(debug_show (minttokens));
-                        let approve = await fractiontokens.approve(champs, _totalSupply);
-                        Debug.print("THe output of the approve function is : " # debug_show (approve));
-                        let tokencanister : Principal = await fractiontokens.getCanisterId();
-                        Debug.print(debug_show (tokencanister));
-                        let tokenmetadata = {
-                            logo = _logo;
-                            name = _name;
-                            symbol = _symbol;
-                            decimals = _decimals;
-                            totalSupply = _totalSupply;
-                            owner = champs;
-                            fee = _fee;
-                        };
+                        _logo,
+                        _name,
+                        _symbol,
+                        _decimals,
+                        _totalSupply,
+                        champs,
+                        _fee
+                    );
+                    ignore await fractiontokens.wallet_receive();
+                    let minttokens = await fractiontokens.mint(champs, _totalSupply);
+                    Debug.print(debug_show(minttokens));
+                    let approve = await fractiontokens.approve(champs, _totalSupply);
+                    Debug.print("THe output of the approve function is : " # debug_show(approve));
+                    let tokencanister : Principal = await fractiontokens.getCanisterId();
+                    Debug.print(debug_show(tokencanister));
+                    let tokenmetadata = {
+                        logo = _logo;
+                        name = _name;
+                        symbol = _symbol;
+                        decimals = _decimals;
+                        totalSupply = _totalSupply;
+                        owner = champs;
+                        fee = _fee;
+                    };
 
                     let nftdata = await getNFTdetails(nftcanisterid, newnft.token_id);
                     let testSupply = Nat64.fromNat(_totalSupply);
@@ -182,24 +181,19 @@ actor Champs {
                             fractionalnftmap.put(to, newfractionalnft);
                             return (#Ok(fractionNftDetails),tokencanister);
                         };
-                        switch (fractionalnftmap.get(to)) {
-                            case null {
-                                let newfractionalnft = [(nftcanisterid, fractionNftDetails, tokencanister)];
-                                fractionalnftmap.put(to, newfractionalnft);
-                                return (#Ok(fractionNftDetails), tokencanister);
-                            };
-                            case (?nft) {
-                                let temp = List.push((nftcanisterid, fractionNftDetails, tokencanister), List.fromArray(nft));
-                                fractionalnftmap.put(to, List.toArray(temp));
-                                return (#Ok(fractionNftDetails), tokencanister);
-                            };
+                        case (?nft){
+                            let temp = List.push((nftcanisterid,fractionNftDetails,tokencanister), List.fromArray(nft));
+                            fractionalnftmap.put(to, List.toArray(temp));
+                            return (#Ok(fractionNftDetails),tokencanister);
                         };
-                        return (#Ok(fractionNftDetails), tokencanister);
                     };
+                    return (#Ok(fractionNftDetails),tokencanister);
+                    }
+                    }
                 };
             };
         };
-    };
+        
 
     public shared ({ caller = user }) func buytokens(tokencanisterid : Principal, from : Principal, to : Principal, amount : Nat) : async Typestoken.TxReceipt {
         // if (Principal.isAnonymous(user)) {
