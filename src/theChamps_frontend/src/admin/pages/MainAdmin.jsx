@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import LeftSidebar from "./LeftSidebar.jsx";
 import Topbar from "../features/dashboard/Topbar.jsx";
 import DashBoard from "../features/dashboard/DashBoard.jsx";
@@ -8,18 +8,53 @@ import "../admin.styles.css";
 import "../theme.css";
 import { HiBars4 } from "react-icons/hi2";
 import ThemeSwitch from "../components/themeSwitch.jsx";
+import { useCanister, useConnect } from "@connect2ic/react";
+import { Principal } from "@dfinity/principal";
+import FullScreenLoader from "../../pages/FullScreenLoader.jsx";
 
 function MainAdmin({ children }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(window.innerWidth > 960);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const { principal, isConnected } = useConnect();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdminChecked, setIsAdminChecked] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [backend] = useCanister("backend");
 
-  const themeRef = useRef();
-  const contentRef = useRef();
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem("theme") || "light"
-  );
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      } catch (error) {
+        console.error("Error checking connection:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Custom debounce function
+    checkConnection();
+  }, []);
+
+  useEffect(() => {
+    const checkIsAdmin = async () => {
+      if (isConnected) {
+        try {
+          const res = await backend.checkisadmin(Principal.fromText(principal));
+          setIsAdmin(res);
+        } catch (error) {
+          console.error("Error checking isAdmin:", error);
+          setIsAdmin(false);
+        } finally {
+          setIsAdminChecked(true);
+        }
+      } else {
+        setIsAdminChecked(false);
+      }
+    };
+
+    checkIsAdmin();
+  }, [isConnected, backend, principal]);
+
   const debounce = (func, delay) => {
     let timeoutId;
     return (...args) => {
@@ -29,6 +64,25 @@ function MainAdmin({ children }) {
       }, delay);
     };
   };
+
+  useEffect(() => {
+    const handleResize = debounce(() => {
+      setWindowWidth(window.innerWidth);
+      setIsOpen(window.innerWidth > 960);
+    }, 200);
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const themeRef = useRef();
+  const contentRef = useRef();
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || "light"
+  );
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
@@ -42,27 +96,8 @@ function MainAdmin({ children }) {
     });
   };
 
-  // Update window width on resize with debouncing
   useEffect(() => {
-    const handleResize = debounce(() => {
-      setWindowWidth(window.innerWidth);
-    }, 200);
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  // Set isOpen based on windowWidth
-  useEffect(() => {
-    setIsOpen(window.innerWidth > 960);
-  }, [windowWidth]);
-
-  // Effect closing sidenav on small screen
-  useEffect(() => {
-    const handleContentClick = (event) => {
+    const handleContentClick = () => {
       if (windowWidth <= 960 && isOpen) {
         setIsOpen(false);
       }
@@ -78,6 +113,14 @@ function MainAdmin({ children }) {
       }
     };
   }, [windowWidth, isOpen]);
+
+  if (loading || !isAdminChecked) {
+    return <FullScreenLoader />;
+  }
+
+  if (!isConnected || !isAdmin) {
+    return <Navigate to="/" replace={true} />;
+  }
 
   return (
     <div className={`layout bg-background ${theme}`} ref={themeRef}>
@@ -104,51 +147,6 @@ function MainAdmin({ children }) {
       )}
       <ThemeSwitch toggleTheme={toggleTheme} />
     </div>
-
-    // <div
-    //   className={`w-full flex justify-between h-screen overflow-y-auto ${
-    //     theme === "dark"
-    //       ? "dark:bg-[#383854] text-white"
-    //       : "bg-[#f7f7f7] text-black"
-    //   }`}
-    // >
-    //   {/* <div className="md:w-[20%] inline-block">
-    //     <LeftSidebar handleSidebarToggle={handleSidebarToggle} />
-    //   </div> */}
-    //   {isSidebarOpen ? (
-    //     <LeftSidebar handleSidebarToggle={handleSidebarToggle} />
-    //   ) : null}
-
-    //   <div className="w-[100%] h-screen md:w-[80%] dark:bg-[#383854] bg-[#f7f7f7] text-[#292929] xl:text-[#525252] dark:text-[#fff] dark:xl:text-[#f3f3f3]">
-    //     <div className="flex items-center gap-3 md:px-8 md:pt-10 px-2 py-4">
-    //       <button
-    //         className="inline-flex items-center md:hidden text-[#292929] mb-[-1px]"
-    //         type="button"
-    //         onClick={handleSidebarToggle}
-    //       >
-    //         <MdOutlineMenu size={24} />
-    //       </button>
-    //       <h2 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
-    //         DashBoard
-    //       </h2>
-    //     </div>
-    //     <div className=" ">{children}</div>
-    //   </div>
-
-    //   {/* Theme Switch Button */}
-    //   <div className="fixed right-0 top-0 mt-8 mr-0">
-    //     <button
-    //       onClick={handleThemeSwitch}
-    //       className="px-4 py-2 bg-gray-200 dark:bg-gray-800 rounded-s-3xl focus:outline-none"
-    //     >
-    //       {theme === "dark" ? (
-    //         <MdLightMode className="w-5 h-5" />
-    //       ) : (
-    //         <MdDarkMode className="w-5 h-5" />
-    //       )}
-    //     </button>
-    //   </div>
-    // </div>
   );
 }
 
