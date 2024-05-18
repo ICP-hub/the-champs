@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import { defaultProviders } from "@connect2ic/core/providers";
+import { InternetIdentity, defaultProviders } from "@connect2ic/core/providers";
 
 import { createClient } from "@connect2ic/core";
 import { Connect2ICProvider } from "@connect2ic/react";
@@ -18,7 +18,7 @@ import store from "../../redux/store/store";
 
 const client = createClient({
   canisters: { backend },
-  providers: [new PlugWallet()],
+  providers: [new PlugWallet(), new InternetIdentity()],
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
