@@ -9,7 +9,7 @@ export default configureStore({
     auth: authReducer,
     collections: collectionReducer,
     nftData: nftReducer,
-    profile: myProfileReducer,
+    // profile: myProfileReducer,
   },
   // Middleware : disable serialize warning
   middleware: (getDefaultMiddleware) =>

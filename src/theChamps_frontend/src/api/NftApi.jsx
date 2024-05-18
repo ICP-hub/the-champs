@@ -1,7 +1,10 @@
 import { useCanister } from "@connect2ic/react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { getCollectionwiseNft } from "../../../redux/reducers/nftReducer";
+import {
+  getCollectionwiseNft,
+  getSingleCollectionNFT,
+} from "../../../redux/reducers/nftReducer";
 
 const NFTApi = () => {
   const [backend] = useCanister("backend");
@@ -13,7 +16,8 @@ const NFTApi = () => {
     try {
       setNFTLoading(true);
       const res = await backend.getcollectionwisefractionalnft(canisterId);
-      console.log("single collection nft", res);
+      // console.log("single collection nft", res);
+      dispatch(getSingleCollectionNFT(res));
     } catch (err) {
       console.log("Error getting collectionwise nft (single)", err);
     } finally {
@@ -51,7 +55,7 @@ const NFTApi = () => {
 
   // Get user NFT
 
-  return { getAllCollectionWiseNFT, nftLoading };
+  return { getAllCollectionWiseNFT, nftLoading, getSingleCollectionWiseNFT };
 };
 
 export default NFTApi;

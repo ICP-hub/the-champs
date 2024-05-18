@@ -1,7 +1,10 @@
 import { useCanister } from "@connect2ic/react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { getAllCollectionData } from "../../../redux/reducers/collectionReducer";
+import {
+  getAllCollectionData,
+  getSingleCollectionData,
+} from "../../../redux/reducers/collectionReducer";
 import { getCollectionIds } from "../../../redux/reducers/nftReducer";
 
 const CollectionApi = () => {
@@ -17,6 +20,18 @@ const CollectionApi = () => {
       res.map((ids) => dispatch(getCollectionIds(ids[1])));
     } catch (err) {
       console.error("Error fetching collection IDs", err);
+    }
+  };
+
+  const getSingleCollectionDetails = async (collectionId) => {
+    setIsLoading(true);
+    try {
+      const res = await backend.getcollectiondetails(collectionId);
+      dispatch(getSingleCollectionData(res));
+    } catch (err) {
+      console.error("Error fetching collection Details : ", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -77,7 +92,12 @@ const CollectionApi = () => {
     }
   };
 
-  return { getAllCollections, isLoading, getAllCollectionIds };
+  return {
+    getAllCollections,
+    isLoading,
+    getAllCollectionIds,
+    getSingleCollectionDetails,
+  };
 };
 
 export default CollectionApi;

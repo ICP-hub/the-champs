@@ -72,7 +72,7 @@ const MintNft = () => {
       decimals: 2,
       symbol: "random",
     };
-    console.log(FinalData);
+    // console.log(FinalData);
     try {
       const res = await backend.FractionalizeNFt(
         FinalData.collectionId,

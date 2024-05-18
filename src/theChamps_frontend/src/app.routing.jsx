@@ -70,7 +70,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "/details/:slug",
+    path: "/admin/nft-lists/:slug",
     element: (
       <MainAdmin>
         <NFTList />
@@ -101,6 +101,7 @@ const appRoutes = createBrowserRouter([
       </MainAdmin>
     ),
   },
+
   {
     path: "/users/:sdf",
     element: (

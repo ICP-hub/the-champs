@@ -4,6 +4,7 @@ const initialNFTData = {
   collectionIds: null,
   collectionCanisterText: null,
   collectionWiseNft: null,
+  singleCollectionNFT: null,
 };
 
 const nftSlice = createSlice({
@@ -17,9 +18,16 @@ const nftSlice = createSlice({
       state.collectionCanisterText = state.collectionIds.map((i) => i.toText());
       state.collectionWiseNft = action.payload;
     },
+    getSingleCollectionNFT: (state, action) => {
+      state.singleCollectionNFT = action.payload;
+    },
   },
 });
 
-export const { getCollectionIds, getCollectionwiseNft } = nftSlice.actions;
+export const {
+  getCollectionIds,
+  getCollectionwiseNft,
+  getSingleCollectionNFT,
+} = nftSlice.actions;
 
 export default nftSlice.reducer;

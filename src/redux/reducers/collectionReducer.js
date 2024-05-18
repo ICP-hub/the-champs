@@ -4,6 +4,7 @@ const initialCollection = {
   canisterId: null,
   allCollections: null,
   featuredCollections: null,
+  singleCollectionDetail: null,
 };
 
 const collectionSlice = createSlice({
@@ -15,9 +16,13 @@ const collectionSlice = createSlice({
       state.allCollections = action.payload.allCollections;
       state.featuredCollections = action.payload.featuredCollections;
     },
+    getSingleCollectionData: (state, action) => {
+      state.singleCollectionDetail = action.payload;
+    },
   },
 });
 
-export const { getAllCollectionData } = collectionSlice.actions;
+export const { getAllCollectionData, getSingleCollectionData } =
+  collectionSlice.actions;
 
 export default collectionSlice.reducer;

@@ -20,36 +20,36 @@ const HeroNFT = () => {
     setChld(<UploadNFTImg />);
   };
 
-  const submitForm = async () => {
-    try {
-      const res = await backend.FractionalizeNFt(
-        Principal.fromText("br5f7-7uaaa-aaaaa-qaaca-cai"), // First principal argument
-        Principal.fromText("2vxsx-fae"), // Second principal argument
-        [
-          {
-            data: [101], // vec nat8
-            key_val_data: [
-              {
-                key: "exampleKey3", // text
-                val: { TextContent: "one" }, // TextContent variant
-              },
-            ],
-            purpose: { Preview: null }, // purpose variant
-          },
-        ],
-        123, // priceusd
-        "text3", // text
-        "text1", // text
-        "text2", // text (logo, name, symbol)
-        1, // nat8 (fee)
-        2, // nat (decimals)
-        3 // nat (totalSupply),
-      );
-      console.log("response nft submit", res);
-    } catch (err) {
-      console.log("Error Creating NFT", err);
-    }
-  };
+  // const submitForm = async () => {
+  //   try {
+  //     const res = await backend.FractionalizeNFt(
+  //       Principal.fromText("br5f7-7uaaa-aaaaa-qaaca-cai"), // First principal argument
+  //       Principal.fromText("2vxsx-fae"), // Second principal argument
+  //       [
+  //         {
+  //           data: [101], // vec nat8
+  //           key_val_data: [
+  //             {
+  //               key: "exampleKey3", // text
+  //               val: { TextContent: "one" }, // TextContent variant
+  //             },
+  //           ],
+  //           purpose: { Preview: null }, // purpose variant
+  //         },
+  //       ],
+  //       123, // priceusd
+  //       "text3", // text
+  //       "text1", // text
+  //       "text2", // text (logo, name, symbol)
+  //       1, // nat8 (fee)
+  //       2, // nat (decimals)
+  //       3 // nat (totalSupply),
+  //     );
+  //     console.log("response nft submit", res);
+  //   } catch (err) {
+  //     console.log("Error Creating NFT", err);
+  //   }
+  // };
 
   return (
     <div className="mx-4 flex flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-t-2xl  mt-6">

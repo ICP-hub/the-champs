@@ -134,16 +134,19 @@ const CollectionCard = ({ collection }) => {
           {collection.canisterId.toText()}
         </p>
       </div>
-      <div className="flex justify-between px-2 py-6 text-sm font-medium gap-4">
+      <div className="flex justify-between px-2 py-4 text-sm font-medium gap-4">
         <Link
-          to={`/admin/create-nft/${collection.canisterId.toText()}`}
+          to={`/admin/nft-lists/${collection.canisterId.toText()}`}
           className="px-4 py-2 bg-appbar border rounded-md hover:bg-hover w-full flex items-center justify-center"
         >
-          View
+          View NFTS
         </Link>
-        <button className="px-4 py-2 button rounded-md text-white w-full">
-          Mint
-        </button>
+        <Link
+          to={`/admin/create-nft/${collection.canisterId.toText()}`}
+          className="px-4 py-2 button rounded-md text-white w-full flex items-center justify-center"
+        >
+          Mint NFT
+        </Link>
       </div>
     </div>
   );
