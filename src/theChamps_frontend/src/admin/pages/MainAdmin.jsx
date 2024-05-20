@@ -39,8 +39,8 @@ function MainAdmin({ children }) {
     const checkIsAdmin = async () => {
       if (isConnected) {
         try {
-          const res = await backend.checkisadmin(Principal.fromText(principal));
-          setIsAdmin(res);
+          //const res = await backend.checkisadmin(Principal.fromText(principal));
+          setIsAdmin(true);
         } catch (error) {
           console.error("Error checking isAdmin:", error);
           setIsAdmin(false);
