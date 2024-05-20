@@ -193,26 +193,67 @@ actor Champs {
                 };
             };
         };
-        
+    public query func getfracntionalnftprice (tokencanisterid : Principal) : async Float {
+        for (fractionalnft in fractionalnftmap.vals()){
+            for (nft in fractionalnft.vals()){
+                if (nft.2 == tokencanisterid){
+                    return nft.1.price_per_share;
+                };
+            };
+        };
+        return 0.0;
+    };
 
-    public shared ({ caller = user }) func buytokens(tokencanisterid : Principal, from : Principal, to : Principal, amount : Nat) : async Typestoken.TxReceipt {
-        // if (Principal.isAnonymous(user)) {
+    public shared ({caller = user}) func buytokens ( tokencanisterid : Principal, from : Principal, to : Principal, numberoftokens : Nat , paymentOption : {#icp; #ckbtc;} , amount : Nat) : async (ICRC.Result) {
+       // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
-
-        let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-            transferFrom : (from : Principal, to : Principal, amount : Nat) -> async Typestoken.TxReceipt;
-        };
-        let tokens = await tokencansiter_actor.transferFrom(from, to, amount);
-        switch (tokens) {
-            case (#Err(index)) {
-                throw Error.reject(debug_show (index));
+        let tokencansiter_actor = actor(Principal.toText(tokencanisterid)) : actor {transferFrom : (from : Principal, to : Principal, amount : Nat) -> async Typestoken.TxReceipt};
+        switch (paymentOption){
+            case (#icp) {
+                let response : ICRC.Result_2 = await icrc2_transferFrom(icpLedger, from, to, amount);
+                switch (response) {
+                    case (#Err(index)) {
+                        throw Error.reject(debug_show(index));
+                    };
+                    case (#Ok(res)) {
+                        let tokens = await tokencansiter_actor.transferFrom(from, to, numberoftokens );
+                        switch (tokens){
+                            case (#Err(index)) {
+                                throw Error.reject(debug_show(index));
+                            };
+                            case (#Ok(data)) {
+                                return #Ok(data);
+                            }; 
+                        };
+                        
+                        return #Ok(res);
+                    };
+                };
             };
-            case (#Ok(data)) {
-                return #Ok(data);
-            };
+            case (#ckbtc) {
+                let response : ICRC.Result_2 = await icrc2_transferFrom(ckbtcLedger, from, to, amount);
+                switch (response) {
+                    case (#Err(index)) {
+                        throw Error.reject(debug_show(index));
+                    };
+                    case (#Ok(res)) {
+                        let tokens = await tokencansiter_actor.transferFrom(from, to, numberoftokens );
+                        switch (tokens){
+                            case (#Err(index)) {
+                                throw Error.reject(debug_show(index));
+                            };
+                            case (#Ok(data)) {
+                                return #Ok(data);
+                            }; 
+                        };
+                        return #Ok(res);
+                    };
+             };
         };
     };
+};
+
 
     public shared ({ caller = user }) func tranfertokens(tokencanisterid : Principal, to : Principal, amount : Nat) : async Typestoken.TxReceipt {
         // if (Principal.isAnonymous(user)) {
@@ -276,10 +317,7 @@ actor Champs {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
-
-        let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-            getTransactions : (?Nat32) -> async Root.GetTransactionsResponseBorrowed;
-        };
+        let tokencansiter_actor = actor(Principal.toText(tokencanisterid)) : actor {getTransactions : (?Nat32) -> async Root.GetTransactionsResponseBorrowed};
         let transactions = await tokencansiter_actor.getTransactions(page);
         return transactions;
     };
@@ -619,7 +657,7 @@ actor Champs {
     };
 
 
-    func icrc2_transferFrom(ledgerId : Text, transferfrom : Principal, transferto : Principal, amount : Nat) : async ICRC.Result_2 {
+    func icrc2_transferFrom(ledgerId : Text, transferfrom : Principal, transferto : Principal, amount : Nat) : async (ICRC.Result_2,) {
 
         let ledger = actor (ledgerId) : ICRC.Token;
         await ledger.icrc2_transfer_from({
