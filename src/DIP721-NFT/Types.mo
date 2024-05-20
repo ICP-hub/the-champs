@@ -126,6 +126,7 @@ module {
   public type MetadataDesc = [MetadataPart];
 
   public type MetadataPart = {
+    description : Text;
     purpose: MetadataPurpose;
     key_val_data: [MetadataKeyVal];
     data: Blob;
