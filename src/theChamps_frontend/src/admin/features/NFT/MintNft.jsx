@@ -74,24 +74,24 @@ const MintNft = () => {
       decimals: 2,
       symbol: "random",
     };
-    console.log(FinalData);
-    // try {
-    //   const res = await backend.FractionalizeNFt(
-    //     FinalData.collectionId,
-    //     FinalData.ownerId,
-    //     FinalData.metaData,
-    //     Number(FinalData.priceInUsd),
-    //     FinalData.name,
-    //     FinalData.owner,
-    //     FinalData.symbol,
-    //     FinalData.fee,
-    //     FinalData.decimals,
-    //     3 // This is total supply? didn't understand the meaning
-    //   );
-    //   console.log("NFT Created Successfully : ", res);
-    // } catch (err) {
-    //   console.error("Error Creating NFT", err);
-    // }
+    // console.log(FinalData);
+    try {
+      const res = await backend.FractionalizeNFt(
+        FinalData.collectionId,
+        FinalData.ownerId,
+        FinalData.metaData,
+        Number(FinalData.priceInUsd),
+        FinalData.name,
+        FinalData.owner,
+        FinalData.symbol,
+        FinalData.fee,
+        FinalData.decimals,
+        3 // This is total supply? didn't understand the meaning
+      );
+      console.log("NFT Created Successfully : ", res);
+    } catch (err) {
+      console.error("Error Creating NFT", err);
+    }
   };
 
   const handleAddKeyVal = () => {
