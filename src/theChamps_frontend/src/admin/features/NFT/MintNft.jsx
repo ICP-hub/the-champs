@@ -59,8 +59,8 @@ const MintNft = () => {
     e.preventDefault();
     const FinalData = {
       ...formData,
-      // collectionId: Principal.fromText(slug),
-      // ownerId: Principal.fromText(principal),
+      collectionId: Principal.fromText(slug),
+      ownerId: Principal.fromText(principal),
       owner: principal,
       metaData: [
         {
