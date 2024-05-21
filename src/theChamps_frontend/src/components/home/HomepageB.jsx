@@ -22,6 +22,7 @@ import NFTApi from "../../api/NftApi";
 import { Link } from "react-router-dom";
 import NotAvailable from "../common/NotAvailable";
 import { useSelector } from "react-redux";
+import { useCanister } from "@connect2ic/react";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageB /> : Soccer collection.
@@ -31,6 +32,7 @@ const HomePageB = () => {
   const [numColumns, setNumColumns] = useState(2);
   const { getAllCollectionWiseNFT } = NFTApi();
   const [finalLoading, setFinalLoading] = useState(true);
+  const [backend] = useCanister("backend");
 
   const nftData = useSelector((state) => state.nftData);
 
@@ -54,12 +56,15 @@ const HomePageB = () => {
   // Effect hook get collection onLoad;
   useEffect(() => {
     getAllCollectionIds();
-  }, []);
+  }, [backend]);
 
   // Effect : nft data fetch
   useEffect(() => {
     getAllCollectionWiseNFT(nftData.collectionIds);
-  }, [nftData.collectionIds]);
+    setTimeout(() => {
+      setFinalLoading(false);
+    }, 5000);
+  }, [nftData.collectionIds, backend]);
 
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
@@ -73,7 +78,7 @@ const HomePageB = () => {
             <CollectionLoader key={index} />
           ))}
         </div>
-      ) : nftData && nftData.collectionWiseNft[1].nfts === 0 ? (
+      ) : nftData && nftData?.collectionWiseNft === null ? (
         <NotAvailable>Featured NFT not available</NotAvailable>
       ) : (
         <div>
@@ -119,7 +124,7 @@ const HomePageB = () => {
             }}
             className="mySwiper"
           >
-            {nftData?.collectionWiseNft[1]?.nfts?.map((NFT, index) => (
+            {nftData?.collectionWiseNft[0]?.nfts?.map((NFT, index) => (
               <SwiperSlide key={index}>
                 <NFTCard key={index} NFT={NFT} />
               </SwiperSlide>
@@ -145,6 +150,7 @@ const HomePageB = () => {
 const NFTCard = ({ NFT, collection }) => {
   const [image, setImage] = useState(null);
 
+  console.log(NFT, "nftcards");
   useEffect(() => {
     // const img = NFT.metadata.map((item) => item.key_val_data);
     // console.log("This console is coming from HOMEPAGE B  NFT:", NFT);
@@ -162,11 +168,11 @@ const NFTCard = ({ NFT, collection }) => {
       <img src={soccer1} alt="image" className="rounded-2xl object-contain" />
       <div className="flex flex-col">
         <h1 className="text-[28px] font-bold line-clamp-1">
-          {NFT.nft.owner.toText()}
+          {NFT[0]?.nft?.owner?.toText()}
         </h1>
         {/* Static collection pick for now we can show featured later */}
         <p className="text-[15px] text-[#7B7583]">
-          {NFT.fractional_token.name}
+          {NFT[0]?.fractional_token?.name}
         </p>
       </div>
     </motion.div>

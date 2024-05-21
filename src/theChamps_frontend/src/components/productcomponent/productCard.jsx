@@ -14,6 +14,7 @@ import { RiErrorWarningLine } from "react-icons/ri";
 import IconWrapper from "../common/IconWrapper";
 import placeHolderImg from "../../assets/CHAMPS.png";
 import { Link } from "react-router-dom";
+import IcpLogo from "../../assets/IcpLogo";
 
 const ProductCard = ({ product }) => {
   const { isConnected } = useConnect();
@@ -91,7 +92,7 @@ const ProductCard = ({ product }) => {
         notify(); // Or any other action
       }
     } else {
-      toast.success("please login first");
+      setShowModal(true);
     }
   };
 
@@ -100,14 +101,14 @@ const ProductCard = ({ product }) => {
       className="border   rounded-xl overflow-hidden "
       style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
     >
-      <div className="overflow-hidden">
+      <div className="overflow-hidden ">
         <Link to={`/collections/${id}/${product[0].nft.id}`}>
           <motion.img
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
             src={placeHolderImg || product[0]?.fractional_token.logo}
-            alt=""
-            className="rounded-t-lg h-full object-cover cursor-pointer overflow-hidden "
+            alt={product[0]?.fractional_token.name}
+            className="rounded-t-lg  object-cover cursor-pointer overflow-hidden "
           ></motion.img>
         </Link>
       </div>
@@ -117,10 +118,10 @@ const ProductCard = ({ product }) => {
             {product[0]?.fractional_token?.name}
           </h2>
           {loading ? (
-            <button>
+            <button className="ml-48">
               <TailSpin
-                height="8%"
-                width="8%"
+                height="20%"
+                width="20%"
                 color="black"
                 ariaLabel="tail-spin-loading"
                 radius="1"
@@ -173,11 +174,12 @@ const ProductCard = ({ product }) => {
           />
         </p>
         <div className="flex justify-between  mb-4">
-          <p className="mt-4    bg-opacity-100  py-2   rounded-md w-[50%]">
+          <p className="mt-4    bg-opacity-100  py-2  flex  gap-1 rounded-md w-[50%]">
+            <IcpLogo />
             {parseInt(product[0]?.fractional_token.fee)}
           </p>
           <button
-            className="mt-4   button z-10   bg-opacity-100 text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
+            className="mt-4   button   text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
             onClick={handleBuyNow} // Call handleBuyNow function when button is clicked
           >
             Buy now
@@ -188,7 +190,7 @@ const ProductCard = ({ product }) => {
       {/* Modal for insufficient balance */}
       {showModal && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
-          <div className="bg-white p-4 rounded-lg flex flex-col space-x-5 space-y-8 items-center justify-center">
+          <div className=" z-10 bg-white p-4 rounded-lg flex flex-col space-x-5 space-y-8 items-center justify-center">
             <IconWrapper>
               <RiErrorWarningLine size={36} />
             </IconWrapper>

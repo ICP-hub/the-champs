@@ -8,17 +8,19 @@ import { useEffect } from "react";
 import NotAvailable from "../common/NotAvailable";
 import { useSelector } from "react-redux";
 import ProducrCardLgLoader from "../productcomponent/ProducrCardLgLoader";
+import { useCanister } from "@connect2ic/react";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomeFeatured /> : Homepage featured items.
 /* ----------------------------------------------------------------------------------------------------- */
 const HomeFeatured = () => {
+  const [backend] = useCanister("backend");
   const { getAllCollections, isLoading } = CollectionApi();
   const collectionSelector = useSelector((state) => state.collections);
 
   useEffect(() => {
     getAllCollections();
-  }, []);
+  }, [backend]);
 
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">

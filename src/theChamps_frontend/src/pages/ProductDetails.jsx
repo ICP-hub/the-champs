@@ -19,6 +19,7 @@ import placeholderimg from "../assets/CHAMPS.png";
 import { RadioGroup } from "@headlessui/react";
 import IcpLogo from "../assets/IcpLogo";
 import toast from "react-hot-toast";
+import BuyNowModal from "../components/common/BuyNowCard";
 
 const plans = [
   {
@@ -28,6 +29,10 @@ const plans = [
   {
     name: "Fiat Payment",
     value: "fiat-payment",
+  },
+  {
+    name: "CKBTC Wallet",
+    value: "CKBTC",
   },
   // {
   //   name: "Pay with paypal",
@@ -53,6 +58,8 @@ const ProductDetails = () => {
   let [selected, setSelected] = useState(plans[0]);
   const { principal, disconnect } = useConnect();
   const [loading, setLoading] = useState(false);
+  const [favourites, setFavourites] = useState();
+  const [productInFavourites, setProductInFavourites] = useState(false);
 
   const paymentAddressForTransfer = usePaymentTransfer(
     parseInt(nft[0]?.fractional_token?.fee)
@@ -81,6 +88,9 @@ const ProductDetails = () => {
         nft[1],
         nft[0]?.fractional_token?.owner,
         user_id2,
+
+        1,
+        { icp },
         1
       );
 
@@ -126,6 +136,41 @@ const ProductDetails = () => {
     setOpen(!open);
     setConfirm(true);
   };
+
+  const addToFavourites = async () => {
+    try {
+      setLoading(true);
+      const canister_id = Principal.fromText(id);
+      const res = await backend.addfavourite(
+        canister_id,
+        parseInt(nft[0].nft.id)
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const getFavourites = async () => {
+    try {
+      const res = await backend.getfavourites();
+
+      setFavourites(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getFavourites();
+
+    if (favourites != null) {
+      const isProductInWishlist = favourites.some(
+        (item) => item[0].id === nft[0].nft.id && item[1].toText() === id
+      );
+      setProductInFavourites(isProductInWishlist);
+    }
+  }, [nft, favourites]);
   return (
     <>
       {!open && <Header />}
@@ -135,104 +180,15 @@ const ProductDetails = () => {
         </div>
       )}
       <div className="md:mt-44 mt-8 left-0 right-0 gap-8 px-6 lg:px-24">
-        {open && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-80  ">
-            <div className="   md:w-[28%]    w-[75%]   rounded-xl bg-white p-8 pt-4 pb-4  ">
-              <p className="text-center font-bold text-sm">
-                You are about to make a purchase!
-              </p>
-              <div className="flex items-center justify-center mt-4">
-                <img
-                  src={
-                    nft[0]?.fractional_token?.logo
-                      ? nft[0]?.fractional_token?.logo
-                      : placeholderimg
-                  }
-                  alt=""
-                  className="w-1/2 md:h-40 h-20 rounded-lg shadow-md
-                    "
-                />
-              </div>
-              <p className="text-center text-gray-400 mt-4 text-sm">
-                You are about to purchase this NFT from your connected wallet.
-              </p>
-              <div className="border-[1px] mt-2 mb-4 border-gray-200 w-full"></div>
-              <RadioGroup>
-                <RadioGroup.Label className="text-black xl:text-sm  text-xs font-semibold uppercase tracking-wider w-full">
-                  Payment Method
-                </RadioGroup.Label>
-                <div className="grid xl:grid-cols-2 grid-cols-2 gap-4 pt-2  max-sm:flex max-sm:flex-col font-medium">
-                  {plans.map((plan) => (
-                    <RadioGroup.Option
-                      key={plan.name}
-                      value={plan}
-                      className={({ active, checked }) =>
-                        `border-2 p-3 rounded-xl text-sm uppercase ${
-                          checked
-                            ? " button text-white  border-none "
-                            : "bg-white"
-                        }`
-                      }
-                    >
-                      {({ checked }) => (
-                        <RadioGroup.Label className="flex justify-between w-full ml-2 items-center">
-                          <p>{plan.name}</p>
-                          {checked && (
-                            <svg
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              className="h-6 w-6"
-                            >
-                              <circle
-                                cx={12}
-                                cy={12}
-                                r={12}
-                                fill="#fff"
-                                opacity="0.2"
-                              />
-                              <path
-                                d="M7 13l3 3 7-7"
-                                stroke="#fff"
-                                strokeWidth={1.5}
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          )}
-                        </RadioGroup.Label>
-                      )}
-                    </RadioGroup.Option>
-                  ))}
-                </div>
-              </RadioGroup>
-              <div className="flex items-center justify-between font-bold text-sm mt-4">
-                <p>TOTAL:</p>
-                <p className="flex items-center gap-1">
-                  <IcpLogo size={16} />
-                  {parseInt(nft[0]?.fractional_token?.fee)}
-                </p>
-              </div>
-              <div className="mt-2 md:block hidden text-center text-gray-400 text-xs">
-                This process may take a minute. Transactions can not be
-                reversed. By clicking confirm you show acceptance to our{" "}
-                <span className="text-[#FC001E] underline">
-                  {" "}
-                  Terms and Service
-                </span>
-                .
-              </div>
-              <div className="flex items-center justify-end mt-4 text-md text-gray-400 font-medium">
-                <button className="mr-8" onClick={handler}>
-                  Cancel
-                </button>
-
-                <button className="text-[#FC001E] " onClick={handleConfirm}>
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <BuyNowModal
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          nft={nft}
+          plans={plans}
+          selected={selected}
+          handleConfirm={handleConfirm}
+          handler={handler}
+        />
 
         <div className="md:flex gap-8">
           <div className="md:w-1/4 w-full  mb-16 ">
@@ -245,7 +201,7 @@ const ProductDetails = () => {
           <div className=" gap-8 md:w-3/4  ">
             <div className="flex items-center gap-4">
               <Link
-                to="/collection"
+                to={`/collections/${id}`}
                 className="text-xl font-medium flex items-center gap-2"
               >
                 <IoArrowBack />
@@ -267,7 +223,40 @@ const ProductDetails = () => {
                 </p>
               </div>
               <div className="text-center ">
-                <CiHeart size={28} />
+                {productInFavourites ? (
+                  <button  >
+                    {" "}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 115.77 122.88"
+                      width="30"
+                      height="25"
+                      className="gradient-icon"
+                    >
+                      <defs>
+                        <linearGradient
+                          id="gradient"
+                          x1="0"
+                          y1="0"
+                          x2="100%"
+                          y2="0"
+                        >
+                          <stop offset="0%" stopColor="#FC001E" />
+                          <stop offset="100%" stopColor="#FF7D57" />
+                        </linearGradient>
+                      </defs>
+                      <path
+                        fill="url(#gradient)"
+                        d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z"
+                      />
+                    </svg>
+                  </button>
+                ) : (
+                  <button onClick={addToFavourites}>
+                    {" "}
+                    <CiHeart size={32} />
+                  </button>
+                )}
               </div>
             </div>
             <div className="flex justify-between  mt-6">
@@ -324,14 +313,14 @@ const ProductDetails = () => {
                       </span>
                     </div>
                   </div>
-                  <div className="mt-6">
-                    <ReadMore
-                      text={
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                      }
-                      maxLength={200}
-                      readmore={true}
-                    />
+                  <div className="mt-6 break-words">
+                    {nft[0]?.nft?.metadata[0]?.description && (
+                      <ReadMore
+                        text={nft[0]?.nft?.metadata[0]?.description}
+                        maxLength={100}
+                        readmore={true}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -339,7 +328,7 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        <MyProfileActivity />
+        {/* <MyProfileActivity /> */}
       </div>
       <Footer />
     </>

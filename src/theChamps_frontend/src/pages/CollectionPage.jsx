@@ -28,7 +28,7 @@ const CollectionPage = ({ name }) => {
   useEffect(() => {
     getAllCollections();
     setLoading(false);
-  }, []);
+  }, [backend]);
 
   const handleSearch = (e) => {
     setSearch(true);
