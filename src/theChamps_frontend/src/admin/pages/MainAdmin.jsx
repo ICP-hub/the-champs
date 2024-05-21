@@ -21,6 +21,8 @@ function MainAdmin({ children }) {
   const [loading, setLoading] = useState(true);
   const [backend] = useCanister("backend");
 
+  // console.log(backend);
+
   // useEffect(() => {
   //   const checkConnection = async () => {
   //     try {

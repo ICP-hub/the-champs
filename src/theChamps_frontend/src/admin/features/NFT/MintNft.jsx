@@ -20,6 +20,7 @@ const initialFormValues = {
   metaData: [
     {
       data: [""],
+      description: "",
       key_val_data: [
         {
           key: "",
@@ -58,12 +59,13 @@ const MintNft = () => {
     e.preventDefault();
     const FinalData = {
       ...formData,
-      collectionId: Principal.fromText(slug),
-      ownerId: Principal.fromText(principal),
+      // collectionId: Principal.fromText(slug),
+      // ownerId: Principal.fromText(principal),
       owner: principal,
       metaData: [
         {
           data: imageArrayBuffer,
+          description: formData.metaData[0].description,
           key_val_data: formData.metaData[0].key_val_data,
           purpose: { [selectedPurpose]: null },
         },
@@ -72,24 +74,24 @@ const MintNft = () => {
       decimals: 2,
       symbol: "random",
     };
-    // console.log(FinalData);
-    try {
-      const res = await backend.FractionalizeNFt(
-        FinalData.collectionId,
-        FinalData.ownerId,
-        FinalData.metaData,
-        Number(FinalData.priceInUsd),
-        FinalData.name,
-        FinalData.owner,
-        FinalData.symbol,
-        FinalData.fee,
-        FinalData.decimals,
-        3 // This is total supply? didn't understand the meaning
-      );
-      console.log("NFT Created Successfully : ", res);
-    } catch (err) {
-      console.error("Error Creating NFT", err);
-    }
+    console.log(FinalData);
+    // try {
+    //   const res = await backend.FractionalizeNFt(
+    //     FinalData.collectionId,
+    //     FinalData.ownerId,
+    //     FinalData.metaData,
+    //     Number(FinalData.priceInUsd),
+    //     FinalData.name,
+    //     FinalData.owner,
+    //     FinalData.symbol,
+    //     FinalData.fee,
+    //     FinalData.decimals,
+    //     3 // This is total supply? didn't understand the meaning
+    //   );
+    //   console.log("NFT Created Successfully : ", res);
+    // } catch (err) {
+    //   console.error("Error Creating NFT", err);
+    // }
   };
 
   const handleAddKeyVal = () => {
@@ -296,6 +298,29 @@ const MintNft = () => {
             <option value="Preview">Preview</option>
             <option value="Rendered">Rendered</option>
           </select>
+        </div>
+        <div>
+          <label
+            htmlFor="description"
+            className="md:text-lg text-sm font-semibold"
+          >
+            Description :
+          </label>
+          <textarea
+            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+            name="description"
+            value={formData.metaData[0].description}
+            onChange={(e) => {
+              const updatedMetaData = {
+                ...formData.metaData[0],
+                description: e.target.value,
+              };
+              setFormData((prevData) => ({
+                ...prevData,
+                metaData: [updatedMetaData],
+              }));
+            }}
+          />
         </div>
       </div>
       <button
