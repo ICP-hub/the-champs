@@ -18,7 +18,11 @@ import store from "../../redux/store/store";
 
 const client = createClient({
   canisters: { backend },
-  providers: [new PlugWallet(), new InternetIdentity()],
+  //providers: [new PlugWallet(), new InternetIdentity()],
+  providers: defaultProviders,
+  globalProviderConfig: {
+    dev: import.meta.env.DEV,
+  },
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
