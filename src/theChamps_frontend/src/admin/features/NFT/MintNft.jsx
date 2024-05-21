@@ -20,6 +20,7 @@ const initialFormValues = {
   metaData: [
     {
       data: [""],
+      description: "",
       key_val_data: [
         {
           key: "",
@@ -64,6 +65,7 @@ const MintNft = () => {
       metaData: [
         {
           data: imageArrayBuffer,
+          description: formData.metaData[0].description,
           key_val_data: formData.metaData[0].key_val_data,
           purpose: { [selectedPurpose]: null },
         },
@@ -296,6 +298,29 @@ const MintNft = () => {
             <option value="Preview">Preview</option>
             <option value="Rendered">Rendered</option>
           </select>
+        </div>
+        <div>
+          <label
+            htmlFor="description"
+            className="md:text-lg text-sm font-semibold"
+          >
+            Description :
+          </label>
+          <textarea
+            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+            name="description"
+            value={formData.metaData[0].description}
+            onChange={(e) => {
+              const updatedMetaData = {
+                ...formData.metaData[0],
+                description: e.target.value,
+              };
+              setFormData((prevData) => ({
+                ...prevData,
+                metaData: [updatedMetaData],
+              }));
+            }}
+          />
         </div>
       </div>
       <button

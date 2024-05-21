@@ -4,9 +4,11 @@ import { RouterProvider } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { AnimatePresence } from "framer-motion";
+import { useCanister } from "@connect2ic/react";
 
 function App() {
   // Set initial body background
+  // console.log("backend from app.jsx", backend);
   document.body.className = "bg-champs-main";
   // Initialize AOS and handle scroll effect
   useEffect(() => {

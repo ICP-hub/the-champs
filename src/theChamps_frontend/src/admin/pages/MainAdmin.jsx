@@ -21,39 +21,41 @@ function MainAdmin({ children }) {
   const [loading, setLoading] = useState(true);
   const [backend] = useCanister("backend");
 
-  useEffect(() => {
-    const checkConnection = async () => {
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-      } catch (error) {
-        console.error("Error checking connection:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // console.log(backend);
 
-    checkConnection();
-  }, []);
+  // useEffect(() => {
+  //   const checkConnection = async () => {
+  //     try {
+  //       await new Promise((resolve) => setTimeout(resolve, 3000));
+  //     } catch (error) {
+  //       console.error("Error checking connection:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-  useEffect(() => {
-    const checkIsAdmin = async () => {
-      if (isConnected) {
-        try {
-          //const res = await backend.checkisadmin(Principal.fromText(principal));
-          setIsAdmin(true);
-        } catch (error) {
-          console.error("Error checking isAdmin:", error);
-          setIsAdmin(false);
-        } finally {
-          setIsAdminChecked(true);
-        }
-      } else {
-        setIsAdminChecked(false);
-      }
-    };
+  //   checkConnection();
+  // }, []);
 
-    checkIsAdmin();
-  }, [isConnected, backend, principal]);
+  // useEffect(() => {
+  //   const checkIsAdmin = async () => {
+  //     if (isConnected) {
+  //       try {
+  //         //const res = await backend.checkisadmin(Principal.fromText(principal));
+  //         setIsAdmin(true);
+  //       } catch (error) {
+  //         console.error("Error checking isAdmin:", error);
+  //         setIsAdmin(false);
+  //       } finally {
+  //         setIsAdminChecked(true);
+  //       }
+  //     } else {
+  //       setIsAdminChecked(false);
+  //     }
+  //   };
+
+  //   checkIsAdmin();
+  // }, [isConnected, backend, principal]);
 
   const debounce = (func, delay) => {
     let timeoutId;
@@ -114,13 +116,13 @@ function MainAdmin({ children }) {
     };
   }, [windowWidth, isOpen]);
 
-  if (loading || !isAdminChecked) {
-    return <FullScreenLoader />;
-  }
+  // if (loading || !isAdminChecked) {
+  //   return <FullScreenLoader />;
+  // }
 
-  if (!isConnected || !isAdmin) {
-    return <Navigate to="/" replace={true} />;
-  }
+  // if (!isConnected || !isAdmin) {
+  //   return <Navigate to="/" replace={true} />;
+  // }
 
   return (
     <div className={`layout bg-background ${theme}`} ref={themeRef}>
