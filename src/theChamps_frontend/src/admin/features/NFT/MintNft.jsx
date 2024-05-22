@@ -74,19 +74,19 @@ const MintNft = () => {
       decimals: 2,
       symbol: "random",
     };
-    // console.log(FinalData);
+    console.log(FinalData);
     try {
       const res = await backend.FractionalizeNFt(
         FinalData.collectionId,
         FinalData.ownerId,
         FinalData.metaData,
         Number(FinalData.priceInUsd),
+        FinalData.logo,
         FinalData.name,
-        FinalData.owner,
         FinalData.symbol,
         FinalData.fee,
-        FinalData.decimals,
-        3 // This is total supply? didn't understand the meaning
+        3, // This is total supply? didn't understand the meaning
+        FinalData.decimals
       );
       console.log("NFT Created Successfully : ", res);
     } catch (err) {
@@ -203,6 +203,8 @@ const MintNft = () => {
               style={{
                 maxWidth: "96px",
                 maxHeight: "96px",
+                minWidth: "96px",
+                minHeight: "96px",
               }}
             />
           )}
