@@ -20,6 +20,8 @@ import { RadioGroup } from "@headlessui/react";
 import IcpLogo from "../assets/IcpLogo";
 import toast from "react-hot-toast";
 import BuyNowModal from "../components/common/BuyNowCard";
+import IconWrapper from "../components/common/IconWrapper";
+import { RiErrorWarningLine } from "react-icons/ri";
 
 const plans = [
   {
@@ -60,6 +62,7 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [favourites, setFavourites] = useState();
   const [productInFavourites, setProductInFavourites] = useState(false);
+  const [license, setLicense] = useState(false);
 
   const paymentAddressForTransfer = usePaymentTransfer(
     parseInt(nft[0]?.fractional_token?.fee)
@@ -189,6 +192,26 @@ const ProductDetails = () => {
           handleConfirm={handleConfirm}
           handler={handler}
         />
+        {license && (
+          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
+            <div className=" z-10 bg-white p-4 w-[30%] rounded-lg flex flex-col space-x-5 space-y-8 items-center justify-center">
+              <IconWrapper>
+                <RiErrorWarningLine size={36} />
+              </IconWrapper>
+              <p>
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum has been the industry's standard dummy
+                text ever since the 1500s
+              </p>
+              <button
+                className="mt-2 px-4 py-2 button bg-blue-500 text-white rounded-lg"
+                onClick={() => setLicense(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="md:flex gap-8">
           <div className="md:w-1/4 w-full  mb-16 ">
@@ -224,7 +247,7 @@ const ProductDetails = () => {
               </div>
               <div className="text-center ">
                 {productInFavourites ? (
-                  <button  >
+                  <button>
                     {" "}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -295,7 +318,7 @@ const ProductDetails = () => {
                           fill-opacity="0.87"
                         />
                       </svg>
-                      <p className="text-sm  text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text font-bold">
+                      <p className="text-sm  text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text font-bold cursor-pointer">
                         view-on-chain
                       </p>
                     </div>
@@ -308,7 +331,12 @@ const ProductDetails = () => {
                     </div>
                     <div className="flex gap-2">
                       <CiMemoPad />
-                      <span className="text-sm  text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text font-bold">
+                      <span
+                        className="text-sm  text-transparent  bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text font-bold cursor-pointer"
+                        onClick={() => {
+                          setLicense(true);
+                        }}
+                      >
                         License
                       </span>
                     </div>
