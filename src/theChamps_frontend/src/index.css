@@ -512,3 +512,31 @@
   -moz-box-shadow: 0px 0px 5px 5px #0099e0;
   box-shadow: 0px 0px 5px 5px #0099e0;
 }
+
+
+.dialog-container {
+  background: #ffffff !important;
+}
+
+
+.button-styles:hover {
+  color: #ffffff !important;
+  background: linear-gradient(to bottom left, #fc001e, #ff7d57) !important;
+}
+
+.button-label {
+  color: #000 !important;
+}
+
+.button-styles {
+  padding: 0px !important;
+}
+
+.button-styles:hover .button-label {
+  color: #fff !important;
+}
+
+.img-styles{
+  background: rgba(255, 255, 255, .5);
+  border-radius: 11px;
+}
