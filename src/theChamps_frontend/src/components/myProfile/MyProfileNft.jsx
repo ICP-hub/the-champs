@@ -26,7 +26,7 @@ const MyProfileNFT = () => {
   useEffect(() => {
     const getUsersFractionNFT = async () => {
       try {
-        const res = await backend.getusersfractionnft(rincipal);
+        const res = await backend.getusersfractionnft(principal.fromText());
 
         console.log("Response from backend:", res);
 

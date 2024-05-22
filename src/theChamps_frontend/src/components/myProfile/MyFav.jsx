@@ -35,7 +35,7 @@ const MyFav = () => {
   useEffect(() => {
     const getUsersFractionNFT = async () => {
       try {
-        const res = await backend.getusersfractionnft(rincipal);
+        const res = await backend.getusersfractionnft(principal.fromText());
         const userProducts = res.map((item) => item[1]);
         const favouritesRes = await backend.getfavourites();
 
