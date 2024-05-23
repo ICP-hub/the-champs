@@ -13,6 +13,8 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { TbSquareRoundedChevronLeft } from "react-icons/tb";
 import { HiOutlineXMark } from "react-icons/hi2";
+import { TailSpin } from "react-loader-spinner";
+import { validateForm } from "./formValidation";
 
 const initialFormValues = {
   collectionId: "",
@@ -47,6 +49,9 @@ const MintNft = () => {
   const [imageArrayBuffer, setImageArrayBuffer] = useState(null);
   const [selectedPurpose, setSelectedPurpose] = useState("Preview");
   const [backend] = useCanister("backend");
+  const [isMintLoading, setIsMintLoading] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -55,42 +60,56 @@ const MintNft = () => {
       [name]: files ? files[0] : name === "fee" ? Number(value) : value,
     }));
   };
+
+  // Creating NFT : Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const FinalData = {
-      ...formData,
-      collectionId: Principal.fromText(slug),
-      ownerId: Principal.fromText(principal),
-      owner: principal,
-      metaData: [
-        {
-          data: imageArrayBuffer,
-          description: formData.metaData[0].description,
-          key_val_data: formData.metaData[0].key_val_data,
-          purpose: { [selectedPurpose]: null },
-        },
-      ],
-      logo: selectedImage,
-      decimals: 2,
-      symbol: "random",
-    };
-    console.log(FinalData);
-    try {
-      const res = await backend.FractionalizeNFt(
-        FinalData.collectionId,
-        FinalData.ownerId,
-        FinalData.metaData,
-        Number(FinalData.priceInUsd),
-        FinalData.logo,
-        FinalData.name,
-        FinalData.symbol,
-        FinalData.fee,
-        3, // This is total supply? didn't understand the meaning
-        FinalData.decimals
-      );
-      console.log("NFT Created Successfully : ", res);
-    } catch (err) {
-      console.error("Error Creating NFT", err);
+
+    const errors = validateForm(formData, selectedImage);
+    setFormErrors(errors);
+
+    if (Object.keys(errors).length === 0) {
+      const FinalData = {
+        ...formData,
+        collectionId: Principal.fromText(slug),
+        ownerId: Principal.fromText(principal),
+        owner: principal,
+        metaData: [
+          {
+            data: imageArrayBuffer,
+            description: formData.metaData[0].description,
+            key_val_data: formData.metaData[0].key_val_data,
+            purpose: { [selectedPurpose]: null },
+          },
+        ],
+        logo: selectedImage,
+        decimals: 2,
+        symbol: "random",
+      };
+      console.log(FinalData);
+      try {
+        setIsMintLoading(true);
+        const res = await backend.FractionalizeNFt(
+          FinalData.collectionId,
+          FinalData.ownerId,
+          FinalData.metaData,
+          Number(FinalData.priceInUsd),
+          FinalData.logo,
+          FinalData.name,
+          FinalData.symbol,
+          FinalData.fee,
+          3, // This is total supply? didn't understand the meaning // For share value?
+          FinalData.decimals
+        );
+        console.log("NFT Created Successfully : ", res);
+        toast.success("NFT Fractionalized Successfully");
+        navigate("/admin-collections");
+      } catch (err) {
+        console.error("Error Creating NFT", err);
+        toast.error("Failed to Fractionalize NFT");
+      } finally {
+        setIsMintLoading(false);
+      }
     }
   };
 
@@ -129,15 +148,24 @@ const MintNft = () => {
     if (!file) return;
 
     const reader = new FileReader();
+
     reader.onload = function (e) {
-      const arrayBuffer = e.target.result;
-      setSelectedImage(URL.createObjectURL(file));
-      const uintArray = new Uint8Array(arrayBuffer);
-      const byteArray = Array.from(uintArray);
-      setImageArrayBuffer(byteArray);
+      // Set the data URL for the image
+      const dataUrl = e.target.result;
+      setSelectedImage(dataUrl);
+      const arrayBufferReader = new FileReader();
+      arrayBufferReader.onload = function (event) {
+        const arrayBuffer = event.target.result;
+        const uintArray = new Uint8Array(arrayBuffer);
+        const byteArray = Array.from(uintArray);
+        setImageArrayBuffer(byteArray);
+      };
+      arrayBufferReader.readAsArrayBuffer(file);
     };
-    reader.readAsArrayBuffer(file);
+    reader.readAsDataURL(file);
   };
+
+  // console.log(selectedImage);
 
   const handlePurposeChange = (e) => {
     setSelectedPurpose(e.target.value);
@@ -187,6 +215,9 @@ const MintNft = () => {
             value={formData.name}
             onChange={handleChange}
           />
+          {formErrors.name && (
+            <p className="text-red-500 text-xs">{formErrors.name}</p>
+          )}
         </div>
         <div>
           <label
@@ -213,18 +244,11 @@ const MintNft = () => {
             className="text-sm py-2"
             onChange={handleImageChange}
           />
+          {formErrors.selectedImage && (
+            <p className="text-red-500 text-xs">{formErrors.selectedImage}</p>
+          )}
         </div>
-        <div>
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Logo :
-          </label>
-          <input
-            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            type="text"
-            value={selectedImage ? selectedImage : ""}
-            disabled
-          />
-        </div>
+
         <div>
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
             NFT Price :
@@ -236,6 +260,9 @@ const MintNft = () => {
             value={formData.priceInUsd}
             onChange={handleChange}
           />
+          {formErrors.priceInUsd && (
+            <p className="text-red-500 text-xs">{formErrors.priceInUsd}</p>
+          )}
         </div>
         <div>
           <div className="flex justify-between items-center pb-2">
@@ -249,6 +276,7 @@ const MintNft = () => {
               Add New Key
             </button>
           </div>
+
           {formData.metaData[0].key_val_data.map((item, index) => (
             <div key={index} className="flex gap-2">
               <input
@@ -276,6 +304,9 @@ const MintNft = () => {
               </button>
             </div>
           ))}
+          {formErrors[`key_val_data`] && (
+            <p className="text-red-500 text-xs">{formErrors[`key_val_data`]}</p>
+          )}
         </div>
         <label htmlFor="name" className="md:text-lg text-sm font-semibold">
           Processing Fee :
@@ -287,6 +318,9 @@ const MintNft = () => {
           value={formData.fee}
           onChange={handleChange}
         />
+        {formErrors.fee && (
+          <p className="text-red-500 text-xs">{formErrors.fee}</p>
+        )}
         <div>
           <label htmlFor="purpose" className="md:text-lg text-sm font-semibold">
             Select Purpose:
@@ -323,14 +357,31 @@ const MintNft = () => {
               }));
             }}
           />
+          {formErrors.description && (
+            <p className="text-red-500 text-xs">{formErrors.description}</p>
+          )}
         </div>
       </div>
-      <button
-        onClick={handleSubmit}
-        className="button px-4 py-2 mt-6 rounded-md text-white font-medium"
-      >
-        Submit
-      </button>
+      {isMintLoading ? (
+        <div className="bg-gray-500 text-white px-4 py-2 mt-6 rounded-md flex gap-3 max-w-max items-center justify-center">
+          Creating NFT
+          <TailSpin
+            height="15"
+            width="15"
+            color="white"
+            ariaLabel="tail-spin-loading"
+            radius="1"
+            visible={true}
+          />
+        </div>
+      ) : (
+        <button
+          onClick={handleSubmit}
+          className="button px-4 py-2 mt-6 rounded-md text-white font-medium"
+        >
+          Submit
+        </button>
+      )}
     </motion.div>
   );
 };

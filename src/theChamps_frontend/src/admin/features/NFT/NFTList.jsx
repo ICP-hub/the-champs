@@ -13,6 +13,7 @@ import { Grid } from "react-loader-spinner";
 import { useSelector } from "react-redux";
 import CollectionApi from "../../../api/CollectionApi";
 import NFTApi from "../../../api/NftApi";
+import CHAMPSImg from "../../../assets/CHAMPS.png";
 const NFTList = () => {
   const { slug } = useParams();
   const { getSingleCollectionDetails, isLoading } = CollectionApi();
@@ -45,7 +46,7 @@ const NFTList = () => {
           <img
             src={collectionDetail.banner.data}
             alt="banner"
-            className="max-h-max min-h-max rounded-t-2xl"
+            className="max-h-max min-h-max rounded-2xl"
           />
         </div>
         <div className="absolute top-32 md:left-16 rounded-2xl flex justify-center max-md:w-full">
@@ -121,17 +122,31 @@ const NFTs = () => {
 };
 
 const NFTCard = ({ nftdetail }) => {
-  console.log(nftdetail);
+  // console.log(nftdetail);
   const { fractional_token, nft } = nftdetail[0];
-  console.log();
   return (
     <div className="bg-card rounded-2xl flex flex-col gap-4">
-      <div>image</div>
+      <div>
+        <img
+          src={fractional_token.logo}
+          alt="nftImg"
+          className="rounded-t-2xl"
+        />
+      </div>
+      <span className="px-4">{fractional_token.name}</span>
       <span className="text-sm font-medium px-4">
         NFT ID : {nftdetail[1].toText()}
       </span>
-      <span className="px-4">Owner: {nft.owner.toText()}</span>
-      <p className="px-4 pb-4">Price : $ {nft.priceinusd}</p>
+      <span className="px-4 text-sm">Owner : {nft.owner.toText()}</span>
+      <p className="px-4 text-sm">Price : $ {nft.priceinusd}</p>
+      <div className="flex justify-end px-4 py-2">
+        <Link
+          to={`/admin/nft-detail/${nftdetail[1].toText()}`}
+          className="button px-4 py-1 text-white rounded-md"
+        >
+          View
+        </Link>
+      </div>
     </div>
   );
 };

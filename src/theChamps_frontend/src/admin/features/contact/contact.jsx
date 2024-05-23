@@ -17,8 +17,8 @@ const Contact = () => {
       setSampleData(data);
       setIsLoading(false);
       console.log("data", data);
-    } catch (error) {
-      console.log("reeegdf");
+    } catch (err) {
+      console.error("error fetching messages : ", err);
     }
   };
 
