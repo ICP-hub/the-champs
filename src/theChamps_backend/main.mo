@@ -609,10 +609,10 @@ actor Champs {
     };
 
     public shared ({ caller = user }) func listContacts() : async [(Types.ContactId, Types.Contact)] {
-        let adminstatus = await Admin.isAdmin(user);
-        if (adminstatus == false) {
-            throw Error.reject("User is not an admin");
-        };
+        // let adminstatus = await Admin.isAdmin(user);
+        // if (adminstatus == false) {
+        //     throw Error.reject("User is not an admin");
+        // };
         return Iter.toArray(contacts.entries());
     };
 

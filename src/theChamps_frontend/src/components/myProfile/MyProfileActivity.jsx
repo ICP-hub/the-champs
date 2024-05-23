@@ -5,6 +5,8 @@ import { useCanister, useConnect } from "@connect2ic/react";
 import soccer1 from "../../assets/images/soccer-1.jpeg";
 import { useParams } from "react-router";
 import { Principal } from "@dfinity/principal";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Fake activityData
@@ -55,14 +57,39 @@ const MyProfileActivity = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState([]);
-  const rincipal = Principal.fromText("2");
+  const userInfo = useSelector((state) => state.auth);
+  const user = userInfo.userPlugPrincipal;
+  const rincipal = Principal.fromText(user);
 
   const [backend] = useCanister("backend");
+
+  useEffect(() => {
+    const getUsersFractionNFT = async () => {
+      try {
+        const res = await backend.getusersfractionnft(rincipal);
+
+        console.log("Response from backend:", res);
+
+        const filteredData = res.filter((item) => {
+          const ownerPrincipal = item.nft?.owner?.toText();
+          return ownerPrincipal === principal?.toText();
+        });
+
+        console.log("Filtered Data:", filteredData);
+        setProduct(filteredData);
+        setLoading(false);
+      } catch (error) {
+        console.log("Error while fetching user NFT", error);
+      }
+    };
+
+    getUsersFractionNFT();
+  }, [backend, principal]);
   useEffect(() => {
     const getalltransactions = async () => {
       try {
         const res = await backend.getalltransactions(rincipal);
-
+        console.log("transation", res);
         console.log("Response from backend:", res);
 
         setProduct(res);
@@ -83,7 +110,7 @@ const MyProfileActivity = () => {
         <span className="flex items-center justify-center">TIME</span>
       </div>
       <div className="grid grid-cols-1 gap-4">
-        {activityData.map((activity, index) => (
+        {product.map((activity, index) => (
           <ActivityCard key={index} activity={activity} />
         ))}
       </div>

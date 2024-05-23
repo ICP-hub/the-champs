@@ -16,6 +16,10 @@ import { useEffect, useState } from "react";
 import { useCanister, useConnect } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { Bars, InfinitySpin } from "react-loader-spinner";
+import Avatar from "boring-avatars";
+import { useSelector } from "react-redux";
+import useClipboard from "react-use-clipboard";
+import { RiCheckLine, RiFileCopyLine } from "react-icons/ri";
 
 const containerVariants = {
   hidden: { opacity: 0, x: 400, transition: { duration: 0.4 } },
@@ -25,7 +29,10 @@ const containerVariants = {
 
 const MyProfileDetails = () => {
   const [backend] = useCanister("backend");
-
+  const userInfo = useSelector((state) => state.auth);
+  const [isCopied, setCopied] = useClipboard(userInfo?.userPlugPrincipal, {
+    successDuration: 1000,
+  });
   const [editMode, setEditMode] = useState(false);
   const { isConnected, principal } = useConnect();
   const [user, setUser] = useState(null);
@@ -44,7 +51,8 @@ const MyProfileDetails = () => {
     telegram: "",
     firstName: "",
   });
-  const [image, setImage] = useState(formData.profileimage || UserLogo);
+
+  const [image, setImage] = useState(formData.profileimage);
 
   function imageToFileBlob(imageFile) {
     return new Promise((resolve, reject) => {
@@ -132,11 +140,21 @@ const MyProfileDetails = () => {
       ) : (
         <div className="card">
           <div className="relative overflow-hidden w-32 h-32 group">
-            <img
-              src={formData?.profileimage}
-              alt="User Logo"
-              className="w-full h-full object-cover"
-            />
+            {editMode ? (
+              <Avatar
+                size={125}
+                className="w-full h-full object-cover"
+                name={principal}
+                variant="beam"
+                colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
+              />
+            ) : (
+              <img
+                src={formData?.profileimage}
+                alt="User Logo"
+                className="w-full h-full object-cover"
+              />
+            )}
             {editMode && (
               <>
                 <input
@@ -164,9 +182,12 @@ const MyProfileDetails = () => {
               />
             ) : (
               <ProfileInfo
+                userInfo={userInfo}
                 formData={formData}
                 handleEdit={handleEdit}
                 isLoading={isLoading}
+                isCopied={isCopied}
+                setCopied={setCopied}
               />
             )}
           </AnimatePresence>
@@ -176,7 +197,14 @@ const MyProfileDetails = () => {
   );
 };
 
-const ProfileInfo = ({ formData, handleEdit, isLoading }) => (
+const ProfileInfo = ({
+  userInfo,
+  formData,
+  handleEdit,
+  isLoading,
+  isCopied,
+  setCopied,
+}) => (
   <motion.div
     initial="hidden"
     animate="visible"
@@ -185,7 +213,30 @@ const ProfileInfo = ({ formData, handleEdit, isLoading }) => (
     className="infos"
   >
     <div className="name">
-      <h2 className="line-clamp-1">{formData?.id}</h2>
+      <h2 className="flex items-center gap-2">
+        {" "}
+        <span className="line-clamp-1">
+          {" "}
+          {userInfo.userPlugPrincipal ? userInfo.userPlugPrincipal : ""}
+        </span>
+        {userInfo.userPlugPrincipal ? (
+          <button
+            onClick={() => {
+              setCopied();
+              toast.success("Principal copied successfully");
+            }}
+            className="text-gray-400"
+          >
+            {isCopied ? (
+              <RiCheckLine className="w-5 h-5 text-emerald-500" />
+            ) : (
+              <RiFileCopyLine className="w-5 h-5 text-gray-600" />
+            )}
+          </button>
+        ) : (
+          ""
+        )}
+      </h2>
       {/* <h4>@User principal</h4> */}
     </div>
     <ul className="flex flex-col">
@@ -199,7 +250,11 @@ const ProfileInfo = ({ formData, handleEdit, isLoading }) => (
       </li>
       <li className="flex gap-4 py-2">
         <PiTwitterLogo size={24} color="#1DA1F2" />
-        <h4>{isLoading ? "Loading..." : `${formData?.twitter}`}</h4>
+        {formData?.twitter ? (
+          <h4>{isLoading ? "Loading..." : `${formData?.twitter}`}</h4>
+        ) : (
+          <span className="text-gray-400 ">https://twitter.com/username</span>
+        )}
       </li>
       <li className="flex gap-4 py-2">
         <MdOutlineMailOutline size={24} color="#1DA1F2" />
@@ -207,11 +262,19 @@ const ProfileInfo = ({ formData, handleEdit, isLoading }) => (
       </li>
       <li className="flex gap-4 py-2">
         <PiTelegramLogo size={24} color="#24A1DE" />
-        <h4>{isLoading ? "Loading..." : `${formData?.telegram}`}</h4>
+        {formData?.telegram ? (
+          <h4>{isLoading ? "Loading..." : `${formData?.telegram}`}</h4>
+        ) : (
+          <span className="text-gray-400 ">https://t.me/username</span>
+        )}
       </li>
       <li className="flex gap-4 py-2">
         <PiDiscordLogoLight size={24} color="#7289da" />
-        <h4>{isLoading ? "Loading..." : `${formData?.discord}`}</h4>
+        {formData?.discord ? (
+          <h4>{isLoading ? "Loading..." : `${formData?.discord}`}</h4>
+        ) : (
+          <span className="text-gray-400 ">https://discord.com/username</span>
+        )}
       </li>
     </ul>
     <div className="links py-4">
@@ -236,25 +299,23 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
   };
   const [loading, setLoading] = useState(false);
   const [backend] = useCanister("backend");
-  console.log("gfhfg", backend);
+  console.log("backend", backend);
   const { isConnected, principal } = useConnect();
+  const userInfo = useSelector((state) => state.auth);
 
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.twitter.trim()) newErrors.twitter = "Twitter is required";
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email format is invalid";
     }
-    if (!formData.discord.trim()) newErrors.discord = "Discord is required";
     if (!formData.profileimage.trim())
-      newErrors.profileimage = "Profile image URL is required";
+      newErrors.profileimage = "Profile image is required";
     if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
-    if (!formData.telegram.trim()) newErrors.telegram = "Telegram is required";
     if (!formData.firstName.trim())
       newErrors.firstName = "First name is required";
 
@@ -265,7 +326,7 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isConnected) {
+    if (!isConnected) {
       try {
         if (validateForm()) {
           setLoading(true);
@@ -317,7 +378,9 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
               type="text"
               name="id"
               className="focus:outline-none bg-transparent outline-none pl-12 w-full text-[1.3rem]"
-              value={formData.id}
+              value={
+                userInfo.userPlugPrincipal ? userInfo.userPlugPrincipal : ""
+              }
               placeholder="USER ID "
               onChange={handleChange}
               disabled={loading}

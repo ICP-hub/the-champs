@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import placeHolderImg from "../../assets/CHAMPS.png";
 import IconWrapper from "../common/IconWrapper";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const MyProfileNFT = () => {
   const { isConnected, principal } = useConnect();
@@ -22,11 +23,13 @@ const MyProfileNFT = () => {
   const [assets] = useBalance();
   const [product, setProduct] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const rincipal = Principal.fromText("2vxsx-fae");
+  const userInfo = useSelector((state) => state.auth);
+  const user = userInfo.userPlugPrincipal;
+  const rincipal = Principal.fromText(user);
   useEffect(() => {
     const getUsersFractionNFT = async () => {
       try {
-        const res = await backend.getusersfractionnft(principal.fromText());
+        const res = await backend.getusersfractionnft(rincipal);
 
         console.log("Response from backend:", res);
 

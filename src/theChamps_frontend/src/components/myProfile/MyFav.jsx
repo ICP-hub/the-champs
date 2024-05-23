@@ -2,46 +2,48 @@ import React, { useState, useEffect } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { CiHeart } from "react-icons/ci";
 import toast, { Toaster } from "react-hot-toast";
-import { color, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import ReadMore from "../common/ReadMore";
 import { useParams } from "react-router";
 import { useCanister, useBalance, useConnect } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
-import {
-  Bars,
-  CirclesWithBar,
-  InfinitySpin,
-  RotatingLines,
-  TailSpin,
-} from "react-loader-spinner";
+import { InfinitySpin, TailSpin } from "react-loader-spinner";
 import { RiErrorWarningLine } from "react-icons/ri";
 import IconWrapper from "../common/IconWrapper";
 import placeHolderImg from "../../assets/CHAMPS.png";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const MyFav = () => {
   const { isConnected, principal } = useConnect();
   const { id } = useParams();
   const [backend] = useCanister("backend");
-
+  const [productInFavourites, setProductInFavourite] = useState(false);
   const [favourites, setFavourites] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [assets] = useBalance();
   const [filteredProduct, setFilteredProduct] = useState([]);
-  const rincipal = Principal.fromText("2vxsx-fae");
+  const userInfo = useSelector((state) => state.auth);
+  const user = userInfo.userPlugPrincipal;
+
+  const rincipal = Principal.fromText(user);
 
   useEffect(() => {
     const getUsersFractionNFT = async () => {
       try {
-        const res = await backend.getusersfractionnft(principal.fromText());
-        const userProducts = res.map((item) => item[1]);
+        const res = await backend.getusersfractionnft(rincipal);
         const favouritesRes = await backend.getfavourites();
+        console.log("user product", res);
 
-        const favouriteProducts = userProducts.filter((product) =>
-          favouritesRes.some((fav) => fav[0].id === product.nft.id)
+        const favouriteProducts = res.filter((product) =>
+          favouritesRes.some((fav) => fav[0].id === product[1].nft.id)
         );
+
+        if (favouritesRes.length > 0) {
+          setProductInFavourite(true);
+        }
 
         setFilteredProduct(favouriteProducts);
         setLoading2(false);
@@ -54,7 +56,7 @@ const MyFav = () => {
     getUsersFractionNFT();
   }, [backend, principal]);
 
-  const addToFavourites = async (productId) => {
+  const addToFavourites = async (id, productId) => {
     try {
       setLoading(true);
       const canister_id = Principal.fromText(id);
@@ -71,7 +73,7 @@ const MyFav = () => {
     }
   };
 
-  const removeFavourites = async (productId) => {
+  const removeFavourites = async (id, productId) => {
     try {
       setLoading(true);
       const canister_id = Principal.fromText(id);
@@ -122,14 +124,14 @@ const MyFav = () => {
             >
               <div className="overflow-hidden">
                 <Link
-                  to={`/collections/${product?._Principal?.toText()}}/${
-                    product.nft.id
+                  to={`/collections/${product[0]?.toText()}/${
+                    product[1]?.nft?.id
                   }`}
                 >
                   <motion.img
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.2, ease: "easeInOut" }}
-                    src={placeHolderImg || product.fractional_token.logo}
+                    src={placeHolderImg || product[1]?.fractional_token?.logo}
                     alt=""
                     className="rounded-t-lg h-full object-cover cursor-pointer overflow-hidden"
                   />
@@ -138,7 +140,7 @@ const MyFav = () => {
               <div className="p-2 mx-2">
                 <div className="flex justify-between font-bold items-center">
                   <h2 className="text-lg font-semibold mb-2">
-                    {product.fractional_token.name}
+                    {product[1]?.fractional_token?.name}
                   </h2>
                   {loading ? (
                     <TailSpin
@@ -151,11 +153,14 @@ const MyFav = () => {
                     />
                   ) : (
                     <>
-                      {favourites.some(
-                        (fav) => fav[0].id === product.nft.id
-                      ) ? (
+                      {productInFavourites ? (
                         <button
-                          onClick={() => removeFavourites(product.nft.id)}
+                          onClick={() =>
+                            removeFavourites(
+                              product[0]?.toText(),
+                              product[1]?.nft?.id
+                            )
+                          }
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -183,8 +188,15 @@ const MyFav = () => {
                           </svg>
                         </button>
                       ) : (
-                        <button onClick={() => addToFavourites(product.nft.id)}>
-                          <CiHeart size={32} />
+                        <button
+                          onClick={() =>
+                            addToFavourites(
+                              product[0]?.toText(),
+                              product[1]?.nft.id
+                            )
+                          }
+                        >
+                          <CiHeart color="red" size={32} />
                         </button>
                       )}
                     </>
@@ -192,13 +204,13 @@ const MyFav = () => {
                 </div>
                 <p className="text-gray-500 text-sm">
                   <ReadMore
-                    text={product.fractional_token.owner.toText() || ""}
+                    text={product[1]?.fractional_token.owner.toText() || ""}
                     maxLength={20}
                   />
                 </p>
                 <div className="flex justify-between mb-4">
                   <p className="mt-4 py-2 rounded-md w-[50%]">
-                    {parseInt(product.fractional_token.fee) || 0}
+                    {parseInt(product[1]?.fractional_token.fee) || 0}
                   </p>
                   <button
                     className="mt-4 button bg-opacity-100 text-white rounded-md w-[50%] text-md flex items-center justify-center"
@@ -209,7 +221,6 @@ const MyFav = () => {
                 </div>
               </div>
 
-              {/* Modal for insufficient balance */}
               {showModal && (
                 <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
                   <div className="bg-white p-4 rounded-lg flex flex-col space-x-5 space-y-8 items-center justify-center">
@@ -231,7 +242,7 @@ const MyFav = () => {
         </div>
       ) : (
         <div className="text-center mt-8 px-6 lg:px-24  flex justify-center items-center">
-          <button className="px-4 py-2  cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
+          <button className="px-4 py-2  bg-tr  cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
             No NFT found
           </button>
         </div>
