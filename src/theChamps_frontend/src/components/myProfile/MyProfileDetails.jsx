@@ -326,7 +326,7 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isConnected) {
+    if (isConnected) {
       try {
         if (validateForm()) {
           setLoading(true);
