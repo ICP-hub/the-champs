@@ -1,39 +1,39 @@
 import React, { useContext, useState } from "react";
-import {
-  CiGrid31,
-  CiGrid32,
-  CiHashtag,
-  CiLogout,
-  CiMail,
-  CiReceipt,
-  CiSettings,
-  CiShop,
-  CiVideoOff,
-  CiVideoOn,
-  CiViewBoard,
-  CiUser,
-} from "react-icons/ci";
+// import {
+//   CiGrid31,
+//   CiGrid32,
+//   CiHashtag,
+//   CiLogout,
+//   CiMail,
+//   CiReceipt,
+//   CiSettings,
+//   CiShop,
+//   CiVideoOff,
+//   CiVideoOn,
+//   CiViewBoard,
+//   CiUser,
+// } from "react-icons/ci";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { BiSolidOffer } from "react-icons/bi";
-import { TfiAnnouncement } from "react-icons/tfi";
+// import { BiSolidOffer } from "react-icons/bi";
+// import { TfiAnnouncement } from "react-icons/tfi";
 import {
   MdCollections,
   MdDashboard,
   MdMail,
-  MdOutlineAttachMoney,
-  MdOutlineBarChart,
-  MdOutlineCallToAction,
-  MdOutlineClose,
-  MdOutlineCurrencyExchange,
-  MdOutlineGridView,
-  MdOutlineLocalOffer,
-  MdOutlineLocalShipping,
-  MdOutlineLogout,
-  MdOutlineSettings,
+  // MdOutlineAttachMoney,
+  // MdOutlineBarChart,
+  // MdOutlineCallToAction,
+  // MdOutlineClose,
+  // MdOutlineCurrencyExchange,
+  // MdOutlineGridView,
+  // MdOutlineLocalOffer,
+  // MdOutlineLocalShipping,
+  // MdOutlineLogout,
+  // MdOutlineSettings,
   MdPerson,
 } from "react-icons/md";
-import Topbar from "../features/dashboard/Topbar";
-import { RxAvatar } from "react-icons/rx";
+// import Topbar from "../features/dashboard/Topbar";
+// import { RxAvatar } from "react-icons/rx";
 import { useConnect } from "@connect2ic/react";
 import Avatar from "boring-avatars";
 import toast from "react-hot-toast";
@@ -55,8 +55,8 @@ const LeftSidebar = ({ isOpen }) => {
       icon: <MdCollections size={24} />,
       text: "Collections",
     },
-    { path: "/", icon: <MdPerson size={24} />, text: "Users" },
-    { path: "/", icon: <MdMail size={24} />, text: "Message" },
+    { path: "/users", icon: <MdPerson size={24} />, text: "Users" },
+    { path: "/message", icon: <MdMail size={24} />, text: "Message" },
   ];
 
   const position = "left";
@@ -90,7 +90,7 @@ const LeftSidebar = ({ isOpen }) => {
           <div className="relative">
             <Avatar
               size={80}
-             className="w-full h-full rounded-full"
+              className="w-full h-full rounded-full"
               name={principal}
               variant="beam"
               colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
@@ -101,26 +101,30 @@ const LeftSidebar = ({ isOpen }) => {
               Admin
             </div>
             {principal ? (
-                <p className="text-ellipsis line-clamp-1 text-sm text-gray-400">{principal}</p>
-              ) : (
-                <span className="h-4 w-full bg-gray-100 rounded-sm animate-pulse"></span>
-              )}
-              <div className="flex items-center justify-center w-full gap-4 mt-2">
+              <p className="text-ellipsis line-clamp-1 text-sm text-gray-400">
+                {principal}
+              </p>
+            ) : (
+              <span className="h-4 w-full bg-gray-100 rounded-sm animate-pulse"></span>
+            )}
+            <div className="flex items-center justify-center w-full gap-4 mt-2">
               <button
-                    onClick={() => {
-                      setCopied();
-                      toast.success("Principal copied successfully");
-                    }}
-                    className="text-gray-400"
-                  >
-                    {isCopied ? (
-                      <RiCheckLine className="w-5 h-5 text-emerald-500" />
-                    ) : (
-                      <RiFileCopyLine className="w-5 h-5 text-gray-400" />
-                    )}
-                  </button>
-                <button className="text-gray-400" onClick={disconnectPlug}><RiLogoutBoxLine className="w-5 h-5 text-gray-400" /></button>
-              </div>
+                onClick={() => {
+                  setCopied();
+                  toast.success("Principal copied successfully");
+                }}
+                className="text-gray-400"
+              >
+                {isCopied ? (
+                  <RiCheckLine className="w-5 h-5 text-emerald-500" />
+                ) : (
+                  <RiFileCopyLine className="w-5 h-5 text-gray-400" />
+                )}
+              </button>
+              <button className="text-gray-400" onClick={disconnectPlug}>
+                <RiLogoutBoxLine className="w-5 h-5 text-gray-400" />
+              </button>
+            </div>
           </div>
         </div>
         {navItems.map(({ path, icon, text }) => (

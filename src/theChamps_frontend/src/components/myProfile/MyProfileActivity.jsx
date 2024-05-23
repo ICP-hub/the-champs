@@ -1,7 +1,10 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ imports.
 /* ----------------------------------------------------------------------------------------------------- */
+import { useCanister, useConnect } from "@connect2ic/react";
 import soccer1 from "../../assets/images/soccer-1.jpeg";
+import { useParams } from "react-router";
+import { Principal } from "@dfinity/principal";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Fake activityData
@@ -48,6 +51,30 @@ const activityData = [
 /*  @ <MyProfileActivity /> : my-profile/activity tab
 /* ----------------------------------------------------------------------------------------------------- */
 const MyProfileActivity = () => {
+  const { isConnected, principal } = useConnect();
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState([]);
+  const rincipal = Principal.fromText("2");
+
+  const [backend] = useCanister("backend");
+  useEffect(() => {
+    const getalltransactions = async () => {
+      try {
+        const res = await backend.getalltransactions(rincipal);
+
+        console.log("Response from backend:", res);
+
+        setProduct(res);
+        setLoading(false);
+      } catch (error) {
+        console.log("Error while fetching user NFT", error);
+      }
+    };
+
+    getalltransactions();
+  }, [backend, principal]);
+
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-3 text-sm font-bold uppercase p-4 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] text-white rounded-lg">

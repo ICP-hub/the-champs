@@ -15,6 +15,7 @@ import UserLogo from "../../assets/images/userlogo.png";
 import { useEffect, useState } from "react";
 import { useCanister, useConnect } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
+import { Bars, InfinitySpin } from "react-loader-spinner";
 
 const containerVariants = {
   hidden: { opacity: 0, x: 400, transition: { duration: 0.4 } },
@@ -29,8 +30,10 @@ const MyProfileDetails = () => {
   const { isConnected, principal } = useConnect();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   // const principal = Principal.toString();
   console.log("principal is", principal);
+
   const [formData, setFormData] = useState({
     id: principal,
     twitter: "",
@@ -98,6 +101,7 @@ const MyProfileDetails = () => {
       if (data.err) {
         setEditMode(true);
       }
+      setLoading(false);
       setIsLoading(false);
       console.log("data", data);
       console.log("user is ", formData);
@@ -115,47 +119,60 @@ const MyProfileDetails = () => {
   }, []);
 
   return (
-    <div className="card">
-      <div className="relative overflow-hidden w-32 h-32 group">
-        <img
-          src={formData?.profileimage}
-          alt="User Logo"
-          className="w-full h-full object-cover"
-        />
-        {editMode && (
-          <>
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              id="fileInput"
-              onChange={handlepofileChange}
+    <>
+      {loading ? (
+        <div className="flex items-center h-56 justify-center">
+          <InfinitySpin
+            visible={true}
+            width="200"
+            color="#FC001E"
+            ariaLabel="infinity-spin-loading"
+          />
+        </div>
+      ) : (
+        <div className="card">
+          <div className="relative overflow-hidden w-32 h-32 group">
+            <img
+              src={formData?.profileimage}
+              alt="User Logo"
+              className="w-full h-full object-cover"
             />
-            <span
-              className="absolute top-0 left-0 w-full h-full flex items-center justify-center rounded-full text-sm font-medium text-white bg-[rgba(0,0,0,0.5)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-              onClick={() => document.getElementById("fileInput").click()}
-            >
-              <p>Edit image</p>
-            </span>
-          </>
-        )}
-      </div>
-      <AnimatePresence>
-        {editMode ? (
-          <EditForm
-            formData={formData}
-            setFormData={setFormData}
-            setEditMode={setEditMode}
-          />
-        ) : (
-          <ProfileInfo
-            formData={formData}
-            handleEdit={handleEdit}
-            isLoading={isLoading}
-          />
-        )}
-      </AnimatePresence>
-    </div>
+            {editMode && (
+              <>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  id="fileInput"
+                  onChange={handlepofileChange}
+                />
+                <span
+                  className="absolute top-0 left-0 w-full h-full flex items-center justify-center rounded-full text-sm font-medium text-white bg-[rgba(0,0,0,0.5)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+                  onClick={() => document.getElementById("fileInput").click()}
+                >
+                  <p>Edit image</p>
+                </span>
+              </>
+            )}
+          </div>
+          <AnimatePresence>
+            {editMode ? (
+              <EditForm
+                formData={formData}
+                setFormData={setFormData}
+                setEditMode={setEditMode}
+              />
+            ) : (
+              <ProfileInfo
+                formData={formData}
+                handleEdit={handleEdit}
+                isLoading={isLoading}
+              />
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+    </>
   );
 };
 
@@ -219,30 +236,58 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
   };
   const [loading, setLoading] = useState(false);
   const [backend] = useCanister("backend");
+  console.log("gfhfg", backend);
   const { isConnected, principal } = useConnect();
+
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.twitter.trim()) newErrors.twitter = "Twitter is required";
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email format is invalid";
+    }
+    if (!formData.discord.trim()) newErrors.discord = "Discord is required";
+    if (!formData.profileimage.trim())
+      newErrors.profileimage = "Profile image URL is required";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!formData.telegram.trim()) newErrors.telegram = "Telegram is required";
+    if (!formData.firstName.trim())
+      newErrors.firstName = "First name is required";
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isConnected) {
       try {
-        setLoading(true);
-        const User = {
-          profileimage: formData.profileimage || "",
-          firstName: formData.firstName || "",
-          lastName: formData.lastName || "",
-          email: formData.email || "",
-          twitter: formData.twitter || "",
-          discord: formData.discord || "",
-          telegram: formData.telegram || "",
-        };
+        if (validateForm()) {
+          setLoading(true);
+          const User = {
+            profileimage: formData.profileimage || "",
+            firstName: formData.firstName || "",
+            lastName: formData.lastName || "",
+            email: formData.email || "",
+            twitter: formData.twitter || "",
+            discord: formData.discord || "",
+            telegram: formData.telegram || "",
+          };
 
-        console.log("record is", User);
-        const user = await backend.updateUser(User);
+          console.log("record is", User);
+          const user = await backend.updateUser(User);
 
-        if (user.ok) {
-          console.log("Updated:", user.ok);
-          toast.success("Profile Updated successfully");
-        } else {
-          console.error("Error updating user:", user);
+          if (user.ok) {
+            console.log("Updated:", user.ok);
+            toast.success("Profile Updated successfully");
+          } else {
+            console.error("Error updating user:", user);
+          }
         }
       } catch (error) {
         console.error("Error:", error.message);
@@ -298,6 +343,9 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
                 required
               />
             </div>
+            {errors.firstName && (
+              <span className="text-red-500 text-sm">{errors.firstName}</span>
+            )}
             <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
               <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
                 <RxAvatar size={24} color="white" />
@@ -313,6 +361,9 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
                 required
               />
             </div>
+            {errors.lastName && (
+              <span className="text-red-500 text-sm">{errors.lastName}</span>
+            )}
           </div>
           <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
             <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
@@ -329,6 +380,9 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
               required
             />
           </div>
+          {errors.email && (
+            <span className="text-red-500 text-sm">{errors.email}</span>
+          )}
           <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
             <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
               <PiTelegramLogo size={24} color="white" />
@@ -343,6 +397,9 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
               disabled={loading}
             />
           </div>
+          {errors.telegram && (
+            <span className="text-red-500 text-sm">{errors.telegram}</span>
+          )}
           <div className="py-2 border border-gray-400 rounded-md relative overflow-hidden">
             <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
               <PiTwitterLogo size={24} color="white" />
@@ -357,6 +414,9 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
               disabled={loading}
             />
           </div>
+          {errors.twitter && (
+            <span className="text-red-500 text-sm">{errors.twitter}</span>
+          )}
           <div className="py-2 border border-gray-400 rounded-md relative overflow-hidden">
             <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
               <PiDiscordLogoLight size={24} color="white" />
@@ -371,6 +431,9 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
               disabled={loading}
             />
           </div>
+          {errors.discord && (
+            <span className="text-red-500 text-sm">{errors.discord}</span>
+          )}
         </div>
         <div className="links py-4">
           <motion.button

@@ -67,7 +67,7 @@ const CreateCollections = ({ handleCreate, setFormSubmitted }) => {
       reader.onload = (e) => {
         const arrayBuffer = e.target.result;
         const blob = new Blob([arrayBuffer], { type: files.type });
-        console.log(blob);
+        // console.log(blob);
         resolve(reader.result);
       };
       reader.onerror = (error) => {
