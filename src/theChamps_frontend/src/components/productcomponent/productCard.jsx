@@ -89,12 +89,13 @@ const ProductCard = ({ product }) => {
         setShowModal(true);
       } else {
         // Proceed with the buy now action
-        notify(); // Or any other action
+        setShowModal(true);
       }
     } else {
       setShowModal(true);
     }
   };
+  console.log(product[0], "helloooo");
 
   return (
     <div
@@ -102,7 +103,7 @@ const ProductCard = ({ product }) => {
       style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
     >
       <div className="overflow-hidden ">
-        <Link to={`/collections/${id}/${product[0].nft.id}`}>
+        <Link to={`/collections/${id}/${product[1].toText()}`}>
           <motion.img
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
