@@ -59,7 +59,7 @@ const SidebarMain = () => {
             />
           </div>
           <div className=" text-left">
-            <p>plug</p>
+            <p>USER ID</p>
             <p className="text-gray-500">
               <ReadMore text={principal || ""} maxLength={15} />
             </p>

@@ -30,6 +30,7 @@ const PlugWallet = () => {
 
   const userInfo = useSelector((state) => state.auth);
 
+  console.log("useinfo", userInfo);
   // Open close sidebar
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -80,7 +81,7 @@ const PlugWallet = () => {
           />
         </div>
         <div className="flex flex-col flex-1">
-          <div className="font-bold uppercase">Plug</div>
+          <div className="font-bold uppercase">USER ID</div>
           <div className="text-sm font-medium line-clamp-1 text-gray-600">
             {userInfo.userPlugPrincipal ? (
               userInfo.userPlugPrincipal
