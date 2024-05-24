@@ -51,7 +51,6 @@ const ProductPage = ({ name }) => {
         console.log("hello");
         setCollection(res);
         setloading(false);
-        console.log(res, "fractional nft");
 
         setSearchResults(res);
         console.log(res);
@@ -68,7 +67,7 @@ const ProductPage = ({ name }) => {
     setSearchQuery(query);
 
     const filteredResults = collection.filter((item) =>
-      item.fractional_token.name.toLowerCase().includes(query.toLowerCase())
+      item[0].fractional_token.name.toLowerCase().includes(query.toLowerCase())
     );
     setSearchResults(filteredResults);
   };
@@ -175,14 +174,12 @@ const ProductPage = ({ name }) => {
               {grid ? (
                 <div className="grid grid-cols-1  px-6 lg:px-24  sm:grid-cols-2  lg:grid-cols-3  gap-12 mt-4 justify-center">
                   {searchResults.map((product, index) => (
-                    
-                      <ProductCard key={product.id} product={product} />
-                  
+                    <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
               ) : (
                 <div className=" px-6 lg:px-24 mt-8">
-                  <ProductLists />
+                  <ProductLists product={searchResults} />
                 </div>
               )}
             </>

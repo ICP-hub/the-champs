@@ -3,7 +3,7 @@
 /* ----------------------------------------------------------------------------------------------------- */
 import { MdArrowOutward } from "react-icons/md";
 import CustomButton from "../common/CustomButton";
-
+import { Link } from "react-router-dom";
 /* eslint-disable react/no-unescaped-entities */
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageJ /> : Homepage bottom.
@@ -20,9 +20,11 @@ const HomePageJ = () => {
       <p className="font-normal text-[22px] text-[#7B7583] max-[900px]:text-sm">
         Invest and manage all your NFTs at one place
       </p>
-      <CustomButton>
-        Get Started <MdArrowOutward size={24} />
-      </CustomButton>
+      <Link to="/collection">
+        <CustomButton>
+          Get Started <MdArrowOutward size={24} />
+        </CustomButton>
+      </Link>
     </div>
   );
 };

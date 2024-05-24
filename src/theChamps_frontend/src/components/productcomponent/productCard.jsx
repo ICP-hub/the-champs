@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { CiHeart } from "react-icons/ci";
 import toast, { Toaster } from "react-hot-toast";
-const notify = () => toast("Here is your toast.");
+
 import { motion } from "framer-motion";
 import ReadMore from "../common/ReadMore";
 import { useParams } from "react-router";
@@ -26,19 +26,24 @@ const ProductCard = ({ product }) => {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false); // State to manage modal visibility
   const [assets] = useBalance();
+  const [image, setImage] = useState(product[0]?.fractional_token.logo);
 
   const addToFavourites = async () => {
-    try {
-      setLoading(true);
-      const canister_id = Principal.fromText(id);
-      const res = await backend.addfavourite(
-        canister_id,
-        parseInt(product[0].nft.id)
-      );
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+    if (isConnected) {
+      try {
+        setLoading(true);
+        const canister_id = Principal.fromText(id);
+        const res = await backend.addfavourite(
+          canister_id,
+          parseInt(product[0].nft.id)
+        );
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      toast.error("please login first");
     }
   };
 
@@ -64,6 +69,10 @@ const ProductCard = ({ product }) => {
       setProductInFavourites(isProductInWishlist);
     }
   }, [product, favourites]);
+
+  const imageHandler = () => {
+    setImage(placeHolderImg);
+  };
 
   const removeFavourites = async () => {
     try {
@@ -95,7 +104,6 @@ const ProductCard = ({ product }) => {
       setShowModal(true);
     }
   };
-  console.log(product[0], "helloooo");
 
   return (
     <div
@@ -107,9 +115,10 @@ const ProductCard = ({ product }) => {
           <motion.img
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            src={placeHolderImg || product[0]?.fractional_token.logo}
+            src={image}
             alt={product[0]?.fractional_token.name}
             className="rounded-t-lg  object-cover cursor-pointer overflow-hidden "
+            onError={imageHandler}
           ></motion.img>
         </Link>
       </div>

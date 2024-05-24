@@ -4,7 +4,7 @@
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
 import "react-multi-carousel/lib/styles.css";
-import soccer1 from "../../assets/images/soccer-1.jpeg";
+import soccer1 from "../../assets/CHAMPS.png";
 import CustomButton from "../common/CustomButton";
 import { MdArrowOutward } from "react-icons/md";
 import FancyHeader from "../common/FancyHeader";
@@ -148,9 +148,9 @@ const HomePageB = () => {
 /*  @ <NFTCard /> : collection card.
 /* ----------------------------------------------------------------------------------------------------- */
 const NFTCard = ({ NFT, collection }) => {
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(NFT[0]?.fractional_token?.logo);
+  console.log(NFT);
 
-  console.log(NFT, "nftcards");
   useEffect(() => {
     // const img = NFT.metadata.map((item) => item.key_val_data);
     // console.log("This console is coming from HOMEPAGE B  NFT:", NFT);
@@ -159,21 +159,27 @@ const NFTCard = ({ NFT, collection }) => {
   }, [NFT]);
   // console.log(NFT.nft.owner.toText());
   // console.log(NFT);
+  const handleImage = () => {
+    setImage(soccer1);
+  };
 
   return (
     <motion.div
       whileHover={{ translateY: -15 }}
       className="flex flex-col gap-4 cursor-pointer"
     >
-      <img src={soccer1} alt="image" className="rounded-2xl object-contain" />
+      <img
+        src={image}
+        alt="image"
+        className="rounded-2xl object-contain"
+        onError={handleImage}
+      />
       <div className="flex flex-col">
         <h1 className="text-[28px] font-bold line-clamp-1">
-          {NFT[0]?.nft?.owner?.toText()}
+          {NFT[0]?.fractional_token?.name}
         </h1>
         {/* Static collection pick for now we can show featured later */}
-        <p className="text-[15px] text-[#7B7583]">
-          {NFT[0]?.fractional_token?.name}
-        </p>
+        <p className="text-[15px] text-[#7B7583]">{NFT[1].toText()}</p>
       </div>
     </motion.div>
   );

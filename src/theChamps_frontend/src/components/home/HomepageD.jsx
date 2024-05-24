@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 /* ----------------------------------------------------------------------------------------------------- */
 
+import { useCanister } from "@connect2ic/react";
 import { useEffect, useState } from "react";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageD /> : Counts wallet, artists, value.
@@ -14,6 +15,19 @@ const dataBlocks = [
 
 const HomePageD = () => {
   const [counts, setCounts] = useState([]);
+  const [backend] = useCanister("backend");
+
+  useEffect(() => {
+    const getStat = async () => {
+      try {
+        const res = await backend.getallstats();
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getStat();
+  }, [backend]);
 
   useEffect(() => {
     const intervalIds = [];
