@@ -312,7 +312,7 @@ const ProductDetails = () => {
                       className="
             text-gray-500 text-sm mt-4"
                     >
-                      By {nft[0][0]?.fractional_token?.owner.toText()}
+                      By {id}
                     </p>
                   </div>
                   <div className="text-center ">
