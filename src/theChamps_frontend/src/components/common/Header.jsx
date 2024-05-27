@@ -109,7 +109,7 @@ const Header = () => {
       {(isSidenavOpen || isMenuOpen) && (
         <div
           className="h-full w-full bg-[rgba(0,0,0,0.5)] z-30 fixed"
-          onToggle={sideNavToggle}
+          onClick={sideNavToggle}
         ></div>
       )}
     </div>
