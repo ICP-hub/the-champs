@@ -51,12 +51,12 @@ const LeftSidebar = ({ isOpen }) => {
   const navItems = [
     { path: "/admin", icon: <MdDashboard size={24} />, text: "Dashboard" },
     {
-      path: "/admin-collections",
+      path: "/admin/collections",
       icon: <MdCollections size={24} />,
       text: "Collections",
     },
-    { path: "/users", icon: <MdPerson size={24} />, text: "Users" },
-    { path: "/message", icon: <MdMail size={24} />, text: "Message" },
+    { path: "/admin/users", icon: <MdPerson size={24} />, text: "Users" },
+    { path: "/admin/message", icon: <MdMail size={24} />, text: "Message" },
   ];
 
   const position = "left";
@@ -82,10 +82,10 @@ const LeftSidebar = ({ isOpen }) => {
   };
   return (
     <div
-      className={`navigation ${classNames} bg-[#383854]  dark:border-r dark:border-r-gray-500`}
+      className={`navigation ${classNames} bg-card border-r dark:border-r-gray-500`}
       style={{ visibility: isOpen ? "visible" : "hidden" }}
     >
-      <div className="p-4 flex flex-col text-text gap-2 h-full">
+      <div className="p-4 flex flex-col text-gray-500 dark:text-text gap-2 h-full">
         <div className="flex flex-col items-center justify-center w-full p-4 mb-4">
           <div className="relative">
             <Avatar

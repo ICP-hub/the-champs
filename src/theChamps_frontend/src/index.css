@@ -8,6 +8,10 @@
   overflow-x: hidden;
 }
 
+.App > * {
+  width: 100vw;
+}
+
 .custom-box {
   position: fixed;
 
@@ -350,25 +354,10 @@
   transition: all 0.5s ease 0s;
 }
 
-.scrollBox {
-  /* height: 600px; */
-  overflow-x: hidden;
-  overflow-y: auto;
-  text-align: justify;
-}
-
 .scrollBox::-webkit-scrollbar {
   display: none;
 }
 
-@media screen and (max-width: 900px) {
-  .scrollBox {
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    text-align: justify;
-  }
-}
 /*toggle bar */
 
 .react-toggle {
@@ -513,11 +502,9 @@
   box-shadow: 0px 0px 5px 5px #0099e0;
 }
 
-
 .dialog-container {
   background: #ffffff !important;
 }
-
 
 .button-styles:hover {
   color: #ffffff !important;
@@ -536,7 +523,7 @@
   color: #fff !important;
 }
 
-.img-styles{
-  background: rgba(255, 255, 255, .5);
+.img-styles {
+  background: rgba(255, 255, 255, 0.5);
   border-radius: 11px;
 }

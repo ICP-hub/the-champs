@@ -12,28 +12,21 @@ import Sidebar from "./Sidebar";
 // } from "@connect2ic/react";
 // import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import {
-  useAnimation,
-  useMotionValueEvent,
-  useScroll,
-  motion,
-} from "framer-motion";
+import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { HiOutlineBars4 } from "react-icons/hi2";
 
 const Header = () => {
-  const controls = useAnimation();
   const [isSidenavOpen, setIsSidenavOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const sideNavToggle = () => {
     setIsSidenavOpen((prev) => !prev);
-    if (isSidenavOpen) {
-      controls.start({ x: 288, transition: { duration: 0.4 } });
-      document.documentElement.style.overflowY = "auto";
-    } else {
-      controls.start({ x: 0, transition: { duration: 0.4 }, opacity: 1 });
-      document.documentElement.style.overflow = "hidden";
-    }
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
   };
 
   useEffect(() => {
@@ -47,44 +40,101 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    if (windowWidth > 1024) {
-      if (isSidenavOpen) {
-        controls.start({ x: 0, transition: { duration: 0.3 } });
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsScrolled(true);
       } else {
-        controls.start({ x: 288, transition: { duration: 0.3 } });
+        setIsScrolled(false);
       }
-    } else {
-      controls.start({ x: 288, transition: { duration: 0.3 } });
-      setIsSidenavOpen(false);
-    }
-  }, [windowWidth]);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    isSidenavOpen || isMenuOpen
+      ? (document.documentElement.style.overflowY = "hidden")
+      : (document.documentElement.style.overflowY = "auto");
+  }, [isSidenavOpen, isMenuOpen]);
 
   return (
-    <>
-      <div className="flex flex-col z-50 overflow-hidden">
-        <motion.div
-          className={`sticky top-0 px-6 md:px-24 max-h-24 min-h-24 flex items-center h-full w-screen ${
-            isSidenavOpen ? "bg-white" : "bg-transparent"
-          }`}
-        >
-          <div className="flex justify-between w-full items-center">
-            <HeaderContent />
-            <HeaderIcon onToggle={sideNavToggle} />
-          </div>
-        </motion.div>
-        <HeaderClone onToggle={sideNavToggle} isSidenavOpen={isSidenavOpen} />
-        <motion.div
-          className="fixed bg-white right-0 max-w-72 min-w-72 mt-24 z-50 flex scrollBox"
-          animate={controls}
-          initial={{ opacity: 0 }}
-        >
-          <Sidebar />
-        </motion.div>
-      </div>
-      {isSidenavOpen ? (
-        <div className="h-screen w-screen fixed bg-[rgba(0,0,0,0.5)] z-40 overflow-hidden"></div>
-      ) : null}
-    </>
+    <div>
+      <AnimatePresence>
+        {isScrolled ? (
+          <motion.div
+            style={{
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+              backdropFilter: "blur(15px)",
+              position: "fixed",
+              minWidth: "100vw",
+              top: 0,
+              zIndex: 40,
+            }}
+            initial={{ y: -96 }}
+            animate={{ y: 0 }}
+            exit={{ y: -96 }}
+            transition={{ duration: 0.3, ease: easeInOut }}
+          >
+            <HeaderComplete
+              sideNavToggle={sideNavToggle}
+              isSidenavOpen={isSidenavOpen}
+              isMenuOpen={isMenuOpen}
+              toggleMenu={toggleMenu}
+            />
+          </motion.div>
+        ) : (
+          <HeaderComplete
+            sideNavToggle={sideNavToggle}
+            isSidenavOpen={isSidenavOpen}
+            isMenuOpen={isMenuOpen}
+            toggleMenu={toggleMenu}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isSidenavOpen && (
+          <motion.div
+            initial={{ x: 288 }}
+            animate={{ x: 0 }}
+            exit={{ x: 288 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="max-w-72 min-w-72 fixed right-0 bg-white z-40 top-24"
+          >
+            <Sidebar />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {(isSidenavOpen || isMenuOpen) && (
+        <div
+          className="h-full w-full bg-[rgba(0,0,0,0.5)] z-30 fixed"
+          onToggle={sideNavToggle}
+        ></div>
+      )}
+    </div>
+  );
+};
+
+const HeaderComplete = ({
+  sideNavToggle,
+  isSidenavOpen,
+  isMenuOpen,
+  toggleMenu,
+}) => {
+  return (
+    <div
+      className={`flex justify-between w-full items-center px-6 md:px-24 max-h-24 min-h-24 ${
+        (isSidenavOpen || isMenuOpen) && "bg-white"
+      }`}
+    >
+      <HeaderContent />
+      <HeaderIcon
+        onToggle={sideNavToggle}
+        isMenuOpen={isMenuOpen}
+        toggleMenu={toggleMenu}
+      />
+    </div>
   );
 };
 
@@ -116,57 +166,45 @@ const NavLinkItem = ({ to, text }) => {
   );
 };
 
-const HeaderIcon = ({ onToggle }) => {
+const HeaderIcon = ({ onToggle, isMenuOpen, toggleMenu }) => {
   return (
-    <div className="flex items-center">
-      <motion.div
-        whileTap={{ scale: 0.9 }}
-        className="min-w-max px-4 md:px-7 py-2 rounded-md cursor-pointer button flex"
-        onClick={onToggle}
-      >
-        <FaWallet size={24} color="white" />
-      </motion.div>
-      <span className="lg:hidden cursor-pointer  hover:bg-gray-300 rounded-full p-2 transition-all duration-200">
-        <HiOutlineBars4 size={32} />
-      </span>
-    </div>
-  );
-};
-
-const HeaderClone = ({ onToggle, isSidenavOpen }) => {
-  const { scrollY } = useScroll();
-  const controls = useAnimation();
-
-  useMotionValueEvent(scrollY, "change", (scrollVal) => {
-    if (scrollVal > 0) {
-      controls.start({ y: 0, opacity: 1, transition: { duration: 0.3 } });
-    } else {
-      controls.start({ y: -200, opacity: 0 });
-    }
-  });
-
-  return (
-    <motion.div
-      className="flex flex-col fixed z-50"
-      animate={controls}
-      initial={{ y: -200 }}
-      style={{
-        background: "rgba(255, 255, 255, 0.1)",
-        boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-        backdropFilter: "blur(15px)",
-      }}
-    >
-      <div
-        className={`top-0 px-6 md:px-24 max-h-24 min-h-24 w-screen flex items-center ${
-          isSidenavOpen ? "bg-white" : ""
-        }`}
-      >
-        <div className="flex justify-between w-full items-center">
-          <HeaderContent />
-          <HeaderIcon onToggle={onToggle} />
-        </div>
+    <>
+      <div className="flex items-center gap-2">
+        <motion.div
+          whileTap={{ scale: 0.9 }}
+          className="min-w-max px-4 md:px-7 py-2 rounded-md cursor-pointer button flex"
+          onClick={onToggle}
+        >
+          <FaWallet size={24} color="white" />
+        </motion.div>
+        <span
+          className="lg:hidden cursor-pointer  hover:bg-gray-300 rounded-full p-2 transition-all duration-200"
+          onClick={toggleMenu}
+        >
+          <HiOutlineBars4 size={32} />
+        </span>
       </div>
-    </motion.div>
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            className="fixed top-24 right-0 z-50 lg:hidden flex bg-gray-50 min-w-72 max-w-72 h-screen p-4 flex-col"
+            initial={{ x: 288 }}
+            animate={{ x: 0 }}
+            exit={{ x: 288 }}
+            transition={{ ease: easeInOut }}
+          >
+            <NavLinkItem to="/" text="Home" />
+            {["Collection", "About", "Contact"].map((item, index) => (
+              <NavLinkItem
+                key={index}
+                to={"/" + item.toLowerCase()}
+                text={item}
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

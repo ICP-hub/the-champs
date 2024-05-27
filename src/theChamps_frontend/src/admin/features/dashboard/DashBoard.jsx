@@ -22,56 +22,42 @@ import { TailSpin } from "react-loader-spinner";
 import CountUp from "react-countup";
 
 const DashBoard = () => {
-  function openModal() {
-    setIsOpen(true);
-  }
-  const notify = () =>
-    toast.success("I have a border.", {
-      style: {
-        color: "#ffffff",
-        fontSize: "16px",
-        background: "#FC001E",
-      },
-    });
-
   const [backend] = useCanister("backend");
-  const [collections, setCollections] = useState([]);
-  const [NFTs, setNFTs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]);
-  const [totalSale, setTotalSale] = useState(0);
+  const [allStats, setAllStats] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    listAll();
-  }, []);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const res = await backend.getallstats();
+        setAllStats(res);
+      } catch (err) {
+        console.error("Error fetching all stats : ", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [backend]);
 
-  const listAll = async () => {
-    try {
-      setLoading(true);
-      const item = await backend.getallCollectionids();
-      setCollections(item);
-      const item2 = await backend.getallfractionalnfts();
-      setNFTs(item2);
-      const totalSale = item2.reduce((accumulator, currentItem) => {
-        return accumulator + currentItem[1]?.subTotalAmount;
-      }, 0);
-      setTotalSale(totalSale);
+  // console.log(allStats);
+  const stats = [
+    { label: "Total Collections", value: allStats?.totalCollections },
+    { label: "Total NFTs", value: allStats?.totalnfts },
+    { label: "Total Users", value: allStats?.totalusers },
+  ];
 
-      // const item6 = await backend.listContacts();
-      // setContacts(item6);
-    } catch (error) {
-      console.error("Error listing all:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between gap-4  flex-wrap  md:px-6 md:p-0 p-2 mt-6">
-      <div className="grid grid-cols-1  md:grid-cols-3 w-full gap-4  ">
-        <div className="  dark:text-[#e0e0e0] text-[#676767] box-s dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl p-4">
-          <div className="">
-            <h1 className="font-medium text-xl  mb-2">Total Collections</h1>
-            {loading ? (
+    <div className="flex flex-col gap-4">
+      <div className="grid md:grid-cols-3 p-2 md:px-6 gap-x-4 gap-y-4 text-xl mt-6">
+        {stats.map((stat, index) => (
+          <div
+            key={index}
+            className="bg-card rounded-lg flex flex-col font-semibold text-textall p-4 md:items-center md:justify-center gap-2"
+          >
+            <p>{stat.label}</p>
+            {isLoading ? (
               <TailSpin
                 height="24"
                 width="24"
@@ -82,57 +68,85 @@ const DashBoard = () => {
               />
             ) : (
               <CountUp
-                delay={2}
-                end={(users && users?.length) || 0}
+                delay={1}
+                end={stat.value || 0}
                 className="font-semibold text-2xl"
               />
             )}
           </div>
-        </div>
-        <div className=" w-full dark:text-[#e0e0e0] text-[#676767] box-s dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl p-4">
-          <div className="">
-            <h1 className="font-medium text-xl  mb-2">Total NFTs</h1>
-            {loading ? (
-              <TailSpin
-                height="24"
-                width="24"
-                color="#F87171"
-                ariaLabel="tail-spin-loading"
-                radius="1"
-                visible={true}
-              />
-            ) : (
-              <CountUp
-                delay={2}
-                end={(users && users?.length) || 0}
-                className="font-semibold text-2xl"
-              />
-            )}
-          </div>
-        </div>
-        <div className=" w-full dark:text-[#e0e0e0] text-[#676767] box-s dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl p-4">
-          <div className="">
-            <h1 className="font-medium text-xl  mb-2">Total Users</h1>
-            {loading ? (
-              <TailSpin
-                height="24"
-                width="24"
-                color="#F87171"
-                ariaLabel="tail-spin-loading"
-                radius="1"
-                visible={true}
-              />
-            ) : (
-              <CountUp
-                delay={2}
-                end={(users && users?.length) || 0}
-                className="font-semibold text-2xl"
-              />
-            )}
-          </div>
-        </div>
+        ))}
       </div>
-      {/* <div className="flex flex-col md:flex-row  w-full justify-between">
+    </div>
+  );
+};
+// <div className="flex flex-col md:flex-row items-center justify-between gap-4  flex-wrap  md:px-6 md:p-0 p-2 mt-6">
+//   <div className="grid grid-cols-1  md:grid-cols-3 w-full gap-4  ">
+//     <div className="  dark:text-[#e0e0e0] text-[#676767] box-s dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl p-4">
+//       <div className="">
+//         <h1 className="font-medium text-xl  mb-2">Total Collections</h1>
+//         {isLoading ? (
+//           <TailSpin
+//             height="24"
+//             width="24"
+//             color="#F87171"
+//             ariaLabel="tail-spin-loading"
+//             radius="1"
+//             visible={true}
+//           />
+//         ) : (
+//           <CountUp
+//             delay={2}
+//             end={(users && users?.length) || 0}
+//             className="font-semibold text-2xl"
+//           />
+//         )}
+//       </div>
+//     </div>
+//     <div className=" w-full dark:text-[#e0e0e0] text-[#676767] box-s dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl p-4">
+//       <div className="">
+//         <h1 className="font-medium text-xl  mb-2">Total NFTs</h1>
+//         {loading ? (
+//           <TailSpin
+//             height="24"
+//             width="24"
+//             color="#F87171"
+//             ariaLabel="tail-spin-loading"
+//             radius="1"
+//             visible={true}
+//           />
+//         ) : (
+//           <CountUp
+//             delay={2}
+//             end={(users && users?.length) || 0}
+//             className="font-semibold text-2xl"
+//           />
+//         )}
+//       </div>
+//     </div>
+//     <div className=" w-full dark:text-[#e0e0e0] text-[#676767] box-s dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl p-4">
+//       <div className="">
+//         <h1 className="font-medium text-xl  mb-2">Total Users</h1>
+//         {loading ? (
+//           <TailSpin
+//             height="24"
+//             width="24"
+//             color="#F87171"
+//             ariaLabel="tail-spin-loading"
+//             radius="1"
+//             visible={true}
+//           />
+//         ) : (
+//           <CountUp
+//             delay={2}
+//             end={(users && users?.length) || 0}
+//             className="font-semibold text-2xl"
+//           />
+//         )}
+//       </div>
+//     </div>
+//   </div>
+{
+  /* <div className="flex flex-col md:flex-row  w-full justify-between">
         <div className="md:w-4/6 w-full dark:text-[#e0e0e0] text-[#676767] box-s dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl p-4">
           <div className="flex justify-between items-center gap-2 mb-4">
             <h4 className="uppercase text-xl font-semibold text-gray-900 dark:text-white">
@@ -342,8 +356,10 @@ const DashBoard = () => {
             </div>
           </div>
         </div>
-      </div> */}
-      {/* <div className="flex flex-col md:flex-row w-full">
+      </div> */
+}
+{
+  /* <div className="flex flex-col md:flex-row w-full">
         <div className="md:w-2/5 w-full dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] px-4 py-4 rounded-2xl my-4">
           <h4 className="uppercase text-xl font-semibold  py-1">
             Recent transition
@@ -457,9 +473,12 @@ const DashBoard = () => {
             <span className="">Sat</span>
           </div>
         </div>
-      </div> */}
-    </div>
+      </div> */
+}
+{
+  /* </div>
   );
-};
+}; */
+}
 
 export default DashBoard;
