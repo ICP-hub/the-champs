@@ -462,7 +462,7 @@ actor Champs {
         };
     };
 
-    public shared ({ caller = user }) func removefavourite(collection_id : Principal, tokenid : Types.TokenId) : async Text {
+    public shared ({ caller = user }) func removefavourite( item :(Types.Nft,Principal)) : async Text {
         // if (Principal.isAnonymous(user)) {
         // throw Error.reject("User is not authenticated");
         // };
@@ -474,10 +474,10 @@ actor Champs {
             };
             case (?favourite) {
                 let temp : List.List<(Types.Nft, Principal)> = List.fromArray(favourite);
-                let newlist : List.List<(Types.Nft, Principal)> = List.filter<(Types.Nft, Principal)>(temp, func x : Bool { x.0.id != tokenid and x.1 != collection_id });
-                let array = List.toArray(newlist);
-                Debug.trap(debug_show ({ array }));
-                favourites.put(user, List.toArray(newlist));
+                Debug.print(debug_show (temp));
+                let newlist : (List.List<(Types.Nft, Principal)>,List.List<(Types.Nft, Principal)>) = List.partition<(Types.Nft, Principal)>(temp, func x  { x != item });
+                Debug.print("The newlist which is a tuple type is like this" #debug_show (newlist));
+                favourites.put(user, List.toArray(newlist.0));
                 return "Favourite removed";
             };
         };
@@ -622,6 +622,7 @@ actor Champs {
         /*  if (Principal.isAnonymous(msg.caller)) {
       return #err(#UserNotAuthenticated); // We require the user to be authenticated,
     }; */
+        
         if (u.email == "") { return #err(#EmptyEmail) };
         if (u.firstName == "") { return #err(#EmptyFirstName) };
         if (u.lastName == "") { return #err(#EmptyLastName) };
