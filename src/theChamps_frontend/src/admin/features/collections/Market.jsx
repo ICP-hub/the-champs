@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Table from "../../utils/Table";
-import { AiOutlineTable, AiOutlineAppstore } from "react-icons/ai"; // Import AiOutlineTable and AiOutlineAppstore icons
-import { IoCopyOutline, IoHeart } from "react-icons/io5";
+// import Table from "../../utils/Table";
+// import { AiOutlineTable, AiOutlineAppstore } from "react-icons/ai"; // Import AiOutlineTable and AiOutlineAppstore icons
+// import { IoCopyOutline, IoHeart } from "react-icons/io5";
 import { useCanister } from "@connect2ic/react";
-import { BallTriangle, Grid, Vortex } from "react-loader-spinner";
-import notfound from "../../assets/notfound.jpeg";
-import { Principal } from "@dfinity/principal";
-import profile from "../../assets/profile.jpg";
+import { Grid } from "react-loader-spinner";
+// import notfound from "../../assets/notfound.jpeg";
+// import { Principal } from "@dfinity/principal";
+// import profile from "../../assets/profile.jpg";
 import CreateCollections from "./CreateCollection";
 import { motion } from "framer-motion";
 import CollectionApi from "../../../api/CollectionApi";
 import { useSelector } from "react-redux";
+import champsImg from "../../../assets/CHAMPS.png";
 
 const Market = () => {
   const [sortOption, setSortOption] = useState("newest");
@@ -70,22 +71,45 @@ const Market = () => {
           />
         </motion.div>
       ) : (
-        <ViewCollections isLoading={isLoading} />
+        <ViewCollections isLoading={isLoading} sortOption={sortOption} />
       )}
     </div>
   );
 };
 
 // View Collection tab
-const ViewCollections = ({ isLoading }) => {
+const ViewCollections = ({ isLoading, sortOption }) => {
   const collectionData = useSelector((state) => state.collections);
+
+  // Function to sort collections based on createdAt
+  const sortCollections = (collections, sortOrder) => {
+    const mutableCollections = [...collections];
+    if (sortOrder === "newest") {
+      return mutableCollections.sort(
+        (a, b) => Number(b.details.created_at) - Number(a.details.created_at)
+      );
+    } else if (sortOrder === "oldest") {
+      return mutableCollections.sort(
+        (a, b) => Number(a.details.created_at) - Number(b.details.created_at)
+      );
+    } else {
+      return mutableCollections;
+    }
+  };
+
+  // Apply sorting based on sortOption
+  const sortedCollections = sortCollections(
+    collectionData?.allCollections || [],
+    sortOption
+  );
+
   return (
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       className="dark:shadow-[#323257] p-4 rounded-lg text-textall"
     >
-      {isLoading && (
+      {isLoading ? (
         <div className="flex w-full items-center justify-center mt-12">
           <Grid
             visible={true}
@@ -98,32 +122,36 @@ const ViewCollections = ({ isLoading }) => {
             wrapperClass="grid-wrapper"
           />
         </div>
+      ) : sortedCollections.length > 0 ? (
+        <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-x-4 gap-y-8">
+          {sortedCollections.map((collection, index) => (
+            <CollectionCard collection={collection} key={index} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex justify-center items-center mt-8">
+          <span className="button px-4 py-2 rounded-lg text-white">
+            No Collection Available
+          </span>
+        </div>
       )}
-      {!isLoading &&
-        collectionData &&
-        collectionData?.allCollections?.length > 0 && (
-          <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-x-4 gap-y-8">
-            {collectionData.allCollections.map((collection, index) => (
-              <CollectionCard collection={collection} key={index} />
-            ))}
-          </div>
-        )}
-      {!isLoading &&
-        collectionData &&
-        collectionData?.allCollections?.length === 0 && (
-          <div className="">No Collection Available</div>
-        )}
     </motion.div>
   );
 };
 
+// Collection card
 const CollectionCard = ({ collection }) => {
+  // console.log(collection);
+  const logoUrl = collection.details.logo.data;
+  // If image randomly generated than show champsImg
+  const imageUrlToShow = logoUrl.length < 10 ? champsImg : logoUrl;
+
   return (
     <div className="bg-card rounded-2xl flex flex-col gap-2  shadow-md">
       <div className="rounded-t-2xl">
         <img
-          src={collection.details.logo.data}
-          alt="Collection Banner"
+          src={imageUrlToShow}
+          alt="Collection logo"
           className="rounded-t-2xl min-h-64"
         />
       </div>

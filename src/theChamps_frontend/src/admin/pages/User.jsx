@@ -178,6 +178,8 @@ const users = [
 const User = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [backend] = useCanister("backend");
+  const [isUserLoading, setIsUserLoading] = useState(false);
   const usersPerPage = 10;
 
   const handleSearch = (event) => {
@@ -194,6 +196,21 @@ const User = () => {
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setIsUserLoading(true);
+        const res = await backend.listUsers();
+        console.log("response for list users : ", res);
+      } catch (err) {
+        console.error("error fetching user data : ", err);
+      } finally {
+        setIsUserLoading(false);
+      }
+    };
+    fetchUsers();
+  }, [backend]);
 
   return (
     <div className="mx-4 md:py-8 md:px-6 p-2 text-textall h-full flex flex-col">

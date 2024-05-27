@@ -29,6 +29,11 @@ const Header = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
+  const handleCloseAllSide = () => {
+    setIsSidenavOpen(false);
+    setIsMenuOpen(false);
+  };
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -108,8 +113,8 @@ const Header = () => {
       </AnimatePresence>
       {(isSidenavOpen || isMenuOpen) && (
         <div
-          className="h-full w-full bg-[rgba(0,0,0,0.5)] z-30 fixed"
-          onClick={sideNavToggle}
+          className="h-full w-full bg-[rgba(0,0,0,0.5)] z-30 fixed top-24"
+          onClick={handleCloseAllSide}
         ></div>
       )}
     </div>
