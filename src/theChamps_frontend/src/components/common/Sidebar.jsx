@@ -28,7 +28,7 @@ const Sidebar = () => {
   return (
     <>
       <ConnectDialog dark={false} />
-      <div className="w-full h-screen p-4">
+      <div className="w-full h-screen p-4 overflow-scroll scrollBox">
         {isConnected ? <UserAthenticated /> : <UserNotAuthenticated />}
         {/* <UserAthenticated /> */}
         {/* <UserNotAuthenticated /> */}

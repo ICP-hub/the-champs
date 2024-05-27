@@ -484,9 +484,9 @@ actor Champs {
     };
 
     public shared ({ caller = user }) func getNFTdetails(collectioncanisterid : Principal, tokenid : Types.TokenId) : async Types.Nft {
-        if (Principal.isAnonymous(user)) {
-            throw Error.reject("User is not authenticated");
-        };
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
         let nftcanisteractor = actor (Principal.toText(collectioncanisterid)) : actor {
             getNFT : (token_id : Types.TokenId) -> async Types.NftResult;
         };

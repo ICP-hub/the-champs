@@ -129,8 +129,8 @@ function MainAdmin({ children }) {
       <LeftSidebar isOpen={isOpen} />
       <div
         className={`${isOpen && windowWidth < 960 && "overlay-display"}
-        ${windowWidth < 960 && "fixed top-0 bottom-0 overflow-scroll"}
-        flex flex-col flex-auto w-full min-w-0`}
+        ${windowWidth < 960 && "fixed top-0 bottom-0"}
+        flex flex-col w-full min-w-0 overflow-scroll`}
       >
         <div className="relative flex items-center justify-between w-full h-16 min-h-16 px-4 md:px-6 shadow z-50 dark:shadow-none dark:border-b dark:border-b-gray-500 dark:bg-transparent bg-appbar">
           <span
@@ -140,7 +140,7 @@ function MainAdmin({ children }) {
             <HiBars4 size={24} color="#64748b" />
           </span>
         </div>
-        <div className="flex-auto" ref={contentRef}>
+        <div ref={contentRef} className="h-full">
           {children}
         </div>
       </div>

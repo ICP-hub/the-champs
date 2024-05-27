@@ -25,6 +25,7 @@ import SingleNFT from "./admin/features/NFT/SingleNFT";
 import User from "./admin/pages/User";
 import Contact from "./admin/features/contact/contact";
 import ContactDetail from "./admin/features/contact/ContactDetail";
+import MintNft from "./admin/features/NFT/MintNft";
 /**** Create Routes *****/
 const appRoutes = createBrowserRouter([
   { path: "/", element: <HomePage /> },
@@ -54,7 +55,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "/admin-collections",
+    path: "/admin/collections",
     element: (
       <MainAdmin>
         <Market />
@@ -62,7 +63,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "/users",
+    path: "/admin/users",
     element: (
       <MainAdmin>
         <User />
@@ -89,27 +90,27 @@ const appRoutes = createBrowserRouter([
     path: "admin/create-nft/:slug",
     element: (
       <MainAdmin>
-        <HeroNFT />
+        <MintNft />
       </MainAdmin>
     ),
   },
-  {
-    path: "/create-collection",
-    element: (
-      <MainAdmin>
-        <CreateCollections></CreateCollections>
-      </MainAdmin>
-    ),
-  },
+  // {
+  //   path: "/create-collection",
+  //   element: (
+  //     <MainAdmin>
+  //       <CreateCollections></CreateCollections>
+  //     </MainAdmin>
+  //   ),
+  // },
 
-  {
-    path: "/users/:sdf",
-    element: (
-      <MainAdmin>
-        <UserDashboard />
-      </MainAdmin>
-    ),
-  },
+  // {
+  //   path: "/admin/users/:sdf",
+  //   element: (
+  //     <MainAdmin>
+  //       <UserDashboard />
+  //     </MainAdmin>
+  //   ),
+  // },
   {
     path: "/admin/users/:sdf/update-collections",
     element: (
@@ -143,7 +144,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "/message",
+    path: "admin/message",
     element: (
       <MainAdmin>
         <Contact />
@@ -151,7 +152,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "/message/:slug",
+    path: "admin/message/:slug",
     element: (
       <MainAdmin>
         <ContactDetail />

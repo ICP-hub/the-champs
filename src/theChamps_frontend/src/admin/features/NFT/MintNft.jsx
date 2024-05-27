@@ -179,9 +179,16 @@ const MintNft = () => {
         opacity: 1,
         transition: { ease: "easeInOut" },
       }}
-      className="mx-4 md:py-8 md:px-6 p-2 mt-6"
+      className="mx-4 md:py-8 md:px-6 p-2 mt-6 rounded-lg bg-card text-textall"
     >
-      <div className="w-full flex flex-col gap-4">
+      <div className="flex gap-4 items-center font-bold text-lg tracking-wider">
+        <TbSquareRoundedChevronLeft
+          className="w-6 h-6 cursor-pointer"
+          onClick={() => navigate("/admin/collections")}
+        />
+        Fractionalize NFT
+      </div>
+      <div className="w-full flex flex-col gap-4 mt-6">
         <div>
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
             NFT Canister ID :
@@ -362,26 +369,28 @@ const MintNft = () => {
           )}
         </div>
       </div>
-      {isMintLoading ? (
-        <div className="bg-gray-500 text-white px-4 py-2 mt-6 rounded-md flex gap-3 max-w-max items-center justify-center">
-          Creating NFT
-          <TailSpin
-            height="15"
-            width="15"
-            color="white"
-            ariaLabel="tail-spin-loading"
-            radius="1"
-            visible={true}
-          />
-        </div>
-      ) : (
-        <button
-          onClick={handleSubmit}
-          className="button px-4 py-2 mt-6 rounded-md text-white font-medium"
-        >
-          Submit
-        </button>
-      )}
+      <div className="flex justify-end">
+        {isMintLoading ? (
+          <div className="bg-gray-500 text-white px-4 py-2 mt-6 rounded-md flex gap-3 max-w-max items-center justify-center">
+            Creating NFT
+            <TailSpin
+              height="15"
+              width="15"
+              color="white"
+              ariaLabel="tail-spin-loading"
+              radius="1"
+              visible={true}
+            />
+          </div>
+        ) : (
+          <button
+            onClick={handleSubmit}
+            className="button px-4 py-2 mt-6 rounded-md text-white font-medium"
+          >
+            Submit
+          </button>
+        )}
+      </div>
     </motion.div>
   );
 };

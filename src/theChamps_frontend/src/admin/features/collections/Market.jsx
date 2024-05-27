@@ -35,8 +35,8 @@ const Market = () => {
 
   return (
     <div className="md:py-8 md:px-6 p-2">
-      <div className="flex justify-between items-center p-4">
-        <div>
+      {!isCreate && (
+        <div className="flex items-center justify-between p-4">
           <select
             value={sortOption}
             onChange={handleSortChange}
@@ -49,8 +49,6 @@ const Market = () => {
               Oldest
             </option>
           </select>
-        </div>
-        {!isCreate && (
           <motion.button
             whileTap={{ scale: 0.9 }}
             className="button px-4 py-2 rounded-md text-white"
@@ -58,8 +56,9 @@ const Market = () => {
           >
             Create Collection
           </motion.button>
-        )}
-      </div>
+        </div>
+      )}
+
       {isCreate ? (
         <motion.div
           initial={{ y: -100, opacity: 0 }}
