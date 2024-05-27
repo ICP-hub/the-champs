@@ -100,7 +100,6 @@ const MyProfileDetails = () => {
   };
 
   const getuserDetail = async () => {
-    console.log("tttttt", backend);
     try {
       const data = await backend.getUserdetailsbycaller();
       if (data.ok) {
@@ -213,7 +212,7 @@ const ProfileInfo = ({
     className="infos"
   >
     <div className="name">
-      <h2 className="flex items-center gap-2">
+      {/* <h2 className="flex items-center gap-2">
         {" "}
         <span className="line-clamp-1">
           {" "}
@@ -236,7 +235,7 @@ const ProfileInfo = ({
         ) : (
           ""
         )}
-      </h2>
+      </h2> */}
       {/* <h4>@User principal</h4> */}
     </div>
     <ul className="flex flex-col">
@@ -326,7 +325,7 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isConnected) {
+    if (!isConnected) {
       try {
         if (validateForm()) {
           setLoading(true);
@@ -370,7 +369,7 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
     >
       <div className="flex flex-col">
         <div>
-          <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
+          {/* <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
             <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
               <PiUserCircleLight size={24} color="white" />
             </span>
@@ -386,7 +385,7 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
               disabled={loading}
               readOnly
             />
-          </div>
+          </div> */}
           {/* <h4 className="text-[0.8rem]">@User Principal</h4> */}
         </div>
         <div className="py-2 flex flex-col gap-2 w-full">

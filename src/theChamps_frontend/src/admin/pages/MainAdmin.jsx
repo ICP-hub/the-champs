@@ -15,11 +15,11 @@ import FullScreenLoader from "../../pages/FullScreenLoader.jsx";
 function MainAdmin({ children }) {
   const [isOpen, setIsOpen] = useState(window.innerWidth > 960);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const { principal, isConnected } = useConnect();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isAdminChecked, setIsAdminChecked] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [backend] = useCanister("backend");
+  // const { principal, isConnected } = useConnect();
+  // const [isAdmin, setIsAdmin] = useState(false);
+  // const [isAdminChecked, setIsAdminChecked] = useState(false);
+  // const [loading, setLoading] = useState(true);
+  // const [backend] = useCanister("backend");
 
   // console.log(backend);
 
