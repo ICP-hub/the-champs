@@ -24,8 +24,8 @@ const MyProfileNFT = () => {
   const [product, setProduct] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const userInfo = useSelector((state) => state.auth);
-  const user = userInfo.userPlugPrincipal;
-  const rincipal = Principal.fromText(user);
+  const user = userInfo?.userPlugPrincipal;
+  const rincipal = Principal?.fromText(user);
   useEffect(() => {
     const getUsersFractionNFT = async () => {
       try {
@@ -34,8 +34,8 @@ const MyProfileNFT = () => {
         console.log("Response from backend:", res);
 
         const filteredData = res.filter((item) => {
-          const ownerPrincipal = item.nft?.owner?.toText();
-          return ownerPrincipal === principal?.toText();
+          const ownerPrincipal = item[1].nft?.owner?.toText();
+          return ownerPrincipal === rincipal?.toText();
         });
 
         console.log("Filtered Data:", filteredData);
@@ -180,7 +180,7 @@ const MyProfileNFT = () => {
           </div>
         ) : (
           <div className="text-center mt-8 px-6 lg:px-24 flex justify-center items-center">
-            <button className="px-4 py-2 cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
+            <button className="px-4 py-2 border border-red-500 cursor-pointer rounded-lg w-48 == z-[1]">
               No NFT found
             </button>
           </div>

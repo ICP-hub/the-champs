@@ -33,7 +33,7 @@ const MyFav = () => {
   useEffect(() => {
     const getUsersFractionNFT = async () => {
       try {
-        const res = await backend.getusersfractionnft(rincipal);
+        const res = await backend.getallfractionalnfts();
         const favouritesRes = await backend.getfavourites();
         console.log("user product", res);
 
@@ -242,7 +242,7 @@ const MyFav = () => {
         </div>
       ) : (
         <div className="text-center mt-8 px-6 lg:px-24  flex justify-center items-center">
-          <button className="px-4 py-2  bg-tr  cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
+          <button className="px-4 py-2  bg-tr  cursor-pointer rounded-lg w-48 border border-red-500 z-[1]">
             No NFT found
           </button>
         </div>

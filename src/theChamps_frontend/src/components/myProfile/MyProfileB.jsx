@@ -30,8 +30,8 @@ const MyProfileB = ({ activeTabIndex }) => {
   if (activeTabIndex === "My NFTs") {
     const filterOptions = [
       { value: "all", label: "all" },
-      { value: "listed", label: "listed(selling)" },
-      { value: "unlisted", label: "unlisted(purchased)" },
+      { value: "Newest", label: "Newest" },
+      { value: "Oldest", label: "Oldest" },
     ];
     return (
       <div className="flex flex-col">

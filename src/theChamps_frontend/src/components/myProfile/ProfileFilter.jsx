@@ -50,7 +50,7 @@ const FilterCard = ({ filterOptions }) => {
         <div className="flex items-center" key={option.value}>
           <label className="flex items-center cursor-pointer hover:bg-gray-200 text-sm font-medium w-full min-w-max px-6 py-3">
             <input
-              type="radio"
+              type="checkbox"
               name="filter"
               value={option.value}
               style={{ marginTop: "2px" }}
