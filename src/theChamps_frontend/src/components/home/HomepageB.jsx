@@ -70,7 +70,7 @@ const HomePageB = () => {
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
       <div className="flex gap-2 max-md:flex-col justify-center">
         <FancyHeader normal="Champ's" />
-        <FancyHeader fancy="Special Collection of 20 Footballers" small />
+        <FancyHeader fancy="featured NFTs of 20 Footballers" small />
       </div>
       {finalLoading ? (
         <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 md:px-8 px-2 gap-x-8 gap-y-8">

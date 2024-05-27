@@ -3,17 +3,18 @@
 
 import { useCanister } from "@connect2ic/react";
 import { useEffect, useState } from "react";
+import CountUp from "react-countup";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageD /> : Counts wallet, artists, value.
 /* ----------------------------------------------------------------------------------------------------- */
-const dataBlocks = [
-  { value: "400", label: "Total Users", unit: "k+" },
-  { value: "400", label: "Total Collections", unit: "k+" },
-  { value: "230", label: "Total NFTs", unit: "+" },
-  { value: "3", label: "NFT sales", unit: "x" },
-];
 
 const HomePageD = () => {
+  const [dataBlocks, setDataBlocks] = useState([
+    { value: "1", label: "Total Users", unit: "k+" },
+    { value: "0", label: "Total Collections", unit: "k+" },
+    { value: "0", label: "Total NFTs", unit: "+" },
+    { value: "0", label: "NFT sales", unit: "x" },
+  ]);
   const [counts, setCounts] = useState([]);
   const [backend] = useCanister("backend");
 
@@ -21,6 +22,27 @@ const HomePageD = () => {
     const getStat = async () => {
       try {
         const res = await backend.getallstats();
+        console.log(res);
+        // Assuming `res` is an object with the same keys as `dataBlocks`
+        const newBlocks = [
+          {
+            value: parseInt(res.totalusers).toString(),
+            label: "Total Users",
+            unit: "k+",
+          },
+          {
+            value: parseInt(res.totalCollections).toString(),
+            label: "Total Collections",
+            unit: "k+",
+          },
+          {
+            value: parseInt(res.totalnfts).toString(),
+            label: "Total NFTs",
+            unit: "+",
+          },
+          { value: "0", label: "NFT sales", unit: "x" },
+        ];
+        setDataBlocks(newBlocks);
         console.log(res);
       } catch (error) {
         console.log(error);
@@ -60,8 +82,8 @@ const HomePageD = () => {
           className="p-6 flex flex-col gap-4 sm:items-center sm:justify-center"
         >
           <h1 className="font-bold text-7xl max-lg:text-3xl max-sm:text-lg">
-            {counts[index]}
-            {block.unit}
+            <CountUp end={block.value} duration={2} />
+            {/* {block.unit} */}
           </h1>
           <p className="max-lg:text-sm sm:min-w-max text-[#7B7583]">
             {block.label}

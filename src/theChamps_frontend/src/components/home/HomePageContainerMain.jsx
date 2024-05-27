@@ -22,7 +22,7 @@ import Wallets from "./Wallets";
 const HomepageContainerMain = () => {
   return (
     <div>
-      <HomePageA />;
+      <HomePageA />
       <Wallets />
       <HomePageB />
       <CustomDivide />

@@ -34,8 +34,8 @@ const appRoutes = createBrowserRouter([
     element: <MyProfilePage />,
   },
   { path: "/collection", element: <CollectionPage name={"All Collection"} /> },
-  { path: "/collections/:id", element: <ProductPage name={""} /> },
-  { path: "/collections/:id/:index", element: <ProductDetails /> },
+  { path: "/collection/:id", element: <ProductPage name={""} /> },
+  { path: "/collection/:id/:index", element: <ProductDetails /> },
 
   { path: "/faq", element: <FAQ /> },
 

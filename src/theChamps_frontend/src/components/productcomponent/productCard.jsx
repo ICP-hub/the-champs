@@ -111,7 +111,7 @@ const ProductCard = ({ product }) => {
       style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
     >
       <div className="overflow-hidden ">
-        <Link to={`/collections/${id}/${product[1].toText()}`}>
+        <Link to={`/collection/${id}/${product[1].toText()}`}>
           <motion.img
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}

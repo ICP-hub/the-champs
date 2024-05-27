@@ -294,7 +294,7 @@ const ProductDetails = () => {
               <div className=" gap-8 md:w-3/4  ">
                 <div className="flex items-center gap-4">
                   <Link
-                    to={`/collections/${id}`}
+                    to={`/collection/${id}`}
                     className="text-xl font-medium flex items-center gap-2"
                   >
                     <IoArrowBack />
@@ -354,9 +354,9 @@ const ProductDetails = () => {
                 </div>
                 <div className="flex justify-between  mt-6">
                   <div className=" flex">
-                    <span className="font-lg flex items-center gap-1">
-                      <IcpLogo size={24} />
+                    <span className="text-2xl flex font-semibold items-center gap-1">
                       {parseInt(nft[0][0]?.fractional_token?.fee)}
+                      <span>ICP</span>
                     </span>
                   </div>
                   <div>

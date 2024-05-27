@@ -110,7 +110,7 @@ const ProductCardLg = ({ prod }) => {
             style={{ visibility: isFlipped ? "hidden" : "visible" }}
           >
             <Link
-              to={`/collections/${prod.canisterId.toText()}`}
+              to={`/collection/${prod.canisterId.toText()}`}
               className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57]  text-white cursor-pointer  rounded-lg w-full z-[1]"
             >
               View Collection
