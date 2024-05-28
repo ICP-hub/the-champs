@@ -199,7 +199,7 @@ const ProductDetails = () => {
 
       {loading2 ? (
         <div>
-          <div class="md:mt-44 mt-8 left-0 right-0 gap-8 px-6 lg:px-24">
+          <div class="md:mt-24 mt-8 left-0 right-0 gap-8 px-6 lg:px-24">
             <div class="space-y-4 animate-pulse"></div>
 
             <div class="md:flex gap-8 mt-8 space-y-4 md:space-y-0">
@@ -252,7 +252,7 @@ const ProductDetails = () => {
             </div>
           )}
 
-          <div className="md:mt-44 mt-8 left-0 right-0 gap-8 px-6 lg:px-24">
+          <div className="md:mt-24 mt-8 left-0 right-0 gap-8 px-6 lg:px-24">
             <BuyNowModal
               isOpen={open}
               onClose={() => setOpen(false)}

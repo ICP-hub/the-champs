@@ -65,7 +65,7 @@ const CollectionPage = ({ name }) => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="z-0 mt-44">
+        <div className="z-0 mt-24">
           <h1 className="text-5xl font-bold font-sans mb-12 gap-1  px-6 lg:px-24 ">
             <span className="relative  text-transparent ml-2 bg-gradient-to-r   from-[#FC001E] to-[#FF7D57] bg-clip-text">
               {name}

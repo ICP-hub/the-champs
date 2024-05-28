@@ -29,7 +29,7 @@ const ProductCard = ({ product }) => {
   const [image, setImage] = useState(product[0]?.fractional_token.logo);
 
   const addToFavourites = async () => {
-    if (isConnected) {
+    
       try {
         setLoading(true);
         const canister_id = Principal.fromText(id);
@@ -42,9 +42,7 @@ const ProductCard = ({ product }) => {
       } finally {
         setLoading(false);
       }
-    } else {
-      toast.error("please login first");
-    }
+  
   };
 
   const icpWallet = assets?.find((wallet) => wallet.name === "ICP");

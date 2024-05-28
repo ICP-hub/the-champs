@@ -85,19 +85,19 @@ const ProductCardLg = ({ prod }) => {
               </div>
             </div>
             <div className="flex w-full items-center justify-start gap-4">
-              <div className="w-1/3 md:w-1/4 text-left text-xs md:text-sm space-y-1">
+              <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
                 <p>VOLUME</p>
                 <button className=" w-full  bg-gray-100  bg-opacity-100  text-[#7B7583] py-1  gap-1  rounded-lg   text-md flex items-center justify-center">
                   <IcpLogo /> 184
                 </button>
               </div>
-              <div className="w-1/3 md:w-1/4 text-left text-xs md:text-sm space-y-1">
+              <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
                 <p>LISTING</p>
                 <button className=" w-full  bg-gray-100  bg-opacity-100  text-[#7B7583] py-2  rounded-lg    text-md flex items-center justify-center">
                   184
                 </button>
               </div>
-              <div className="w-1/3 md:w-1/4 text-left text-xs md:text-sm space-y-1">
+              <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
                 <p>FLOOR PRICE</p>
                 <button className=" w-full   bg-gray-100 bg-opacity-100  text-[#7B7583] py-1 gap-1  rounded-lg    text-md flex items-center justify-center">
                   <IcpLogo /> 184
@@ -126,7 +126,7 @@ const ProductCardLg = ({ prod }) => {
         </div>
       </div>
       <div className="p-6 absolute top-0 h-full w-full backface-hidden back flex flex-col">
-        <div>Collection description</div>
+        <div>{prod.details.description}</div>
         <div className="flex justify-end w-full pt-6 gap-4 text-sm mt-auto">
           <div className="w-full md:w-1/2 flex gap-4">
             <Link

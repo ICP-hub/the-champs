@@ -7,7 +7,7 @@ const TermsAndService = () => {
   return (
     <>
       <Header />
-      <div className="mt-44 px-6 lg:px-24">
+      <div className="mt-24 px-6 lg:px-24">
         <h1 className="text-5xl font-bold font-sans mb-16">
           <span className="text-transparent bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
             Terms And Service
