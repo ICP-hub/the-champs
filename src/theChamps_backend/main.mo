@@ -18,8 +18,8 @@ import Types "../DIP721-NFT/Types";
 import Root "../DIP-20/cap/Root";
 import Admin "./Admin/admin";
 import UsersTypes "./Users/Types";
-import Api "./Users/Api";
 import ICRC "./ICRC";
+import XRC "./XRC";
 import Float "mo:base/Float";
 import Nat64 "mo:base/Nat64";
 import Int64 "mo:base/Int64";
@@ -30,6 +30,7 @@ actor Champs {
     let g = Source.Source();
     stable let icpLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai";
     stable let ckbtcLedger = "r7inp-6aaaa-aaaaa-aaabq-cai";
+    stable let exchange_rate_canister = "uf6dk-hyaaa-aaaaq-qaaaq-cai";
     // stores collection canister id of the user
     private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal, Principal.hash);
     private var stablenftcollectionMap : [(Principal, [Principal])] = [];
@@ -54,6 +55,79 @@ actor Champs {
         let adminstatus = await Admin.isAdmin(caller);
         return adminstatus;
     };
+
+    public shared ({caller = user}) func totalfractionalNFTs () : async Nat {
+        // let adminstatus = await Admin.isAdmin(user);
+        // if (adminstatus == false) {
+        //     throw Error.reject("User is not an admin");
+        // };
+        var count : Nat = 0;
+        for ((k,v) in fractionalnftmap.entries()) {
+            count := count + v.size();
+        };
+        return count;
+    };
+
+    public shared ({caller = user}) func totalcollections () : async Nat {
+        // let adminstatus = await Admin.isAdmin(user);
+        // if (adminstatus == false) {
+        //     throw Error.reject("User is not an admin");
+        // };
+        var count : Nat = 0;
+        for ((k,v) in nftcollectionMap.entries()) {
+            count := count + v.size();
+        };
+        return count;
+    };
+
+
+    // ******************************************* Collections Realted functions  *************************************************************
+
+    public shared ({caller = user }) func add_collection_to_map (collection_id : Principal) : async Text {
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
+        // let adminstatus = await Admin.isAdmin(user);
+        // if (adminstatus == false) {
+        //     throw Error.reject("User is not an admin");
+        // };
+        let usercollections = nftcollectionMap.get(user);
+        switch (usercollections) {
+            case null {
+                let newcolletions = [collection_id];
+                nftcollectionMap.put(user, newcolletions);
+                return "Collection added";
+            };
+            case (?collections) {
+                let temp = List.push(collection_id, List.fromArray(collections));
+                nftcollectionMap.put(user, List.toArray(temp));
+                return "Collection added";
+            };
+        };
+    }; 
+
+    public shared ({caller = user}) func remove_collection_to_map (collection_id : Principal) : async Text {
+        // if (Principal.isAnonymous(user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
+        // let adminstatus = await Admin.isAdmin(user);
+        // if (adminstatus == false) {
+        //     throw Error.reject("User is not an admin");
+        // };
+        let usercollections = nftcollectionMap.get(user);
+        switch (usercollections) {
+            case null {
+                return "There are no collections added yet !";
+            };
+            case (?collections) {
+                let temp : List.List<Principal> = List.fromArray(collections);
+                let newlist : List.List<Principal> = List.filter<Principal>(temp, func x { x != collection_id });
+                nftcollectionMap.put(user, List.toArray(newlist));
+                return "Collection removed";
+            };
+        };
+    };
+
 
     public shared ({ caller = user }) func createcollection(logo : Types.LogoResult, banner : Types.LogoResult, description : Text, name : Text, symbol : Text, maxLimit : Nat16, featured : Bool) : async (Principal, Principal) {
         // if (Principal.isAnonymous(user)) {
@@ -672,14 +746,13 @@ actor Champs {
 
     // ********************************************** Buy and Transfer of tokens *************************************************************
 
-    public query func getallstats() : async UsersTypes.Statsdata {
+    public func getallstats() : async UsersTypes.Statsdata {
         let totalusers = users.size();
-        let totalcollections = nftcollectionMap.size();
-        let totalfractionalnfts = fractionalnftmap.size();
+        let totalnfts =  await totalfractionalNFTs();
         let stats : UsersTypes.Statsdata = {
             totalusers = totalusers;
-            totalCollections = totalcollections;
-            totalnfts = totalfractionalnfts;
+            totalCollections = await totalcollections();
+            totalnfts = totalnfts;
         };
         return stats;
     };
@@ -703,63 +776,12 @@ actor Champs {
 
     // ******************************************************************************************************************************
 
-    public func get_icp_usd_exchange() : async Text {
-
-        let ic : Api.IC = actor ("aaaaa-aa");
-
-        let url = "https://api.coinbase.com/v2/exchange-rates?currency=USD";
-
-        let request_headers = [
-            { name = "Accept"; value = "*/*" },
-            { name = "User-Agent"; value = url },
-        ];
-        let transform_context : Api.TransformContext = {
-            function = transform;
-            context = Blob.fromArray([]);
+    public func get_exchange_rates( x : XRC.GetExchangeRateRequest) : async XRC.GetExchangeRateResult {
+        let xrc = actor (exchange_rate_canister) : actor {
+            get_exchange_rate : ( GetExchangeRateRequest : XRC.GetExchangeRateRequest ) -> async XRC.GetExchangeRateResult;
         };
-
-        let http_request : Api.HttpRequestArgs = {
-            url = url;
-            max_response_bytes = null; //optional for request
-            headers = request_headers;
-            body = null; //optional for request
-            method = #get;
-            transform = ?transform_context;
-        };
-
-        Cycles.add<system>(20_949_972_000);
-
-        let http_response : Api.HttpResponsePayload = await ic.http_request(http_request);
-
-        let response_body : Blob = Blob.fromArray(http_response.body);
-        let decoded_text : Text = switch (Text.decodeUtf8(response_body)) {
-            case (null) { "No value returned" };
-            case (?y) { y };
-        };
-
-        decoded_text;
+        let result = await xrc.get_exchange_rate(x);
+        Debug.print(debug_show (result));
+        return result;
     };
-
-    public query func transform(raw : Api.TransformArgs) : async Api.CanisterHttpResponsePayload {
-        let transformed : Api.CanisterHttpResponsePayload = {
-            status = raw.response.status;
-            body = raw.response.body;
-            headers = [
-                {
-                    name = "Content-Security-Policy";
-                    value = "default-src 'self'";
-                },
-                { name = "Referrer-Policy"; value = "strict-origin" },
-                { name = "Permissions-Policy"; value = "geolocation=(self)" },
-                {
-                    name = "Strict-Transport-Security";
-                    value = "max-age=63072000";
-                },
-                { name = "X-Frame-Options"; value = "DENY" },
-                { name = "X-Content-Type-Options"; value = "nosniff" },
-            ];
-        };
-        transformed;
-    };
-
 };
