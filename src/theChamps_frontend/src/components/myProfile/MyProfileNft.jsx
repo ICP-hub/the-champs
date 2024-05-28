@@ -79,7 +79,7 @@ const MyProfileNFT = () => {
 
   return (
     <>
-      <div>
+      <div className="h-screen overflow-y-auto">
         {loading ? (
           <div className="flex items-center h-56 justify-center">
             <InfinitySpin
@@ -90,94 +90,105 @@ const MyProfileNFT = () => {
             />
           </div>
         ) : product.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            {product.map((item, index) => (
-              <div key={index}>
-                <div
-                  className="border rounded-xl overflow-hidden"
-                  style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
-                >
-                  <div className="overflow-hidden">
-                    <Link
-                      to={`/collections/${item[0]?.toText()}/${
-                        item[1]?.nft?.id
-                      }`}
-                    >
-                      <motion.img
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.2, ease: "easeInOut" }}
-                        src={placeHolderImg || item[1]?.fractional_token?.logo}
-                        alt=""
-                        className="rounded-t-lg h-full object-cover cursor-pointer overflow-hidden"
-                      />
-                    </Link>
-                  </div>
-                  <div className="p-2 mx-2">
-                    <div className="flex justify-between font-bold items-center">
-                      <h2 className="text-lg font-semibold mb-2">
-                        {item[1]?.fractional_token?.name}
-                      </h2>
-                    </div>
-                    <p className="text-gray-500 text-sm">
-                      <ReadMore
-                        text={item[1]?.fractional_token?.owner?.toText() || ""}
-                        maxLength={20}
-                      />
-                    </p>
-                    <div className="flex justify-between mb-4">
-                      <p className="mt-4 py-2 rounded-md w-[50%]">
-                        {parseInt(item[1]?.fractional_token?.fee) || 0}
-                      </p>
-                      <button
-                        className="mt-4 button bg-opacity-100 text-white rounded-md w-[50%] text-md flex items-center justify-center"
-                        onClick={toggleModal}
+          <>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              {product.map((item, index) => (
+                <div key={index}>
+                  <div
+                    className="border rounded-xl overflow-hidden"
+                    style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
+                  >
+                    <div className="overflow-hidden">
+                      <Link
+                        to={`/collections/${item[0]?.toText()}/${
+                          item[1]?.nft?.id
+                        }`}
                       >
-                        Transfer
-                      </button>
+                        <motion.img
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ duration: 0.2, ease: "easeInOut" }}
+                          src={
+                            placeHolderImg || item[1]?.fractional_token?.logo
+                          }
+                          alt=""
+                          className="rounded-t-lg h-full object-cover cursor-pointer overflow-hidden"
+                        />
+                      </Link>
                     </div>
-                  </div>
-                  {showModal && (
-                    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
-                      <div className="bg-white p-4 rounded-lg flex flex-col space-x-5 space-y-8 items-center justify-center">
-                        <IconWrapper>
-                          <RiErrorWarningLine size={36} />
-                        </IconWrapper>
-                        <p>
-                          You don't have sufficient balance to buy this NFT.
+                    <div className="p-2 mx-2">
+                      <div className="flex justify-between font-bold items-center">
+                        <h2 className="text-lg font-semibold mb-2">
+                          {item[1]?.fractional_token?.name}
+                        </h2>
+                      </div>
+                      <p className="text-gray-500 text-sm">
+                        <ReadMore
+                          text={
+                            item[1]?.fractional_token?.owner?.toText() || ""
+                          }
+                          maxLength={20}
+                        />
+                      </p>
+                      <div className="flex justify-between mb-4">
+                        <p className="mt-4 py-2 rounded-md w-[50%]">
+                          {parseInt(item[1]?.fractional_token?.fee) || 0}
                         </p>
                         <button
-                          className="mt-2 px-4 py-2 button bg-blue-500 text-white rounded-lg"
-                          onClick={() => setShowModal(false)}
+                          className="mt-4 button bg-opacity-100 text-white rounded-md w-[50%] text-md flex items-center justify-center"
+                          onClick={toggleModal}
                         >
-                          Close
+                          Transfer
                         </button>
                       </div>
                     </div>
+                    {showModal && (
+                      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
+                        <div className="bg-white p-4 rounded-lg flex flex-col space-x-5 space-y-8 items-center justify-center">
+                          <IconWrapper>
+                            <RiErrorWarningLine size={36} />
+                          </IconWrapper>
+                          <p>
+                            You don't have sufficient balance to buy this NFT.
+                          </p>
+                          <button
+                            className="mt-2 px-4 py-2 button bg-blue-500 text-white rounded-lg"
+                            onClick={() => setShowModal(false)}
+                          >
+                            Close
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {isModalOpen && (
+                    <>
+                      <div
+                        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                        onClick={toggleModal}
+                      ></div>
+                      <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <CommonModal
+                          tokencanisterid={item[0]}
+                          toggleModal={toggleModal}
+                          title="Transfer NFT"
+                          message="Please enter the address or Principal you want to send the NFT to"
+                          warningText="Beware, not all wallets support all tokens"
+                          inputPlaceholder="Address or Principal of receiver"
+                          confirmText="Transfer"
+                          cancelText="Back"
+                        />
+                      </div>
+                    </>
                   )}
                 </div>
-                {isModalOpen && (
-                  <>
-                    <div
-                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
-                      onClick={toggleModal}
-                    ></div>
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                      <CommonModal
-                        tokencanisterid={item[0]}
-                        toggleModal={toggleModal}
-                        title="Transfer NFT"
-                        message="Please enter the address or Principal you want to send the NFT to"
-                        warningText="Beware, not all wallets support all tokens"
-                        inputPlaceholder="Address or Principal of receiver"
-                        confirmText="Transfer"
-                        cancelText="Back"
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+            <div className="text-center mt-8 px-6 lg:px-24 flex justify-center items-center">
+              <button className="px-4 py-2 border border-red-500 cursor-pointer rounded-lg w-48 == z-[1]">
+                No More NFT found
+              </button>
+            </div>
+          </>
         ) : (
           <div className="text-center mt-8 px-6 lg:px-24 flex justify-center items-center">
             <button className="px-4 py-2 border border-red-500 cursor-pointer rounded-lg w-48 == z-[1]">

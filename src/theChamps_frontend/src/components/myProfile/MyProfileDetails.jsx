@@ -139,19 +139,19 @@ const MyProfileDetails = () => {
       ) : (
         <div className="card">
           <div className="relative overflow-hidden w-32 h-32 group">
-            {editMode ? (
+            {formData?.profileimage ? (
+              <img
+                src={formData?.profileimage}
+                alt="User Logo"
+                className="w-full h-full object-cover"
+              />
+            ) : (
               <Avatar
                 size={125}
                 className="w-full h-full object-cover"
                 name={principal}
                 variant="beam"
                 colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
-              />
-            ) : (
-              <img
-                src={formData?.profileimage}
-                alt="User Logo"
-                className="w-full h-full object-cover"
               />
             )}
             {editMode && (
@@ -325,7 +325,7 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isConnected) {
+    if (isConnected) {
       try {
         if (validateForm()) {
           setLoading(true);
@@ -368,6 +368,9 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
       className="infos md:w-6/12 w-full"
     >
       <div className="flex flex-col">
+        {errors.profileimage && (
+          <span className="text-red-500 text-sm">{errors.profileimage}</span>
+        )}
         <div>
           {/* <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
             <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
@@ -390,42 +393,46 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
         </div>
         <div className="py-2 flex flex-col gap-2 w-full">
           <div className="flex gap-4">
-            <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
-              <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
-                <RxAvatar size={24} color="white" />
-              </span>
-              <input
-                type="text"
-                name="firstName"
-                className="focus:outline-none bg-transparent outline-none pl-12 w-full text-[0.9rem]"
-                value={formData.firstName}
-                placeholder="First Name"
-                onChange={handleChange}
-                disabled={loading}
-                required
-              />
+            <div>
+              <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
+                <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
+                  <RxAvatar size={24} color="white" />
+                </span>
+                <input
+                  type="text"
+                  name="firstName"
+                  className="focus:outline-none bg-transparent outline-none pl-12 w-full text-[0.9rem]"
+                  value={formData.firstName}
+                  placeholder="First Name"
+                  onChange={handleChange}
+                  disabled={loading}
+                  required
+                />
+              </div>
+              {errors.firstName && (
+                <span className="text-red-500 text-sm">{errors.firstName}</span>
+              )}
             </div>
-            {errors.firstName && (
-              <span className="text-red-500 text-sm">{errors.firstName}</span>
-            )}
-            <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
-              <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
-                <RxAvatar size={24} color="white" />
-              </span>
-              <input
-                type="text"
-                name="lastName"
-                className="focus:outline-none outline-none bg-transparent pl-12 w-full text-[0.9rem]"
-                value={formData.lastName}
-                placeholder="Last Name"
-                onChange={handleChange}
-                disabled={loading}
-                required
-              />
+            <div>
+              <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
+                <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
+                  <RxAvatar size={24} color="white" />
+                </span>
+                <input
+                  type="text"
+                  name="lastName"
+                  className="focus:outline-none outline-none bg-transparent pl-12 w-full text-[0.9rem]"
+                  value={formData.lastName}
+                  placeholder="Last Name"
+                  onChange={handleChange}
+                  disabled={loading}
+                  required
+                />
+              </div>
+              {errors.lastName && (
+                <span className="text-red-500 text-sm">{errors.lastName}</span>
+              )}
             </div>
-            {errors.lastName && (
-              <span className="text-red-500 text-sm">{errors.lastName}</span>
-            )}
           </div>
           <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
             <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">

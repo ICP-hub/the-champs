@@ -1,3 +1,4 @@
+// src/components/MyFav.js
 import React, { useState, useEffect } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { CiHeart } from "react-icons/ci";
@@ -28,7 +29,7 @@ const MyFav = () => {
   const userInfo = useSelector((state) => state.auth);
   const user = userInfo.userPlugPrincipal;
 
-  const rincipal = Principal.fromText(user);
+  const defaultPrincipal = Principal.fromText(user);
 
   useEffect(() => {
     const getUsersFractionNFT = async () => {
@@ -36,6 +37,7 @@ const MyFav = () => {
         const res = await backend.getallfractionalnfts();
         const favouritesRes = await backend.getfavourites();
         console.log("user product", res);
+        console.log("user fav", favouritesRes);
 
         const favouriteProducts = res.filter((product) =>
           favouritesRes.some((fav) => fav[0].id === product[1].nft.id)
@@ -73,15 +75,38 @@ const MyFav = () => {
     }
   };
 
-  const removeFavourites = async (id, productId) => {
+  const removeFavourites = async (
+    id,
+    productId,
+    nftId,
+    metadata,
+    locked,
+    forsale,
+    listed,
+    priceinusd
+  ) => {
     try {
       setLoading(true);
       const canister_id = Principal.fromText(id);
-      await backend.removefavourite(canister_id, productId);
+      await backend.removefavourite({
+        id: nftId,
+        owner: canister_id,
+        metadata,
+        locked,
+        forsale,
+        listed,
+        priceinusd,
+      });
       toast.success("Item removed from favourites");
       // Refresh favourites
       const res = await backend.getfavourites();
       setFavourites(res);
+      // Update the filtered products list after removal
+      const favouriteProducts = filteredProduct.filter(
+        (product) => product[1].nft.id !== nftId
+      );
+      setFilteredProduct(favouriteProducts);
+      setProductInFavourite(favouriteProducts.length > 0);
     } catch (error) {
       console.log(error);
       toast.error("Failed to remove item from favourites");
@@ -158,7 +183,13 @@ const MyFav = () => {
                           onClick={() =>
                             removeFavourites(
                               product[0]?.toText(),
-                              product[1]?.nft?.id
+                              product[1]?.nft?.id,
+                              product[1]?.nft?.id,
+                              product[1]?.nft?.metadata,
+                              product[1]?.nft?.locked,
+                              product[1]?.nft?.forsale,
+                              product[1]?.nft?.listed,
+                              product[1]?.nft?.priceinusd
                             )
                           }
                         >

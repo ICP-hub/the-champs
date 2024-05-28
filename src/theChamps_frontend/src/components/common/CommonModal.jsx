@@ -15,8 +15,8 @@ const CommonModal = ({ toggleModal, tokencanisterid }) => {
   };
 
   const handleTransferNow = async () => {
-    setLoading(true);
     if (isConnected) {
+      setLoading(true);
       try {
         const response = await backend.tranfertokens(
           tokencanisterid,

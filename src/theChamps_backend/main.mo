@@ -339,10 +339,10 @@ actor Champs {
         //     throw Error.reject("User is not authenticated");
         // };
 
-        let adminstatus = await Admin.isAdmin(user);
-        if (adminstatus == false) {
-            throw Error.reject("User is not an admin");
-        };
+        // let adminstatus = await Admin.isAdmin(user);
+        // if (adminstatus == false) {
+        //     throw Error.reject("User is not an admin");
+        // };
         var results = List.nil<(Principal, Types.FractionalNFT, Principal)>();
         for (nft in fractionalnftmap.vals()) {
             for (fractionalnft in nft.vals()) {
@@ -462,7 +462,7 @@ actor Champs {
         };
     };
 
-    public shared ({ caller = user }) func removefavourite( item :(Types.Nft,Principal)) : async Text {
+    public shared ({ caller = user }) func removefavourite(item : (Types.Nft, Principal)) : async Text {
         // if (Principal.isAnonymous(user)) {
         // throw Error.reject("User is not authenticated");
         // };
@@ -475,7 +475,7 @@ actor Champs {
             case (?favourite) {
                 let temp : List.List<(Types.Nft, Principal)> = List.fromArray(favourite);
                 Debug.print(debug_show (temp));
-                let newlist : (List.List<(Types.Nft, Principal)>,List.List<(Types.Nft, Principal)>) = List.partition<(Types.Nft, Principal)>(temp, func x  { x != item });
+                let newlist : (List.List<(Types.Nft, Principal)>, List.List<(Types.Nft, Principal)>) = List.partition<(Types.Nft, Principal)>(temp, func x { x != item });
                 Debug.print("The newlist which is a tuple type is like this" #debug_show (newlist));
                 favourites.put(user, List.toArray(newlist.0));
                 return "Favourite removed";
@@ -622,7 +622,7 @@ actor Champs {
         /*  if (Principal.isAnonymous(msg.caller)) {
       return #err(#UserNotAuthenticated); // We require the user to be authenticated,
     }; */
-        
+
         if (u.email == "") { return #err(#EmptyEmail) };
         if (u.firstName == "") { return #err(#EmptyFirstName) };
         if (u.lastName == "") { return #err(#EmptyLastName) };
