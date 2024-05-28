@@ -5,14 +5,150 @@ import profile from "../../assets/user.jpg";
 import { IoCopyOutline } from "react-icons/io5";
 import { FiLink, FiSearch } from "react-icons/fi";
 import { LuFilter } from "react-icons/lu";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
 import { BsFileText } from "react-icons/bs";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
+import { TbSquareRoundedChevronLeft } from "react-icons/tb";
+import champsImg from "../../../assets/CHAMPS.png";
+import { Grid } from "react-loader-spinner";
+
 const SingleNFT = () => {
-  return <div>Single nft</div>;
+  const { collection, slug } = useParams();
+  const [backend] = useCanister("backend");
+  const [isNFTLoading, setIsNFTLoading] = useState(false);
+  const [nftDetail, setNFTDetail] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchNFTDetail = async () => {
+      try {
+        setIsNFTLoading(true);
+        const res = await backend.getFractionalNftDetails(
+          1,
+          Principal.fromText(slug),
+          Principal.fromText(collection)
+        );
+        // console.log('Response getFractionalNFTDetails : ',res);
+        setNFTDetail(res);
+      } catch (err) {
+        console.error("Error fecthing fractionalNFTdetails : ", err);
+      } finally {
+        setIsNFTLoading(false);
+      }
+    };
+
+    fetchNFTDetail();
+  }, []);
+
+  console.log(nftDetail);
+  return (
+    <div className="mx-4 md:py-8 md:px-6 p-2 mt-6 rounded-lg bg-card text-textall h-full">
+      <div className="flex gap-4 items-center font-bold text-lg tracking-wider">
+        <TbSquareRoundedChevronLeft
+          className="w-6 h-6 cursor-pointer"
+          onClick={() => navigate(-1)}
+        />
+        NFT Detail
+      </div>
+      {isNFTLoading ? (
+        <div className="h-full w-full flex items-center justify-center">
+          <Grid
+            visible={true}
+            height="150"
+            width="150"
+            color="#EF4444"
+            ariaLabel="grid-loading"
+            radius="12.5"
+            wrapperClass="grid-wrapper"
+          />
+        </div>
+      ) : (
+        <div className="mt-6 flex gap-4 max-md:flex-col max-md:justify-center max-md:items-center">
+          <div className="min-h-64 min-w-64 rounded-lg p-2 border-2 border-divider max-h-64 max-w-64">
+            <img
+              src={
+                nftDetail?.fractional_token.logo.length > 10
+                  ? nftDetail?.fractional_token.logo
+                  : champsImg
+              }
+              alt={nftDetail?.fractional_token.name}
+              className="rounded-lg h-full w-full"
+            />
+          </div>
+          <div className="flex border-2 w-full p-4 rounded-lg border-divider flex-col gap-2 tracking-wider">
+            <div className="font-medium flex gap-2">
+              <div className="min-w-32 flex justify-between">
+                <span>NFT name</span>
+                <span>:</span>
+              </div>
+              <p className="font-bold">{nftDetail?.fractional_token.name}</p>
+            </div>
+            <div className="font-medium flex gap-2">
+              <div className="min-w-32 flex justify-between">
+                <span>Collection</span>
+                <span>:</span>
+              </div>
+              <p className="font-bold">{collection}</p>
+            </div>
+            <div className="font-medium flex gap-2">
+              <div className="min-w-32 flex justify-between">
+                <span>NFT ID</span>
+                <span>:</span>
+              </div>
+              <p className="font-bold">{slug}</p>
+            </div>
+            <div className="font-medium flex gap-2">
+              <div className="min-w-32 flex justify-between">
+                <span>Owner</span>
+                <span>:</span>
+              </div>
+              <p className="font-bold">{nftDetail?.nft.owner.toText()}</p>
+            </div>
+            <div className="font-medium flex gap-2">
+              <div className="min-w-32 flex justify-between">
+                <span>Price</span>
+                <span>:</span>
+              </div>
+              <p className="font-bold">
+                $ {nftDetail?.nft.priceinusd.toFixed(3)}
+              </p>
+            </div>
+            <div className="font-medium flex gap-2">
+              <div className="min-w-32 flex justify-between">
+                <span>Listed</span>
+                <span>:</span>
+              </div>
+              <p className="font-bold">
+                {nftDetail?.nft.listed ? "Yes" : "No"}
+              </p>
+            </div>
+            <div className="font-medium flex gap-2">
+              <div className="min-w-32 flex justify-between">
+                <span>Total Share</span>
+                <span>:</span>
+              </div>
+              <p className="font-bold">
+                {Number(nftDetail?.fractional_token.totalSupply)}
+              </p>
+            </div>
+            <div className="font-medium flex gap-2">
+              <div className="min-w-32 flex justify-between">
+                <span>Price/Share</span>
+                <span>:</span>
+              </div>
+              <p className="font-bold">
+                $ {nftDetail?.price_per_share.toFixed(3)}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
+
 //   const [copied, setCopied] = useState(false);
 //   const textToCopy =
 //     "5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe";

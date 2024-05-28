@@ -13,7 +13,8 @@ import { Grid } from "react-loader-spinner";
 import { useSelector } from "react-redux";
 import CollectionApi from "../../../api/CollectionApi";
 import NFTApi from "../../../api/NftApi";
-import CHAMPSImg from "../../../assets/CHAMPS.png";
+import champsImg from "../../../assets/CHAMPS.png";
+
 const NFTList = () => {
   const { slug } = useParams();
   const { getSingleCollectionDetails, isLoading } = CollectionApi();
@@ -44,7 +45,11 @@ const NFTList = () => {
       <div className="text-textall h-full relative py-4">
         <div className="p-4 max-h-64 min-h-64 flex rounded-2xl">
           <img
-            src={collectionDetail.banner.data}
+            src={
+              collectionDetail.banner.data.length > 10
+                ? collectionDetail.banner.data
+                : champsImg
+            }
             alt="banner"
             className="max-h-max min-h-max rounded-2xl"
           />
@@ -52,7 +57,11 @@ const NFTList = () => {
         <div className="absolute top-32 md:left-16 rounded-2xl flex justify-center max-md:w-full">
           <div className="bg-white p-[6px] rounded-2xl">
             <img
-              src={collectionDetail.logo.data}
+              src={
+                collectionDetail.logo.data.length > 10
+                  ? collectionDetail.logo.data
+                  : champsImg
+              }
               className="max-h-48 max-w-48 min-w-48 min-h-48 rounded-2xl"
             />
           </div>
@@ -110,7 +119,9 @@ const NFTs = () => {
             Loading NFTs...
           </div>
         ) : nftList && nftList.length > 0 ? (
-          nftList.map((nft, index) => <NFTCard key={index} nftdetail={nft} />)
+          nftList.map((nft, index) => (
+            <NFTCard key={index} nftdetail={nft} collection_Id={slug} />
+          ))
         ) : (
           <div className="col-span-full flex items-center justify-center">
             <p>No NFTs found in this collection.</p>
@@ -121,14 +132,18 @@ const NFTs = () => {
   );
 };
 
-const NFTCard = ({ nftdetail }) => {
-  // console.log(nftdetail);
+const NFTCard = ({ nftdetail, collection_Id }) => {
+  console.log(nftdetail);
   const { fractional_token, nft } = nftdetail[0];
   return (
     <div className="bg-card rounded-2xl flex flex-col gap-4">
       <div>
         <img
-          src={fractional_token.logo}
+          src={
+            fractional_token.logo.length > 10
+              ? fractional_token.logo
+              : champsImg
+          }
           alt="nftImg"
           className="rounded-t-2xl"
         />
@@ -141,7 +156,7 @@ const NFTCard = ({ nftdetail }) => {
       <p className="px-4 text-sm">Price : $ {nft.priceinusd}</p>
       <div className="flex justify-end px-4 py-2">
         <Link
-          to={`/admin/nft-detail/${nftdetail[1].toText()}`}
+          to={`/admin/nft-detail/${collection_Id}/${nftdetail[1].toText()}`}
           className="button px-4 py-1 text-white rounded-md"
         >
           View
