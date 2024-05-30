@@ -2,6 +2,7 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
+import React, { useState } from "react";
 import Setup1 from "../../assets/images/nft-1.png";
 import Setup2 from "../../assets/images/nft-2.png";
 import Setup3 from "../../assets/images/nft-3.png";
@@ -12,15 +13,31 @@ import FancyHeader from "../common/FancyHeader";
 /*  @ <HomePageE /> : Setup section.
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageE = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
+
+  const openModal = (url) => {
+    setVideoUrl(url);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setVideoUrl("");
+  };
+
   return (
     <div className="md:p-24 max-md:p-6">
       <FancyHeader normal="How it" fancy="works!" />
-      <Setup />
+      <Setup openModal={openModal} />
+      {isModalOpen && (
+        <VideoModal videoUrl={videoUrl} closeModal={closeModal} />
+      )}
     </div>
   );
 };
 
-const Setup = () => {
+const Setup = ({ openModal }) => {
   return (
     <div>
       <div className="grid md:grid-cols-2 py-12 gap-x-8 gap-y-4">
@@ -38,7 +55,12 @@ const Setup = () => {
             management of cryptocurrency assets, enabling seamless transactions
             within our ecosystem.
           </p>
-          <button className="cursor-pointer flex items-center gap-4 font-bold pt-6 mt-auto">
+          <button
+            className="cursor-pointer flex items-center gap-4 font-bold pt-6 mt-auto"
+            onClick={() =>
+              openModal("https://www.youtube.com/embed/LN61jzaYlIY")
+            }
+          >
             Learn More
             <MdArrowOutward size={24} />
           </button>
@@ -60,7 +82,12 @@ const Setup = () => {
             identify and engage with entities aligning with their preferences
             and interests.
           </p>
-          <button className="cursor-pointer flex items-center gap-4 font-bold pt-6 mt-auto">
+          <button
+            className="cursor-pointer flex items-center gap-4 font-bold pt-6 mt-auto"
+            onClick={() =>
+              openModal("https://www.youtube.com/embed/LN61jzaYlIY")
+            }
+          >
             Learn More
             <MdArrowOutward size={24} />
           </button>
@@ -84,10 +111,40 @@ const Setup = () => {
             using their connected wallet. This seamless process ensures that
             users swiftly and securely obtain ownership of their chosen assets.
           </p>
-          <button className="cursor-pointer flex items-center gap-4 font-bold pt-6">
+          <button
+            className="cursor-pointer flex items-center gap-4 font-bold pt-6"
+            onClick={() =>
+              openModal("https://www.youtube.com/embed/LN61jzaYlIY")
+            }
+          >
             Learn More
             <MdArrowOutward size={24} />
           </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const VideoModal = ({ videoUrl, closeModal }) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg overflow-hidden w-11/12 md:w-3/4 lg:w-1/2">
+        <div className="flex justify-end p-2">
+          <button onClick={closeModal} className="text-black font-bold text-xl">
+            &times;
+          </button>
+        </div>
+        <div className="p-4">
+          <iframe
+            width="100%"
+            height="400px"
+            src={videoUrl}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            title="YouTube video"
+          ></iframe>
         </div>
       </div>
     </div>

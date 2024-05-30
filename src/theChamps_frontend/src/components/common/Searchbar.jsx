@@ -1,9 +1,8 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useRef, useState } from "react";
 import { CiSearch, CiFilter } from "react-icons/ci";
 import { Menu, Transition } from "@headlessui/react";
 import { IoGridOutline } from "react-icons/io5";
 import { CiBoxList } from "react-icons/ci";
-import toast from "react-hot-toast";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 
 const Searchbar = ({
@@ -17,6 +16,7 @@ const Searchbar = ({
   setSearch,
 }) => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const menuButtonRef = useRef(null);
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
@@ -70,25 +70,13 @@ const Searchbar = ({
         sortedResults = collection;
     }
     setSearchResults(sortedResults);
+
+    // Close the menu
+    if (menuButtonRef.current) {
+      menuButtonRef.current.click();
+    }
   };
 
-  // return (
-  //   <div className="flex">
-  //     <div className="flex gap-2 flex-1 w-full border border-gray-400 rounded-md px-4 py-2 bg-white">
-  //       <span>
-  //         <HiMagnifyingGlass size={24} />
-  //       </span>
-  //       <input
-  //         type="text"
-  //         placeholder="Search our collection"
-  //         value={value}
-  //         onChange={handleSearch}
-  //         className="h-full w-full outline-none"
-  //       />
-  //     </div>
-  //     <div className="">two</div>
-  //   </div>
-  // );
   return (
     <>
       <div className="flex justify-between gap-2 ">
@@ -101,15 +89,18 @@ const Searchbar = ({
           <input
             type="text"
             placeholder="Search our collection"
-            className="bg-transparent   outline-none  w-full"
+            className="bg-transparent outline-none w-full"
             value={value}
             onChange={handleSearch}
           />
         </div>
         <div className=" lg:w-[12%] ">
-          <Menu as="div" className="relative inline-block text-left w-full ">
+          <Menu as="div" className="relative inline-block text-left w-full">
             <div>
-              <Menu.Button className="flex text-xl items-center justify-center gap-2 border-[1px] border-gray-400 rounded-md px-3 md:py-2 lg:w-full overflow-hidden ">
+              <Menu.Button
+                ref={menuButtonRef}
+                className="flex text-xl items-center justify-center gap-2 border-[1px] border-gray-400 rounded-md px-3 md:py-2 lg:w-full overflow-hidden"
+              >
                 <div className="md:text-3xl">
                   <CiFilter />
                 </div>
