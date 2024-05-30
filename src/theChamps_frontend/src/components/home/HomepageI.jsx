@@ -119,10 +119,14 @@ const HomePageI = () => {
 };
 
 const QuestionBox = () => {
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openIndices, setOpenIndices] = useState([]);
 
   const handleAccordion = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
+    setOpenIndices((prevIndices) =>
+      prevIndices.includes(index)
+        ? prevIndices.filter((i) => i !== index)
+        : [...prevIndices, index]
+    );
   };
 
   return (
@@ -135,29 +139,30 @@ const QuestionBox = () => {
           }`}
           onClick={() => handleAccordion(index)}
         >
-          <div className="flex justify-between">
-            <h3 className="font-bold text-xl">{item.question}</h3>
-            <span>
-              {openIndex === index ? (
-                <MdArrowDropUp size={24} />
-              ) : (
-                <MdArrowDropDown size={24} />
+          <div className="flex flex-col">
+            <div className="flex justify-between pb-2">
+              <h3 className="font-bold text-xl">{item.question}</h3>
+              <span>
+                {openIndices.includes(index) ? (
+                  <MdArrowDropUp size={24} />
+                ) : (
+                  <MdArrowDropDown size={24} />
+                )}
+              </span>
+            </div>
+            <AnimatePresence>
+              {openIndices.includes(index) && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "100%" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="text-[#7B7583] font-normal text-lg text-start"
+                >
+                  {item.answer}
+                </motion.div>
               )}
-            </span>
+            </AnimatePresence>
           </div>
-          <AnimatePresence>
-            {openIndex === index && (
-              <motion.div
-                initial={{ maxHeight: 0 }}
-                animate={{ maxHeight: 200 }}
-                exit={{ opacity: 0, maxHeight: 0 }}
-                transition={{ duration: 0.3 }}
-                className="text-[#7B7583] font-normal text-lg"
-              >
-                {item.answer}
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       ))}
     </div>

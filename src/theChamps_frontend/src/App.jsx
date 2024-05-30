@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import appRoutes from "./app.routing";
 import { RouterProvider } from "react-router-dom";
-import "aos/dist/aos.css";
 import { AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
 import bgImg from "./assets/bg.png";
 
@@ -14,7 +13,7 @@ function App() {
     scrollVal > 0 ? setIsBgVisible(false) : setIsBgVisible(true);
   });
 
-  console.log(isBgVisible);
+  // console.log(isBgVisible);
 
   return (
     <div>
