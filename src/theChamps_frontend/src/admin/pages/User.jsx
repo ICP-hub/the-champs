@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Table, { DetailButton, DetailButton2 } from "../utils/Table";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
 import { Grid } from "react-loader-spinner";
@@ -7,7 +6,6 @@ import { Principal } from "@dfinity/principal";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { motion } from "framer-motion";
-import champsImg from "../../assets/CHAMPS.png";
 // listUsers: () → (vec record {principal; record {twitter:text; email:text; discord:text; profileimage:text; lastName:text; telegram:text; firstName:text}}) query
 // User Component
 const User = () => {
@@ -24,7 +22,7 @@ const User = () => {
 
   const filteredUsers = userData?.filter(
     ([principal, user]) =>
-      Principal.fromText(principal).includes(searchQuery) ||
+      principal.toText().includes(searchQuery) ||
       user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase())
@@ -129,16 +127,19 @@ const UserLabels = ({ users }) => {
               <span className="truncate">{user.email}</span>
             </div>
             <div className="hidden lg:flex items-center justify-center overflow-hidden w-full">
-              <span className="truncate">{Principal.fromText(principal)}</span>
+              <span className="truncate">{principal.toText()}</span>
             </div>
-            <div className="flex items-center justify-center">
+            <Link
+              to={`/admin/users/user-details/${principal.toText()}`}
+              className="flex items-center justify-center"
+            >
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 className="button text-white px-2 py-1 rounded text-sm font-medium"
               >
                 View
               </motion.button>
-            </div>
+            </Link>
           </div>
         ))
       ) : (

@@ -26,6 +26,7 @@ import User from "./admin/pages/User";
 import Contact from "./admin/features/contact/contact";
 import ContactDetail from "./admin/features/contact/ContactDetail";
 import MintNft from "./admin/features/NFT/MintNft";
+import UserDetail from "./admin/features/users/UserDetails";
 /**** Create Routes *****/
 const appRoutes = createBrowserRouter([
   { path: "/", element: <HomePage /> },
@@ -111,6 +112,16 @@ const appRoutes = createBrowserRouter([
   //     </MainAdmin>
   //   ),
   // },
+  // User detail
+  {
+    path: "/admin/users/user-details/:id",
+    element: (
+      <MainAdmin>
+        <UserDetail />
+      </MainAdmin>
+    ),
+  },
+
   {
     path: "/admin/users/:sdf/update-collections",
     element: (
