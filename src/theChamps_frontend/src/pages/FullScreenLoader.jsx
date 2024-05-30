@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Grid } from "react-loader-spinner";
+import { Grid, Hourglass, InfinitySpin } from "react-loader-spinner";
 
 const FullScreenLoader = () => {
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center px-6">
-      <Grid
+      <InfinitySpin
         visible={true}
-        height="150"
-        width="150"
+        height="300"
+        width="300"
         color="#EF4444"
-        ariaLabel="grid-loading"
-        radius="12.5"
-        wrapperStyle={{}}
-        wrapperClass="grid-wrapper"
+        ariaLabel="infinity-spin-loading"
       />
     </div>
   );

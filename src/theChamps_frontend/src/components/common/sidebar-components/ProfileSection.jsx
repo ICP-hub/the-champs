@@ -3,6 +3,10 @@ import IconWrapper from "../IconWrapper";
 import { Link, useNavigate } from "react-router-dom";
 import { MdDashboard, MdFormatListBulletedAdd } from "react-icons/md";
 import { FaUserPen } from "react-icons/fa6";
+import { useCanister, useConnect } from "@connect2ic/react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Principal } from "@dfinity/principal";
 
 const ProfileSection = () => {
   const navigate = useNavigate();
@@ -10,6 +14,50 @@ const ProfileSection = () => {
     "px-6 py-3 hover:bg-gray-200 flex gap-4 items-center cursor-pointer w-full";
   const commonHeadingStyle =
     "text-sm font-bold uppercase text-gray-500 text-left min-w-max px-4 pt-3";
+  const userInfo = useSelector((state) => state.auth);
+  const { principal, disconnect, isConnected } = useConnect();
+  const rincipal = Principal?.fromText(principal);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdminChecked, setIsAdminChecked] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [backend] = useCanister("backend");
+
+  console.log(backend);
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      } catch (error) {
+        console.error("Error checking connection:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkConnection();
+  }, []);
+
+  useEffect(() => {
+    const checkIsAdmin = async () => {
+      if (isConnected && principal) {
+        try {
+          const res = await backend.checkisadmin(rincipal);
+          setIsAdmin(res);
+          console.log("admin is ", res);
+        } catch (error) {
+          console.error("Error checking isAdmin:", error);
+          setIsAdmin(false);
+        } finally {
+          setIsAdminChecked(true);
+        }
+      } else {
+        setIsAdminChecked(false);
+      }
+    };
+
+    checkIsAdmin();
+  }, [isConnected, backend, principal]);
 
   return (
     <>
@@ -65,15 +113,17 @@ const ProfileSection = () => {
             <span className="font-medium">Activity</span>
           </button>
         </div>
-        <Link to="/admin" className="border-2 rounded-2xl overflow-hidden">
-          <h1 className={commonHeadingStyle}>Admin</h1>
-          <div className={commonLinkStyle}>
-            <IconWrapper>
-              <MdDashboard size={28} />
-            </IconWrapper>
-            <span className="font-medium">Dashboard</span>
-          </div>
-        </Link>
+        {isAdmin ? (
+          <Link to="/admin" className="border-2 rounded-2xl overflow-hidden">
+            <h1 className={commonHeadingStyle}>Admin</h1>
+            <div className={commonLinkStyle}>
+              <IconWrapper>
+                <MdDashboard size={28} />
+              </IconWrapper>
+              <span className="font-medium">Dashboard</span>
+            </div>
+          </Link>
+        ) : null}
         <div className="h-28 w-full"></div>
       </div>
     </>

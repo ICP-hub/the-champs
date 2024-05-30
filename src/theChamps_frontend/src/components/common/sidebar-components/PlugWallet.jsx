@@ -143,9 +143,9 @@ const PlugWallet = () => {
           </motion.div>
         </div>
       </div>
-      <div className="flex gap-4 items-center justify-center text-lg pb-4">
+      {/* <div className="flex gap-4 items-center justify-center text-lg pb-4">
         <IcpLogo size={32} /> {userInfo.userPlugBalance}
-      </div>
+      </div> */}
     </div>
   );
 };
