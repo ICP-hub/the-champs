@@ -6,7 +6,7 @@ import bgImg from "./assets/bg.png";
 
 function App() {
   const { scrollY } = useScroll();
-  const [isBgVisible, setIsBgVisible] = useState(null);
+  const [isBgVisible, setIsBgVisible] = useState(true);
 
   useMotionValueEvent(scrollY, "change", (scrollVal) => {
     // console.log("scroll", scrollVal);
