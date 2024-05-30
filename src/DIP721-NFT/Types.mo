@@ -169,10 +169,6 @@ module {
     id: Nat;
   };
 
-  public type CollectionDetails = {
-
-  };
-
     public type ContactId = Text;
 
     public type UserContact = {
@@ -214,4 +210,5 @@ module {
         #EmptyMessage;
         #ContactNotFound;
     };
+  
 };
