@@ -16,7 +16,6 @@ const ProfileSection = () => {
     "text-sm font-bold uppercase text-gray-500 text-left min-w-max px-4 pt-3";
   const userInfo = useSelector((state) => state.auth);
   const { principal, disconnect, isConnected } = useConnect();
-  const rincipal = Principal?.fromText(principal);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAdminChecked, setIsAdminChecked] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -42,7 +41,9 @@ const ProfileSection = () => {
     const checkIsAdmin = async () => {
       if (isConnected && principal) {
         try {
-          const res = await backend.checkisadmin(rincipal);
+          const res = await backend.checkisadmin(
+            Principal?.fromText(principal)
+          );
           setIsAdmin(res);
           console.log("admin is ", res);
         } catch (error) {

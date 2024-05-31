@@ -57,16 +57,15 @@ const MyProfileActivity = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState([]);
-  const userInfo = useSelector((state) => state.auth);
-  const user = userInfo.userPlugPrincipal;
-  const rincipal = Principal.fromText(user);
 
   const [backend] = useCanister("backend");
 
   useEffect(() => {
     const getUsersFractionNFT = async () => {
       try {
-        const res = await backend.getusersfractionnft(rincipal);
+        const res = await backend.getusersfractionnft(
+          Principal.fromText(principal)
+        );
 
         console.log("Response from backend:", res);
 
@@ -88,7 +87,9 @@ const MyProfileActivity = () => {
   useEffect(() => {
     const getalltransactions = async () => {
       try {
-        const res = await backend.getalltransactions(rincipal);
+        const res = await backend.getalltransactions(
+          Principal.fromText(principal)
+        );
         console.log("transation", res);
         console.log("Response from backend:", res);
 

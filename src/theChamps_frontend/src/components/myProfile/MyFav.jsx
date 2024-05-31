@@ -14,6 +14,7 @@ import IconWrapper from "../common/IconWrapper";
 import placeHolderImg from "../../assets/CHAMPS.png";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import ProductCardLoader from "../productcomponent/ProductCardLoader";
 
 const MyFav = () => {
   const { isConnected, principal } = useConnect();
@@ -26,34 +27,37 @@ const MyFav = () => {
   const [showModal, setShowModal] = useState(false);
   const [assets] = useBalance();
   const [filteredProduct, setFilteredProduct] = useState([]);
-  const userInfo = useSelector((state) => state.auth);
-  const user = userInfo.userPlugPrincipal;
+  // const userInfo = useSelector((state) => state.auth);
+  // const user = userInfo.userPlugPrincipal;
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState(false);
-  const rincipal = Principal?.fromText(user);
 
   useEffect(() => {
     const getUsersFractionNFT = async () => {
-      try {
-        const res = await backend.getallfractionalnfts();
-        const favouritesRes = await backend.getfavourites();
-        console.log("user product", res);
-        console.log("user fav", favouritesRes);
+      if (!isConnected) {
+        try {
+          const res = await backend.getallfractionalnfts();
+          const favouritesRes = await backend.getfavourites();
+          console.log("user product", res);
+          console.log("user fav", favouritesRes);
 
-        const favouriteProducts = res.filter((product) =>
-          favouritesRes.some((fav) => fav[0].id === product[1].nft.id)
-        );
+          const favouriteProducts = res.filter((product) =>
+            favouritesRes.some((fav) => fav[0].id === product[1].nft.id)
+          );
 
-        if (favouritesRes.length > 0) {
-          setProductInFavourite(true);
+          if (favouritesRes.length > 0) {
+            setProductInFavourite(true);
+          }
+
+          setFilteredProduct(favouriteProducts);
+          setLoading2(false);
+          console.log("Favourite Products", favouriteProducts);
+        } catch (error) {
+          console.log("Error while fetching user NFT", error);
         }
-
-        setFilteredProduct(favouriteProducts);
-        setLoading2(false);
-        console.log("Favourite Products", favouriteProducts);
-      } catch (error) {
-        console.log("Error while fetching user NFT", error);
+      } else {
+        toast.error("Please Login to Continue");
       }
     };
 
@@ -92,7 +96,7 @@ const MyFav = () => {
       const canister = Principal.fromText(canisterid);
       const item = {
         id: parseInt(productId),
-        owner: rincipal,
+        owner: Principal?.fromText(principal),
         metadata: metadata,
         locked: locked,
         priceinusd: priceinusd,
