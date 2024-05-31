@@ -1,72 +1,87 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useCanister } from "@connect2ic/react";
+import { Principal } from "@dfinity/principal";
+
 import ProductCard from "../components/productcomponent/productCard";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import ProductCardLoader from "../components/productcomponent/ProductCardLoader";
 import Searchbar from "../components/common/Searchbar";
-import nftgeek from "../assets/icons/Nftgeek.svg";
-import toniq from "../assets/icons/toniq.svg";
 import Card from "../components/common/Card";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
-import { useParams } from "react-router-dom";
 import ProductLists from "../components/productcomponent/ProductList";
-import { useCanister } from "@connect2ic/react";
-import { Principal } from "@dfinity/principal";
-import ProductCardLoader from "../components/productcomponent/ProductCardLoader";
+import ReadMore from "../components/common/ReadMore";
+
+import nftgeek from "../assets/icons/Nftgeek.svg";
+import toniq from "../assets/icons/toniq.svg";
 import placeholderImg from "../assets/CHAMPS.png";
 import IcpLogo from "../assets/IcpLogo";
-import ReadMore from "../components/common/ReadMore";
+
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const ProductPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
   const [backend] = useCanister("backend");
-  const [collection, setCollection] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [collection, setCollection] = useState("");
+  const [loading, setloading] = useState(true);
+  const { id } = useParams();
+  const [searchQuery, setSearchQuery] = useState();
+  const [loading2, setLoading2] = useState();
   const [searchResults, setSearchResults] = useState([]);
   const [collectionDetails, setCollectionDetails] = useState("");
-  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false); // New state for pagination loading
-  const observer = useRef();
-
-  const { id } = useParams();
 
   const getCollectionDetails = async () => {
     try {
       const canister_id = Principal.fromText(id);
       const res = await backend.getcollectiondetails(canister_id);
+      console.log("hello");
       setCollectionDetails(res);
+      console.log(res);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getCollectionWiseNft = async (page) => {
+  const [itemsPerPage, setItemsPerPage] = useState(3); // Initial number of items per page
+
+  const getCollectionWiseNft = async () => {
     try {
-      setLoadingMore(true); // Set loadingMore to true when starting pagination fetch
       const canister_id = Principal.fromText(id);
       const res = await backend.getcollectionwisefractionalnft(canister_id);
+      console.log("hello");
+      setCollection(res);
+      setloading(false);
+
+      // Adjust slice end value based on itemsPerPage
+      setSearchResults(res.slice(0, itemsPerPage));
+
       if (res.length === 0) {
         setHasMore(false);
-      } else {
-        // Reset collection if it's the first page, append otherwise
-        setCollection((prev) => (page === 1 ? [...res] : [...prev, ...res]));
-        setSearchResults((prev) => [...prev, ...res]);
       }
-      setLoadingMore(false); // Set loadingMore to false after pagination fetch
-      setLoading(false);
     } catch (error) {
       console.log(error);
+      setHasMore(false);
     }
+  };
+
+  // Function to load more items when scrollbar reaches the bottom
+  const loadMoreItems = () => {
+    setItemsPerPage((prevItemsPerPage) => prevItemsPerPage + 3); // Increase items per page by 3
+    getCollectionWiseNft(); // Fetch more items
   };
 
   useEffect(() => {
     getCollectionDetails();
-  }, [backend, id]);
+    getCollectionWiseNft();
+  }, [backend, itemsPerPage]);
 
-  useEffect(() => {
-    getCollectionWiseNft(page);
-  }, [page]);
+  const refresh = () => {
+    setSearchResults([]);
+    setHasMore(true);
+    getCollectionWiseNft();
+  };
 
   const handleSearch = (e) => {
     const query = e.target.value;
@@ -77,20 +92,6 @@ const ProductPage = ({ name }) => {
     );
     setSearchResults(filteredResults);
   };
-
-  const lastProductElementRef = useCallback(
-    (node) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setPage((prevPage) => prevPage + 1);
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [loading, hasMore]
-  );
 
   return (
     <>
@@ -167,7 +168,7 @@ const ProductPage = ({ name }) => {
       </div>
 
       <div className="left-0 right-0">
-        <div className="">
+        <div>
           <h1 className="text-5xl font-bold font-sans mb-12 gap-1 px-6 lg:px-24">
             <span className="relative text-transparent ml-2 bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
               {name}
@@ -191,19 +192,51 @@ const ProductPage = ({ name }) => {
           ) : (
             <>
               {grid ? (
-                <div className="grid grid-cols-1 px-6 lg:px-24 sm:grid-cols-2 lg:grid-cols-3 gap-12 mt-4 justify-center">
-                  {searchResults.map((product, index) => {
-                    if (searchResults.length === index + 1) {
-                      return (
-                        <div ref={lastProductElementRef} key={product.id}>
-                          <ProductCard product={product} />
-                        </div>
-                      );
-                    } else {
-                      return <ProductCard key={product.id} product={product} />;
-                    }
-                  })}
-                </div>
+                <InfiniteScroll
+                  dataLength={searchResults.length}
+                  next={loadMoreItems}
+                  hasMore={hasMore}
+                  loader={
+                    searchResults.length == collection.length ? (
+                      <div className="w-full flex items-center  mt-8 justify-center">
+                        <p className="px-4 py-2  cursor-pointer  text-center rounded-lg w-48 productcardlgborder z-[1]">
+                          {" "}
+                          End of the result
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="w-full flex items-center justify-center mt-8">
+                        <h4 className="px-4 py-2  cursor-pointer   text-center rounded-lg w-48 productcardlgborder z-[1]">
+                          Loading...
+                        </h4>
+                      </div>
+                    )
+                  }
+                  endMessage={
+                    <p style={{ textAlign: "center" }}>
+                      <b>Yay! You have seen it all</b>
+                    </p>
+                  }
+                  refreshFunction={refresh}
+                  pullDownToRefresh
+                  pullDownToRefreshThreshold={3}
+                  pullDownToRefreshContent={
+                    <h3 style={{ textAlign: "center" }}>
+                      &#8595; Pull down to refresh
+                    </h3>
+                  }
+                  releaseToRefreshContent={
+                    <h3 style={{ textAlign: "center" }}>
+                      &#8593; Release to refresh
+                    </h3>
+                  }
+                >
+                  <div className="grid grid-cols-1 px-6 lg:px-24 sm:grid-cols-2 lg:grid-cols-3 gap-12 mt-4 justify-center">
+                    {searchResults.map((product, index) => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                </InfiniteScroll>
               ) : (
                 <div className="px-6 lg:px-24 mt-8">
                   <ProductLists product={searchResults} />
@@ -211,21 +244,6 @@ const ProductPage = ({ name }) => {
               )}
             </>
           )}
-          {loadingMore && (
-            <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 max-lg:grid-cols-2 mt-4 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
-              {Array.from({ length: 3 }, (_, index) => (
-                <ProductCardLoader key={index} />
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="flex items-center justify-center w-full mt-12 gap-2 text-gray-300">
-          <div className="border border-gray-400 rounded-full p-1 hover:bg-gray-400">
-            <IoIosArrowBack size={20} />
-          </div>
-          <div className="border border-gray-400 rounded-full p-1 hover:bg-gray-400">
-            <IoIosArrowForward size={20} />
-          </div>
         </div>
       </div>
 
