@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
-import CommonModal from "../common/CommonModal";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { useParams } from "react-router";
 import { useBalance, useCanister, useConnect } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { Link } from "react-router-dom";
-import { Bars, InfinitySpin } from "react-loader-spinner";
+import { CiSearch } from "react-icons/ci";
 import ReadMore from "../common/ReadMore";
 import { motion } from "framer-motion";
 import placeHolderImg from "../../assets/CHAMPS.png";
 import IconWrapper from "../common/IconWrapper";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-
+import ProducrCardLgLoader from "../productcomponent/ProducrCardLgLoader";
+import ProductCardLoader from "../productcomponent/ProductCardLoader";
+import CommonModal from "../common/CommonModal";
 const MyProfileNFT = () => {
   const { isConnected, principal } = useConnect();
   const { id } = useParams();
@@ -26,19 +27,18 @@ const MyProfileNFT = () => {
   const userInfo = useSelector((state) => state.auth);
   const user = userInfo?.userPlugPrincipal;
   const rincipal = Principal?.fromText(user);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [search, setSearch] = useState(false);
+
   useEffect(() => {
     const getUsersFractionNFT = async () => {
       try {
         const res = await backend.getusersfractionnft(rincipal);
-
-        console.log("Response from backend:", res);
-
         const filteredData = res.filter((item) => {
           const ownerPrincipal = item[1].nft?.owner?.toText();
           return ownerPrincipal === rincipal?.toText();
         });
-
-        console.log("Filtered Data:", filteredData);
         setProduct(filteredData);
         setLoading(false);
       } catch (error) {
@@ -77,22 +77,45 @@ const MyProfileNFT = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    setSearch(true);
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    const filteredResults = product.filter((item) =>
+      item[1]?.fractional_token?.name
+        .toLowerCase()
+        .includes(query.toLowerCase())
+    );
+    setSearchResults(filteredResults);
+  };
+
+  const displayProducts = search ? searchResults : product;
+
   return (
     <>
-      <div className="h-screen overflow-y-auto">
+      <div className="flex text-xl mb-6 items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-1">
+        <CiSearch size={24} />
+        <input
+          type="text"
+          placeholder="Search Our NFTs"
+          className="bg-transparent outline-none w-full"
+          value={searchQuery}
+          onChange={handleSearch}
+        />
+      </div>
+
+      <div className="">
         {loading ? (
-          <div className="flex items-center h-56 justify-center">
-            <InfinitySpin
-              visible={true}
-              width="200"
-              color="#FC001E"
-              ariaLabel="infinity-spin-loading"
-            />
+          <div className="grid lg:grid-cols-3  gap-4  mb-4 xl:grid-cols-3  max-lg:grid-cols-2  max-sm:grid-cols-1 ">
+            {Array.from({ length: 9 }, (_, index) => (
+              <ProductCardLoader key={index} />
+            ))}
           </div>
         ) : product.length > 0 ? (
           <>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              {product.map((item, index) => (
+              {displayProducts.map((item, index) => (
                 <div key={index}>
                   <div
                     className="border rounded-xl overflow-hidden"
@@ -100,12 +123,14 @@ const MyProfileNFT = () => {
                   >
                     <div className="overflow-hidden">
                       <Link
-                        to={`/collections/${item[0]?.toText()}/${
+                        to={`/collection/${item[0]?.toText()}/${
                           item[1]?.nft?.id
                         }`}
                       >
                         <motion.img
-                          whileHover={{ scale: 1.1 }}
+                          whileHover={{
+                            scale: 1.1,
+                          }}
                           transition={{ duration: 0.2, ease: "easeInOut" }}
                           src={
                             placeHolderImg || item[1]?.fractional_token?.logo

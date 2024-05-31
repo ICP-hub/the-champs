@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import LeftSidebar from "./LeftSidebar.jsx";
-import Topbar from "../features/dashboard/Topbar.jsx";
-import DashBoard from "../features/dashboard/DashBoard.jsx";
-import { MdDarkMode, MdLightMode } from "react-icons/md";
 import "../admin.styles.css";
 import "../theme.css";
 import { HiBars4 } from "react-icons/hi2";
@@ -11,63 +8,66 @@ import ThemeSwitch from "../components/themeSwitch.jsx";
 import { useCanister, useConnect } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import FullScreenLoader from "../../pages/FullScreenLoader.jsx";
+import toast from "react-hot-toast";
 
 function MainAdmin({ children }) {
   const [isOpen, setIsOpen] = useState(window.innerWidth > 960);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  // const { principal, isConnected } = useConnect();
-  // const [isAdmin, setIsAdmin] = useState(false);
-  // const [isAdminChecked, setIsAdminChecked] = useState(false);
-  // const [loading, setLoading] = useState(true);
-  // const [backend] = useCanister("backend");
-
-  // console.log(backend);
-
-  // useEffect(() => {
-  //   const checkConnection = async () => {
-  //     try {
-  //       await new Promise((resolve) => setTimeout(resolve, 3000));
-  //     } catch (error) {
-  //       console.error("Error checking connection:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   checkConnection();
-  // }, []);
-
-  // useEffect(() => {
-  //   const checkIsAdmin = async () => {
-  //     if (isConnected) {
-  //       try {
-  //         //const res = await backend.checkisadmin(Principal.fromText(principal));
-  //         setIsAdmin(true);
-  //       } catch (error) {
-  //         console.error("Error checking isAdmin:", error);
-  //         setIsAdmin(false);
-  //       } finally {
-  //         setIsAdminChecked(true);
-  //       }
-  //     } else {
-  //       setIsAdminChecked(false);
-  //     }
-  //   };
-
-  //   checkIsAdmin();
-  // }, [isConnected, backend, principal]);
-
-  const debounce = (func, delay) => {
-    let timeoutId;
-    return (...args) => {
-      if (timeoutId) clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        func.apply(null, args);
-      }, delay);
-    };
-  };
+  const { principal, isConnected } = useConnect();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdminChecked, setIsAdminChecked] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [backend] = useCanister("backend");
+  const rincipal = Principal?.fromText(principal);
 
   useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      } catch (error) {
+        console.error("Error checking connection:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkConnection();
+  }, []);
+
+  useEffect(() => {
+    const checkIsAdmin = async () => {
+      if (isConnected) {
+        try {
+          const res = await backend.checkisadmin(rincipal);
+          setIsAdmin(true);
+          console.log("admin is", res);
+        } catch (error) {
+          console.error("Error checking isAdmin:", error);
+          setIsAdmin(false);
+        } finally {
+          setIsAdminChecked(true);
+          setLoading(false);
+        }
+      } else {
+        setIsAdminChecked(false);
+        setLoading(false);
+      }
+    };
+
+    checkIsAdmin();
+  }, [isConnected, backend, principal]);
+
+  useEffect(() => {
+    const debounce = (func, delay) => {
+      let timeoutId;
+      return (...args) => {
+        if (timeoutId) clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          func.apply(null, args);
+        }, delay);
+      };
+    };
+
     const handleResize = debounce(() => {
       setWindowWidth(window.innerWidth);
       setIsOpen(window.innerWidth > 960);
@@ -116,13 +116,14 @@ function MainAdmin({ children }) {
     };
   }, [windowWidth, isOpen]);
 
-  // if (loading || !isAdminChecked) {
-  //   return <FullScreenLoader />;
-  // }
+  if (loading) {
+    return <FullScreenLoader />;
+  }
 
-  // if (!isConnected || !isAdmin) {
-  //   return <Navigate to="/" replace={true} />;
-  // }
+  if (!isConnected || !isAdmin) {
+    toast.error("You are not admin");
+    return <Navigate to="/" replace={true} />;
+  }
 
   return (
     <div className={`layout bg-background ${theme}`} ref={themeRef}>

@@ -35,9 +35,9 @@ const MyProfileB = ({ activeTabIndex }) => {
     ];
     return (
       <div className="flex flex-col">
-        <div className="flex w-full items-center pb-4">
-          <ProfileSearch />
-          <ProfileFilter filterOptions={filterOptions} />
+        <div className="flex w-full items-center ">
+          {/* <ProfileSearch />
+          <ProfileFilter filterOptions={filterOptions} /> */}
         </div>
         <MyProfileNFT />
       </div>
@@ -47,8 +47,8 @@ const MyProfileB = ({ activeTabIndex }) => {
   if (activeTabIndex === "Favourites") {
     return (
       <div className="flex flex-col">
-        <div className="flex w-full items-center pb-4">
-          <ProfileSearch />
+        <div className="flex w-full items-center ">
+          {/* <ProfileSearch /> */}
           {/* <ProfileFilter /> */}
         </div>
         <MyFav />
@@ -65,8 +65,8 @@ const MyProfileB = ({ activeTabIndex }) => {
     return (
       <div className="flex flex-col">
         <div className="flex w-full items-center pb-4">
-          <ProfileSearch />
-          <ProfileFilter filterOptions={filterOptions} />
+          {/* <ProfileSearch />
+          <ProfileFilter filterOptions={filterOptions} /> */}
         </div>
         <MyProfileActivity />
       </div>

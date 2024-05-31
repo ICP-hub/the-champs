@@ -6,12 +6,13 @@ import ReadMore from "./ReadMore";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-import { useConnect } from "@connect2ic/react";
+import { useCanister, useConnect } from "@connect2ic/react";
 import toast from "react-hot-toast";
 import useClipboard from "react-use-clipboard";
 import IconWrapper from "../common/IconWrapper";
 import { MdDashboard } from "react-icons/md";
 import { useSelector } from "react-redux";
+import { Principal } from "@dfinity/principal";
 
 const SidebarMain = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,8 +25,9 @@ const SidebarMain = () => {
   const navigate = useNavigate();
 
   // Redux : authSlice
-  const userInfo = useSelector((state) => state.auth);
-
+  // const userInfo = useSelector((state) => state.auth);
+  // const user = userInfo?.userPlugPrincipal;
+  // const rincipal = Principal?.fromText(user);
   // Effect for displaying real balance : Filter keep icp for now : Modify as required
   // useEffect(
   //   function () {
@@ -271,9 +273,9 @@ const SidebarMain = () => {
           </div>
         </div>
       )}
-      <p className="text-center gap-1  flex items-center justify-center w-full my-4 mt-6 px-4">
-        <IcpLogo size={18} /> {userInfo.userPlugBalance}
-      </p>
+      {/* <p className="text-center gap-1  flex items-center justify-center w-full my-4 mt-6 px-4">
+        <IcpLogo size={18} /> {userInfo?.userPlugBalance}
+      </p> */}
 
       {/* <div className="flex items-center justify-center ">
         <button className="mt-4  font-bold text-[#6D01F6] border-2 border-[#6D01F6]  py-2 px-4 rounded-md w-[90%]">
