@@ -18,29 +18,12 @@ function MainAdmin({ children }) {
   const [isAdminChecked, setIsAdminChecked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [backend] = useCanister("backend");
-  // const rincipal = Principal?.fromText(principal);
-
-  useEffect(() => {
-    const checkConnection = async () => {
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 4000));
-      } catch (error) {
-        console.error("Error checking connection:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkConnection();
-  }, []);
 
   useEffect(() => {
     const checkIsAdmin = async () => {
-      if (isConnected) {
+      if (isConnected && principal) {
         try {
-          const res = await backend.checkisadmin(
-            Principal?.fromText(principal)
-          );
+          const res = await backend.checkisadmin(Principal.fromText(principal));
           setIsAdmin(res);
           console.log("admin is", res);
         } catch (error) {
@@ -51,7 +34,7 @@ function MainAdmin({ children }) {
           setLoading(false);
         }
       } else {
-        setIsAdminChecked(false);
+        setIsAdminChecked(true);
         setLoading(false);
       }
     };
@@ -118,7 +101,7 @@ function MainAdmin({ children }) {
     };
   }, [windowWidth, isOpen]);
 
-  if (loading) {
+  if (!isAdminChecked && loading) {
     return <FullScreenLoader />;
   }
 

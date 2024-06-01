@@ -138,7 +138,7 @@ const PlugWallet = () => {
               <IconWrapper>
                 <IoMdLogOut size={28} />
               </IconWrapper>
-              <p>Logout</p>
+              <p>Disconnect</p>
             </div>
           </motion.div>
         </div>
