@@ -99,9 +99,14 @@ actor Champs {
                 return "Collection added";
             };
             case (?collections) {
+                let coll = List.some<Principal>(List.fromArray(collections), func x { x == collection_id });
+                if (coll) {
+                    return "Collection already added";
+                } else {
                 let temp = List.push(collection_id, List.fromArray(collections));
                 nftcollectionMap.put(user, List.toArray(temp));
                 return "Collection added";
+                };
             };
         };
     }; 

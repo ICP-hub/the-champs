@@ -105,7 +105,12 @@ const MyProfileActivity = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-3 text-sm font-bold uppercase p-4 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] text-white rounded-lg">
+      <div className="text-center mt-8 px-6 lg:px-24 flex justify-center items-center">
+        <button className="px-4 py-2 border border-red-500 cursor-pointer rounded-lg w-48 z-[1]">
+          Coming soon
+        </button>
+      </div>
+      {/* <div className="grid grid-cols-3 text-sm font-bold uppercase p-4 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] text-white rounded-lg">
         <span className="flex items-center justify-center">MINT #</span>
         <span className="flex items-center justify-center">PRICE</span>
         <span className="flex items-center justify-center">TIME</span>
@@ -114,7 +119,7 @@ const MyProfileActivity = () => {
         {product.map((activity, index) => (
           <ActivityCard key={index} activity={activity} />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

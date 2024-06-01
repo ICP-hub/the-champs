@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import ProductCardLoader from "../productcomponent/ProductCardLoader";
 import CommonModal from "../common/CommonModal";
 import InfiniteScroll from "react-infinite-scroll-component";
+import IcpLogo from "../../assets/IcpLogo";
 
 const MyProfileNFT = () => {
   const { isConnected, principal } = useConnect();
@@ -44,7 +45,7 @@ const MyProfileNFT = () => {
           return ownerPrincipal === principal;
         });
 
-        console.log("dfg");
+        console.log("dfg", filteredData);
         setProducts(filteredData);
         setLoading(false);
       } catch (error) {
@@ -169,9 +170,11 @@ const MyProfileNFT = () => {
                               ease: "easeInOut",
                             }}
                             src={
-                              placeHolderImg || item[1]?.fractional_token?.logo
+                              item[1]?.fractional_token?.logo
+                                ? item[1]?.fractional_token?.logo
+                                : placeHolderImg
                             }
-                            alt=""
+                            alt={item[1]?.fractional_token?.logo}
                             className="rounded-t-lg h-full object-cover cursor-pointer overflow-hidden"
                           />
                         </Link>
@@ -191,8 +194,12 @@ const MyProfileNFT = () => {
                           />
                         </p>
                         <div className="flex justify-between mb-4">
-                          <p className="mt-4 py-2 rounded-md w-[50%]">
-                            {parseInt(item[1]?.fractional_token?.fee) || 0}
+                          <p className="mt-4 py-2 rounded-md w-[50%] flex gap-1">
+                            <IcpLogo />
+                            <p>
+                              {" "}
+                              {parseInt(item[1]?.fractional_token?.fee) || 0}
+                            </p>
                           </p>
                           <button
                             className="mt-4 button bg-opacity-100 text-white rounded-md w-[50%] text-md flex items-center justify-center"

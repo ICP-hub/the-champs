@@ -17,8 +17,9 @@ import {
   HiChevronDown, // Added import for HiChevronDown
 } from "react-icons/hi";
 import { BsSortNumericDown } from "react-icons/bs";
-import { IoIosSearch } from "react-icons/io";
+// import { IoIosSearch } from "react-icons/io";
 import { Principal } from "@dfinity/principal";
+import { HiMagnifyingGlass } from "react-icons/hi2";
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -33,22 +34,33 @@ function GlobalFilter({
   }, 200);
 
   return (
-    <div className="sm:ml-2 sm:mb-0 flex items-center">
-      <div className="flex items-center relative">
-        <input
-          value={value || ""}
-          onChange={(e) => {
-            setValue(e.target.value);
-            onChange(e.target.value);
-          }}
-          placeholder={`Search ${count} records...`}
-          className="dark:bg-[#3d3d5f] bg-white dark:border-[#914fe66a] border  py-2 px-4 pl-10 leading-tight rounded-lg focus:outline-none"
-        />
-        <div className="absolute left-3 top-2 text-2xl text-gray-600">
-          <IoIosSearch />
-        </div>
-      </div>
+    <div className="flex gap-2 border border-gray-400 rounded-md px-4 py-3 relative bg-transparent">
+      <span className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] absolute top-0 left-0 bottom-0 flex items-center px-2 rounded-l-md">
+        <HiMagnifyingGlass size={24} color="white" />
+      </span>
+      <input
+        type="text"
+        value={value || ""}
+        onChange={(e) => {
+          setValue(e.target.value);
+          onChange(e.target.value);
+        }}
+        placeholder={`Search ${count} records...`}
+        className="h-full outline-none pl-8 bg-transparent"
+      />
     </div>
+    // <div className="flex items-center w-full border dark:border-gray-500 rounded-md">
+    //   <IoIosSearch />
+    //   <input
+    //     value={value || ""}
+    //     onChange={(e) => {
+    //       setValue(e.target.value);
+    //       onChange(e.target.value);
+    //     }}
+    //     placeholder={`Search ${count} records...`}
+    //     className="bg-transparent w-full py-2 px-4 pl-10 leading-tight focus:outline-none"
+    //   />
+    // </div>
   );
 }
 
@@ -105,7 +117,7 @@ function Table({ columns, data }) {
 
   return (
     <>
-      <div className="sm:flex sm:gap-x-2 justify-between items-center">
+      <div className="flex items-center w-full">
         <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
           globalFilter={state.globalFilter}
@@ -124,7 +136,7 @@ function Table({ columns, data }) {
       <div className="mt-4 flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-7">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="overflow-hidden  sm:rounded-lg">
+            <div className="overflow-hidden rounded-md shadow-md">
               <table
                 {...getTableProps()}
                 className="min-w-full divide-y divide-[#121111]"
@@ -159,10 +171,7 @@ function Table({ columns, data }) {
                     </tr>
                   ))}
                 </thead>
-                <tbody
-                  {...getTableBodyProps()}
-                  className="divide-y border-1 dark:bg-[#3d3d5f] bg-white dark:border-[#914fe66a] border-gray-600   divide-[#090909]"
-                >
+                <tbody {...getTableBodyProps()} className="bg-card">
                   {page.map((row, i) => {
                     prepareRow(row);
                     return (

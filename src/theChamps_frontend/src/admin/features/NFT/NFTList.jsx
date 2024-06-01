@@ -1,100 +1,135 @@
 import React, { useState, useEffect } from "react";
-import { FaInstagram, FaLinkedin, FaXTwitter } from "react-icons/fa6";
-import herobg from "../../assets/herobg.jpg";
-import profile from "../../assets/user.jpg";
-import { IoCopyOutline } from "react-icons/io5";
-import { FiSearch } from "react-icons/fi";
-import { LuFilter } from "react-icons/lu";
-import { Link, useParams } from "react-router-dom";
+// import { FaInstagram, FaLinkedin, FaXTwitter } from "react-icons/fa6";
+// import herobg from "../../assets/herobg.jpg";
+// import profile from "../../assets/user.jpg";
+// import { IoCopyOutline } from "react-icons/io5";
+// import { FiSearch } from "react-icons/fi";
+// import { LuFilter } from "react-icons/lu";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
-import notfound from "../../assets/notfound.jpeg";
-import { Grid } from "react-loader-spinner";
+// import notfound from "../../assets/notfound.jpeg";
+// import { Grid } from "react-loader-spinner";
 import { useSelector } from "react-redux";
 import CollectionApi from "../../../api/CollectionApi";
 import NFTApi from "../../../api/NftApi";
 import champsImg from "../../../assets/CHAMPS.png";
+import AdminLoader from "../../components/laoding-admin";
+import { AdminModal } from "../../components/admin-modal";
+import toast from "react-hot-toast";
 
 const NFTList = () => {
   const { slug } = useParams();
   const { getSingleCollectionDetails, isLoading } = CollectionApi();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [backend] = useCanister("backend");
+  const [modalLoader, setModalLoader] = useState(false);
+  const navigate = useNavigate();
 
   const collectionDetail = useSelector(
     (state) => state.collections.singleCollectionDetail
   );
 
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const handleRemoveCollection = async () => {
+    try {
+      setModalLoader(true);
+      const res = await backend.remove_collection_to_map(
+        Principal.fromText(slug)
+      );
+      toast.success("Collection removed successfully");
+      navigate("/admin/collections");
+    } catch (err) {
+      console.error("error removing collection :", err);
+      toast.error("Failed to remove collection");
+    } finally {
+      setModalLoader(false);
+    }
+  };
   // console.log(collectionDetail);
   useEffect(() => {
     getSingleCollectionDetails(Principal.fromText(slug));
   }, []);
 
   return isLoading ? (
-    <div className="h-full w-full flex items-center justify-center">
-      <Grid
-        visible={true}
-        height="150"
-        width="150"
-        color="#EF4444"
-        ariaLabel="grid-loading"
-        radius="12.5"
-        wrapperClass="grid-wrapper"
-      />
-    </div>
+    <AdminLoader />
   ) : (
     collectionDetail && (
-      <div className="text-textall h-full relative py-4">
-        <div className="p-4 max-h-64 min-h-64 flex rounded-2xl">
-          <img
-            src={
-              collectionDetail.banner.data.length > 10
-                ? collectionDetail.banner.data
-                : champsImg
-            }
-            alt="banner"
-            className="max-h-max min-h-max rounded-2xl"
-          />
-        </div>
-        <div className="absolute top-32 md:left-16 rounded-2xl flex justify-center max-md:w-full">
-          <div className="bg-white p-[6px] rounded-2xl">
+      <>
+        <div className="text-textall h-full relative py-4">
+          <span className="flex justify-end">
+            <button
+              className="button px-4 py-2 rounded-md text-white"
+              onClick={openModal}
+            >
+              Remove Collection
+            </button>
+          </span>
+          <div className="py-4 max-h-64 min-h-64 flex rounded-2xl">
             <img
               src={
-                collectionDetail.logo.data.length > 10
-                  ? collectionDetail.logo.data
+                collectionDetail.banner.data.length > 10
+                  ? collectionDetail.banner.data
                   : champsImg
               }
-              className="max-h-48 max-w-48 min-w-48 min-h-48 rounded-2xl"
+              alt="banner"
+              className="max-h-max min-h-max rounded-2xl w-full object-cover"
             />
           </div>
-        </div>
-        <div className="flex px-4 py-1">
-          <div className="hidden md:w-72 md:block"></div>
-          <div className="max-md:mt-20 flex flex-1 flex-col gap-4 bg-card p-2 rounded-2xl">
-            <div className="flex justify-between w-full items-center">
-              <span className="text-2xl font-bold capitalize">
-                {collectionDetail.name}
-              </span>
-              <span className="text-sm font-medium flex gap-2">
-                <p>created at :</p>
-                {new Date(
-                  Number(collectionDetail.created_at / 1000000n)
-                ).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </span>
+          <div className="absolute top-32 md:left-16 rounded-2xl flex justify-center max-md:w-full">
+            <div className="bg-white p-[6px] rounded-2xl">
+              <img
+                src={
+                  collectionDetail.logo.data.length > 10
+                    ? collectionDetail.logo.data
+                    : champsImg
+                }
+                className="max-h-48 max-w-48 min-w-48 min-h-48 rounded-2xl"
+              />
             </div>
-            <span className="flex gap-4 max-md:text-sm">
-              <p>Collection ID :</p>
-              <p>{slug}</p>
-            </span>
-            <p className="max-md:text-sm">
-              Collection Description : {collectionDetail.description}
-            </p>
           </div>
+          <div className="flex md:px-4 py-1">
+            <div className="hidden md:w-72 md:block"></div>
+            <div className="max-md:mt-20 flex flex-1 flex-col gap-4 bg-card p-2 rounded-2xl shadow-md">
+              <div className="flex justify-between w-full items-center">
+                <span className="text-2xl font-bold capitalize">
+                  {collectionDetail.name}
+                </span>
+                <span className="text-sm font-medium flex gap-2">
+                  <p>created at :</p>
+                  {new Date(
+                    Number(collectionDetail.created_at / 1000000n)
+                  ).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+              <span className="flex gap-4 max-md:text-sm">
+                <p>Collection ID :</p>
+                <p>{slug}</p>
+              </span>
+              <p className="max-md:text-sm">
+                Collection Description : {collectionDetail.description}
+              </p>
+            </div>
+          </div>
+          <NFTs />
         </div>
-        <NFTs />
-      </div>
+        {isModalOpen && (
+          <AdminModal
+            isOpen={isModalOpen}
+            close={closeModal}
+            action={handleRemoveCollection}
+            isLoading={modalLoader}
+          >
+            Are you sure you want to remove this collection?
+          </AdminModal>
+        )}
+      </>
     )
   );
 };
@@ -109,11 +144,11 @@ const NFTs = () => {
     getSingleCollectionWiseNFT(Principal.fromText(slug));
   }, []);
   return (
-    <div className="p-4">
+    <div className="py-4">
       <h1 className="md:text-xl font-bold">
         List of all NFT for collection : {slug}
       </h1>
-      <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-x-4 gap-y-8 py-4">
+      <div className="grid lg:grid-cols-3 sm:grid-cols-2 2xl:grid-cols-5 gap-x-4 gap-y-8 py-4">
         {nftLoading ? (
           <div className="col-span-full flex items-center justify-center">
             Loading NFTs...
@@ -136,7 +171,7 @@ const NFTCard = ({ nftdetail, collection_Id }) => {
   console.log(nftdetail);
   const { fractional_token, nft } = nftdetail[0];
   return (
-    <div className="bg-card rounded-2xl flex flex-col gap-4">
+    <div className="bg-card rounded-2xl flex flex-col gap-4 shadow-md">
       <div>
         <img
           src={

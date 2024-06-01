@@ -15,6 +15,8 @@ import placeHolderImg from "../../assets/CHAMPS.png";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProductCardLoader from "../productcomponent/ProductCardLoader";
+import IcpLogo from "../../assets/IcpLogo";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const MyFav = () => {
   const { isConnected, principal } = useConnect();
@@ -32,10 +34,11 @@ const MyFav = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState(false);
+  const [itemsPerPage, setItemsPerPage] = useState(3); // Initial number of items per page
 
   useEffect(() => {
     const getUsersFractionNFT = async () => {
-      if (!isConnected) {
+      if (isConnected) {
         try {
           const res = await backend.getallfractionalnfts();
           const favouritesRes = await backend.getfavourites();
@@ -152,7 +155,9 @@ const MyFav = () => {
   };
 
   const displayProducts = search ? searchResults : filteredProduct;
-
+  const loadMoreItems = () => {
+    setItemsPerPage((prevItemsPerPage) => prevItemsPerPage + 9); // Increase items per page by 9
+  };
   return (
     <>
       <div className="flex text-xl mb-6 items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-1">
@@ -173,136 +178,168 @@ const MyFav = () => {
             ))}
           </div>
         ) : filteredProduct.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            {displayProducts.map((product, index) => (
-              <div
-                key={index}
-                className="border rounded-xl overflow-hidden"
-                style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
-              >
-                <div className="overflow-hidden">
-                  <Link
-                    to={`/collections/${product[0]?.toText()}/${
-                      product[1]?.nft?.id
-                    }`}
-                  >
-                    <motion.img
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.2, ease: "easeInOut" }}
-                      src={placeHolderImg || product[1]?.fractional_token?.logo}
-                      alt=""
-                      className="rounded-t-lg h-full object-cover cursor-pointer overflow-hidden"
-                    />
-                  </Link>
+          <>
+            <InfiniteScroll
+              dataLength={displayProducts.slice(0, itemsPerPage).length}
+              next={loadMoreItems}
+              hasMore={displayProducts.length > itemsPerPage}
+              loader={
+                <div className="grid lg:grid-cols-3 mt-4 gap-4 mb-4 xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
+                  {Array.from({ length: 3 }, (_, index) => (
+                    <ProductCardLoader key={index} />
+                  ))}
                 </div>
-                <div className="p-2 mx-2">
-                  <div className="flex justify-between font-bold items-center">
-                    <h2 className="text-lg font-semibold mb-2">
-                      {product[1]?.fractional_token?.name}
-                    </h2>
-                    {loading ? (
-                      <TailSpin
-                        height="8%"
-                        width="8%"
-                        color="black"
-                        ariaLabel="tail-spin-loading"
-                        radius="1"
-                        visible={true}
-                      />
-                    ) : (
-                      <>
-                        {productInFavourites ? (
-                          <button
-                            onClick={() =>
-                              removeFavourites(
-                                product[0]?.toText(),
-                                product[1]?.nft?.id,
-                                product[1]?.nft?.metadata,
-                                product[1]?.nft?.locked,
-                                product[1]?.nft?.forsale,
-                                product[1]?.nft?.listed,
-                                product[1]?.nft?.priceinusd
-                              )
-                            }
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 115.77 122.88"
-                              width="30"
-                              height="25"
-                              className="gradient-icon"
-                            >
-                              <defs>
-                                <linearGradient
-                                  id="gradient"
-                                  x1="0"
-                                  y1="0"
-                                  x2="100%"
-                                  y2="0"
-                                >
-                                  <stop offset="0%" stopColor="#FC001E" />
-                                  <stop offset="100%" stopColor="#FF7D57" />
-                                </linearGradient>
-                              </defs>
-                              <path
-                                fill="url(#gradient)"
-                                d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z"
-                              />
-                            </svg>
-                          </button>
+              }
+              endMessage={
+                <div className="text-center mt-8 px-6 lg:px-24 flex justify-center items-center">
+                  <button className="px-4 py-2 border border-red-500 cursor-pointer rounded-lg w-48 z-[1]">
+                    No more NFTs found
+                  </button>
+                </div>
+              }
+            >
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                {displayProducts.map((product, index) => (
+                  <div
+                    key={index}
+                    className="border rounded-xl overflow-hidden"
+                    style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
+                  >
+                    <div className="overflow-hidden">
+                      <Link
+                        to={`/collections/${product[0]?.toText()}/${
+                          product[1]?.nft?.id
+                        }`}
+                      >
+                        <motion.img
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ duration: 0.2, ease: "easeInOut" }}
+                          src={
+                            placeHolderImg || product[1]?.fractional_token?.logo
+                          }
+                          alt=""
+                          className="rounded-t-lg h-full object-cover cursor-pointer overflow-hidden"
+                        />
+                      </Link>
+                    </div>
+                    <div className="p-2 mx-2">
+                      <div className="flex justify-between font-bold items-center">
+                        <h2 className="text-lg font-semibold mb-2">
+                          {product[1]?.fractional_token?.name}
+                        </h2>
+                        {loading ? (
+                          <TailSpin
+                            height="8%"
+                            width="8%"
+                            color="black"
+                            ariaLabel="tail-spin-loading"
+                            radius="1"
+                            visible={true}
+                          />
                         ) : (
-                          <button
-                            onClick={() =>
-                              addToFavourites(
-                                product[0]?.toText(),
-                                product[1]?.nft.id
-                              )
-                            }
-                          >
-                            <CiHeart color="red" size={32} />
-                          </button>
+                          <>
+                            {productInFavourites ? (
+                              <button
+                                onClick={() =>
+                                  removeFavourites(
+                                    product[0]?.toText(),
+                                    product[1]?.nft?.id,
+                                    product[1]?.nft?.metadata,
+                                    product[1]?.nft?.locked,
+                                    product[1]?.nft?.forsale,
+                                    product[1]?.nft?.listed,
+                                    product[1]?.nft?.priceinusd
+                                  )
+                                }
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 115.77 122.88"
+                                  width="30"
+                                  height="25"
+                                  className="gradient-icon"
+                                >
+                                  <defs>
+                                    <linearGradient
+                                      id="gradient"
+                                      x1="0"
+                                      y1="0"
+                                      x2="100%"
+                                      y2="0"
+                                    >
+                                      <stop offset="0%" stopColor="#FC001E" />
+                                      <stop offset="100%" stopColor="#FF7D57" />
+                                    </linearGradient>
+                                  </defs>
+                                  <path
+                                    fill="url(#gradient)"
+                                    d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z"
+                                  />
+                                </svg>
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() =>
+                                  addToFavourites(
+                                    product[0]?.toText(),
+                                    product[1]?.nft.id
+                                  )
+                                }
+                              >
+                                <CiHeart color="red" size={32} />
+                              </button>
+                            )}
+                          </>
                         )}
-                      </>
+                      </div>
+                      <p className="text-gray-500 text-sm">
+                        <ReadMore
+                          text={
+                            product[1]?.fractional_token.owner.toText() || ""
+                          }
+                          maxLength={20}
+                        />
+                      </p>
+                      <div className="flex justify-between mb-4">
+                        <p className="mt-4 py-2 rounded-md w-[50%] flex gap-1">
+                          <IcpLogo />
+                          <p>
+                            {" "}
+                            {parseInt(product[1]?.fractional_token.fee) || 0}
+                          </p>{" "}
+                        </p>
+                        <button
+                          className="mt-4 button bg-opacity-100 text-white rounded-md w-[50%] text-md flex items-center justify-center"
+                          onClick={handleBuyNow}
+                        >
+                          Buy now
+                        </button>
+                      </div>
+                    </div>
+
+                    {showModal && (
+                      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
+                        <div className="bg-white p-4 rounded-lg flex flex-col space-x-5 space-y-8 items-center justify-center">
+                          <IconWrapper>
+                            <RiErrorWarningLine size={36} />
+                          </IconWrapper>
+                          <p>
+                            You don't have sufficient balance to buy this NFT.
+                          </p>
+                          <button
+                            className="mt-2 px-4 py-2 button bg-blue-500 text-white rounded-lg"
+                            onClick={() => setShowModal(false)}
+                          >
+                            Close
+                          </button>
+                        </div>
+                      </div>
                     )}
                   </div>
-                  <p className="text-gray-500 text-sm">
-                    <ReadMore
-                      text={product[1]?.fractional_token.owner.toText() || ""}
-                      maxLength={20}
-                    />
-                  </p>
-                  <div className="flex justify-between mb-4">
-                    <p className="mt-4 py-2 rounded-md w-[50%]">
-                      {parseInt(product[1]?.fractional_token.fee) || 0}
-                    </p>
-                    <button
-                      className="mt-4 button bg-opacity-100 text-white rounded-md w-[50%] text-md flex items-center justify-center"
-                      onClick={handleBuyNow}
-                    >
-                      Buy now
-                    </button>
-                  </div>
-                </div>
-
-                {showModal && (
-                  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
-                    <div className="bg-white p-4 rounded-lg flex flex-col space-x-5 space-y-8 items-center justify-center">
-                      <IconWrapper>
-                        <RiErrorWarningLine size={36} />
-                      </IconWrapper>
-                      <p>You don't have sufficient balance to buy this NFT.</p>
-                      <button
-                        className="mt-2 px-4 py-2 button bg-blue-500 text-white rounded-lg"
-                        onClick={() => setShowModal(false)}
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </div>
-                )}
+                ))}
               </div>
-            ))}
-          </div>
+            </InfiniteScroll>
+          </>
         ) : (
           <div className="text-center mt-8 px-6 lg:px-24  flex justify-center items-center">
             <button className="px-4 py-2  bg-tr  cursor-pointer rounded-lg w-48 border border-red-500 z-[1]">

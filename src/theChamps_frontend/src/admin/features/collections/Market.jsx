@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 // import { AiOutlineTable, AiOutlineAppstore } from "react-icons/ai"; // Import AiOutlineTable and AiOutlineAppstore icons
 // import { IoCopyOutline, IoHeart } from "react-icons/io5";
 import { useCanister } from "@connect2ic/react";
-import { Grid } from "react-loader-spinner";
+// import { Grid } from "react-loader-spinner";
 // import notfound from "../../assets/notfound.jpeg";
 // import { Principal } from "@dfinity/principal";
 // import profile from "../../assets/profile.jpg";
@@ -13,10 +13,12 @@ import { motion } from "framer-motion";
 import CollectionApi from "../../../api/CollectionApi";
 import { useSelector } from "react-redux";
 import champsImg from "../../../assets/CHAMPS.png";
+import AdminLoader from "../../components/laoding-admin";
 
 const Market = () => {
   const [sortOption, setSortOption] = useState("newest");
   const [isCreate, setIsCreate] = useState(false);
+  const [isNew, setIsNew] = useState(false);
   const { getAllCollections, isLoading } = CollectionApi();
   const [backend] = useCanister("backend");
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -27,6 +29,12 @@ const Market = () => {
 
   const handleCreate = () => {
     setIsCreate(!isCreate);
+    setIsNew(true);
+  };
+
+  const addOld = () => {
+    setIsCreate(!isCreate);
+    setIsNew(false);
   };
 
   // Get Collections
@@ -35,9 +43,9 @@ const Market = () => {
   }, [backend, formSubmitted]);
 
   return (
-    <div className="md:py-8 md:px-6 p-2">
+    <div>
       {!isCreate && (
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between">
           <select
             value={sortOption}
             onChange={handleSortChange}
@@ -50,13 +58,22 @@ const Market = () => {
               Oldest
             </option>
           </select>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            className="button px-4 py-2 rounded-md text-white"
-            onClick={handleCreate}
-          >
-            Create Collection
-          </motion.button>
+          <div className="flex gap-4">
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              className="button px-4 py-2 rounded-md text-white"
+              onClick={handleCreate}
+            >
+              Create New
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              className="button px-4 py-2 rounded-md text-white"
+              onClick={addOld}
+            >
+              Add
+            </motion.button>
+          </div>
         </div>
       )}
 
@@ -68,6 +85,7 @@ const Market = () => {
           <CreateCollections
             handleCreate={handleCreate}
             setFormSubmitted={setFormSubmitted}
+            isNew={isNew}
           />
         </motion.div>
       ) : (
@@ -105,25 +123,14 @@ const ViewCollections = ({ isLoading, sortOption }) => {
 
   return (
     <motion.div
-      initial={{ y: 100, opacity: 0 }}
+      initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="dark:shadow-[#323257] p-4 rounded-lg text-textall"
+      className="dark:shadow-[#323257] py-4 rounded-lg text-textall"
     >
       {isLoading ? (
-        <div className="flex w-full items-center justify-center mt-12">
-          <Grid
-            visible={true}
-            height="150"
-            width="150"
-            color="#EF4444"
-            ariaLabel="grid-loading"
-            radius="12.5"
-            wrapperStyle={{}}
-            wrapperClass="grid-wrapper"
-          />
-        </div>
+        <AdminLoader />
       ) : sortedCollections.length > 0 ? (
-        <div className="grid lg:grid-cols-3 sm:grid-cols-2 gap-x-4 gap-y-8">
+        <div className="grid lg:grid-cols-3 sm:grid-cols-2 2xl:grid-cols-5 gap-x-4 gap-y-8 py-4">
           {sortedCollections.map((collection, index) => (
             <CollectionCard collection={collection} key={index} />
           ))}
@@ -147,7 +154,7 @@ const CollectionCard = ({ collection }) => {
   const imageUrlToShow = logoUrl.length < 10 ? champsImg : logoUrl;
 
   return (
-    <div className="bg-card rounded-2xl flex flex-col gap-2  shadow-md">
+    <div className="bg-card rounded-2xl flex flex-col gap-2 shadow-md">
       <div className="rounded-t-2xl">
         <img
           src={imageUrlToShow}
@@ -155,24 +162,24 @@ const CollectionCard = ({ collection }) => {
           className="rounded-t-2xl min-h-64"
         />
       </div>
-      <div className="flex flex-col px-2 py-4">
-        <p className="text-lg font-medium">{collection.details.name}</p>
-        <p className="text-xs font-medium line-clamp-1">
+      <div className="flex flex-col px-2 py-4 space-y-2">
+        <p className="text-2xl font-medium">{collection.details.name}</p>
+        <p className="text-lg font-medium line-clamp-1">
           {collection.canisterId.toText()}
         </p>
       </div>
-      <div className="flex justify-between px-2 py-4 text-sm font-medium gap-4">
+      <div className="flex justify-between px-2 pt-2 pb-4 text-sm font-medium gap-4">
         <Link
           to={`/admin/nft-lists/${collection.canisterId.toText()}`}
           className="px-4 py-2 bg-appbar border rounded-md hover:bg-hover w-full flex items-center justify-center"
         >
-          View NFTS
+          View
         </Link>
         <Link
           to={`/admin/create-nft/${collection.canisterId.toText()}`}
           className="px-4 py-2 button rounded-md text-white w-full flex items-center justify-center"
         >
-          Mint NFT
+          Mint
         </Link>
       </div>
     </div>

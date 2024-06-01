@@ -50,6 +50,7 @@ const ProfileSection = () => {
           console.error("Error checking isAdmin:", error);
           setIsAdmin(false);
         } finally {
+          setLoading(false);
           setIsAdminChecked(true);
         }
       } else {
@@ -114,7 +115,17 @@ const ProfileSection = () => {
             <span className="font-medium">Activity</span>
           </button>
         </div>
-        {isAdmin ? (
+        {loading ? (
+          <div className="border-2 rounded-2xl overflow-hidden animate-pulse">
+            <h1 className={commonHeadingStyle}></h1>
+            <div className={commonLinkStyle}>
+              <IconWrapper>
+                <MdDashboard size={28} />
+              </IconWrapper>
+              <span className="font-medium animate-pulse"></span>
+            </div>
+          </div>
+        ) : isAdmin ? (
           <Link to="/admin" className="border-2 rounded-2xl overflow-hidden">
             <h1 className={commonHeadingStyle}>Admin</h1>
             <div className={commonLinkStyle}>
@@ -125,6 +136,7 @@ const ProfileSection = () => {
             </div>
           </Link>
         ) : null}
+
         <div className="h-28 w-full"></div>
       </div>
     </>

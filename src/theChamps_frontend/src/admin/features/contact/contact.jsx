@@ -3,7 +3,8 @@ import Table, { DetailButton } from "../../utils/Table";
 import { Link } from "react-router-dom";
 import "regenerator-runtime/runtime";
 import { useCanister } from "@connect2ic/react";
-import { Grid } from "react-loader-spinner";
+import AdminLoader from "../../components/laoding-admin";
+// import { Grid } from "react-loader-spinner";
 
 const Contact = () => {
   const [backend] = useCanister("backend");
@@ -57,20 +58,9 @@ const Contact = () => {
   console.log(extractedData);
 
   return (
-    <div className=" mx-4 md:py-8 md:px-6 p-2 flex h-screen flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-2xl  mt-6">
+    <div className="flex flex-col">
       {isLoading ? (
-        <div className="flex justify-center h-80 items-center">
-          <Grid
-            visible={true}
-            height="150"
-            width="150"
-            color="#EF4444"
-            ariaLabel="grid-loading"
-            radius="12.5"
-            wrapperStyle={{}}
-            wrapperClass="grid-wrapper"
-          />
-        </div>
+        <AdminLoader />
       ) : (
         <Table columns={columns} data={extractedData} />
       )}

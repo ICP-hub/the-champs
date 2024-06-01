@@ -12,7 +12,8 @@ import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { TbSquareRoundedChevronLeft } from "react-icons/tb";
 import champsImg from "../../../assets/CHAMPS.png";
-import { Grid } from "react-loader-spinner";
+// import { Grid } from "react-loader-spinner";
+import AdminLoader from "../../components/laoding-admin";
 
 const SingleNFT = () => {
   const { collection, slug } = useParams();
@@ -44,7 +45,7 @@ const SingleNFT = () => {
 
   console.log(nftDetail);
   return (
-    <div className="mx-4 md:py-8 md:px-6 p-2 mt-6 rounded-lg bg-card text-textall h-full">
+    <div className="rounded-lg bg-card text-textall h-full shadow-md p-6">
       <div className="flex gap-4 items-center font-bold text-lg tracking-wider">
         <TbSquareRoundedChevronLeft
           className="w-6 h-6 cursor-pointer"
@@ -53,17 +54,7 @@ const SingleNFT = () => {
         NFT Detail
       </div>
       {isNFTLoading ? (
-        <div className="h-full w-full flex items-center justify-center">
-          <Grid
-            visible={true}
-            height="150"
-            width="150"
-            color="#EF4444"
-            ariaLabel="grid-loading"
-            radius="12.5"
-            wrapperClass="grid-wrapper"
-          />
-        </div>
+        <AdminLoader />
       ) : (
         <div className="mt-6 flex gap-4 max-md:flex-col max-md:justify-center max-md:items-center">
           <div className="min-h-64 min-w-64 rounded-lg p-2 border-2 border-divider max-h-64 max-w-64">

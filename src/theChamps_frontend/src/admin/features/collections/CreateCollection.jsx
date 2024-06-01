@@ -8,29 +8,21 @@ import { Principal } from "@dfinity/principal";
 import { TailSpin } from "react-loader-spinner";
 import toast from "react-hot-toast";
 import Toggle from "react-toggle";
+import TextHint from "../../components/admin-text-hint";
 // import { useCanister } from "@connect2ic/react";
 // import * as nft from "../../../.dfx/local/canisters/theChamps_nft";
 
-const CreateCollections = ({ handleCreate, setFormSubmitted }) => {
+const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [files, setFiles] = useState([]);
   const [selectedRoyalty, setSelectedRoyalty] = useState("");
-
-  // const userid = Principal.fromText(
-  //   "5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe"
-  // );
-
-  // console.log("nft is backend", nft);
-  const sendback = () => {
-    navigate(-1);
-  };
+  const [collId, setCollId] = useState("");
+  const [errorField, setErrorField] = useState(null);
   const { principal, isConnected } = useConnect();
-
   const [backend] = useCanister("backend");
   const [loading, setLoading] = useState(false);
-
   const [formData, setFormData] = useState({
     logo: {
       data: "",
@@ -46,6 +38,13 @@ const CreateCollections = ({ handleCreate, setFormSubmitted }) => {
     maxLimit: "",
     featured: false,
   });
+
+  // const userid = Principal.fromText(
+  //   "5gojq-7zyol-kqpfn-vett2-e6at4-2wmg5-wyshc-ptyz3-t7pos-okakd-7qe"
+  // );
+
+  // console.log("nft is backend", nft);
+
   const handleCheeseChange = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -173,12 +172,10 @@ const CreateCollections = ({ handleCreate, setFormSubmitted }) => {
     // if (isConnected) {
     try {
       setLoading(true);
-
       if (!formData.logo.data || !formData.banner.data) {
         console.error("Logo or banner data is missing.");
         return;
       }
-
       // console.log("formData:", formData);
       // console.log("Submitting collection creation request...");
       const result = await backend.createcollection(
@@ -206,8 +203,43 @@ const CreateCollections = ({ handleCreate, setFormSubmitted }) => {
     // }
   };
 
+  // Get removed collection
+  const getOldCollection = async () => {
+    const isValidPrincipalId = (id) => {
+      const principalIdRegex =
+        /^[a-z0-9-]{5,}-[a-z0-9-]{5,}-[a-z0-9-]{5,}-[a-z0-9-]{5,}-[a-z0-9-]{3,}$/;
+      return principalIdRegex.test(id);
+    };
+    try {
+      setLoading(true);
+      if (!collId.trim()) {
+        setErrorField("Please Enter the collection ID");
+        return;
+      }
+      if (!isValidPrincipalId(collId)) {
+        setErrorField("Invalid Principal ID format");
+        return;
+      }
+      const id = Principal.fromText(collId);
+      const res = await backend.add_collection_to_map(id);
+      toast.success(res);
+      handleCreate();
+      setFormSubmitted((prev) => !prev);
+    } catch (err) {
+      console.log("Error getting old collection :", err);
+      toast.error("Error adding collection");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Remove error msg
+  useEffect(() => {
+    setErrorField("");
+  }, [collId]);
+
   return (
-    <div className="mx-4 md:py-8 md:px-6 p-2  flex flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-lg mt-6">
+    <div className="flex flex-col bg-card shadow-md rounded-lg p-6">
       <div className="mb-6">
         <h1 className="text-xl font-bold">
           <div className="flex gap-4 items-center">
@@ -219,170 +251,236 @@ const CreateCollections = ({ handleCreate, setFormSubmitted }) => {
           </div>
         </h1>
       </div>
-      <form className="space-y-4" onSubmit={handleSubmit}>
-        <div className="flex justify-between gap-4">
-          {/* <div className="w-full">
-            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-              Principal
-            </label>
-            <input
-              type="text"
-              id="principal"
-              name="principal"
-              className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-              value={formData.principal}
-              onChange={handleChange}
-              required
-              isabled={loading}
-            />
-          </div> */}
-          <div className="w-full">
-            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-              Collection Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              disabled={loading}
-            />
-          </div>
-          <div className="w-full">
-            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-              Max Limit
-            </label>
-            <input
-              type="number"
-              id="maxLimit"
-              name="maxLimit"
-              className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-              value={formData.maxLimit}
-              onChange={handleChange}
-              required
-              disabled={loading}
-            />
-          </div>
-        </div>
-
-        <div className="w-full">
-          <label
-            htmlFor="description"
-            className="md:text-lg text-sm font-semibold"
-          >
-            Description
-          </label>
-          <input
-            type="text"
-            id="description"
-            name="description"
-            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            value={formData.description}
-            onChange={handleChange}
-            required
-            disabled={loading}
-          />
-        </div>
-        <div className="w-full">
-          <label
-            htmlFor="logoData"
-            className="md:text-lg text-sm font-semibold"
-          >
-            Logo Img
-          </label>
-          <input
-            type="file"
-            id="logoData"
-            name="logoData"
-            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            onChange={handleLogoDataChange}
-            required
-            disabled={loading}
-          />
-        </div>
-        <div className="w-full">
-          <label
-            htmlFor="bannerData"
-            className="md:text-lg text-sm font-semibold"
-          >
-            Banner Img
-          </label>
-          <input
-            type="file"
-            id="bannerData"
-            name="bannerData"
-            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            onChange={handleBannerDataChange}
-            required
-            disabled={loading}
-          />
-        </div>
-
-        <div className="w-full">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Symbol
-          </label>
-          <input
-            type="text"
-            id="symbol"
-            name="symbol"
-            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            value={formData.symbol}
-            onChange={handleChange}
-            required
-            disabled={loading}
-          />
-        </div>
-        <div className="w-full flex gap-5 pt-5 items-center">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Featured
-          </label>
-          <Toggle
-            className=" px-3 py-2  focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-            id="featured"
-            defaultChecked={formData.featured}
-            onChange={handleCheeseChange}
-          />
-        </div>
-
-        <div className="flex gap-4 justify-end">
-          <button
-            onClick={handleCreate}
-            disabled={loading}
-            className={`uppercase bg-[#fff] shadow-md dark:bg-[#2e2e48] border border-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl ${
-              loading && "opacity-50"
-            } `}
-          >
-            cancel
-          </button>
-          <button
-            disabled={loading}
-            type="submit"
-            className={`uppercase bg-red-500 shadow-md dark:bg-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] ${
-              loading && "opacity-50"
-            } `}
-          >
-            {loading ? (
-              <div className="flex gap-3 items-center ">
-                Creating Collection
-                <TailSpin
-                  height="15"
-                  width="15"
-                  color="white"
-                  ariaLabel="tail-spin-loading"
-                  radius="1"
-                  visible={true}
-                />
+      {isNew ? (
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div className="flex gap-4 flex-col md:flex-row">
+            <div className="w-full">
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="name"
+                  className="md:text-lg text-sm font-semibold"
+                >
+                  Collection Name
+                </label>
+                <TextHint text="Enter the name of the collection." />
               </div>
-            ) : (
-              "Create Collection"
+              <input
+                type="text"
+                id="name"
+                name="name"
+                className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                disabled={loading}
+              />
+            </div>
+            <div className="w-full">
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="maxLimit"
+                  className="md:text-lg text-sm font-semibold"
+                >
+                  Max Limit
+                </label>
+                <TextHint text="I don't know what does it mean" />
+              </div>
+              <input
+                type="number"
+                id="maxLimit"
+                name="maxLimit"
+                className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+                value={formData.maxLimit}
+                onChange={handleChange}
+                required
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className="w-full">
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="description"
+                className="md:text-lg text-sm font-semibold"
+              >
+                Description
+              </label>
+              <TextHint text="Provide a description for the collection." />
+            </div>
+            <input
+              type="text"
+              id="description"
+              name="description"
+              className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+              value={formData.description}
+              onChange={handleChange}
+              required
+              disabled={loading}
+            />
+          </div>
+          <div className="w-full">
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="logoData"
+                className="md:text-lg text-sm font-semibold"
+              >
+                Logo Img
+              </label>
+              <TextHint text="Upload the logo image for the collection." />
+            </div>
+            <input
+              type="file"
+              id="logoData"
+              name="logoData"
+              className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+              onChange={handleLogoDataChange}
+              required
+              disabled={loading}
+            />
+          </div>
+          <div className="w-full">
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="bannerData"
+                className="md:text-lg text-sm font-semibold"
+              >
+                Banner Img
+              </label>
+              <TextHint text="Upload the banner image for the collection." />
+            </div>
+            <input
+              type="file"
+              id="bannerData"
+              name="bannerData"
+              className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+              onChange={handleBannerDataChange}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className="w-full">
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="symbol"
+                className="md:text-lg text-sm font-semibold"
+              >
+                Symbol
+              </label>
+              <TextHint text="Enter the symbol for the collection." />
+            </div>
+            <input
+              type="text"
+              id="symbol"
+              name="symbol"
+              className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+              value={formData.symbol}
+              onChange={handleChange}
+              required
+              disabled={loading}
+            />
+          </div>
+          <div className="w-full flex gap-5 pt-5 items-center">
+            <label
+              htmlFor="featured"
+              className="md:text-lg text-sm font-semibold"
+            >
+              Featured
+            </label>
+            <TextHint text="Toggle if this collection is featured." />
+            <Toggle
+              className=" px-3 py-2  focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+              id="featured"
+              defaultChecked={formData.featured}
+              onChange={handleCheeseChange}
+            />
+          </div>
+
+          <div className="flex gap-4 justify-end">
+            <button
+              onClick={handleCreate}
+              disabled={loading}
+              className={`uppercase bg-[#fff] shadow-md dark:bg-[#2e2e48] border border-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl ${
+                loading && "opacity-50"
+              } `}
+            >
+              cancel
+            </button>
+            <button
+              disabled={loading}
+              type="submit"
+              className={`uppercase bg-red-500 shadow-md dark:bg-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] ${
+                loading && "opacity-50"
+              } `}
+            >
+              {loading ? (
+                <div className="flex gap-3 items-center ">
+                  Creating Collection
+                  <TailSpin
+                    height="15"
+                    width="15"
+                    color="white"
+                    ariaLabel="tail-spin-loading"
+                    radius="1"
+                    visible={true}
+                  />
+                </div>
+              ) : (
+                "Create Collection"
+              )}
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="w-full">
+          <span className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <label className="md:text-lg text-sm font-semibold">
+                Collection ID
+              </label>
+              <TextHint text="Enter the id of the collection you want to retrieve" />
+            </div>
+            {errorField && (
+              <p className="text-red-400 text-xs font-medium">{errorField}</p>
             )}
-          </button>
+          </span>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+            value={collId}
+            onChange={(e) => setCollId(e.target.value)}
+            required
+            disabled={loading}
+          />
+          <span className="flex justify-end mt-4">
+            <button
+              className={`px-4 py-2 text-white rounded-md ${
+                !loading ? "button" : "bg-gray-600"
+              }`}
+              onClick={getOldCollection}
+            >
+              {loading ? (
+                <div className="flex gap-3 items-center ">
+                  Adding Collection
+                  <TailSpin
+                    height="15"
+                    width="15"
+                    color="white"
+                    ariaLabel="tail-spin-loading"
+                    radius="1"
+                    visible={true}
+                  />
+                </div>
+              ) : (
+                "Add Collection"
+              )}
+            </button>
+          </span>
         </div>
-      </form>
+      )}
     </div>
   );
 };
