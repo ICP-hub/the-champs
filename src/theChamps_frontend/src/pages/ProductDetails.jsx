@@ -201,9 +201,8 @@ const ProductDetails = () => {
 
     try {
       const res = await backend.get_exchange_rates(
-        { timestamp: 1717224604 },
-        { class: "FiatCurrency", symbol: "USD" }, // Assuming paymentOpt is for USD (dollar)
-        { class: "Cryptocurrency", symbol: "ICP" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
+        { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
+        { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
       console.log(res);
       setExchange(res);
