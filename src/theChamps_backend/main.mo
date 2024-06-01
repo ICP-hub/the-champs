@@ -781,11 +781,12 @@ actor Champs {
 
     // ******************************************************************************************************************************
 
-    public func get_exchange_rates( x : XRC.GetExchangeRateRequest) : async XRC.GetExchangeRateResult {
+    public func get_exchange_rates( x : XRC.Asset , y : XRC.Asset) : async XRC.GetExchangeRateResult {
         let xrc = actor (exchange_rate_canister) : actor {
             get_exchange_rate : ( GetExchangeRateRequest : XRC.GetExchangeRateRequest ) -> async XRC.GetExchangeRateResult;
         };
-        let result = await xrc.get_exchange_rate(x);
+        let timestamp = Time.now();
+        let result = await xrc.get_exchange_rate({timestamp = ?Nat64.fromIntWrap(timestamp); quote_asset = x; base_asset = y});
         Debug.print(debug_show (result));
         return result;
     };
