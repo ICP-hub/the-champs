@@ -38,29 +38,25 @@ const MyFav = () => {
 
   useEffect(() => {
     const getUsersFractionNFT = async () => {
-      if (isConnected) {
-        try {
-          const res = await backend.getallfractionalnfts();
-          const favouritesRes = await backend.getfavourites();
-          console.log("user product", res);
-          console.log("user fav", favouritesRes);
+      try {
+        const res = await backend.getallfractionalnfts();
+        const favouritesRes = await backend.getfavourites();
+        console.log("user product", res);
+        console.log("user fav", favouritesRes);
 
-          const favouriteProducts = res.filter((product) =>
-            favouritesRes.some((fav) => fav[0].id === product[1].nft.id)
-          );
+        const favouriteProducts = res.filter((product) =>
+          favouritesRes.some((fav) => fav[0].id === product[1].nft.id)
+        );
 
-          if (favouritesRes.length > 0) {
-            setProductInFavourite(true);
-          }
-
-          setFilteredProduct(favouriteProducts);
-          setLoading2(false);
-          console.log("Favourite Products", favouriteProducts);
-        } catch (error) {
-          console.log("Error while fetching user NFT", error);
+        if (favouritesRes.length > 0) {
+          setProductInFavourite(true);
         }
-      } else {
-        toast.error("Please Login to Continue");
+
+        setFilteredProduct(favouriteProducts);
+        setLoading2(false);
+        console.log("Favourite Products", favouriteProducts);
+      } catch (error) {
+        console.log("Error while fetching user NFT", error);
       }
     };
 
@@ -207,7 +203,7 @@ const MyFav = () => {
                   >
                     <div className="overflow-hidden">
                       <Link
-                        to={`/collections/${product[0]?.toText()}/${
+                        to={`/collection/${product[0]?.toText()}/${
                           product[1]?.nft?.id
                         }`}
                       >

@@ -21,6 +21,19 @@ function MainAdmin({ children }) {
   const [backend] = useCanister("backend");
 
   useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      } catch (error) {
+        console.error("Error checking connection:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkConnection();
+  }, []);
+  useEffect(() => {
     const checkIsAdmin = async () => {
       if (isConnected && principal) {
         try {
