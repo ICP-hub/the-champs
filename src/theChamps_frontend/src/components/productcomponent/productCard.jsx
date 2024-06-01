@@ -29,20 +29,18 @@ const ProductCard = ({ product }) => {
   const [image, setImage] = useState(product[0]?.fractional_token.logo);
 
   const addToFavourites = async () => {
-    
-      try {
-        setLoading(true);
-        const canister_id = Principal.fromText(id);
-        const res = await backend.addfavourite(
-          canister_id,
-          parseInt(product[0].nft.id)
-        );
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-  
+    try {
+      setLoading(true);
+      const canister_id = Principal.fromText(id);
+      const res = await backend.addfavourite(
+        canister_id,
+        parseInt(product[0].nft.id)
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
@@ -67,6 +65,7 @@ const ProductCard = ({ product }) => {
       setProductInFavourites(isProductInWishlist);
     }
   }, [product, favourites]);
+  console.log(product);
 
   const imageHandler = () => {
     setImage(placeHolderImg);
@@ -125,8 +124,9 @@ const ProductCard = ({ product }) => {
           <h2 className="text-lg font-semibold mb-2">
             {product[0]?.fractional_token?.name}
           </h2>
+
           {loading ? (
-            <button className="ml-48">
+            <button className="ml-[220px]">
               <TailSpin
                 height="20%"
                 width="20%"
@@ -140,7 +140,6 @@ const ProductCard = ({ product }) => {
             <>
               {productInFavourites ? (
                 <button onClick={removeFavourites}>
-                  {" "}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 115.77 122.88"
@@ -168,7 +167,6 @@ const ProductCard = ({ product }) => {
                 </button>
               ) : (
                 <button onClick={addToFavourites}>
-                  {" "}
                   <CiHeart size={32} />
                 </button>
               )}
@@ -184,7 +182,7 @@ const ProductCard = ({ product }) => {
         <div className="flex justify-between  mb-4">
           <p className="mt-4    bg-opacity-100  py-2  flex  gap-1 rounded-md w-[50%]">
             <IcpLogo />
-            {parseInt(product[0]?.fractional_token.fee)}
+            {product[0]?.nft?.priceinusd?.toFixed(4)}
           </p>
           <button
             className="mt-4   button   text-white   rounded-md w-[50%]  text-md flex items-center justify-center"

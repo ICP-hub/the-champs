@@ -126,7 +126,11 @@ const HomePageB = () => {
           >
             {nftData?.collectionWiseNft[0]?.nfts?.map((NFT, index) => (
               <SwiperSlide key={index}>
-                <NFTCard key={index} NFT={NFT} />
+                <NFTCard
+                  key={index}
+                  NFT={NFT}
+                  nftData={nftData.collectionIds}
+                />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -147,7 +151,7 @@ const HomePageB = () => {
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <NFTCard /> : collection card.
 /* ----------------------------------------------------------------------------------------------------- */
-const NFTCard = ({ NFT, collection }) => {
+const NFTCard = ({ NFT, collection, nftData }) => {
   const [image, setImage] = useState(NFT[0]?.fractional_token?.logo);
   console.log(NFT);
 
@@ -164,24 +168,26 @@ const NFTCard = ({ NFT, collection }) => {
   };
 
   return (
-    <motion.div
-      whileHover={{ translateY: -15 }}
-      className="flex flex-col gap-4 cursor-pointer"
-    >
-      <img
-        src={image}
-        alt="image"
-        className="rounded-2xl object-contain"
-        onError={handleImage}
-      />
-      <div className="flex flex-col">
-        <h1 className="text-[28px] font-bold line-clamp-1">
-          {NFT[0]?.fractional_token?.name}
-        </h1>
-        {/* Static collection pick for now we can show featured later */}
-        <p className="text-[15px] text-[#7B7583]">{NFT[1].toText()}</p>
-      </div>
-    </motion.div>
+    <Link to={`/collection/${nftData}/${NFT[1].toText()}`}>
+      <motion.div
+        whileHover={{ translateY: -15 }}
+        className="flex flex-col gap-4 cursor-pointer"
+      >
+        <img
+          src={image}
+          alt="image"
+          className="rounded-2xl object-contain"
+          onError={handleImage}
+        />
+        <div className="flex flex-col">
+          <h1 className="text-[28px] font-bold line-clamp-1">
+            {NFT[0]?.fractional_token?.name}
+          </h1>
+          {/* Static collection pick for now we can show featured later */}
+          <p className="text-[15px] text-[#7B7583]">{NFT[1].toText()}</p>
+        </div>
+      </motion.div>
+    </Link>
   );
 };
 

@@ -65,6 +65,7 @@ const ProductDetails = () => {
   const [license, setLicense] = useState(false);
   const [loading2, setLoading2] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [exchange, setExchange] = useState(1);
 
   const paymentAddressForTransfer = usePaymentTransfer(
     parseInt(nft[0]?.fractional_token?.fee)
@@ -182,7 +183,37 @@ const ProductDetails = () => {
     }
   };
 
+  const getExchangeRate = async () => {
+    const paymentMethod = "FiatCurrency";
+    let paymentOpt = null;
+    if (paymentMethod == "Cryptocurrency") {
+      paymentOpt = { Cryptocurrency: null };
+    } else if (paymentMethod == "FiatCurrency") {
+      paymentOpt = { FiatCurrency: null };
+    }
+    const paymentMethod1 = "Cryptocurrency";
+    let paymentOpt1 = null;
+    if (paymentMethod == "Cryptocurrency") {
+      paymentOpt1 = { Cryptocurrency: null };
+    } else if (paymentMethod == "FiatCurrency") {
+      paymentOpt1 = { FiatCurrency: null };
+    }
+
+    try {
+      const res = await backend.get_exchange_rates(
+        { timestamp: 1717224604 },
+        { class: "FiatCurrency", symbol: "USD" }, // Assuming paymentOpt is for USD (dollar)
+        { class: "Cryptocurrency", symbol: "ICP" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
+      );
+      console.log(res);
+      setExchange(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
+    getExchangeRate();
     getFavourites();
 
     // if (favourites != null) {
@@ -261,6 +292,7 @@ const ProductDetails = () => {
               selected={setSelectedPlan}
               handleConfirm={handleConfirm}
               handler={handler}
+              exchange={exchange}
             />
             {license && (
               <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
@@ -355,8 +387,11 @@ const ProductDetails = () => {
                 <div className="flex justify-between  mt-6">
                   <div className=" flex">
                     <span className="text-2xl flex font-semibold items-center gap-1">
-                      {parseInt(nft[0][0]?.fractional_token?.fee)}
+                      {nft[0][0]?.nft?.priceinusd?.toFixed(4) * exchange}
                       <span>ICP</span>
+                      <span className="text-lg text-gray-500">
+                        ({nft[0][0]?.nft?.priceinusd?.toFixed(4)} USD){" "}
+                      </span>
                     </span>
                   </div>
                   <div>

@@ -199,14 +199,14 @@ const ProductPage = ({ name }) => {
                   loader={
                     searchResults.length == collection.length ? (
                       <div className="w-full flex items-center  mt-8 justify-center">
-                        <p className="px-4 py-2  cursor-pointer  text-center rounded-lg w-48 productcardlgborder z-[1]">
+                        <p className="px-4 py-2  cursor-pointer  text-center rounded-lg w-48 productcardlgborder  ">
                           {" "}
                           End of the result
                         </p>
                       </div>
                     ) : (
                       <div className="w-full flex items-center justify-center mt-8">
-                        <h4 className="px-4 py-2  cursor-pointer   text-center rounded-lg w-48 productcardlgborder z-[1]">
+                        <h4 className="px-4 py-2  cursor-pointer   text-center rounded-lg w-48 productcardlgborder ">
                           Loading...
                         </h4>
                       </div>

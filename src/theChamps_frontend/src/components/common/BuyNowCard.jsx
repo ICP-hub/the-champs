@@ -11,6 +11,7 @@ const BuyNowModal = ({
   selected,
   handleConfirm,
   handler,
+  exchange,
 }) => {
   return (
     isOpen && (
@@ -84,7 +85,10 @@ const BuyNowModal = ({
             <p>TOTAL:</p>
             <p className="flex items-center gap-1">
               <IcpLogo size={16} />
-              {parseInt(nft[0][0]?.fractional_token?.fee)}
+              {nft[0][0]?.nft?.priceinusd?.toFixed(4) * exchange}
+              <span className="text-XS text-gray-500">
+                ({nft[0][0]?.nft?.priceinusd?.toFixed(4)} USD){" "}
+              </span>
             </p>
           </div>
           <div className="mt-2 md:block hidden text-center text-gray-400 text-xs">
