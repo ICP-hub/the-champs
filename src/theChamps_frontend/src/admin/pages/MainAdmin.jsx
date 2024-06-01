@@ -119,10 +119,10 @@ function MainAdmin({ children }) {
     return <FullScreenLoader />;
   }
 
-  if (!isAdmin) {
+  /* if (!isAdmin) {
     toast.error("You are not admin");
     return <Navigate to="/" replace={true} />;
-  }
+  } */
 
   return (
     <div className={`${theme} bg-background`}>
