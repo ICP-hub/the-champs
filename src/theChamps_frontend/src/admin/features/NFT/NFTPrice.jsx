@@ -101,7 +101,7 @@ const NFTPrice = () => {
         opacity: 1,
         transition: { ease: "easeInOut" },
       }}
-      className="mx-4 md:py-8 md:px-6 p-2 flex flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff]  dark:shadow-[#323257] rounded-t-2xl mt-6"
+      className="flex flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff]  dark:shadow-[#323257] rounded-t-2xl mt-6"
     >
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Pricing Group</h1>

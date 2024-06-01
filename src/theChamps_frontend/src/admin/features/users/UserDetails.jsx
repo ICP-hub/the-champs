@@ -1,8 +1,9 @@
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { useEffect, useState } from "react";
-import { Grid } from "react-loader-spinner";
+// import { Grid } from "react-loader-spinner";
 import { useParams } from "react-router";
+import AdminLoader from "../../components/laoding-admin";
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -25,22 +26,7 @@ const UserDetail = () => {
 
   return (
     <div className="md:py-8 md:px-6 p-2">
-      {isUserDataLoading ? (
-        <div className="flex w-full items-center justify-center mt-12">
-          <Grid
-            visible={true}
-            height="150"
-            width="150"
-            color="#EF4444"
-            ariaLabel="grid-loading"
-            radius="12.5"
-            wrapperStyle={{}}
-            wrapperClass="grid-wrapper"
-          />
-        </div>
-      ) : (
-        <div>{id}</div>
-      )}
+      {isUserDataLoading ? <AdminLoader /> : <div>{id}</div>}
     </div>
   );
 };

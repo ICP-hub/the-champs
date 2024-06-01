@@ -50,11 +50,11 @@ const DashBoard = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid md:grid-cols-3 p-2 md:px-6 gap-x-4 gap-y-4 text-xl mt-6">
+      <div className="grid md:grid-cols-3 gap-x-4 gap-y-4 text-xl">
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="bg-card rounded-lg flex flex-col font-semibold text-textall p-4 md:items-center md:justify-center gap-2"
+            className="bg-card shadow-md rounded-lg flex flex-col font-semibold text-textall p-4 md:items-center md:justify-center gap-2"
           >
             <p>{stat.label}</p>
             {isLoading ? (

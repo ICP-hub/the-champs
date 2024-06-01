@@ -59,18 +59,18 @@ const LeftSidebar = ({ isOpen }) => {
     { path: "/admin/message", icon: <MdMail size={24} />, text: "Message" },
   ];
 
-  const position = "left";
-  const classList = {
-    "animations-enabled": true,
-    "mode-side": !isOpen,
-    opened: isOpen,
-    "position-left": position === "left",
-  };
+  // const position = "left";
+  // const classList = {
+  //   "animations-enabled": true,
+  //   "mode-side": !isOpen,
+  //   opened: isOpen,
+  //   "position-left": position === "left",
+  // };
 
-  const classNames = Object.entries(classList)
-    .filter(([_, value]) => value)
-    .map(([key]) => key)
-    .join(" ");
+  // const classNames = Object.entries(classList)
+  //   .filter(([_, value]) => value)
+  //   .map(([key]) => key)
+  //   .join(" ");
 
   // disconnect
   const disconnectPlug = () => {
@@ -81,10 +81,7 @@ const LeftSidebar = ({ isOpen }) => {
     toast.success("Disconnected successfully");
   };
   return (
-    <div
-      className={`navigation ${classNames} bg-card border-r dark:border-r-gray-500`}
-      style={{ visibility: isOpen ? "visible" : "hidden" }}
-    >
+    <div className="bg-card h-full">
       <div className="p-4 flex flex-col text-gray-500 dark:text-text gap-2 h-full">
         <div className="flex flex-col items-center justify-center w-full p-4 mb-4">
           <div className="relative">

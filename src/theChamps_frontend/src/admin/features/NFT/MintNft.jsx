@@ -15,6 +15,7 @@ import { TbSquareRoundedChevronLeft } from "react-icons/tb";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { TailSpin } from "react-loader-spinner";
 import { validateForm } from "./formValidation";
+import TextHint from "../../components/admin-text-hint";
 
 const initialFormValues = {
   collectionId: "",
@@ -173,13 +174,9 @@ const MintNft = () => {
 
   return (
     <motion.div
-      initial={{ x: 100, opacity: 0 }}
-      animate={{
-        x: 0,
-        opacity: 1,
-        transition: { ease: "easeInOut" },
-      }}
-      className="mx-4 md:py-8 md:px-6 p-2 mt-6 rounded-lg bg-card text-textall"
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      className="rounded-lg bg-card text-textall p-6 shadow-md"
     >
       <div className="flex gap-4 items-center font-bold text-lg tracking-wider">
         <TbSquareRoundedChevronLeft
@@ -190,9 +187,12 @@ const MintNft = () => {
       </div>
       <div className="w-full flex flex-col gap-4 mt-6">
         <div>
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            NFT Canister ID :
-          </label>
+          <div className="flex items-center gap-2">
+            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
+              NFT Canister ID:
+            </label>
+            <TextHint text="This is the unique ID of the NFT canister." />
+          </div>
           <input
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             type="text"
@@ -201,9 +201,12 @@ const MintNft = () => {
           />
         </div>
         <div>
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Owner :
-          </label>
+          <div className="flex items-center gap-2">
+            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
+              Owner:
+            </label>
+            <TextHint text="This is the owner principal of the NFT." />
+          </div>
           <input
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             type="text"
@@ -212,9 +215,12 @@ const MintNft = () => {
           />
         </div>
         <div>
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            NFT Name :
-          </label>
+          <div className="flex items-center gap-2">
+            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
+              NFT Name:
+            </label>
+            <TextHint text="Enter the name of the NFT." />
+          </div>
           <input
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             type="text"
@@ -227,12 +233,16 @@ const MintNft = () => {
           )}
         </div>
         <div>
-          <label
-            htmlFor="name"
-            className="md:text-lg text-sm font-semibold flex flex-col"
-          >
-            NFT Image :
-          </label>
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="name"
+              className="md:text-lg text-sm font-semibold"
+              flex="flex-col"
+            >
+              NFT Image:
+            </label>
+            <TextHint text="Upload the image for the NFT." />
+          </div>
           {selectedImage && (
             <img
               src={selectedImage}
@@ -257,9 +267,12 @@ const MintNft = () => {
         </div>
 
         <div>
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            NFT Price :
-          </label>
+          <div className="flex items-center gap-2">
+            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
+              NFT Price:
+            </label>
+            <TextHint text="Enter the price of the NFT in USD." />
+          </div>
           <input
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             type="number"
@@ -273,14 +286,20 @@ const MintNft = () => {
         </div>
         <div>
           <div className="flex justify-between items-center pb-2">
-            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-              Key-Value Data :
-            </label>
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="name"
+                className="md:text-lg text-sm font-semibold"
+              >
+                Additional Attributes:
+              </label>
+              <TextHint text="Add any additional attributes for the NFT to maintain its uniqueness. Each attribute should have a name and a value, helping to distinguish this NFT from others." />
+            </div>
             <button
               className="button px-4 py-2 rounded-md text-white text-xs font-medium"
               onClick={handleAddKeyVal}
             >
-              Add New Key
+              Add new input
             </button>
           </div>
 
@@ -288,7 +307,7 @@ const MintNft = () => {
             <div key={index} className="flex gap-2">
               <input
                 type="text"
-                placeholder="Key"
+                placeholder="Attribute Name"
                 value={item.key}
                 onChange={(e) =>
                   handleKeyValChange(index, "key", e.target.value)
@@ -297,7 +316,7 @@ const MintNft = () => {
               />
               <input
                 type="text"
-                placeholder="Value"
+                placeholder="Attribute Value"
                 value={item.val.TextContent}
                 onChange={(e) =>
                   handleKeyValChange(index, "val", {
@@ -315,9 +334,12 @@ const MintNft = () => {
             <p className="text-red-500 text-xs">{formErrors[`key_val_data`]}</p>
           )}
         </div>
-        <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-          Processing Fee :
-        </label>
+        <div className="flex items-center gap-2">
+          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
+            Processing Fee:
+          </label>
+          <TextHint text="Enter the processing fee for the NFT." />
+        </div>
         <input
           className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
           type="number"
@@ -329,9 +351,15 @@ const MintNft = () => {
           <p className="text-red-500 text-xs">{formErrors.fee}</p>
         )}
         <div>
-          <label htmlFor="purpose" className="md:text-lg text-sm font-semibold">
-            Select Purpose:
-          </label>
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="purpose"
+              className="md:text-lg text-sm font-semibold"
+            >
+              Select Purpose:
+            </label>
+            <TextHint text="Select the purpose of the NFT." />
+          </div>
           <select
             id="purpose"
             value={selectedPurpose}
@@ -343,12 +371,15 @@ const MintNft = () => {
           </select>
         </div>
         <div>
-          <label
-            htmlFor="description"
-            className="md:text-lg text-sm font-semibold"
-          >
-            Description :
-          </label>
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="description"
+              className="md:text-lg text-sm font-semibold"
+            >
+              Description:
+            </label>
+            <TextHint text="Enter a description for the NFT." />
+          </div>
           <textarea
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             name="description"

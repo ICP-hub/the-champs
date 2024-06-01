@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
-import { Grid } from "react-loader-spinner";
+// import { Grid } from "react-loader-spinner";
 import { Principal } from "@dfinity/principal";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { motion } from "framer-motion";
+import AdminLoader from "../components/laoding-admin";
 // listUsers: () → (vec record {principal; record {twitter:text; email:text; discord:text; profileimage:text; lastName:text; telegram:text; firstName:text}}) query
 // User Component
 const User = () => {
@@ -49,33 +50,23 @@ const User = () => {
   }, [backend]);
 
   return (
-    <div className="mx-4 md:py-8 md:px-6 p-2 text-textall h-full flex flex-col">
+    <div className="flex flex-col">
       <SearchUser handleSearch={handleSearch} />
       <div className="bg-card rounded-lg mt-6 flex flex-col flex-grow">
         {isUserLoading ? (
-          <div className="h-full w-full flex items-center justify-center">
-            <Grid
-              visible={true}
-              height="150"
-              width="150"
-              color="#EF4444"
-              ariaLabel="grid-loading"
-              radius="12.5"
-              wrapperClass="grid-wrapper"
-            />
-          </div>
+          <AdminLoader />
         ) : (
-          <>
+          <div className="shadow-md">
             <UserLabels users={currentUsers} />
-            <div className="mt-auto">
+            {currentUsers?.length > 0 && (
               <Pagination
                 totalUsers={filteredUsers?.length}
                 usersPerPage={usersPerPage}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
               />
-            </div>
-          </>
+            )}
+          </div>
         )}
       </div>
     </div>
@@ -143,7 +134,7 @@ const UserLabels = ({ users }) => {
           </div>
         ))
       ) : (
-        <div className="h-full w-full flex items-center justify-center">
+        <div className="h-full w-full flex items-center justify-center py-4">
           No users Available
         </div>
       )}
@@ -167,9 +158,9 @@ const Pagination = ({
     <div className="flex space-x-3 text-textall w-full items-center justify-center py-4">
       <button
         onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-        className="flex items-center justify-center cursor-pointer bg-gray-300 w-9 h-8 rounded"
+        className="flex items-center justify-center cursor-pointer bg-transparent w-9 h-8 rounded"
       >
-        <MdKeyboardArrowLeft size={24} color="black" />
+        <MdKeyboardArrowLeft size={24} className="text-textall" />
       </button>
       <div className="flex gap-4">
         {pageNumbers.map((number) => (
@@ -188,9 +179,9 @@ const Pagination = ({
         onClick={() =>
           setCurrentPage((prev) => Math.min(prev + 1, pageNumbers.length))
         }
-        className="flex items-center justify-center cursor-pointer bg-gray-300 w-9 h-8 rounded"
+        className="flex items-center justify-center cursor-pointer bg-transparent w-9 h-8 rounded"
       >
-        <MdKeyboardArrowRight size={24} color="black" />
+        <MdKeyboardArrowRight size={24} className="text-textall" />
       </button>
     </div>
   );

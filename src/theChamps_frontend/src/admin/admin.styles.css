@@ -27,64 +27,10 @@
   z-index: 200;
 }
 
-/* Animations */
-.navigation.animations-enabled {
-  transition-duration: 400ms;
-  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
-  transition-property: visibility, margin-left, margin-right, transform, width,
-    max-width, min-width;
-}
-
-/* Wrapper */
-.navigation .navigation-wrapper,
-.navigation.animations-enabled .navigation-wrapper {
-  transition-duration: 400ms;
-  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
-  transition-property: width, max-width, min-width;
-}
-
-/* Over mode */
-.navigation.mode-over {
+.navigation.navigation-mode-over {
   position: fixed;
   top: 0;
   bottom: 0;
-}
-
-.navigation.mode-side {
-  margin-left: -280px;
-}
-
-/* Over mode */
-.navigation.mode-over.position-left {
-  left: 0;
-  transform: translate3d(-100%, 0, 0);
-}
-
-/* Opened state */
-.navigation.opened {
-  /* Side mode */
-  .navigation.mode-side {
-    margin-left: 0;
-  }
-}
-
-/* Over mode */
-.navigation.mode-over.position-left.opened {
-  transform: translate3d(0, 0, 0);
-}
-
-.admin-header {
-  display: flex;
-  align-items: center;
-  height: 64px;
-  width: 100%;
-  justify-content: space-between;
-  z-index: 50;
-}
-
-.wrapper {
-  display: flex;
-  flex-direction: column;
 }
 
 .overlay-display {
@@ -96,6 +42,20 @@
   z-index: 170; /* Ensure this is higher than other elements */
   opacity: 1;
   background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .themeSettings {
@@ -136,4 +96,47 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.texthint {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.texthint .texthinttext {
+  visibility: hidden;
+  min-width: 100px;
+  max-width: 100%;
+  background-color: white;
+  color: black;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 10px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: -150%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.texthint .texthinttext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+}
+
+.texthint:hover .texthinttext {
+  visibility: visible;
+  opacity: 1;
 }

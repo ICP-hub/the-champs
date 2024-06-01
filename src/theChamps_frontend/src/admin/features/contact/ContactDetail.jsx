@@ -5,7 +5,8 @@ import { TbSquareRoundedChevronLeft } from "react-icons/tb";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
-import { Grid, TailSpin } from "react-loader-spinner";
+// import { Grid, TailSpin } from "react-loader-spinner";
+import AdminLoader from "../../components/laoding-admin";
 const ContactDetail = () => {
   const navigate = useNavigate();
   const param = useParams();
@@ -69,7 +70,7 @@ const ContactDetail = () => {
   };
 
   return (
-    <div className="mx-4 md:py-8 md:px-6 p-2  flex flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-t-2xl mt-6">
+    <div className="flex flex-col dark:text-[#e0e0e0] text-[#676767] dark:bg-[#2e2e48] bg-[#fff] shadow-2xl dark:shadow-[#323257] rounded-t-2xl p-6">
       <div className="mb-6">
         <h1 className="text-xl font-bold">
           <div className="flex gap-4 items-center">
@@ -82,18 +83,7 @@ const ContactDetail = () => {
         </h1>
       </div>
       {isLoading ? (
-        <div className="flex justify-center h-80 items-center">
-          <Grid
-            visible={true}
-            height="150"
-            width="150"
-            color="#EF4444"
-            ariaLabel="grid-loading"
-            radius="12.5"
-            wrapperStyle={{}}
-            wrapperClass="grid-wrapper"
-          />
-        </div>
+        <AdminLoader />
       ) : (
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="flex justify-between gap-4">
