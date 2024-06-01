@@ -17,6 +17,7 @@ import champsImg from "../../../assets/CHAMPS.png";
 import AdminLoader from "../../components/laoding-admin";
 import { AdminModal } from "../../components/admin-modal";
 import toast from "react-hot-toast";
+import { TbSquareRoundedChevronLeft } from "react-icons/tb";
 
 const NFTList = () => {
   const { slug } = useParams();
@@ -59,7 +60,14 @@ const NFTList = () => {
     collectionDetail && (
       <>
         <div className="text-textall h-full relative py-4">
-          <span className="flex justify-end">
+          <span className="flex justify-between">
+            <button className="flex gap-4 items-center font-bold text-lg tracking-wider">
+              <TbSquareRoundedChevronLeft
+                className="w-6 h-6 cursor-pointer"
+                onClick={() => navigate("/admin/collections")}
+              />
+              Collections
+            </button>
             <button
               className="button px-4 py-2 rounded-md text-white"
               onClick={openModal}

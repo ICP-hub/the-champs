@@ -104,7 +104,7 @@ const MintNft = () => {
         );
         console.log("NFT Created Successfully : ", res);
         toast.success("NFT Fractionalized Successfully");
-        navigate("/admin-collections");
+        navigate("/admin/collections");
       } catch (err) {
         console.error("Error Creating NFT", err);
         toast.error("Failed to Fractionalize NFT");
