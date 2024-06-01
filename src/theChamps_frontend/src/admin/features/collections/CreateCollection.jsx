@@ -221,8 +221,8 @@ const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
         return;
       }
       const id = Principal.fromText(collId);
-      await backend.add_collection_to_map(id);
-      toast.success("Collection Added Successfully");
+      const res = await backend.add_collection_to_map(id);
+      toast.success(res);
       handleCreate();
       setFormSubmitted((prev) => !prev);
     } catch (err) {
