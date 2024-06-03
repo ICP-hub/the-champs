@@ -23,7 +23,7 @@ import XRC "./XRC";
 import Float "mo:base/Float";
 import Nat64 "mo:base/Nat64";
 import Int64 "mo:base/Int64";
-
+import Int "mo:base/Int";
 actor Champs {
 
     // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
@@ -785,7 +785,8 @@ actor Champs {
         let xrc = actor (exchange_rate_canister) : actor {
             get_exchange_rate : ( GetExchangeRateRequest : XRC.GetExchangeRateRequest ) -> async XRC.GetExchangeRateResult;
         };
-        let timestamp = Time.now();
+        let timestamp = Int.div(Time.now(),1_000_000_000) - 120;
+        // 2 mintues buffer time to get the exchange rate
         Debug.print(debug_show(timestamp));
         Cycles.add<system>(10_000_000_000);
         let result = await xrc.get_exchange_rate({timestamp : ?Nat64 = ?Nat64.fromIntWrap(timestamp); quote_asset = x; base_asset = y});
