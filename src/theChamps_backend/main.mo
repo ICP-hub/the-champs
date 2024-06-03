@@ -786,7 +786,10 @@ actor Champs {
             get_exchange_rate : ( GetExchangeRateRequest : XRC.GetExchangeRateRequest ) -> async XRC.GetExchangeRateResult;
         };
         let timestamp = Time.now();
-        let result = await xrc.get_exchange_rate({timestamp = ?Nat64.fromIntWrap(timestamp); quote_asset = x; base_asset = y});
+        Debug.print(debug_show(timestamp));
+        Cycles.add<system>(10_000_000_000);
+        let result = await xrc.get_exchange_rate({timestamp : ?Nat64 = ?Nat64.fromIntWrap(timestamp); quote_asset = x; base_asset = y});
+        Debug.print(debug_show(Cycles.refunded()));
         Debug.print(debug_show (result));
         return result;
     };
