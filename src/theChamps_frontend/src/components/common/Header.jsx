@@ -11,7 +11,7 @@ import Sidebar from "./Sidebar";
 //   useDialog,
 // } from "@connect2ic/react";
 // import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { HiOutlineBars4 } from "react-icons/hi2";
 
@@ -20,6 +20,7 @@ const Header = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   const sideNavToggle = () => {
     setIsSidenavOpen((prev) => !prev);
@@ -59,10 +60,20 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    isSidenavOpen || isMenuOpen
-      ? (document.documentElement.style.overflowY = "hidden")
-      : (document.documentElement.style.overflowY = "auto");
-  }, [isSidenavOpen, isMenuOpen]);
+    const handleOverflow = () => {
+      if (isSidenavOpen || isMenuOpen) {
+        document.documentElement.style.overflowY = "hidden";
+      } else {
+        document.documentElement.style.overflowY = "auto";
+      }
+    };
+
+    handleOverflow();
+
+    return () => {
+      document.documentElement.style.overflowY = "auto";
+    };
+  }, [isSidenavOpen, isMenuOpen, location]);
 
   return (
     <div>
