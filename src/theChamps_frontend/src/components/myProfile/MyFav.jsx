@@ -29,12 +29,10 @@ const MyFav = () => {
   const [showModal, setShowModal] = useState(false);
   const [assets] = useBalance();
   const [filteredProduct, setFilteredProduct] = useState([]);
-  // const userInfo = useSelector((state) => state.auth);
-  // const user = userInfo.userPlugPrincipal;
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(3); // Initial number of items per page
+  const [itemsPerPage, setItemsPerPage] = useState(3);
 
   useEffect(() => {
     const getUsersFractionNFT = async () => {
@@ -45,7 +43,11 @@ const MyFav = () => {
         console.log("user fav", favouritesRes);
 
         const favouriteProducts = res.filter((product) =>
-          favouritesRes.some((fav) => fav[0].id === product[1].nft.id)
+          favouritesRes.some(
+            (fav) =>
+              fav[0].id === product[1].nft.id &&
+              fav[0]?.owner.toText() === principal
+          )
         );
 
         if (favouritesRes.length > 0) {
@@ -91,7 +93,6 @@ const MyFav = () => {
   ) => {
     try {
       setLoading(true);
-      // const principal_id = Principal.fromText(rincipal);
       const canister = Principal.fromText(canisterid);
       const item = {
         id: parseInt(productId),
@@ -107,15 +108,24 @@ const MyFav = () => {
       toast.success("Item removed from favourites");
 
       // Refresh favourites
-      const res = await backend.getfavourites();
-      setFavourites(res);
-
-      // Update the filtered products list after removal
-      const favouriteProducts = filteredProduct.filter(
-        (product) => product[1].nft.id !== productId
+      const res = await backend.getallfractionalnfts();
+      const favouritesRes = await backend.getfavourites();
+      const favouriteProducts = res.filter((product) =>
+        favouritesRes.some(
+          (fav) =>
+            fav[0].id === product[1].nft.id &&
+            fav[0]?.owner.toText() === principal
+        )
       );
+
+      if (favouritesRes.length > 0) {
+        setProductInFavourite(true);
+      } else {
+        setProductInFavourite(false);
+      }
+
       setFilteredProduct(favouriteProducts);
-      setProductInFavourite(favouriteProducts.length > 0);
+      console.log("Updated Favourite Products", favouriteProducts);
     } catch (error) {
       console.log(error);
       toast.error("Failed to remove item from favourites");
@@ -152,7 +162,7 @@ const MyFav = () => {
 
   const displayProducts = search ? searchResults : filteredProduct;
   const loadMoreItems = () => {
-    setItemsPerPage((prevItemsPerPage) => prevItemsPerPage + 9); // Increase items per page by 9
+    setItemsPerPage((prevItemsPerPage) => prevItemsPerPage + 9);
   };
   return (
     <>
