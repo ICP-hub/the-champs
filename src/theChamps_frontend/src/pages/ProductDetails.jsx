@@ -111,7 +111,7 @@ const ProductDetails = () => {
 
         1,
         paymentOpt,
-        1
+        nft[0][0]?.nft?.priceinusd?.toFixed(4) / exchange
       );
 
       console.log(res, "hello");
@@ -193,7 +193,7 @@ const ProductDetails = () => {
     let paymentOpt1 = null;
     if (paymentMethod1 == "Cryptocurrency") {
       paymentOpt1 = { Cryptocurrency: null };
-    } else if (paymentMethod1== "FiatCurrency") {
+    } else if (paymentMethod1 == "FiatCurrency") {
       paymentOpt1 = { FiatCurrency: null };
     }
 
@@ -202,8 +202,10 @@ const ProductDetails = () => {
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
-      console.log(res);
-      setExchange(res);
+
+      const exchangeRate = parseInt(12270678658) / Math.pow(10, 9);
+      console.log(exchangeRate);
+      setExchange(exchangeRate);
     } catch (error) {
       console.log(error);
     }
@@ -384,7 +386,7 @@ const ProductDetails = () => {
                 <div className="flex justify-between  mt-6">
                   <div className=" flex">
                     <span className="text-2xl flex font-semibold items-center gap-1">
-                      {nft[0][0]?.nft?.priceinusd?.toFixed(4) * exchange}
+                      {nft[0][0]?.nft?.priceinusd?.toFixed(4) / exchange}
                       <span>ICP</span>
                       <span className="text-lg text-gray-500">
                         ({nft[0][0]?.nft?.priceinusd?.toFixed(4)} USD){" "}
