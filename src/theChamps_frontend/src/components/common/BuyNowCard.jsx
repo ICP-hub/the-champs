@@ -85,7 +85,7 @@ const BuyNowModal = ({
             <p>TOTAL:</p>
             <p className="flex items-center gap-1">
               <IcpLogo size={16} />
-              {nft[0][0]?.nft?.priceinusd?.toFixed(4) * exchange}
+              {nft[0][0]?.nft?.priceinusd?.toFixed(4) / exchange}
               <span className="text-XS text-gray-500">
                 ({nft[0][0]?.nft?.priceinusd?.toFixed(4)} USD){" "}
               </span>

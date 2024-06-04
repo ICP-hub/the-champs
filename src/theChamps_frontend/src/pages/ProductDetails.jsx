@@ -202,8 +202,9 @@ const ProductDetails = () => {
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
-
-      const exchangeRate = parseInt(12270678658) / Math.pow(10, 9);
+      console.log(res);
+      const exchangeRate =
+        parseInt(res?.ok?.rate) / Math.pow(10, res?.ok?.metadata?.decimals);
       console.log(exchangeRate);
       setExchange(exchangeRate);
     } catch (error) {
