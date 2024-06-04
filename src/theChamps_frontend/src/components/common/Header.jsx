@@ -63,15 +63,16 @@ const Header = () => {
     const handleOverflow = () => {
       if (isSidenavOpen || isMenuOpen) {
         document.documentElement.style.overflowY = "hidden";
+        document.documentElement.style.overflowX = "hidden";
       } else {
-        document.documentElement.style.overflowY = "auto";
+        document.documentElement.style.overflowY = "scroll";
+        document.documentElement.style.overflowX = "hidden";
       }
     };
-
     handleOverflow();
-
     return () => {
-      document.documentElement.style.overflowY = "auto";
+      document.documentElement.style.overflowY = "scroll";
+      document.documentElement.style.overflowX = "hidden";
     };
   }, [isSidenavOpen, isMenuOpen, location]);
 
