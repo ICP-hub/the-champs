@@ -203,10 +203,10 @@ const ProductDetails = () => {
         { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
       console.log(res);
-      const exchangeRate =
+      const exchangeRate2 =
         parseInt(res?.ok?.rate) / Math.pow(10, res?.ok?.metadata?.decimals);
-      console.log(exchangeRate);
-      setExchange(exchangeRate);
+      console.log(exchangeRate2);
+      setExchange(exchangeRate2);
     } catch (error) {
       console.log(error);
     }
