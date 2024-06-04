@@ -104,7 +104,7 @@ const UserLabels = ({ users }) => {
             key={index}
             className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 py-4 border-t border-divider text-sm"
           >
-            <div className="flex items-center gap-2 mx-12">
+            <div className="flex items-center gap-2 ml-12">
               <img
                 src={user.profileimage}
                 alt={`${user.firstName} ${user.lastName}`}
