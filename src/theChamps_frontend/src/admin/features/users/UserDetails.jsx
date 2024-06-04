@@ -53,13 +53,9 @@ const UserData = ({ id, userInfo }) => {
       <div className="rounded-md bg-card p-6 flex flex-col md:flex-row gap-8">
         <div className="flex items-center justify-center">
           <img
-            src={
-              userInfo?.profileImage?.length > 10
-                ? userInfo?.profileImage
-                : ChampsImg
-            }
+            src={userInfo?.profileImage}
             alt="user-img"
-            className="h-48 w-48 rounded-full"
+            className="h-48 min-w-max rounded-full"
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -140,13 +136,16 @@ const Cards = ({ id }) => {
 const NFTDetailCard = ({ nft }) => {
   const [collectionId, nftDetail, nftId] = nft;
   console.log(nftDetail);
+  const metadataItem = nftDetail?.metadata[0];
+  const keyValData = metadataItem?.key_val_data[0];
+  const attributeName = keyValData?.key;
+  const attributeVal = keyValData?.val?.TextContent;
+
   return (
-    <div className="bg-card rounded-md overflow-hidden flex flex-col space-x-2">
+    <div className="bg-card rounded-2xl overflow-hidden flex flex-col space-x-2">
       <img
         src={
-          nftDetail?.fractional_token?.length > 10
-            ? nftDetail?.fractional_token.logo
-            : ChampsImg
+          fractional_token.logo.length > 10 ? fractional_token.logo : ChampsImg
         }
         alt="nft-img"
       />
@@ -169,7 +168,10 @@ const NFTDetailCard = ({ nft }) => {
         </span>
         <span className="flex gap-4">
           <label>NFT Attributes :</label>
-          <p>based on console</p>
+          <span className="flex flex-col gap-2">
+            <p>name: {attributeName}</p>
+            <p>val: {attributeVal}</p>
+          </span>
         </span>
         <span className="flex gap-4">
           <label>Total Share :</label>
