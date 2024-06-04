@@ -104,12 +104,10 @@ const ProductDetails = () => {
 
       console.log(paymentOpt, paymentMethod, "paymentmethod");
 
-      const user_id2 = Principal.fromText("2vxsx-fae");
-
       const res = await backend.buytokens(
         nft[0][1],
         nft[0][0]?.fractional_token?.owner,
-        user_id2,
+        principal,
 
         1,
         paymentOpt,
@@ -193,9 +191,9 @@ const ProductDetails = () => {
     }
     const paymentMethod1 = "Cryptocurrency";
     let paymentOpt1 = null;
-    if (paymentMethod == "Cryptocurrency") {
+    if (paymentMethod1 == "Cryptocurrency") {
       paymentOpt1 = { Cryptocurrency: null };
-    } else if (paymentMethod == "FiatCurrency") {
+    } else if (paymentMethod1== "FiatCurrency") {
       paymentOpt1 = { FiatCurrency: null };
     }
 
