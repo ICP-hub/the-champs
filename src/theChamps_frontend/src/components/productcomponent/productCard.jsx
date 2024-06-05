@@ -15,6 +15,7 @@ import IconWrapper from "../common/IconWrapper";
 import placeHolderImg from "../../assets/CHAMPS.png";
 import { Link } from "react-router-dom";
 import IcpLogo from "../../assets/IcpLogo";
+import BuyNowModal from "../common/BuyNowCard";
 
 const ProductCard = ({ product }) => {
   const { isConnected } = useConnect();
@@ -27,6 +28,8 @@ const ProductCard = ({ product }) => {
   const [showModal, setShowModal] = useState(false); // State to manage modal visibility
   const [assets] = useBalance();
   const [image, setImage] = useState(product[0]?.fractional_token.logo);
+  const [loading3, setLoading3] = useState(true);
+  const [exchange, setExchange] = useState(1);
 
   const addToFavourites = async () => {
     try {
@@ -65,28 +68,78 @@ const ProductCard = ({ product }) => {
       setProductInFavourites(isProductInWishlist);
     }
   }, [product, favourites]);
-  console.log(product);
 
   const imageHandler = () => {
     setImage(placeHolderImg);
   };
 
-  const removeFavourites = async () => {
+  const removeFavourites = async (
+    canisterid,
+    productId,
+    metadata,
+    locked,
+    forsale,
+    listed,
+    priceinusd
+  ) => {
     try {
       setLoading(true);
-      const canister_id = Principal.fromText(id);
-      const res = backend.removefavourite(
-        canister_id,
-        parseInt(product.nft.id)
-      );
-      console.log("item successfully remove from favourites");
-      toast.success("item successfully remove from favourites");
+      const canister = Principal.fromText(canisterid);
+      const item = {
+        id: parseInt(productId),
+        owner: Principal?.fromText("2vxsx-fae"),
+        metadata: metadata,
+        locked: locked,
+        priceinusd: priceinusd,
+        forsale: forsale,
+        listed: listed,
+      };
+
+      await backend.removefavourite([item, canister]);
+      toast.success("Item removed from favourites");
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
+  const getExchangeRate = async () => {
+    const paymentMethod = "FiatCurrency";
+    let paymentOpt = null;
+    if (paymentMethod == "Cryptocurrency") {
+      paymentOpt = { Cryptocurrency: null };
+    } else if (paymentMethod == "FiatCurrency") {
+      paymentOpt = { FiatCurrency: null };
+    }
+    const paymentMethod1 = "Cryptocurrency";
+    let paymentOpt1 = null;
+    if (paymentMethod1 == "Cryptocurrency") {
+      paymentOpt1 = { Cryptocurrency: null };
+    } else if (paymentMethod1 == "FiatCurrency") {
+      paymentOpt1 = { FiatCurrency: null };
+    }
+
+    setLoading3(true);
+
+    try {
+      const res = await backend.get_exchange_rates(
+        { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
+        { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
+      );
+      console.log(res);
+      const exchangeRate2 =
+        parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
+      console.log(exchangeRate2);
+      setExchange(exchangeRate2);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading3(false);
+    }
+  };
+  useEffect(() => {
+    getExchangeRate();
+  }, [backend]);
 
   const handleBuyNow = () => {
     if (isConnected) {
@@ -126,10 +179,10 @@ const ProductCard = ({ product }) => {
           </h2>
 
           {loading ? (
-            <button className="ml-[220px]">
+            <button className="ml-[255px]">
               <TailSpin
-                height="20%"
-                width="20%"
+                height="30%"
+                width="30%"
                 color="black"
                 ariaLabel="tail-spin-loading"
                 radius="1"
@@ -139,7 +192,19 @@ const ProductCard = ({ product }) => {
           ) : (
             <>
               {productInFavourites ? (
-                <button onClick={removeFavourites}>
+                <button
+                  onClick={() =>
+                    removeFavourites(
+                      product[1]?.toText(),
+                      product[0]?.nft?.id,
+                      product[0]?.nft?.metadata,
+                      product[0]?.nft?.locked,
+                      product[0]?.nft?.forsale,
+                      product[0]?.nft?.listed,
+                      product[0]?.nft?.priceinusd
+                    )
+                  }
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 115.77 122.88"
@@ -182,7 +247,11 @@ const ProductCard = ({ product }) => {
         <div className="flex justify-between  mb-4">
           <p className="mt-4    bg-opacity-100  py-2  flex  gap-1 rounded-md w-[50%]">
             <IcpLogo />
-            {product[0]?.nft?.priceinusd?.toFixed(4)}
+            {loading3 ? (
+              <div className="h-8 w-[50px] bg-gray-200 rounded animate-pulse"></div>
+            ) : (
+              (product[0]?.nft?.priceinusd / exchange).toFixed(3)
+            )}
           </p>
           <button
             className="mt-4   button   text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
