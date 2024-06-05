@@ -16,14 +16,16 @@ import placeHolderImg from "../../assets/CHAMPS.png";
 import { Link } from "react-router-dom";
 import IcpLogo from "../../assets/IcpLogo";
 import BuyNowModal from "../common/BuyNowCard";
+import { GoHeartFill } from "react-icons/go";
+import { GoHeart } from "react-icons/go";
 
 const ProductCard = ({ product }) => {
   const { isConnected } = useConnect();
   const { id } = useParams();
   const [backend] = useCanister("backend");
 
-  const [favourites, setFavourites] = useState();
-  const [productInFavourites, setProductInFavourites] = useState(false);
+  const [favourites, setFavourites] = useState(null);
+  // const [productInFavourites, setProductInFavourites] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false); // State to manage modal visibility
   const [assets] = useBalance();
@@ -31,78 +33,84 @@ const ProductCard = ({ product }) => {
   const [loading3, setLoading3] = useState(true);
   const [exchange, setExchange] = useState(1);
 
-  const addToFavourites = async () => {
-    try {
-      setLoading(true);
-      const canister_id = Principal.fromText(id);
-      const res = await backend.addfavourite(
-        canister_id,
-        parseInt(product[0].nft.id)
-      );
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // fav stats
+  const [favChanged, setFavChanged] = useState(false);
+  const [favMatched, setFavMatched] = useState(false);
+  const [favLoad, setFavLoad] = useState(false);
+
+  // const addToFavourites = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const canister_id = Principal.fromText(id);
+  //     const res = await backend.addfavourite(
+  //       canister_id,
+  //       parseInt(product[0].nft.id)
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
 
-  const getFavourites = async () => {
-    try {
-      const res = await backend.getfavourites();
+  // const getFavourites = async () => {
+  //   try {
+  //     const res = await backend.getfavourites();
 
-      setFavourites(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     setFavourites(res);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getFavourites();
+  // useEffect(() => {
+  //   getFavourites();
 
-    if (favourites != null) {
-      const isProductInWishlist = favourites.some(
-        (item) => item[0].id === product[0].nft.id && item[1].toText() === id
-      );
-      setProductInFavourites(isProductInWishlist);
-    }
-  }, [product, favourites]);
+  //   if (favourites != null) {
+  //     const isProductInWishlist = favourites.some(
+  //       (item) => item[0].id === product[0].nft.id && item[1].toText() === id
+  //     );
+  //     setProductInFavourites(isProductInWishlist);
+  //   }
+  // }, [product, favourites]);
 
   const imageHandler = () => {
     setImage(placeHolderImg);
   };
 
-  const removeFavourites = async (
-    canisterid,
-    productId,
-    metadata,
-    locked,
-    forsale,
-    listed,
-    priceinusd
-  ) => {
-    try {
-      setLoading(true);
-      const canister = Principal.fromText(canisterid);
-      const item = {
-        id: parseInt(productId),
-        owner: Principal?.fromText("2vxsx-fae"),
-        metadata: metadata,
-        locked: locked,
-        priceinusd: priceinusd,
-        forsale: forsale,
-        listed: listed,
-      };
+  // const removeFavourites = async (
+  //   canisterid,
+  //   productId,
+  //   metadata,
+  //   locked,
+  //   forsale,
+  //   listed,
+  //   priceinusd
+  // ) => {
+  //   try {
+  //     setLoading(true);
+  //     const canister = Principal.fromText(canisterid);
+  //     const item = {
+  //       id: parseInt(productId),
+  //       owner: Principal?.fromText("2vxsx-fae"),
+  //       metadata: metadata,
+  //       locked: locked,
+  //       priceinusd: priceinusd,
+  //       forsale: forsale,
+  //       listed: listed,
+  //     };
 
-      await backend.removefavourite([item, canister]);
-      toast.success("Item removed from favourites");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     await backend.removefavourite([item, canister]);
+  //     toast.success("Item removed from favourites");
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const getExchangeRate = async () => {
     const paymentMethod = "FiatCurrency";
     let paymentOpt = null;
@@ -118,7 +126,6 @@ const ProductCard = ({ product }) => {
     } else if (paymentMethod1 == "FiatCurrency") {
       paymentOpt1 = { FiatCurrency: null };
     }
-
     setLoading3(true);
 
     try {
@@ -155,6 +162,61 @@ const ProductCard = ({ product }) => {
     }
   };
 
+  /*************** Favourite review ****************/
+  // get favorites
+  const getFav = async () => {
+    try {
+      setFavLoad(true);
+      const res = await backend.getfavourites();
+      const favIds = res.map((fav) => fav[0].id);
+      // console.log("fav nft id", favIds);
+      setFavourites(favIds); // store only ids
+      setFavMatched(favIds.includes(product[0].nft.id));
+    } catch (err) {
+      console.error("Error getting fav ", err);
+    } finally {
+      setFavLoad(false);
+    }
+  };
+
+  // fetch favorites : fetch in favChanged
+  useEffect(() => {
+    getFav();
+  }, [favChanged]);
+
+  // add or remove a favorite
+  const toggleFav = async (product) => {
+    try {
+      setFavLoad(true);
+      if (favMatched) {
+        // Remove favorite
+        const nft = product[0].nft;
+        const res = await backend.removefavourite([
+          {
+            ...nft,
+            id: BigInt(parseInt(nft.id)),
+          },
+          Principal.fromText(id),
+        ]);
+        console.log(res);
+        // return; ? return need?
+      } else {
+        // Add favorite
+        const res = await backend.addfavourite(
+          Principal.fromText(id),
+          parseInt(product[0].nft.id)
+        );
+        console.log(res);
+      }
+    } catch (err) {
+      console.error("error toggling fav ", err);
+    } finally {
+      // setFavLoad(false);   // This may cause bug????
+      setFavChanged((prev) => !prev);
+    }
+  };
+  /*************** Favourite review ****************/
+
   return (
     <div
       className="border   rounded-xl overflow-hidden "
@@ -178,7 +240,30 @@ const ProductCard = ({ product }) => {
             {product[0]?.fractional_token?.name}
           </h2>
 
-          {loading ? (
+          <span className="flex items-center justify-center">
+            {favLoad ? (
+              <TailSpin
+                height="30px"
+                width="30px"
+                color="black"
+                ariaLabel="tail-spin-loading"
+                radius="1"
+                visible={true}
+              />
+            ) : (
+              <button onClick={() => toggleFav(product)}>
+                {favMatched ? (
+                  <IconWrapper>
+                    <GoHeartFill size={32} />
+                  </IconWrapper>
+                ) : (
+                  <GoHeart size={32} />
+                )}
+              </button>
+            )}
+          </span>
+
+          {/* {loading ? (
             <button className="ml-[255px]">
               <TailSpin
                 height="30%"
@@ -236,7 +321,7 @@ const ProductCard = ({ product }) => {
                 </button>
               )}
             </>
-          )}
+          )} */}
         </div>
         <p className="text-gray-500 text-sm">
           <ReadMore
@@ -248,7 +333,7 @@ const ProductCard = ({ product }) => {
           <p className="mt-4    bg-opacity-100  py-2  flex  gap-1 rounded-md w-[50%]">
             <IcpLogo />
             {loading3 ? (
-              <div className="h-8 w-[50px] bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-6 w-[50px] bg-gray-200 rounded animate-pulse"></div>
             ) : (
               (product[0]?.nft?.priceinusd / exchange).toFixed(3)
             )}
