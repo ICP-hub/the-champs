@@ -1,25 +1,73 @@
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import soccer3 from "../../assets/images/soccer-3.jpeg";
-import { useState } from "react";
 import IcpLogo from "../../assets/IcpLogo";
 import PlaceholderImg from "../../assets/CHAMPS.png";
 import { useCanister } from "@connect2ic/react";
+import { Principal } from "@dfinity/principal";
 
 const ProductCardLg = ({ prod }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [collectionDetails, setCollectionDetails] = useState();
+  const [collection, setCollection] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [backend] = useCanister("backend");
+  console.log("single collection is", prod);
+  const id = prod.canisterId.toText();
+
+  const getCollectionWiseNft = async () => {
+    try {
+      const canister_id = Principal.fromText(id);
+      const res = await backend.getcollectionwisefractionalnft(canister_id);
+      console.log("hello ss", res);
+      setCollection(res);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getCollectionWiseNft();
+  }, [backend]);
+
+  const calculateVolume = (collection) => {
+    return collection
+      .reduce((acc, nftArray) => {
+        const nft = nftArray[0].nft;
+        if (nft.listed) {
+          return acc + parseFloat(nft.priceinusd);
+        }
+        return acc;
+      }, 0)
+      .toFixed(2);
+  };
+
+  const calculateListingCount = (collection) => {
+    return collection.filter((nftArray) => nftArray[0].nft.listed).length;
+  };
+
+  const calculateFloorPrice = (collection) => {
+    const listedPrices = collection
+      .filter((nftArray) => nftArray[0].nft.listed)
+      .map((nftArray) => parseFloat(nftArray[0].nft.priceinusd));
+    return listedPrices.length > 0
+      ? Math.min(...listedPrices).toFixed(3)
+      : "0.00";
+  };
+
+  const volume = calculateVolume(collection);
+  const listingCount = calculateListingCount(collection);
+  const floorPrice = calculateFloorPrice(collection);
 
   const handleCardFlip = () => {
     setIsFlipped(!isFlipped);
   };
+
   // motion variants
   const imgVariants = {
     hover: { scale: 1.1, transition: { duration: 0.2, ease: "easeInOut" } },
     initial: { scale: 1.01 },
   };
-  // card flip variant
   const flipVariants = {
     front: {
       rotateY: 0,
@@ -30,8 +78,6 @@ const ProductCardLg = ({ prod }) => {
       transition: { duration: 0.6 },
     },
   };
-
-  // console.log(prod);
 
   return (
     <motion.div
@@ -87,20 +133,20 @@ const ProductCardLg = ({ prod }) => {
             <div className="flex w-full items-center justify-start gap-4">
               <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
                 <p>VOLUME</p>
-                <button className=" w-full  bg-gray-100  bg-opacity-100  text-[#7B7583] py-1  gap-1  rounded-lg   text-md flex items-center justify-center">
-                  <IcpLogo /> 184
+                <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
+                  <IcpLogo /> {volume}
                 </button>
               </div>
               <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
                 <p>LISTING</p>
-                <button className=" w-full  bg-gray-100  bg-opacity-100  text-[#7B7583] py-2  rounded-lg    text-md flex items-center justify-center">
-                  184
+                <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-2 rounded-lg text-md flex items-center justify-center">
+                  {listingCount}
                 </button>
               </div>
               <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
                 <p>FLOOR PRICE</p>
-                <button className=" w-full   bg-gray-100 bg-opacity-100  text-[#7B7583] py-1 gap-1  rounded-lg    text-md flex items-center justify-center">
-                  <IcpLogo /> 184
+                <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
+                  <IcpLogo /> {floorPrice}
                 </button>
               </div>
             </div>
@@ -111,18 +157,17 @@ const ProductCardLg = ({ prod }) => {
           >
             <Link
               to={`/collection/${prod.canisterId.toText()}`}
-              className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57]  text-white cursor-pointer  rounded-lg w-full z-[1]"
+              className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57] text-white cursor-pointer rounded-lg w-full z-[1]"
             >
               View Collection
             </Link>
             <button
-              className="px-4 py-2  cursor-pointer rounded-lg w-full productcardlgborder z-[1]"
+              className="px-4 py-2 cursor-pointer rounded-lg w-full productcardlgborder z-[1]"
               onClick={handleCardFlip}
             >
               More Info
             </button>
           </div>
-          {/* <CiHeart size={48} className="cursor-pointer" /> */}
         </div>
       </div>
       <div className="p-6 absolute top-0 h-full w-full backface-hidden back flex flex-col">
@@ -131,12 +176,12 @@ const ProductCardLg = ({ prod }) => {
           <div className="w-full md:w-1/2 flex gap-4">
             <Link
               to={`/collections/${prod.canisterId.toText()}`}
-              className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57]  text-white cursor-pointer  rounded-lg w-full z-[1]"
+              className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57] text-white cursor-pointer rounded-lg w-full z-[1]"
             >
               View Collection
             </Link>
             <button
-              className="px-4 py-2  cursor-pointer rounded-lg w-full productcardlgborder"
+              className="px-4 py-2 cursor-pointer rounded-lg w-full productcardlgborder"
               onClick={handleCardFlip}
             >
               Back

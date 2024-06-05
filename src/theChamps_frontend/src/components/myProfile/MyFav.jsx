@@ -46,7 +46,7 @@ const MyFav = () => {
           favouritesRes.some(
             (fav) =>
               fav[0].id === product[1].nft.id &&
-              fav[0]?.owner.toText() === principal
+              fav[0]?.owner.toText() === product[1]?.nft?.owner.toText()
           )
         );
 

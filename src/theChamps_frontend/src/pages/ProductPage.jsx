@@ -23,7 +23,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 const ProductPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
   const [backend] = useCanister("backend");
-  const [collection, setCollection] = useState("");
+  const [collection, setCollection] = useState([]);
   const [loading, setloading] = useState(true);
   const { id } = useParams();
   const [searchQuery, setSearchQuery] = useState();
@@ -93,6 +93,35 @@ const ProductPage = ({ name }) => {
     setSearchResults(filteredResults);
   };
 
+  const calculateVolume = (collection) => {
+    return collection
+      .reduce((acc, nftArray) => {
+        const nft = nftArray[0].nft;
+        if (nft.listed) {
+          return acc + parseFloat(nft.priceinusd);
+        }
+        return acc;
+      }, 0)
+      .toFixed(2);
+  };
+
+  const calculateListingCount = (collection) => {
+    return collection.filter((nftArray) => nftArray[0].nft.listed).length;
+  };
+
+  const calculateFloorPrice = (collection) => {
+    const listedPrices = collection
+      .filter((nftArray) => nftArray[0].nft.listed)
+      .map((nftArray) => parseFloat(nftArray[0].nft.priceinusd));
+    return listedPrices.length > 0
+      ? Math.min(...listedPrices).toFixed(3)
+      : "0.00";
+  };
+
+  const volume = calculateVolume(collection);
+  const listingCount = calculateListingCount(collection);
+  const floorPrice = calculateFloorPrice(collection);
+
   return (
     <>
       <Header />
@@ -134,22 +163,22 @@ const ProductPage = ({ name }) => {
                 <div className="w-1/4 text-center text-sm space-y-2">
                   <p>VOLUME</p>
                   <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
-                    <IcpLogo /> 184
+                    <IcpLogo /> {volume}
                   </button>
                 </div>
                 <div className="w-1/4 text-center text-sm space-y-2">
                   <p>LISTING</p>
                   <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1.5 rounded-lg text-md flex items-center justify-center">
-                    184
+                    {listingCount}
                   </button>
                 </div>
                 <div className="w-1/4 text-center text-sm space-y-2">
                   <p>FLOOR PRICE</p>
                   <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
-                    <IcpLogo /> 184
+                    <IcpLogo /> {floorPrice}
                   </button>
                 </div>
-                <div className="w-1/4 text-center text-sm space-y-2">
+                {/* <div className="w-1/4 text-center text-sm space-y-2">
                   <p>MINTED</p>
                   <button className="w-full py-1.5 bg-gray-100 bg-opacity-100 text-[#7B7583] rounded-md text-md flex items-center justify-center">
                     184
@@ -160,7 +189,7 @@ const ProductPage = ({ name }) => {
                   <button className="w-full py-1.5 bg-gray-100 bg-opacity-100 text-[#7B7583] rounded-md text-md flex items-center justify-center">
                     184
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
