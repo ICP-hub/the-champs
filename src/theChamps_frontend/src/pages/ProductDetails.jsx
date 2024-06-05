@@ -66,6 +66,7 @@ const ProductDetails = () => {
   const [loading2, setLoading2] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [exchange, setExchange] = useState(1);
+  const [loading3, setLoading3] = useState(true);
 
   const paymentAddressForTransfer = usePaymentTransfer(
     parseInt(nft[0]?.fractional_token?.fee)
@@ -197,6 +198,8 @@ const ProductDetails = () => {
       paymentOpt1 = { FiatCurrency: null };
     }
 
+    setLoading3(true);
+
     try {
       const res = await backend.get_exchange_rates(
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
@@ -204,11 +207,13 @@ const ProductDetails = () => {
       );
       console.log(res);
       const exchangeRate2 =
-        parseInt(res?.ok?.rate) / Math.pow(10, res?.ok?.metadata?.decimals);
+        parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
       console.log(exchangeRate2);
       setExchange(exchangeRate2);
     } catch (error) {
       console.log(error);
+    }finally{
+      setLoading3(false);
     }
   };
 
@@ -222,7 +227,7 @@ const ProductDetails = () => {
     //   );
     //   setProductInFavourites(isProductInWishlist);
     // }
-  }, [nft, favourites]);
+  }, []);
 
   return (
     <>
@@ -387,16 +392,25 @@ const ProductDetails = () => {
                 <div className="flex justify-between  mt-6">
                   <div className=" flex">
                     <span className="text-2xl flex font-semibold items-center gap-1">
-                      {nft[0][0]?.nft?.priceinusd?.toFixed(4) / exchange}
+                      {loading3 ? (
+                        <div className="h-8 w-[50px] bg-gray-200 rounded animate-pulse"></div>
+                      ) : 
+                      (nft[0][0]?.nft?.priceinusd / exchange).toFixed(3)
+                      }
                       <span>ICP</span>
                       <span className="text-lg text-gray-500">
-                        ({nft[0][0]?.nft?.priceinusd?.toFixed(4)} USD){" "}
+                      {loading2 ? (
+                        <div className="h-8 w-[50px] bg-gray-200 rounded animate-pulse"></div>
+                      ) : 
+                      (nft[0][0]?.nft?.priceinusd).toFixed(3)
+                      }
+                      <span>USD</span>
                       </span>
                     </span>
                   </div>
                   <div>
                     <button
-                      className="   button bg-opacity-100 text-white   rounded-md  px-5 py-2 text-md flex items-center justify-center"
+                      className="   button bg-opacity-100 text-white rounded-md  px-5 py-2 text-md flex items-center justify-center"
                       onClick={() => setOpen(!open)}
                     >
                       {" "}
