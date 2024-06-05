@@ -108,8 +108,7 @@ const ProductDetails = () => {
       const res = await backend.buytokens(
         nft[0][1],
         nft[0][0]?.fractional_token?.owner,
-        principal,
-
+        Principal.fromText(principal),
         1,
         paymentOpt,
         nft[0][0]?.nft?.priceinusd?.toFixed(4) / exchange
