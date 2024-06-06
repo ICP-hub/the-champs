@@ -41,7 +41,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   const [favourites, setFavourites] = useState();
   const [open, setOpen] = useState(false);
   const [productInFavourites, setProductInFavourites] = useState(false);
- 
+
   // const [productInFavourites, setProductInFavourites] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false); // State to manage modal visibility
@@ -426,10 +426,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           )} */}
         </div>
         <p className="text-gray-500 text-sm">
-          <ReadMore
-            text={product[0]?.fractional_token?.owner?.toText()}
-            maxLength={20}
-          />
+          <ReadMore text={product[1].toText()} maxLength={20} />
         </p>
         <div className="flex justify-between  mb-4">
           <p className="mt-4    bg-opacity-100  py-2  flex  gap-1 rounded-md w-[50%]">

@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { RadioGroup } from "@headlessui/react";
 import IcpLogo from "../../assets/IcpLogo";
 import placeholderimg from "../../assets/CHAMPS.png";
+import { IoMdAdd } from "react-icons/io";
+import { HiMinus } from "react-icons/hi";
 
 const BuyNowModal = ({
   isOpen,
@@ -13,11 +15,14 @@ const BuyNowModal = ({
   handleConfirm,
   handler,
   exchange,
+  quantity,
+  incrementQuantity,
+  decrementQuantity,
 }) => {
   return (
     isOpen && (
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-80">
-        <div className="md:w-[28%] w-[75%] rounded-xl bg-white  z-10 p-8 pt-4 pb-4">
+        <div className="md:w-[28%] w-[75%] rounded-xl bg-white z-10 p-8 pt-4 pb-4">
           <p className="text-center font-bold text-sm">
             You are about to make a purchase!
           </p>
@@ -78,31 +83,50 @@ const BuyNowModal = ({
               ))}
             </div>
           </RadioGroup>
+
+          <div className="flex items-center justify-between mt-4">
+            <p className="text-sm font-semibold">SHARE:</p>
+            <div className="flex items-center">
+              <button
+                className="px-3 py-1 border rounded-l-md bg-gray-200"
+                onClick={decrementQuantity}
+              >
+                <HiMinus size={24} />
+              </button>
+              <span className="px-4 py-1 border-t border-b">{quantity}</span>
+              <button
+                className="px-3 py-1 border rounded-r-md bg-gray-200"
+                onClick={incrementQuantity}
+              >
+                <IoMdAdd size={24} />
+              </button>
+            </div>
+          </div>
+
           <div className="flex items-center justify-between font-bold text-sm mt-4">
             <p>TOTAL:</p>
             <p className="flex items-center gap-1">
               <IcpLogo size={16} />
-              {(nft / exchange).toFixed(2)}
+              {((nft * quantity) / exchange).toFixed(3)}
               <span className="text-XS text-gray-500">
-                ({nft.toFixed(2)} USD){" "}
+                ({(nft * quantity).toFixed(3)} USD)
               </span>
             </p>
           </div>
           <div className="mt-2 md:block hidden text-center text-gray-400 text-xs">
             This process may take a minute. Transactions can not be reversed. By
             clicking confirm you show acceptance to our{" "}
-            <span className="text-[#FC001E] underline"> Terms and Service</span>
-            .
+            <span className="text-[#FC001E] underline">Terms and Service</span>.
           </div>
           <div className="flex items-center justify-end mt-4 text-md text-white font-medium">
             <button
-              className="mr-4 button button bg-opacity-100 text-white rounded-md px-5 py-2 text-md flex items-center justify-center"
+              className="mr-4 button bg-opacity-100 text-white rounded-md px-5 py-2 text-md flex items-center justify-center"
               onClick={handler}
             >
               Cancel
             </button>
             <button
-              className="button button bg-opacity-100 text-white rounded-md px-5 py-2 text-md flex items-center justify-center"
+              className="button bg-opacity-100 text-white rounded-md px-5 py-2 text-md flex items-center justify-center"
               onClick={handleConfirm}
             >
               Confirm

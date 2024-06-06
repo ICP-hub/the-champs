@@ -57,16 +57,17 @@ const ProductDetails = () => {
   const [backend] = useCanister("backend");
   const [nft, getNft] = useState("");
   const [confirm, setConfirm] = useState(true);
-  let [selected, setSelected] = useState(plans[0]);
+
   const { principal, disconnect } = useConnect();
   const [loading, setLoading] = useState(false);
   const [favourites, setFavourites] = useState();
   const [productInFavourites, setProductInFavourites] = useState(false);
   const [license, setLicense] = useState(false);
   const [loading2, setLoading2] = useState(true);
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(plans[0]);
   const [exchange, setExchange] = useState(1);
   const [loading3, setLoading3] = useState(true);
+  const [paymentMethod2, SetPaymentMethod2] = useState("icp");
 
   const paymentAddressForTransfer = usePaymentTransfer(
     parseInt(nft[0]?.fractional_token?.fee)
@@ -91,6 +92,8 @@ const ProductDetails = () => {
     getNftDetails();
   }, [backend]);
 
+  console.log(selectedPlan);
+
   const buyTokens = async () => {
     try {
       const paymentMethod = selectedPlan.value;
@@ -113,7 +116,7 @@ const ProductDetails = () => {
         nft[0][0]?.fractional_token?.owner,
         Principal.fromText(principal),
 
-        1,
+        quantity,
         paymentOpt,
         nft[0][0]?.nft?.priceinusd?.toFixed(4) / exchange
       );
@@ -201,12 +204,16 @@ const ProductDetails = () => {
       paymentOpt1 = { FiatCurrency: null };
     }
 
+    if (selectedPlan.value == "ckBTC") {
+      SetPaymentMethod2("ckbtc");
+    }
+
     setLoading3(true);
 
     try {
       const res = await backend.get_exchange_rates(
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
-        { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
+        { class: paymentOpt1, symbol: paymentMethod2 } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
       console.log(res);
       const exchangeRate2 =
@@ -222,7 +229,6 @@ const ProductDetails = () => {
 
   useEffect(() => {
     getExchangeRate();
-    getFavourites();
 
     // if (favourites != null) {
     //   const isProductInWishlist = favourites.some(
@@ -230,7 +236,16 @@ const ProductDetails = () => {
     //   );
     //   setProductInFavourites(isProductInWishlist);
     // }
-  }, []);
+  }, [selectedPlan]);
+  const [quantity, setQuantity] = useState(1);
+
+  const incrementQuantity = () =>
+    setQuantity((prev) =>
+      prev < parseInt(nft[0][0].fractional_token.totalSupply) ? prev + 1 : prev
+    );
+
+  const decrementQuantity = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   return (
     <>
@@ -295,13 +310,16 @@ const ProductDetails = () => {
             <BuyNowModal
               isOpen={open}
               onClose={() => setOpen(false)}
-              nft={nft[0][0]?.nft?.priceinusd}
+              nft={nft[0][0]?.price_per_share}
               nftLogo={nft[0][0]?.fractional_token?.logo}
               plans={plans}
               selected={setSelectedPlan}
               handleConfirm={handleConfirm}
               handler={handler}
               exchange={exchange}
+              quantity={quantity}
+              incrementQuantity={incrementQuantity}
+              decrementQuantity={decrementQuantity}
             />
             {license && (
               <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
@@ -399,14 +417,14 @@ const ProductDetails = () => {
                       {loading3 ? (
                         <div className="h-8 w-[50px] bg-gray-200 rounded animate-pulse"></div>
                       ) : (
-                        (nft[0][0]?.nft?.priceinusd / exchange).toFixed(3)
+                        (nft[0][0]?.price_per_share / exchange).toFixed(3)
                       )}
                       <span>ICP</span>
                       <span className="text-lg text-gray-500">
                         {loading2 ? (
                           <div className="h-8 w-[50px] bg-gray-200 rounded animate-pulse"></div>
                         ) : (
-                          (nft[0][0]?.nft?.priceinusd).toFixed(3)
+                          (nft[0][0]?.price_per_share).toFixed(3)
                         )}
                         <span>USD</span>
                       </span>
