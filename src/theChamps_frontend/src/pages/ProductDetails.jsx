@@ -92,17 +92,11 @@ const ProductDetails = () => {
     getNftDetails();
   }, [backend]);
 
-  console.log(selectedPlan);
-
   const buyTokens = async () => {
     try {
       const paymentMethod = selectedPlan.value;
       let paymentOpt = null;
-      if (paymentMethod == "ckEth") {
-        paymentOpt = { cketh: null };
-      } else if (paymentMethod == "SOL") {
-        paymentOpt = { solana: "test" };
-      } else if (paymentMethod == "ckBTC") {
+      if (paymentMethod == "ckBTC") {
         paymentOpt = { ckbtc: null };
       } else {
         paymentOpt = { icp: null };
@@ -110,15 +104,23 @@ const ProductDetails = () => {
       setLoading(true);
 
       console.log(paymentOpt, paymentMethod, "paymentmethod");
+      const price =
+        (nft[0][0]?.nft?.priceinusd?.toFixed(4) / exchange) *
+        quantity *
+        Math.pow(10, 8);
+      const userid = Principal.fromText(principal);
+      console.log(quantity);
+      console.log(price);
+      console.log(paymentMethod2);
 
       const res = await backend.buytokens(
         nft[0][1],
         nft[0][0]?.fractional_token?.owner,
-        Principal.fromText(principal),
+        userid,
 
         quantity,
         paymentOpt,
-        nft[0][0]?.nft?.priceinusd?.toFixed(4) / exchange
+        price
       );
 
       console.log(res, "hello");
@@ -206,6 +208,9 @@ const ProductDetails = () => {
 
     if (selectedPlan.value == "ckBTC") {
       SetPaymentMethod2("ckbtc");
+    }
+    else{
+      SetPaymentMethod2("icp")
     }
 
     setLoading3(true);
