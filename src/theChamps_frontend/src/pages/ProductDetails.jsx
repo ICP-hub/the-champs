@@ -105,7 +105,7 @@ const ProductDetails = () => {
 
       console.log(paymentOpt, paymentMethod, "paymentmethod");
       const price =
-        (nft[0][0]?.nft?.priceinusd?.toFixed(4) / exchange) *
+        (nft[0][0]?.price_per_share?.toFixed(4) / exchange) *
         quantity *
         Math.pow(10, 8);
       const userid = Principal.fromText(principal);
@@ -120,7 +120,7 @@ const ProductDetails = () => {
 
         quantity,
         paymentOpt,
-        price
+        parseInt(price)
       );
 
       console.log(res, "hello");
@@ -207,10 +207,9 @@ const ProductDetails = () => {
     }
 
     if (selectedPlan.value == "ckBTC") {
-      SetPaymentMethod2("ckbtc");
-    }
-    else{
-      SetPaymentMethod2("icp")
+      SetPaymentMethod2("btc");
+    } else {
+      SetPaymentMethod2("icp");
     }
 
     setLoading3(true);
