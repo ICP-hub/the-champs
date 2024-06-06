@@ -30,6 +30,8 @@ const plans = [
     value: "ckBTC",
   },
 ];
+import { GoHeartFill } from "react-icons/go";
+import { GoHeart } from "react-icons/go";
 
 const ProductCard = ({ product, setShowHeader, showHeader }) => {
   const { isConnected, principal } = useConnect();
@@ -39,6 +41,8 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   const [favourites, setFavourites] = useState();
   const [open, setOpen] = useState(false);
   const [productInFavourites, setProductInFavourites] = useState(false);
+ 
+  // const [productInFavourites, setProductInFavourites] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false); // State to manage modal visibility
   const [assets] = useBalance();
@@ -50,91 +54,84 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [loading4, setLoading4] = useState(false);
 
-  const addToFavourites = async () => {
-    try {
-      setLoading(true);
-      const canister_id = Principal.fromText(id);
-      const res = await backend.addfavourite(
-        canister_id,
-        parseInt(product[0].nft.id)
-      );
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // fav stats
+  const [favChanged, setFavChanged] = useState(false);
+  const [favMatched, setFavMatched] = useState(false);
+  const [favLoad, setFavLoad] = useState(false);
+
+  // const addToFavourites = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const canister_id = Principal.fromText(id);
+  //     const res = await backend.addfavourite(
+  //       canister_id,
+  //       parseInt(product[0].nft.id)
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
 
-  const getFavourites = async () => {
-    try {
-      const res = await backend.getfavourites();
+  // const getFavourites = async () => {
+  //   try {
+  //     const res = await backend.getfavourites();
 
-      setFavourites(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     setFavourites(res);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getFavourites();
+  // useEffect(() => {
+  //   getFavourites();
 
-    if (favourites != null) {
-      const isProductInWishlist = favourites.some(
-        (item) => item[0].id === product[0].nft.id && item[1].toText() === id
-      );
-      setProductInFavourites(isProductInWishlist);
-    }
-  }, [product, favourites]);
+  //   if (favourites != null) {
+  //     const isProductInWishlist = favourites.some(
+  //       (item) => item[0].id === product[0].nft.id && item[1].toText() === id
+  //     );
+  //     setProductInFavourites(isProductInWishlist);
+  //   }
+  // }, [product, favourites]);
 
   const imageHandler = () => {
     setImage(placeHolderImg);
   };
 
-  const removeFavourites = async (
-    canisterid,
-    productId,
-    metadata,
-    locked,
-    forsale,
-    listed,
-    priceinusd
-  ) => {
-    try {
-      setLoading(true);
-      const canister = Principal.fromText(canisterid);
-      const item = {
-        id: BigInt(productId),
-        owner: Principal?.fromText("2vxsx-fae"),
-        metadata: metadata,
-        locked: locked,
-        priceinusd: priceinusd,
-        forsale: forsale,
-        listed: listed,
-      };
-      console.log(item, "items");
+  // const removeFavourites = async (
+  //   canisterid,
+  //   productId,
+  //   metadata,
+  //   locked,
+  //   forsale,
+  //   listed,
+  //   priceinusd
+  // ) => {
+  //   try {
+  //     setLoading(true);
+  //     const canister = Principal.fromText(canisterid);
+  //     const item = {
+  //       id: parseInt(productId),
+  //       owner: Principal?.fromText("2vxsx-fae"),
+  //       metadata: metadata,
+  //       locked: locked,
+  //       priceinusd: priceinusd,
+  //       forsale: forsale,
+  //       listed: listed,
+  //     };
 
-      const res = await backend.removefavourite(
-        {
-          id: item.id,
-          owner: Principal?.fromText("2vxsx-fae"),
-          metadata: item.metadata,
-          locked: item.locked,
-          priceinusd: item.priceinusd,
-          forsale: item.forsale,
-          listed: item.listed,
-        },
-        canister
-      );
-      console.log(res);
-      toast.success("Item removed from favourites");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     await backend.removefavourite([item, canister]);
+  //     toast.success("Item removed from favourites");
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const getExchangeRate = async () => {
     const paymentMethod = "FiatCurrency";
     let paymentOpt = null;
@@ -150,7 +147,6 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     } else if (paymentMethod1 == "FiatCurrency") {
       paymentOpt1 = { FiatCurrency: null };
     }
-
     setLoading3(true);
 
     try {
@@ -263,6 +259,61 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     }
   };
 
+  /*************** Favourite review ****************/
+  // get favorites
+  const getFav = async () => {
+    try {
+      setFavLoad(true);
+      const res = await backend.getfavourites();
+      const favIds = res.map((fav) => fav[0].id);
+      // console.log("fav nft id", favIds);
+      setFavourites(favIds); // store only ids
+      setFavMatched(favIds.includes(product[0].nft.id));
+    } catch (err) {
+      console.error("Error getting fav ", err);
+    } finally {
+      setFavLoad(false);
+    }
+  };
+
+  // fetch favorites : fetch in favChanged
+  useEffect(() => {
+    getFav();
+  }, [favChanged]);
+
+  // add or remove a favorite
+  const toggleFav = async (product) => {
+    try {
+      setFavLoad(true);
+      if (favMatched) {
+        // Remove favorite
+        const nft = product[0].nft;
+        const res = await backend.removefavourite([
+          {
+            ...nft,
+            id: BigInt(parseInt(nft.id)),
+          },
+          Principal.fromText(id),
+        ]);
+        console.log(res);
+        // return; ? return need?
+      } else {
+        // Add favorite
+        const res = await backend.addfavourite(
+          Principal.fromText(id),
+          parseInt(product[0].nft.id)
+        );
+        console.log(res);
+      }
+    } catch (err) {
+      console.error("error toggling fav ", err);
+    } finally {
+      // setFavLoad(false);   // This may cause bug????
+      setFavChanged((prev) => !prev);
+    }
+  };
+  /*************** Favourite review ****************/
+
   return (
     <div
       className="border   rounded-xl overflow-hidden "
@@ -290,67 +341,89 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           <div className="text-lg font-semibold mb-2">
             {product[0]?.fractional_token?.name}
           </div>
-          <div className="flex item items-center w-8">
-            {loading ? (
-              <button className="absolute">
-                <TailSpin
-                  height="8%"
-                  width="8%"
-                  color="black"
-                  ariaLabel="tail-spin-loading"
-                  radius="1"
-                  visible={true}
-                />
-              </button>
+
+          <span className="flex items-center justify-center">
+            {favLoad ? (
+              <TailSpin
+                height="30px"
+                width="30px"
+                color="black"
+                ariaLabel="tail-spin-loading"
+                radius="1"
+                visible={true}
+              />
             ) : (
-              <>
-                {productInFavourites ? (
-                  <button
-                    onClick={() =>
-                      removeFavourites(
-                        product[1]?.toText(),
-                        product[0]?.nft?.id,
-                        product[0]?.nft?.metadata,
-                        product[0]?.nft?.locked,
-                        product[0]?.nft?.forsale,
-                        product[0]?.nft?.listed,
-                        product[0]?.nft?.priceinusd
-                      )
-                    }
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 115.77 122.88"
-                      width="30"
-                      height="25"
-                      className="gradient-icon"
-                    >
-                      <defs>
-                        <linearGradient
-                          id="gradient"
-                          x1="0"
-                          y1="0"
-                          x2="100%"
-                          y2="0"
-                        >
-                          <stop offset="0%" stopColor="#FC001E" />
-                          <stop offset="100%" stopColor="#FF7D57" />
-                        </linearGradient>
-                      </defs>
-                      <path
-                        fill="url(#gradient)"
-                        d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z"
-                      />
-                    </svg>
-                  </button>
+              <button onClick={() => toggleFav(product)}>
+                {favMatched ? (
+                  <IconWrapper>
+                    <GoHeartFill size={32} />
+                  </IconWrapper>
                 ) : (
-                  <button onClick={addToFavourites}>
-                    <CiHeart size={32} />
-                  </button>
+                  <GoHeart size={32} />
                 )}
-              </>
+              </button>
             )}
-          </div>
+          </span>
+
+          {/* {loading ? (
+            <button className="ml-[255px]">
+              <TailSpin
+                height="30%"
+                width="30%"
+                color="black"
+                ariaLabel="tail-spin-loading"
+                radius="1"
+                visible={true}
+              />
+            </button>
+          ) : (
+            <>
+              {productInFavourites ? (
+                <button
+                  onClick={() =>
+                    removeFavourites(
+                      product[1]?.toText(),
+                      product[0]?.nft?.id,
+                      product[0]?.nft?.metadata,
+                      product[0]?.nft?.locked,
+                      product[0]?.nft?.forsale,
+                      product[0]?.nft?.listed,
+                      product[0]?.nft?.priceinusd
+                    )
+                  }
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 115.77 122.88"
+                    width="30"
+                    height="25"
+                    className="gradient-icon"
+                  >
+                    <defs>
+                      <linearGradient
+                        id="gradient"
+                        x1="0"
+                        y1="0"
+                        x2="100%"
+                        y2="0"
+                      >
+                        <stop offset="0%" stopColor="#FC001E" />
+                        <stop offset="100%" stopColor="#FF7D57" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      fill="url(#gradient)"
+                      d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z"
+                    />
+                  </svg>
+                </button>
+              ) : (
+                <button onClick={addToFavourites}>
+                  <CiHeart size={32} />
+                </button>
+              )}
+            </>
+          )} */}
         </div>
         <p className="text-gray-500 text-sm">
           <ReadMore
@@ -362,7 +435,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           <p className="mt-4    bg-opacity-100  py-2  flex  gap-1 rounded-md w-[50%]">
             <IcpLogo />
             {loading3 ? (
-              <div className="h-8 w-[50px] bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-6 w-[50px] bg-gray-200 rounded animate-pulse"></div>
             ) : (
               (product[0]?.nft?.priceinusd / exchange).toFixed(3)
             )}

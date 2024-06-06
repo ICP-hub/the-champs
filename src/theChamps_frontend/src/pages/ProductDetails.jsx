@@ -111,7 +111,7 @@ const ProductDetails = () => {
       const res = await backend.buytokens(
         nft[0][1],
         nft[0][0]?.fractional_token?.owner,
-        principal,
+        Principal.fromText(principal),
 
         1,
         paymentOpt,
@@ -130,20 +130,20 @@ const ProductDetails = () => {
     }
   };
 
-  // useEffect(() => {
-  //   // Disable scroll when modal is open
-  //   if (open) {
-  //     document.body.style.overflowY = "hidden";
-  //   } else {
-  //     document.body.style.overflowY = "auto";
-  //   }
-  //   getNftDetails();
+  useEffect(() => {
+    // Disable scroll when modal is open
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    getNftDetails();
 
-  //   // Cleanup: Enable scroll when component unmounts
-  //   return () => {
-  //     document.body.style.overflowY = "auto";
-  //   };
-  // }, [open, backend, nft]);
+    // Cleanup: Enable scroll when component unmounts
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [open, backend, nft]);
 
   const handleConfirm = () => {
     // Call usePaymentTransfer function only if the selected plan is "Plug Wallet"

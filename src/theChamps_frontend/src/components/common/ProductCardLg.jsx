@@ -1,12 +1,66 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import soccer3 from "../../assets/images/soccer-3.jpeg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PlaceholderImg from "../../assets/CHAMPS.png";
 import IcpLogo from "../../assets/IcpLogo";
-
+import { useCanister } from "@connect2ic/react";
+import { Principal } from "@dfinity/principal";
 const ProductCardLg = ({ prod }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [collection, setCollection] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [backend] = useCanister("backend");
+  console.log("single collection is", prod);
+  const id = prod.canisterId.toText();
+  const [img1, setImg1] = useState("");
+  const [img2, setImg2] = useState("");
+  const getCollectionWiseNft = async () => {
+    try {
+      const canister_id = Principal.fromText(id);
+      const res = await backend.getcollectionwisefractionalnft(canister_id);
+      console.log("hello ss", res);
+      setImg1(res[0][0].fractional_token?.logo);
+      setImg2(res[1][0].fractional_token?.logo);
+      setCollection(res);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getCollectionWiseNft();
+  }, [backend]);
+
+  const calculateVolume = (collection) => {
+    return collection
+      .reduce((acc, nftArray) => {
+        const nft = nftArray[0].nft;
+        if (nft.listed) {
+          return acc + parseFloat(nft.priceinusd);
+        }
+        return acc;
+      }, 0)
+      .toFixed(2);
+  };
+
+  const calculateListingCount = (collection) => {
+    return collection.filter((nftArray) => nftArray[0].nft.listed).length;
+  };
+
+  const calculateFloorPrice = (collection) => {
+    const listedPrices = collection
+      .filter((nftArray) => nftArray[0].nft.listed)
+      .map((nftArray) => parseFloat(nftArray[0].nft.priceinusd));
+    return listedPrices.length > 0
+      ? Math.min(...listedPrices).toFixed(2)
+      : "0.00";
+  };
+
+  const volume = calculateVolume(collection);
+  const listingCount = calculateListingCount(collection);
+  const floorPrice = calculateFloorPrice(collection);
 
   const handleCardFlip = () => {
     setIsFlipped(!isFlipped);
@@ -134,7 +188,7 @@ const ProductCardLg = ({ prod }) => {
                 variants={imgVariants}
                 initial="initial"
                 whileHover="hover"
-                src={prod.details.image || PlaceholderImg}
+                src={img1 || PlaceholderImg}
                 alt="image-1"
                 className="rounded-2xl row-span-2 w-full object-cover h-full  z-[1] relative"
               ></motion.img>
@@ -144,7 +198,7 @@ const ProductCardLg = ({ prod }) => {
                 variants={imgVariants}
                 initial="initial"
                 whileHover="hover"
-                src={prod.details.image || PlaceholderImg}
+                src={img2 || PlaceholderImg}
                 alt="image-2"
                 className="rounded-2xl h-full w-full  z-[1] relative"
               ></motion.img>
@@ -165,19 +219,19 @@ const ProductCardLg = ({ prod }) => {
               <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
                 <p>VOLUME</p>
                 <button className=" w-full  bg-gray-100  bg-opacity-100  text-[#7B7583] py-1  gap-1  rounded-lg   text-md flex items-center justify-center">
-                  <IcpLogo /> 184
+                  <IcpLogo /> {volume}
                 </button>
               </div>
               <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
                 <p>LISTING</p>
                 <button className=" w-full  bg-gray-100  bg-opacity-100  text-[#7B7583] py-2  rounded-lg    text-md flex items-center justify-center">
-                  184
+                  {listingCount}
                 </button>
               </div>
               <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
                 <p>FLOOR PRICE</p>
                 <button className=" w-full   bg-gray-100 bg-opacity-100  text-[#7B7583] py-1 gap-1  rounded-lg    text-md flex items-center justify-center">
-                  <IcpLogo /> 184
+                  <IcpLogo /> {floorPrice}
                 </button>
               </div>
             </div>

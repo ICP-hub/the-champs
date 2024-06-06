@@ -13,13 +13,16 @@ const ProductCardLg = ({ prod }) => {
   const [backend] = useCanister("backend");
   console.log("single collection is", prod);
   const id = prod.canisterId.toText();
-
+  const [img1, setImg1] = useState("");
+  const [img2, setImg2] = useState("");
   const getCollectionWiseNft = async () => {
     try {
       const canister_id = Principal.fromText(id);
       const res = await backend.getcollectionwisefractionalnft(canister_id);
       console.log("hello ss", res);
       setCollection(res);
+      setImg1(res[0][0].fractional_token?.logo);
+      setImg2(res[1][0].fractional_token?.logo);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -103,7 +106,7 @@ const ProductCardLg = ({ prod }) => {
                 variants={imgVariants}
                 initial="initial"
                 whileHover="hover"
-                src={prod.details.image || PlaceholderImg}
+                src={img1 || PlaceholderImg}
                 alt="image-1"
                 className="rounded-2xl row-span-2 w-full object-cover h-full  z-[1] relative"
               ></motion.img>
@@ -113,7 +116,7 @@ const ProductCardLg = ({ prod }) => {
                 variants={imgVariants}
                 initial="initial"
                 whileHover="hover"
-                src={prod.details.image || PlaceholderImg}
+                src={img2 || PlaceholderImg}
                 alt="image-2"
                 className="rounded-2xl h-full w-full  z-[1] relative"
               ></motion.img>
