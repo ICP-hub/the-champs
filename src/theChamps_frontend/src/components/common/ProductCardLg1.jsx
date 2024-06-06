@@ -15,6 +15,8 @@ const ProductCardLg = ({ prod }) => {
   const id = prod.canisterId.toText();
   const [img1, setImg1] = useState("");
   const [img2, setImg2] = useState("");
+  const [exchange, setExchange] = useState(1);
+  const [loading3, setLoading3] = useState(true);
   const getCollectionWiseNft = async () => {
     try {
       const canister_id = Principal.fromText(id);
@@ -57,6 +59,45 @@ const ProductCardLg = ({ prod }) => {
       ? Math.min(...listedPrices).toFixed(3)
       : "0.00";
   };
+
+  const getExchangeRate = async () => {
+    const paymentMethod = "FiatCurrency";
+    let paymentOpt = null;
+    if (paymentMethod == "Cryptocurrency") {
+      paymentOpt = { Cryptocurrency: null };
+    } else if (paymentMethod == "FiatCurrency") {
+      paymentOpt = { FiatCurrency: null };
+    }
+    const paymentMethod1 = "Cryptocurrency";
+    let paymentOpt1 = null;
+    if (paymentMethod1 == "Cryptocurrency") {
+      paymentOpt1 = { Cryptocurrency: null };
+    } else if (paymentMethod1 == "FiatCurrency") {
+      paymentOpt1 = { FiatCurrency: null };
+    }
+
+    setLoading3(true);
+
+    try {
+      const res = await backend.get_exchange_rates(
+        { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
+        { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
+      );
+      console.log(res);
+      const exchangeRate2 =
+        parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
+      console.log(exchangeRate2);
+      setExchange(exchangeRate2);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading3(false);
+    }
+  };
+
+  useEffect(() => {
+    getExchangeRate();
+  }, [backend]);
 
   const volume = calculateVolume(collection);
   const listingCount = calculateListingCount(collection);
@@ -149,7 +190,7 @@ const ProductCardLg = ({ prod }) => {
               <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
                 <p>FLOOR PRICE</p>
                 <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
-                  <IcpLogo /> {floorPrice}
+                  <IcpLogo /> {floorPrice / exchange}
                 </button>
               </div>
             </div>
