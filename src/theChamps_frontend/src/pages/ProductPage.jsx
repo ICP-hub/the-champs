@@ -31,6 +31,7 @@ const ProductPage = ({ name }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [collectionDetails, setCollectionDetails] = useState("");
   const [hasMore, setHasMore] = useState(true);
+  const [showHeader, setShowHeader] = useState(true);
 
   const getCollectionDetails = async () => {
     try {
@@ -124,7 +125,7 @@ const ProductPage = ({ name }) => {
 
   return (
     <>
-      <Header />
+      {showHeader && <Header />} {/* Conditionally render the header */}
       <div className="md:mt-44 left-0 right-0 px-6 lg:px-24">
         <div className="w-full relative">
           <img
@@ -195,7 +196,6 @@ const ProductPage = ({ name }) => {
           </div>
         </div>
       </div>
-
       <div className="left-0 right-0">
         <div>
           <h1 className="text-5xl font-bold font-sans mb-12 gap-1 px-6 lg:px-24">
@@ -262,7 +262,11 @@ const ProductPage = ({ name }) => {
                 >
                   <div className="grid grid-cols-1 px-6 lg:px-24 sm:grid-cols-2 lg:grid-cols-3 gap-12 mt-4 justify-center">
                     {searchResults.map((product, index) => (
-                      <ProductCard key={product.id} product={product} />
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        setShowHeader={setShowHeader}
+                      />
                     ))}
                   </div>
                 </InfiniteScroll>
@@ -275,7 +279,6 @@ const ProductPage = ({ name }) => {
           )}
         </div>
       </div>
-
       <Footer />
     </>
   );

@@ -7,6 +7,7 @@ const BuyNowModal = ({
   isOpen,
   onClose,
   nft,
+  nftLogo,
   plans,
   selected,
   handleConfirm,
@@ -16,17 +17,13 @@ const BuyNowModal = ({
   return (
     isOpen && (
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-80">
-        <div className="md:w-[28%] w-[75%] rounded-xl bg-white p-8 pt-4 pb-4">
+        <div className="md:w-[28%] w-[75%] rounded-xl bg-white  z-10 p-8 pt-4 pb-4">
           <p className="text-center font-bold text-sm">
             You are about to make a purchase!
           </p>
           <div className="flex items-center justify-center mt-4">
             <img
-              src={
-                nft[0][0]?.fractional_token?.logo
-                  ? nft[0][0]?.fractional_token?.logo
-                  : placeholderimg
-              }
+              src={nftLogo ? nftLogo : placeholderimg}
               alt=""
               className="w-1/2 md:h-40 h-20 rounded-lg shadow-md"
             />
@@ -85,9 +82,9 @@ const BuyNowModal = ({
             <p>TOTAL:</p>
             <p className="flex items-center gap-1">
               <IcpLogo size={16} />
-              {nft[0][0]?.nft?.priceinusd?.toFixed(4) / exchange}
+              {(nft / exchange).toFixed(2)}
               <span className="text-XS text-gray-500">
-                ({nft[0][0]?.nft?.priceinusd?.toFixed(4)} USD){" "}
+                ({nft.toFixed(2)} USD){" "}
               </span>
             </p>
           </div>

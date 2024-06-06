@@ -87,6 +87,9 @@ const ProductDetails = () => {
       setLoading2(false);
     }
   };
+  useEffect(() => {
+    getNftDetails();
+  }, [backend]);
 
   const buyTokens = async () => {
     try {
@@ -212,7 +215,7 @@ const ProductDetails = () => {
       setExchange(exchangeRate2);
     } catch (error) {
       console.log(error);
-    }finally{
+    } finally {
       setLoading3(false);
     }
   };
@@ -292,7 +295,8 @@ const ProductDetails = () => {
             <BuyNowModal
               isOpen={open}
               onClose={() => setOpen(false)}
-              nft={nft}
+              nft={nft[0][0]?.nft?.priceinusd}
+              nftLogo={nft[0][0]?.fractional_token?.logo}
               plans={plans}
               selected={setSelectedPlan}
               handleConfirm={handleConfirm}
@@ -394,17 +398,17 @@ const ProductDetails = () => {
                     <span className="text-2xl flex font-semibold items-center gap-1">
                       {loading3 ? (
                         <div className="h-8 w-[50px] bg-gray-200 rounded animate-pulse"></div>
-                      ) : 
-                      (nft[0][0]?.nft?.priceinusd / exchange).toFixed(3)
-                      }
+                      ) : (
+                        (nft[0][0]?.nft?.priceinusd / exchange).toFixed(3)
+                      )}
                       <span>ICP</span>
                       <span className="text-lg text-gray-500">
-                      {loading2 ? (
-                        <div className="h-8 w-[50px] bg-gray-200 rounded animate-pulse"></div>
-                      ) : 
-                      (nft[0][0]?.nft?.priceinusd).toFixed(3)
-                      }
-                      <span>USD</span>
+                        {loading2 ? (
+                          <div className="h-8 w-[50px] bg-gray-200 rounded animate-pulse"></div>
+                        ) : (
+                          (nft[0][0]?.nft?.priceinusd).toFixed(3)
+                        )}
+                        <span>USD</span>
                       </span>
                     </span>
                   </div>
