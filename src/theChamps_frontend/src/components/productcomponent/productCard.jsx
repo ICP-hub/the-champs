@@ -51,13 +51,14 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   const [exchange, setExchange] = useState(1);
   const [confirm, setConfirm] = useState(true);
 
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(plans[0]);
   const [loading4, setLoading4] = useState(false);
 
   // fav stats
   const [favChanged, setFavChanged] = useState(false);
   const [favMatched, setFavMatched] = useState(false);
   const [favLoad, setFavLoad] = useState(false);
+  const [paymentMethod2, setPaymentMethod2] = useState("icp");
 
   // const addToFavourites = async () => {
   //   try {
@@ -95,6 +96,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   //     );
   //     setProductInFavourites(isProductInWishlist);
   //   }
+  console.log(selectedPlan.value);
   // }, [product, favourites]);
 
   const imageHandler = () => {
@@ -147,12 +149,13 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     } else if (paymentMethod1 == "FiatCurrency") {
       paymentOpt1 = { FiatCurrency: null };
     }
+
     setLoading3(true);
 
     try {
       const res = await backend.get_exchange_rates(
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
-        { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
+        { class: paymentOpt1, symbol: paymentMethod2 } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
       console.log(res);
       const exchangeRate2 =
@@ -166,8 +169,13 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     }
   };
   useEffect(() => {
+    if (selectedPlan.value == "ckBTC") {
+      setPaymentMethod2("btc");
+    } else {
+      setPaymentMethod2("icp");
+    }
     getExchangeRate();
-  }, [backend]);
+  }, [backend, selectedPlan.value]);
   const buyTokens = async () => {
     try {
       setLoading4(true);
@@ -184,16 +192,24 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
       }
 
       console.log(paymentOpt, paymentMethod, "paymentmethod");
-      const userid = Principal.fromText("2vxsx-fae");
+      // const userid = Principal.fromText("2vxsx-fae");
+      const price =
+        (product[0]?.price_per_share?.toFixed(4) / exchange) *
+        quantity *
+        Math.pow(10, 9);
+      const userid = Principal.fromText(principal);
+      console.log(quantity);
+      console.log(price);
+      console.log(paymentMethod2);
 
       const res = await backend.buytokens(
         product[1],
         product[0]?.fractional_token?.owner,
         userid,
 
-        1,
+        quantity,
         paymentOpt,
-        1
+        parseInt(price)
       );
 
       console.log(res, "hello");
@@ -313,6 +329,15 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     }
   };
   /*************** Favourite review ****************/
+  const [quantity, setQuantity] = useState(1);
+
+  const incrementQuantity = () =>
+    setQuantity((prev) =>
+      prev < parseInt(product[0].fractional_token.totalSupply) ? prev + 1 : prev
+    );
+
+  const decrementQuantity = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   return (
     <div
@@ -432,9 +457,9 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           <p className="mt-4    bg-opacity-100  py-2  flex  gap-1 rounded-md w-[50%]">
             <IcpLogo />
             {loading3 ? (
-              <div className="h-6 w-[50px] bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-6 w-[50px] bg-gray-100 rounded-2xl animate-pulse"></div>
             ) : (
-              (product[0]?.nft?.priceinusd / exchange).toFixed(3)
+              (product[0]?.price_per_share / exchange).toFixed(3)
             )}
           </p>
           <button
@@ -448,13 +473,16 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
       <BuyNowModal
         isOpen={open}
         onClose={() => setOpen(false)}
-        nft={product[0].nft.priceinusd}
+        nft={product[0].price_per_share}
         nftLogo={product[0].fractional_token.logo}
         plans={plans}
         selected={setSelectedPlan}
         handleConfirm={handleConfirm}
         handler={handler}
         exchange={exchange}
+        quantity={quantity}
+        incrementQuantity={incrementQuantity}
+        decrementQuantity={decrementQuantity}
       />
 
       {/* Modal for insufficient balance */}

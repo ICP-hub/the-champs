@@ -60,6 +60,7 @@ const ProductDetails = () => {
 
   const { principal, disconnect } = useConnect();
   const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
   const [favourites, setFavourites] = useState();
   const [productInFavourites, setProductInFavourites] = useState(false);
   const [license, setLicense] = useState(false);
@@ -107,8 +108,10 @@ const ProductDetails = () => {
       const price =
         (nft[0][0]?.price_per_share?.toFixed(4) / exchange) *
         quantity *
-        Math.pow(10, 8);
-      const userid = Principal.fromText(principal);
+        Math.pow(10, 9);
+       const userid = Principal.fromText(principal);
+
+      //const userid = Principal.fromText("2vxsx-fae");
       console.log(quantity);
       console.log(price);
       console.log(paymentMethod2);
@@ -168,16 +171,18 @@ const ProductDetails = () => {
 
   const addToFavourites = async () => {
     try {
-      setLoading(true);
+      setLoading1(true);
       const canister_id = Principal.fromText(id);
       const res = await backend.addfavourite(
         canister_id,
-        parseInt(nft[0].nft.id)
+        parseInt(nft[0][0].nft.id)
       );
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading1(false);
+      }, 2000);
     }
   };
   const getFavourites = async () => {
@@ -187,6 +192,35 @@ const ProductDetails = () => {
       setFavourites(res);
     } catch (error) {
       console.log(error);
+    }
+  };
+  useEffect(() => {
+    getFavourites();
+    if (favourites != null) {
+      const isProductInFavourites = favourites.some(
+        (item) => item[0].id === nft[0][0].nft.id && item[1].toText() === id
+      );
+      setProductInFavourites(isProductInFavourites);
+    }
+  }, [backend, favourites]);
+
+  const removefavourite = async (product) => {
+    try {
+      setLoading1(true);
+      const nft = product[0].nft;
+      const res = await backend.removefavourite([
+        {
+          ...nft,
+          id: BigInt(parseInt(nft.id)),
+        },
+        Principal.fromText(id),
+      ]);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setTimeout(() => {
+        setLoading1(false);
+      }, 2000);
     }
   };
 
@@ -233,14 +267,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     getExchangeRate();
-
-    // if (favourites != null) {
-    //   const isProductInWishlist = favourites.some(
-    //     (item) => item[0].id === nft[0].nft.id && item[1].toText() === id
-    //   );
-    //   setProductInFavourites(isProductInWishlist);
-    // }
-  }, [selectedPlan]);
+  }, [selectedPlan.value, backend]);
   const [quantity, setQuantity] = useState(1);
 
   const incrementQuantity = () =>
@@ -379,39 +406,56 @@ const ProductDetails = () => {
                     </p>
                   </div>
                   <div className="text-center ">
-                    {productInFavourites ? (
-                      <button>
-                        {" "}
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 115.77 122.88"
-                          width="30"
-                          height="25"
-                          className="gradient-icon"
-                        >
-                          <defs>
-                            <linearGradient
-                              id="gradient"
-                              x1="0"
-                              y1="0"
-                              x2="100%"
-                              y2="0"
-                            >
-                              <stop offset="0%" stopColor="#FC001E" />
-                              <stop offset="100%" stopColor="#FF7D57" />
-                            </linearGradient>
-                          </defs>
-                          <path
-                            fill="url(#gradient)"
-                            d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z"
-                          />
-                        </svg>
-                      </button>
+                    {loading1 ? (
+                      <TailSpin
+                        height="30px"
+                        width="30px"
+                        color="black"
+                        ariaLabel="tail-spin-loading"
+                        radius="1"
+                        visible={true}
+                      />
                     ) : (
-                      <button onClick={addToFavourites}>
-                        {" "}
-                        <CiHeart size={32} />
-                      </button>
+                      <>
+                        {productInFavourites ? (
+                          <button
+                            onClick={() => {
+                              removefavourite(nft[0]);
+                            }}
+                          >
+                            {" "}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 115.77 122.88"
+                              width="30"
+                              height="25"
+                              className="gradient-icon"
+                            >
+                              <defs>
+                                <linearGradient
+                                  id="gradient"
+                                  x1="0"
+                                  y1="0"
+                                  x2="100%"
+                                  y2="0"
+                                >
+                                  <stop offset="0%" stopColor="#FC001E" />
+                                  <stop offset="100%" stopColor="#FF7D57" />
+                                </linearGradient>
+                              </defs>
+                              <path
+                                fill="url(#gradient)"
+                                d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z"
+                              />
+                            </svg>
+                          </button>
+                        ) : (
+                          <button onClick={addToFavourites}>
+                            {" "}
+                            <CiHeart size={32} />
+                          </button>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -419,7 +463,7 @@ const ProductDetails = () => {
                   <div className=" flex">
                     <span className="text-2xl flex font-semibold items-center gap-1">
                       {loading3 ? (
-                        <div className="h-8 w-[50px] bg-gray-200 rounded animate-pulse"></div>
+                        <div className="h-6 w-[50px] bg-gray-100 rounded-2xl animate-pulse"></div>
                       ) : (
                         (nft[0][0]?.price_per_share / exchange).toFixed(3)
                       )}
@@ -430,7 +474,7 @@ const ProductDetails = () => {
                         ) : (
                           (nft[0][0]?.price_per_share).toFixed(3)
                         )}
-                        <span>USD</span>
+                        <span> USD/Share</span>
                       </span>
                     </span>
                   </div>
