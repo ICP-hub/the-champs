@@ -43,7 +43,7 @@ const SingleNFT = () => {
     fetchNFTDetail();
   }, []);
 
-  // console.log(nftDetail);
+  console.log("single nft detail", nftDetail);
   return (
     <div className="rounded-lg bg-card text-textall h-full shadow-md p-6">
       <div className="flex gap-4 items-center font-bold text-lg tracking-wider">
@@ -121,7 +121,7 @@ const SingleNFT = () => {
                 <span>:</span>
               </div>
               <p className="font-bold">
-                {Number(nftDetail?.fractional_token.totalSupply)}
+                {parseInt(nftDetail?.fractional_token.totalSupply)}
               </p>
             </div>
             <div className="font-medium flex gap-2">
