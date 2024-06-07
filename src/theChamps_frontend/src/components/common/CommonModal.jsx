@@ -25,7 +25,8 @@ const CommonModal = ({ toggleModal, tokencanisterid }) => {
         );
 
         if (response.Ok) {
-          toast.log("Transfer successful");
+          toast.success("Transfer successful");
+          console.log(response);
         } else {
           toast.error("Transfer error:", response.Err);
           console.error("Transfer error:", response.Err);

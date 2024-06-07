@@ -1,4 +1,3 @@
-// src/components/MyFav.js
 import React, { useState, useEffect } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { CiHeart, CiSearch } from "react-icons/ci";
@@ -23,7 +22,6 @@ const MyFav = () => {
   const { isConnected, principal } = useConnect();
   const { id } = useParams();
   const [backend] = useCanister("backend");
-  const [productInFavourites, setProductInFavourite] = useState(false);
   const [favourites, setFavourites] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(true);
@@ -34,15 +32,14 @@ const MyFav = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(3);
-  const [favChanged, setFavChanged] = useState(false);
-  const [favMatched, setFavMatched] = useState(false);
   const [favLoad, setFavLoad] = useState(false);
+  const [favChanged, setFavChanged] = useState(false);
+  const [exchange, setExchange] = useState(1);
+  const [loading3, setLoading3] = useState(true);
   const getUsersFractionNFT = async () => {
     try {
       const res = await backend.getallfractionalnfts();
       const favouritesRes = await backend.getfavourites();
-      console.log("user product", res);
-      console.log("user fav", favouritesRes);
 
       const favouriteProducts = res.filter((product) =>
         favouritesRes.some(
@@ -52,13 +49,8 @@ const MyFav = () => {
         )
       );
 
-      if (favouritesRes.length > 0) {
-        setProductInFavourite(true);
-      }
-
       setFilteredProduct(favouriteProducts);
       setLoading2(false);
-      console.log("Favourite Products", favouriteProducts);
     } catch (error) {
       console.log("Error while fetching user NFT", error);
     }
@@ -67,62 +59,6 @@ const MyFav = () => {
   useEffect(() => {
     getUsersFractionNFT();
   }, [backend, principal]);
-
-  const addToFavourites = async (id, productId) => {
-    try {
-      setLoading(true);
-      const canister_id = Principal.fromText(id);
-      await backend.addfavourite(canister_id, productId);
-      toast.success("Item added to favourites");
-      // Refresh favourites
-      const res = await backend.getfavourites();
-      setFavourites(res);
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to add item to favourites");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const removeFavourites = async (
-    canisterid,
-    productId,
-    metadata,
-    locked,
-    forsale,
-    listed,
-    priceinusd
-  ) => {
-    try {
-      setLoading(true);
-      const canister = Principal.fromText(canisterid);
-      const item = {
-        owner: Principal?.fromText(principal),
-        metadata: metadata,
-        locked: locked,
-        priceinusd: priceinusd,
-        forsale: forsale,
-        listed: listed,
-      };
-
-      const res = await backend.removefavourite([
-        { ...item, id: BigInt(parseInt(productId)) },
-        canister,
-      ]);
-
-      if (res === "Favourite removed") {
-        toast.success("Item removed from favourites");
-        getUsersFractionNFT();
-      }
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to remove item from favourites");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleBuyNow = () => {
     if (isConnected) {
@@ -154,6 +90,86 @@ const MyFav = () => {
   const loadMoreItems = () => {
     setItemsPerPage((prevItemsPerPage) => prevItemsPerPage + 9);
   };
+
+  // Fetch favorites when favChanged state changes
+  useEffect(() => {
+    const fetchFavourites = async () => {
+      try {
+        setFavLoad(true);
+        const res = await backend.getfavourites();
+        const favIds = res.map((fav) => fav[0].id);
+        setFavourites(favIds);
+      } catch (err) {
+        console.error("Error getting fav ", err);
+      } finally {
+        setFavLoad(false);
+      }
+    };
+
+    fetchFavourites();
+  }, [favChanged]);
+
+  // Add or remove a favorite
+  const toggleFav = async (product) => {
+    try {
+      setFavLoad(true);
+      const nft = product[1].nft;
+      if (favourites.includes(nft.id)) {
+        const res = await backend.removefavourite([
+          {
+            ...nft,
+            id: BigInt(parseInt(nft.id)),
+          },
+          Principal.fromText(id),
+        ]);
+        console.log(res);
+      } else {
+        const res = await backend.addfavourite(
+          Principal.fromText(id),
+          parseInt(nft.id)
+        );
+        console.log(res);
+      }
+    } catch (err) {
+      console.error("Error toggling fav ", err);
+    } finally {
+      setFavChanged((prev) => !prev);
+    }
+  };
+  const getExchangeRate = async () => {
+    const paymentMethod = "FiatCurrency";
+    const paymentOpt = { FiatCurrency: null }; // Initialize directly for FiatCurrency
+
+    const paymentMethod1 = "Cryptocurrency";
+    const paymentOpt1 = { Cryptocurrency: null }; // Initialize directly for Cryptocurrency
+
+    setLoading3(true);
+
+    try {
+      const res = await backend.get_exchange_rates(
+        { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
+        { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
+      );
+      console.log(res);
+
+      if (res?.Ok?.rate) {
+        const exchangeRate2 =
+          parseInt(res.Ok.rate) / Math.pow(10, res.Ok.metadata.decimals);
+        console.log(exchangeRate2);
+        setExchange(exchangeRate2);
+      } else {
+        console.log("Failed to fetch the exchange rate");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading3(false);
+    }
+  };
+
+  useEffect(() => {
+    getExchangeRate();
+  }, [backend]);
   return (
     <>
       <div className="flex text-xl mb-6 items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-1">
@@ -168,7 +184,7 @@ const MyFav = () => {
       </div>
       <div>
         {loading2 ? (
-          <div className="grid lg:grid-cols-3  gap-4  mb-4 xl:grid-cols-3  max-lg:grid-cols-2  max-sm:grid-cols-1 ">
+          <div className="grid lg:grid-cols-3 gap-4 mb-4 xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
             {Array.from({ length: 9 }, (_, index) => (
               <ProductCardLoader key={index} />
             ))}
@@ -226,50 +242,27 @@ const MyFav = () => {
                           {product[1]?.fractional_token?.name}
                         </h2>
                         <span className="flex items-center justify-center">
-                          {loading ? (
+                          {favLoad ? (
                             <TailSpin
-                              height="8%"
-                              width="8%"
+                              height="30px"
+                              width="30px"
                               color="black"
                               ariaLabel="tail-spin-loading"
                               radius="1"
                               visible={true}
                             />
                           ) : (
-                            <>
-                              {productInFavourites ? (
-                                <button
-                                  onClick={() =>
-                                    removeFavourites(
-                                      product[0]?.toText(),
-                                      product[1]?.nft?.id,
-                                      product[1]?.nft?.metadata,
-                                      product[1]?.nft?.locked,
-                                      product[1]?.nft?.forsale,
-                                      product[1]?.nft?.listed,
-                                      product[1]?.nft?.priceinusd
-                                    )
-                                  }
-                                >
-                                  <IconWrapper>
-                                    <GoHeartFill size={32} />
-                                  </IconWrapper>
-                                </button>
+                            <button onClick={() => toggleFav(product)}>
+                              {favourites.includes(product[1].nft.id) ? (
+                                <IconWrapper>
+                                  <GoHeartFill size={32} />
+                                </IconWrapper>
                               ) : (
-                                <button
-                                  onClick={() =>
-                                    addToFavourites(
-                                      product[0]?.toText(),
-                                      product[1]?.nft.id
-                                    )
-                                  }
-                                >
-                                  <IconWrapper>
-                                    <CiHeart size={32} />
-                                  </IconWrapper>
-                                </button>
+                                <IconWrapper>
+                                  <CiHeart size={32} />
+                                </IconWrapper>
                               )}
-                            </>
+                            </button>
                           )}
                         </span>
                       </div>
@@ -280,53 +273,42 @@ const MyFav = () => {
                         />
                       </p>
                       <div className="flex justify-between mb-4">
-                        <p className="mt-4 py-2 rounded-md w-[50%] flex gap-1">
-                          <IcpLogo />
-                          <p>
-                            {" "}
-                            {parseInt(product[1]?.nft?.priceinusd) || 0}
-                          </p>{" "}
-                        </p>
+                        {loading3 ? (
+                          <div className="h-10 mt-4 w-[50px] bg-gray-100 rounded-2xl animate-pulse"></div>
+                        ) : (
+                          <p className="mt-4 py-2 rounded-md w-[50%] flex gap-1">
+                            <IcpLogo />
+                            <p>
+                              {" "}
+                              {(product[1]?.price_per_share / exchange).toFixed(
+                                3
+                              ) || 0}
+                            </p>{" "}
+                          </p>
+                        )}
+
                         <button
-                          className="mt-4 button bg-opacity-100 text-white rounded-md w-[50%] text-md flex items-center justify-center"
                           onClick={handleBuyNow}
+                          className="px-4 mt-4 py-2 button text-white rounded-md hover:bg-opacity-80"
                         >
-                          Buy now
+                          Buy Now
                         </button>
                       </div>
                     </div>
-
-                    {showModal && (
-                      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
-                        <div className="bg-white p-4 rounded-lg flex flex-col space-x-5 space-y-8 items-center justify-center">
-                          <IconWrapper>
-                            <RiErrorWarningLine size={36} />
-                          </IconWrapper>
-                          <p>
-                            You don't have sufficient balance to buy this NFT.
-                          </p>
-                          <button
-                            className="mt-2 px-4 py-2 button bg-blue-500 text-white rounded-lg"
-                            onClick={() => setShowModal(false)}
-                          >
-                            Close
-                          </button>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
             </InfiniteScroll>
           </>
         ) : (
-          <div className="text-center mt-8 px-6 lg:px-24  flex justify-center items-center">
-            <button className="px-4 py-2  bg-tr  cursor-pointer rounded-lg w-48 border border-red-500 z-[1]">
+          <div className="text-center mt-8 px-6 lg:px-24 flex justify-center items-center">
+            <button className="px-4 py-2 border border-red-500 cursor-pointer rounded-lg w-48 z-[1]">
               No NFT found
             </button>
           </div>
         )}
       </div>
+      <Toaster position="top-center" reverseOrder={false} />
     </>
   );
 };

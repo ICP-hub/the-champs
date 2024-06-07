@@ -48,13 +48,14 @@ const ProductCardLg = ({ prod }) => {
   };
 
   const calculateListingCount = (collection) => {
-    return collection.filter((nftArray) => nftArray[0].nft.listed).length;
+    return collection.filter((nftArray) => nftArray[0].nft.listed === true)
+      .length;
   };
 
   const calculateFloorPrice = (collection) => {
     const listedPrices = collection
       .filter((nftArray) => nftArray[0].nft.listed)
-      .map((nftArray) => parseFloat(nftArray[0].nft.priceinusd));
+      .map((nftArray) => parseFloat(nftArray[0].price_per_share));
     return listedPrices.length > 0
       ? Math.min(...listedPrices).toFixed(3)
       : "0.00";
@@ -177,9 +178,14 @@ const ProductCardLg = ({ prod }) => {
             <div className="flex w-full items-center justify-start gap-4">
               <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
                 <p>AVERAGE PRICE</p>
+
                 <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
-                  <IcpLogo />
-                  {volume / listingCount / exchange}
+                  <IcpLogo />{" "}
+                  {loading3 ? (
+                    <div className=" h-7  bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center animate-pulse"></div>
+                  ) : (
+                    (volume / listingCount / exchange).toFixed(3)
+                  )}
                 </button>
               </div>
               <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
@@ -191,7 +197,12 @@ const ProductCardLg = ({ prod }) => {
               <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
                 <p>FLOOR PRICE</p>
                 <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
-                  <IcpLogo /> {floorPrice / exchange}
+                  <IcpLogo />{" "}
+                  {loading3 ? (
+                    <div className=" h-7  bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center animate-pulse"></div>
+                  ) : (
+                    (floorPrice / exchange).toFixed(3)
+                  )}
                 </button>
               </div>
             </div>
