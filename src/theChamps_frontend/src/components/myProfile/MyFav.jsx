@@ -280,9 +280,9 @@ const MyFav = () => {
                             <IcpLogo />
                             <p>
                               {" "}
-                              {(
-                                parseInt(product[1]?.price_per_share) / exchange
-                              ).toFixed(3) || 0}
+                              {(product[1]?.price_per_share / exchange).toFixed(
+                                3
+                              ) || 0}
                             </p>{" "}
                           </p>
                         )}
@@ -301,9 +301,10 @@ const MyFav = () => {
             </InfiniteScroll>
           </>
         ) : (
-          <div className="flex flex-col items-center gap-2 justify-center h-[70vh]">
-            <RiErrorWarningLine size={84} className="text-gray-400" />
-            <h1 className="text-gray-500 text-2xl">No NFTs found</h1>
+          <div className="text-center mt-8 px-6 lg:px-24 flex justify-center items-center">
+            <button className="px-4 py-2 border border-red-500 cursor-pointer rounded-lg w-48 z-[1]">
+              No NFT found
+            </button>
           </div>
         )}
       </div>

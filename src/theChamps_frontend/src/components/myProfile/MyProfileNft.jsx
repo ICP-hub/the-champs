@@ -27,7 +27,8 @@ const MyProfileNFT = () => {
   const [products, setProducts] = useState([]); // Array to hold all products
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(3); // Initial number of items per page
-
+  const [exchange, setExchange] = useState(1);
+  const [loading3, setLoading3] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState(false);
@@ -104,7 +105,40 @@ const MyProfileNFT = () => {
   const loadMoreItems = () => {
     setItemsPerPage((prevItemsPerPage) => prevItemsPerPage + 9); // Increase items per page by 9
   };
+  const getExchangeRate = async () => {
+    const paymentMethod = "FiatCurrency";
+    const paymentOpt = { FiatCurrency: null }; // Initialize directly for FiatCurrency
 
+    const paymentMethod1 = "Cryptocurrency";
+    const paymentOpt1 = { Cryptocurrency: null }; // Initialize directly for Cryptocurrency
+
+    setLoading3(true);
+
+    try {
+      const res = await backend.get_exchange_rates(
+        { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
+        { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
+      );
+      console.log(res);
+
+      if (res?.Ok?.rate) {
+        const exchangeRate2 =
+          parseInt(res.Ok.rate) / Math.pow(10, res.Ok.metadata.decimals);
+        console.log(exchangeRate2);
+        setExchange(exchangeRate2);
+      } else {
+        console.log("Failed to fetch the exchange rate");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading3(false);
+    }
+  };
+
+  useEffect(() => {
+    getExchangeRate();
+  }, [backend]);
   return (
     <>
       <div className="flex text-xl mb-6 items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-1">
@@ -192,10 +226,20 @@ const MyProfileNFT = () => {
                           />
                         </p>
                         <div className="flex justify-between mb-4">
-                          <p className="mt-4 py-2 rounded-md w-[50%] flex gap-1">
-                            <IcpLogo />
-                            <p> {parseInt(item[1]?.nft?.priceinusd) || 0}</p>
-                          </p>
+                          {loading3 ? (
+                            <div className="h-10 mt-4 w-[50px] bg-gray-100 rounded-2xl animate-pulse"></div>
+                          ) : (
+                            <p className="mt-4 py-2 rounded-md w-[50%] flex gap-1">
+                              <IcpLogo />
+                              <p>
+                                {" "}
+                                {(item[1]?.price_per_share / exchange).toFixed(
+                                  3
+                                ) || 0}
+                              </p>{" "}
+                            </p>
+                          )}
+
                           <button
                             className="mt-4 button bg-opacity-100 text-white rounded-md w-[50%] text-md flex items-center justify-center"
                             onClick={toggleModal}
