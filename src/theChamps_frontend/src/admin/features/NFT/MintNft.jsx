@@ -38,6 +38,7 @@ const initialFormValues = {
   decimals: "",
   owner: "",
   logo: "",
+  totalSupply: "",
   name: "",
   symbol: "",
 };
@@ -99,7 +100,7 @@ const MintNft = () => {
           FinalData.name,
           FinalData.symbol,
           FinalData.fee,
-          3, // This is total supply? didn't understand the meaning // For share value?
+          FinalData.totalSupply, // This is total supply? didn't understand the meaning // For share value?
           FinalData.decimals
         );
         console.log("NFT Created Successfully : ", res);
@@ -332,6 +333,27 @@ const MintNft = () => {
           ))}
           {formErrors[`key_val_data`] && (
             <p className="text-red-500 text-xs">{formErrors[`key_val_data`]}</p>
+          )}
+        </div>
+        <div>
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="totalSupply"
+              className="md:text-lg text-sm font-semibold"
+            >
+              Total Supply:
+            </label>
+            <TextHint text="Enter the total number of share for this nft" />
+          </div>
+          <input
+            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+            type="number"
+            name="totalSupply"
+            value={formData.totalSupply}
+            onChange={handleChange}
+          />
+          {formErrors.name && (
+            <p className="text-red-500 text-xs">{formErrors.totalSupply}</p>
           )}
         </div>
         <div className="flex items-center gap-2">

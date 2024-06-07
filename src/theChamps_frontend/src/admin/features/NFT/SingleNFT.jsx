@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { FaInstagram, FaLinkedin, FaXTwitter } from "react-icons/fa6";
-import herobg from "../../assets/herobg.jpg";
-import profile from "../../assets/user.jpg";
-import { IoCopyOutline } from "react-icons/io5";
-import { FiLink, FiSearch } from "react-icons/fi";
-import { LuFilter } from "react-icons/lu";
+// import { FaInstagram, FaLinkedin, FaXTwitter } from "react-icons/fa6";
+// import herobg from "../../assets/herobg.jpg";
+// import profile from "../../assets/user.jpg";
+// import { IoCopyOutline } from "react-icons/io5";
+// import { FiLink, FiSearch } from "react-icons/fi";
+// import { LuFilter } from "react-icons/lu";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { RxAvatar } from "react-icons/rx";
-import { BsFileText } from "react-icons/bs";
+// import { RxAvatar } from "react-icons/rx";
+// import { BsFileText } from "react-icons/bs";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { TbSquareRoundedChevronLeft } from "react-icons/tb";
@@ -16,7 +16,7 @@ import champsImg from "../../../assets/CHAMPS.png";
 import AdminLoader from "../../components/laoding-admin";
 
 const SingleNFT = () => {
-  const { collection, slug } = useParams();
+  const { collection, slug, id } = useParams();
   const [backend] = useCanister("backend");
   const [isNFTLoading, setIsNFTLoading] = useState(false);
   const [nftDetail, setNFTDetail] = useState(null);
@@ -27,7 +27,7 @@ const SingleNFT = () => {
       try {
         setIsNFTLoading(true);
         const res = await backend.getFractionalNftDetails(
-          1,
+          parseInt(id),
           Principal.fromText(slug),
           Principal.fromText(collection)
         );
@@ -43,7 +43,7 @@ const SingleNFT = () => {
     fetchNFTDetail();
   }, []);
 
-  console.log(nftDetail);
+  // console.log(nftDetail);
   return (
     <div className="rounded-lg bg-card text-textall h-full shadow-md p-6">
       <div className="flex gap-4 items-center font-bold text-lg tracking-wider">

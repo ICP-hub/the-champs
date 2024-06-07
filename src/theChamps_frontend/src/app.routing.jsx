@@ -147,7 +147,7 @@ const appRoutes = createBrowserRouter([
   //   ),
   // },
   {
-    path: "/admin/nft-detail/:collection/:slug",
+    path: "/admin/nft-detail/:collection/:slug/:id",
     element: (
       <MainAdmin>
         <SingleNFT />
