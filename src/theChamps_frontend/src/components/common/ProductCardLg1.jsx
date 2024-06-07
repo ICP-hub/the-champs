@@ -176,9 +176,10 @@ const ProductCardLg = ({ prod }) => {
             </div>
             <div className="flex w-full items-center justify-start gap-4">
               <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
-                <p>VOLUME</p>
+                <p>AVERAGE PRICE</p>
                 <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
-                  <IcpLogo /> {volume}
+                  <IcpLogo />
+                  {volume / listingCount / exchange}
                 </button>
               </div>
               <div className="w-1/3 md:w-1/4 text-center text-xs md:text-sm space-y-1">
