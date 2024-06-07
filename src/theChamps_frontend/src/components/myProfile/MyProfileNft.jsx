@@ -187,19 +187,14 @@ const MyProfileNFT = () => {
                         </div>
                         <p className="text-gray-500 text-sm">
                           <ReadMore
-                            text={
-                              item[1]?.fractional_token?.owner?.toText() || ""
-                            }
+                            text={item[2]?.toText() || ""}
                             maxLength={20}
                           />
                         </p>
                         <div className="flex justify-between mb-4">
                           <p className="mt-4 py-2 rounded-md w-[50%] flex gap-1">
                             <IcpLogo />
-                            <p>
-                              {" "}
-                              {parseInt(item[1]?.fractional_token?.fee) || 0}
-                            </p>
+                            <p> {parseInt(item[1]?.nft?.priceinusd) || 0}</p>
                           </p>
                           <button
                             className="mt-4 button bg-opacity-100 text-white rounded-md w-[50%] text-md flex items-center justify-center"
@@ -236,7 +231,7 @@ const MyProfileNFT = () => {
                         ></div>
                         <div className="fixed inset-0 flex items-center justify-center z-50">
                           <CommonModal
-                            tokencanisterid={item[0]}
+                            tokencanisterid={item[2]}
                             toggleModal={toggleModal}
                             title="Transfer NFT"
                             message="Please enter the address or Principal you want to send the NFT to"

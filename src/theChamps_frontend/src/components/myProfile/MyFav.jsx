@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import ProductCardLoader from "../productcomponent/ProductCardLoader";
 import IcpLogo from "../../assets/IcpLogo";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { GoHeartFill } from "react-icons/go";
 
 const MyFav = () => {
   const { isConnected, principal } = useConnect();
@@ -33,35 +34,37 @@ const MyFav = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [favChanged, setFavChanged] = useState(false);
+  const [favMatched, setFavMatched] = useState(false);
+  const [favLoad, setFavLoad] = useState(false);
+  const getUsersFractionNFT = async () => {
+    try {
+      const res = await backend.getallfractionalnfts();
+      const favouritesRes = await backend.getfavourites();
+      console.log("user product", res);
+      console.log("user fav", favouritesRes);
+
+      const favouriteProducts = res.filter((product) =>
+        favouritesRes.some(
+          (fav) =>
+            fav[0].id === product[1].nft.id &&
+            fav[0]?.owner.toText() === product[1]?.nft?.owner.toText()
+        )
+      );
+
+      if (favouritesRes.length > 0) {
+        setProductInFavourite(true);
+      }
+
+      setFilteredProduct(favouriteProducts);
+      setLoading2(false);
+      console.log("Favourite Products", favouriteProducts);
+    } catch (error) {
+      console.log("Error while fetching user NFT", error);
+    }
+  };
 
   useEffect(() => {
-    const getUsersFractionNFT = async () => {
-      try {
-        const res = await backend.getallfractionalnfts();
-        const favouritesRes = await backend.getfavourites();
-        console.log("user product", res);
-        console.log("user fav", favouritesRes);
-
-        const favouriteProducts = res.filter((product) =>
-          favouritesRes.some(
-            (fav) =>
-              fav[0].id === product[1].nft.id &&
-              fav[0]?.owner.toText() === product[1]?.nft?.owner.toText()
-          )
-        );
-
-        if (favouritesRes.length > 0) {
-          setProductInFavourite(true);
-        }
-
-        setFilteredProduct(favouriteProducts);
-        setLoading2(false);
-        console.log("Favourite Products", favouriteProducts);
-      } catch (error) {
-        console.log("Error while fetching user NFT", error);
-      }
-    };
-
     getUsersFractionNFT();
   }, [backend, principal]);
 
@@ -95,7 +98,6 @@ const MyFav = () => {
       setLoading(true);
       const canister = Principal.fromText(canisterid);
       const item = {
-        id: parseInt(productId),
         owner: Principal?.fromText(principal),
         metadata: metadata,
         locked: locked,
@@ -104,28 +106,16 @@ const MyFav = () => {
         listed: listed,
       };
 
-      await backend.removefavourite([item, canister]);
-      toast.success("Item removed from favourites");
+      const res = await backend.removefavourite([
+        { ...item, id: BigInt(parseInt(productId)) },
+        canister,
+      ]);
 
-      // Refresh favourites
-      const res = await backend.getallfractionalnfts();
-      const favouritesRes = await backend.getfavourites();
-      const favouriteProducts = res.filter((product) =>
-        favouritesRes.some(
-          (fav) =>
-            fav[0].id === product[1].nft.id &&
-            fav[0]?.owner.toText() === principal
-        )
-      );
-
-      if (favouritesRes.length > 0) {
-        setProductInFavourite(true);
-      } else {
-        setProductInFavourite(false);
+      if (res === "Favourite removed") {
+        toast.success("Item removed from favourites");
+        getUsersFractionNFT();
       }
-
-      setFilteredProduct(favouriteProducts);
-      console.log("Updated Favourite Products", favouriteProducts);
+      console.log(res);
     } catch (error) {
       console.log(error);
       toast.error("Failed to remove item from favourites");
@@ -221,7 +211,9 @@ const MyFav = () => {
                           whileHover={{ scale: 1.1 }}
                           transition={{ duration: 0.2, ease: "easeInOut" }}
                           src={
-                            placeHolderImg || product[1]?.fractional_token?.logo
+                            product[1]?.fractional_token?.logo
+                              ? product[1]?.fractional_token?.logo
+                              : placeHolderImg
                           }
                           alt=""
                           className="rounded-t-lg h-full object-cover cursor-pointer overflow-hidden"
@@ -233,76 +225,57 @@ const MyFav = () => {
                         <h2 className="text-lg font-semibold mb-2">
                           {product[1]?.fractional_token?.name}
                         </h2>
-                        {loading ? (
-                          <TailSpin
-                            height="8%"
-                            width="8%"
-                            color="black"
-                            ariaLabel="tail-spin-loading"
-                            radius="1"
-                            visible={true}
-                          />
-                        ) : (
-                          <>
-                            {productInFavourites ? (
-                              <button
-                                onClick={() =>
-                                  removeFavourites(
-                                    product[0]?.toText(),
-                                    product[1]?.nft?.id,
-                                    product[1]?.nft?.metadata,
-                                    product[1]?.nft?.locked,
-                                    product[1]?.nft?.forsale,
-                                    product[1]?.nft?.listed,
-                                    product[1]?.nft?.priceinusd
-                                  )
-                                }
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 115.77 122.88"
-                                  width="30"
-                                  height="25"
-                                  className="gradient-icon"
+                        <span className="flex items-center justify-center">
+                          {loading ? (
+                            <TailSpin
+                              height="8%"
+                              width="8%"
+                              color="black"
+                              ariaLabel="tail-spin-loading"
+                              radius="1"
+                              visible={true}
+                            />
+                          ) : (
+                            <>
+                              {productInFavourites ? (
+                                <button
+                                  onClick={() =>
+                                    removeFavourites(
+                                      product[0]?.toText(),
+                                      product[1]?.nft?.id,
+                                      product[1]?.nft?.metadata,
+                                      product[1]?.nft?.locked,
+                                      product[1]?.nft?.forsale,
+                                      product[1]?.nft?.listed,
+                                      product[1]?.nft?.priceinusd
+                                    )
+                                  }
                                 >
-                                  <defs>
-                                    <linearGradient
-                                      id="gradient"
-                                      x1="0"
-                                      y1="0"
-                                      x2="100%"
-                                      y2="0"
-                                    >
-                                      <stop offset="0%" stopColor="#FC001E" />
-                                      <stop offset="100%" stopColor="#FF7D57" />
-                                    </linearGradient>
-                                  </defs>
-                                  <path
-                                    fill="url(#gradient)"
-                                    d="M60.83,17.19C68.84,8.84,74.45,1.62,86.79,0.21c23.17-2.66,44.48,21.06,32.78,44.41 c-3.33,6.65-10.11,14.56-17.61,22.32c-8.23,8.52-17.34,16.87-23.72,23.2l-17.4,17.26L46.46,93.56C29.16,76.9,0.95,55.93,0.02,29.95 C-0.63,11.75,13.73,0.09,30.25,0.3C45.01,0.5,51.22,7.84,60.83,17.19L60.83,17.19L60.83,17.19z"
-                                  />
-                                </svg>
-                              </button>
-                            ) : (
-                              <button
-                                onClick={() =>
-                                  addToFavourites(
-                                    product[0]?.toText(),
-                                    product[1]?.nft.id
-                                  )
-                                }
-                              >
-                                <CiHeart color="red" size={32} />
-                              </button>
-                            )}
-                          </>
-                        )}
+                                  <IconWrapper>
+                                    <GoHeartFill size={32} />
+                                  </IconWrapper>
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() =>
+                                    addToFavourites(
+                                      product[0]?.toText(),
+                                      product[1]?.nft.id
+                                    )
+                                  }
+                                >
+                                  <IconWrapper>
+                                    <CiHeart size={32} />
+                                  </IconWrapper>
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </span>
                       </div>
                       <p className="text-gray-500 text-sm">
                         <ReadMore
-                          text={
-                            product[1]?.fractional_token.owner.toText() || ""
-                          }
+                          text={product[2]?.toText() || ""}
                           maxLength={20}
                         />
                       </p>
@@ -311,7 +284,7 @@ const MyFav = () => {
                           <IcpLogo />
                           <p>
                             {" "}
-                            {parseInt(product[1]?.fractional_token.fee) || 0}
+                            {parseInt(product[1]?.nft?.priceinusd) || 0}
                           </p>{" "}
                         </p>
                         <button

@@ -180,7 +180,7 @@ const NFTCard = ({ NFT, collection, nftData }) => {
           onError={handleImage}
         />
         <div className="flex flex-col">
-          <h1 className="text-[28px] font-bold line-clamp-1">
+          <h1 className="text-2xl font-bold line-clamp-1">
             {NFT[0]?.fractional_token?.name}
           </h1>
           {/* Static collection pick for now we can show featured later */}
