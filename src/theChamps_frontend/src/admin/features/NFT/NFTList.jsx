@@ -176,7 +176,7 @@ const NFTs = () => {
 };
 
 const NFTCard = ({ nftdetail, collection_Id }) => {
-  console.log(nftdetail);
+  console.log("NFT Detail :", nftdetail);
   const { fractional_token, nft } = nftdetail[0];
   return (
     <div className="bg-card rounded-2xl flex flex-col gap-4 shadow-md">
@@ -199,7 +199,9 @@ const NFTCard = ({ nftdetail, collection_Id }) => {
       <p className="px-4 text-sm">Price : $ {nft.priceinusd}</p>
       <div className="flex justify-end px-4 py-2">
         <Link
-          to={`/admin/nft-detail/${collection_Id}/${nftdetail[1].toText()}`}
+          to={`/admin/nft-detail/${collection_Id}/${nftdetail[1].toText()}/${
+            nft.id
+          }`}
           className="button px-4 py-1 text-white rounded-md"
         >
           View
