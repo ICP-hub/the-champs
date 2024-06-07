@@ -28,10 +28,7 @@ const plans = [
     name: "ICP",
     value: "icp",
   },
-  {
-    name: "Fiat Payment",
-    value: "fiat-payment",
-  },
+ 
   {
     name: "CKBTC Wallet",
     value: "ckBTC",
@@ -106,7 +103,7 @@ const ProductDetails = () => {
 
       console.log(paymentOpt, paymentMethod, "paymentmethod");
       const price =
-        (nft[0][0]?.price_per_share?.toFixed(4) / exchange) *
+        (nft[0][0]?.price_per_share?.toFixed(6) / exchange) *
         quantity *
         Math.pow(10, 9);
        const userid = Principal.fromText(principal);
@@ -465,7 +462,7 @@ const ProductDetails = () => {
                       {loading3 ? (
                         <div className="h-6 w-[50px] bg-gray-100 rounded-2xl animate-pulse"></div>
                       ) : (
-                        (nft[0][0]?.price_per_share / exchange).toFixed(3)
+                        (nft[0][0]?.price_per_share / exchange).toFixed(6)
                       )}
                       <span>ICP</span>
                       <span className="text-lg text-gray-500">

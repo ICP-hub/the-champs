@@ -21,10 +21,7 @@ const plans = [
     name: "ICP",
     value: "icp",
   },
-  {
-    name: "Fiat Payment",
-    value: "fiat-payment",
-  },
+ 
   {
     name: "CKBTC Wallet",
     value: "ckBTC",
