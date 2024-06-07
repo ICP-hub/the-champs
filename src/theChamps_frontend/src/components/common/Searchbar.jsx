@@ -177,14 +177,14 @@ const Searchbar = ({
             </Transition>
           </Menu>
         </div>
-        {gridrequired && (
+        {/* {gridrequired && (
           <button
             className="flex text-xl items-center justify-center border-[1px] border-gray-400 rounded-md lg:w-[5%] sm:w-10 md:h-12 h-8 overflow-hidden"
             onClick={() => setGrid(!grid)}
           >
             {grid ? <CiBoxList size={24} /> : <IoGridOutline />}
           </button>
-        )}
+        )} */}
       </div>
     </>
   );

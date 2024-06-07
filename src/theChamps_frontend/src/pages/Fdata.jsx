@@ -1,223 +1,223 @@
 const FData = [
   {
-    quote: "Fashion is the armor to survive the reality of everyday life.",
+    quote: "NFTs are the armor to survive the reality of everyday life.",
     author: "Bill Cunningham",
   },
   {
-    quote: "Style is a way to say who you are without having to speak.",
+    quote: "An NFT is a way to say who you are without having to speak.",
     author: "Rachel Zoe",
   },
   {
-    quote: "Fashion fades, only style remains the same.",
+    quote: "NFTs fade, only the value remains the same.",
     author: "Coco Chanel",
   },
   {
-    quote: "Dress like you're already famous.",
+    quote: "Mint like you're already famous.",
     author: "Anonymous",
   },
   {
     quote:
-      "Fashion is the art, designers are the gods, and the runway is the stage.",
+      "NFTs are the art, creators are the gods, and the blockchain is the stage.",
     author: "Karl Lagerfeld",
   },
   {
-    quote: "Clothes mean nothing until someone lives in them.",
+    quote: "NFTs mean nothing until someone owns them.",
     author: "Marc Jacobs",
   },
   {
-    quote: "Fashion is what you buy. Style is what you do with it.",
+    quote: "NFTs are what you buy. Utility is what you do with it.",
     author: "Unknown",
   },
   {
-    quote: "Elegance is the only beauty that never fades.",
+    quote: "Elegance in NFTs is the only beauty that never fades.",
     author: "Audrey Hepburn",
   },
   {
     quote:
-      "Fashion is about dressing according to what's fashionable. Style is more about being yourself.",
+      "NFTs are about owning according to what's valuable. Utility is more about being yourself.",
     author: "Oscar de la Renta",
   },
   {
-    quote: "In difficult times, fashion is always outrageous.",
+    quote: "In difficult times, NFTs are always outrageous.",
     author: "Elsa Schiaparelli",
   },
   {
-    quote: "Fashion is like eating. You shouldn't stick to the same menu.",
+    quote:
+      "NFTs are like collecting art. You shouldn't stick to the same artist.",
     author: "Kenzo Takada",
   },
   {
-    quote: "Fashion is instant language.",
+    quote: "NFTs are instant value.",
     author: "Miuccia Prada",
   },
   {
-    quote: "I like my money right where I can see it: hanging in my closet.",
+    quote: "I like my assets right where I can see them: in my NFT wallet.",
     author: "Carrie Bradshaw",
   },
   {
-    quote: "Fashion is about dreaming and making other people dream.",
+    quote: "NFTs are about dreaming and making other people dream.",
     author: "Donatella Versace",
   },
   {
     quote:
-      "Fashion is about suspense, surprise, and fantasy. It's not about rules.",
+      "NFTs are about suspense, surprise, and fantasy. It's not about rules.",
     author: "Wolfgang Joop",
   },
   {
     quote:
-      "Fashion is not necessarily about labels. It's not about brands. It's about something else that comes from within you.",
+      "NFTs are not necessarily about labels. It's not about brands. It's about something else that comes from within you.",
     author: "Ralph Lauren",
   },
   {
-    quote: "The joy of dressing is an art.",
+    quote: "The joy of collecting NFTs is an art.",
     author: "John Galliano",
   },
   {
     quote:
-      "Clothes aren't going to change the world, the women who wear them will.",
+      "NFTs aren't going to change the world, the people who own them will.",
     author: "Anna Klein",
   },
   {
     quote:
-      "Fashion is what you're offered four times a year by designers. And style is what you choose.",
+      "NFTs are what you're offered four times a year by creators. And utility is what you choose.",
     author: "Lauren Hutton",
   },
   {
-    quote: "Style is a way to say who you are without having to speak.",
+    quote: "An NFT is a way to say who you are without having to speak.",
     author: "Rachel Zoe",
   },
   {
-    quote: "Fashion is about comfort and feeling good.",
+    quote: "NFTs are about comfort and feeling good.",
     author: "Max Azria",
   },
   {
-    quote: "You can have anything you want in life if you dress for it.",
+    quote: "You can have anything you want in life if you mint it.",
     author: "Edith Head",
   },
   {
     quote:
-      "Style is knowing who you are, what you want to say, and not giving a damn.",
+      "Utility is knowing who you are, what you want to say, and not giving a damn.",
     author: "Gore Vidal",
   },
   {
-    quote: "Elegance is elimination.",
+    quote: "Elegance in NFTs is elimination.",
     author: "Cristóbal Balenciaga",
   },
   {
-    quote: "Clothes mean nothing until someone lives in them.",
+    quote: "NFTs mean nothing until someone owns them.",
     author: "Marc Jacobs",
   },
   {
-    quote: "Fashion is the armor to survive the reality of everyday life.",
+    quote: "NFTs are the armor to survive the reality of everyday life.",
     author: "Bill Cunningham",
   },
   {
-    quote: "Fashion is a trend. Style lives within a person.",
+    quote: "NFTs are a trend. Utility lives within a person.",
     author: "Oscar de la Renta",
   },
   {
-    quote: "Style is a way to say who you are without having to speak.",
+    quote: "An NFT is a way to say who you are without having to speak.",
     author: "Rachel Zoe",
   },
   {
-    quote: "Fashion is the armor to survive the reality of everyday life.",
+    quote: "NFTs are the armor to survive the reality of everyday life.",
     author: "Bill Cunningham",
   },
   {
-    quote: "Style is a way to say who you are without having to speak.",
+    quote: "An NFT is a way to say who you are without having to speak.",
     author: "Rachel Zoe",
   },
   {
     quote:
-      "Fashion is the most powerful art there is. It's movement, design, and architecture all in one.",
+      "NFTs are the most powerful art there is. It's movement, design, and architecture all in one.",
     author: "Blair Waldorf",
   },
   {
-    quote: "I like my money right where I can see it: hanging in my closet.",
+    quote: "I like my assets right where I can see them: in my NFT wallet.",
     author: "Carrie Bradshaw",
   },
   {
-    quote: "Fashion is the armor to survive the reality of everyday life.",
+    quote: "NFTs are the armor to survive the reality of everyday life.",
     author: "Bill Cunningham",
   },
   {
-    quote: "Fashion is about dreaming and making other people dream.",
+    quote: "NFTs are about dreaming and making other people dream.",
     author: "Donatella Versace",
   },
   {
     quote:
-      "Fashion is about suspense, surprise, and fantasy. It's not about rules.",
+      "NFTs are about suspense, surprise, and fantasy. It's not about rules.",
     author: "Wolfgang Joop",
   },
   {
     quote:
-      "Fashion is not necessarily about labels. It's not about brands. It's about something else that comes from within you.",
+      "NFTs are not necessarily about labels. It's not about brands. It's about something else that comes from within you.",
     author: "Ralph Lauren",
   },
   {
-    quote: "The joy of dressing is an art.",
+    quote: "The joy of collecting NFTs is an art.",
     author: "John Galliano",
   },
   {
     quote:
-      "Clothes aren't going to change the world, the women who wear them will.",
+      "NFTs aren't going to change the world, the people who own them will.",
     author: "Anna Klein",
   },
   {
     quote:
-      "Fashion is what you're offered four times a year by designers. And style is what you choose.",
+      "NFTs are what you're offered four times a year by creators. And utility is what you choose.",
     author: "Lauren Hutton",
   },
   {
-    quote: "Elegance is elimination.",
+    quote: "Elegance in NFTs is elimination.",
     author: "Cristóbal Balenciaga",
   },
   {
     quote:
-      "Fashion is the most powerful art there is. It's movement, design, and architecture all in one.",
+      "NFTs are the most powerful art there is. It's movement, design, and architecture all in one.",
     author: "Blair Waldorf",
   },
   {
     quote:
-      "Style is knowing who you are, what you want to say, and not giving a damn.",
+      "Utility is knowing who you are, what you want to say, and not giving a damn.",
     author: "Gore Vidal",
   },
   {
-    quote: "Fashion is the armor to survive the reality of everyday life.",
+    quote: "NFTs are the armor to survive the reality of everyday life.",
     author: "Bill Cunningham",
   },
   {
-    quote: "Fashion is a trend. Style lives within a person.",
+    quote: "NFTs are a trend. Utility lives within a person.",
     author: "Oscar de la Renta",
   },
   {
-    quote: "Style is a way to say who you are without having to speak.",
+    quote: "An NFT is a way to say who you are without having to speak.",
     author: "Rachel Zoe",
   },
   {
-    quote: "Fashion is the armor to survive the reality of everyday life.",
+    quote: "NFTs are the armor to survive the reality of everyday life.",
     author: "Bill Cunningham",
   },
   {
-    quote: "Clothes mean nothing until someone lives in them.",
+    quote: "NFTs mean nothing until someone owns them.",
     author: "Marc Jacobs",
   },
   {
-    quote: "Style is a way to say who you are without having to speak.",
+    quote: "An NFT is a way to say who you are without having to speak.",
     author: "Rachel Zoe",
   },
   {
-    quote: "Elegance is elimination.",
+    quote: "Elegance in NFTs is elimination.",
     author: "Cristóbal Balenciaga",
   },
   {
     quote:
-      "Fashion is not necessarily about labels. It's not about brands. It's about something else that comes from within you.",
+      "NFTs are not necessarily about labels. It's not about brands. It's about something else that comes from within you.",
     author: "Ralph Lauren",
   },
   {
-    quote: "In difficult times, fashion is always outrageous.",
+    quote: "In difficult times, NFTs are always outrageous.",
     author: "Elsa Schiaparelli",
   },
 ];
-
 export default FData;
