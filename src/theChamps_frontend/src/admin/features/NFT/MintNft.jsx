@@ -95,12 +95,12 @@ const MintNft = () => {
           FinalData.collectionId,
           FinalData.ownerId,
           FinalData.metaData,
-          Number(FinalData.priceInUsd),
+          parseFloat(FinalData.priceInUsd),
           FinalData.logo,
           FinalData.name,
           FinalData.symbol,
-          FinalData.fee,
-          FinalData.totalSupply, // This is total supply? didn't understand the meaning // For share value?
+          parseInt(FinalData.fee),
+          parseInt(FinalData.totalSupply), // This is total supply? didn't understand the meaning // For share value?
           FinalData.decimals
         );
         console.log("NFT Created Successfully : ", res);
@@ -278,6 +278,7 @@ const MintNft = () => {
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             type="number"
             name="priceInUsd"
+            min="0"
             value={formData.priceInUsd}
             onChange={handleChange}
           />
@@ -349,6 +350,7 @@ const MintNft = () => {
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
             type="number"
             name="totalSupply"
+            min="0"
             value={formData.totalSupply}
             onChange={handleChange}
           />
@@ -366,6 +368,7 @@ const MintNft = () => {
           className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
           type="number"
           name="fee"
+          min="0"
           value={formData.fee}
           onChange={handleChange}
         />
