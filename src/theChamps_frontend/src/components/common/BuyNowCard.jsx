@@ -7,7 +7,7 @@ import { HiMinus } from "react-icons/hi";
 
 const BuyNowModal = ({
   isOpen,
-  onClose,
+
   nft,
   nftLogo,
   plans,
@@ -18,6 +18,7 @@ const BuyNowModal = ({
   quantity,
   incrementQuantity,
   decrementQuantity,
+  loading,
 }) => {
   return (
     isOpen && (
@@ -105,29 +106,45 @@ const BuyNowModal = ({
 
           <div className="flex items-center justify-between font-bold text-sm mt-4">
             <p>TOTAL:</p>
-            <p className="flex items-center gap-1">
-              <IcpLogo size={16} />
-              {((nft * quantity) / exchange).toFixed(6)}
-              <span className="text-XS text-gray-500">
-                ({(nft * quantity).toFixed(3)} USD)
-              </span>
-            </p>
+
+            {loading ? (
+              <div className="h-6 w-[150px] bg-gray-200 rounded-2xl animate-pulse"></div>
+            ) : (
+              <p className="flex items-center gap-1">
+                <IcpLogo size={16} />
+                {((nft * quantity) / exchange).toFixed(6)}
+                <span className="text-XS text-gray-500">
+                  ({(nft * quantity).toFixed(3)} USD)
+                </span>
+              </p>
+            )}
           </div>
           <div className="mt-2 md:block hidden text-center text-gray-400 text-xs">
             This process may take a minute. Transactions can not be reversed. By
             clicking confirm you show acceptance to our{" "}
             <span className="text-[#FC001E] underline">Terms and Service</span>.
           </div>
-          <div className="flex items-center justify-end mt-4 text-md text-white font-medium">
+          <div className="flex items-center gap-4 justify-end mt-4 text-md text-white font-medium">
             <button
-              className="mr-4 button bg-opacity-100 text-white rounded-md px-5 py-2 text-md flex items-center justify-center"
+              className={` rounded-md px-5 py-2 text-md flex items-center justify-center ${
+                loading
+                  ? " bg-gradient-to-r from-[#ec8995] to-[#f6b19d]   text-white cursor-not-allowed"
+                  : "bg-opacity-100 button text-white"
+              }`}
               onClick={handler}
+              disabled={loading}
             >
               Cancel
             </button>
             <button
-              className="button bg-opacity-100 text-white rounded-md px-5 py-2 text-md flex items-center justify-center"
+              button
+              className={` rounded-md px-5 py-2 text-md flex items-center justify-center ${
+                loading
+                  ? " bg-gradient-to-r from-[#ec8995] to-[#f6b19d]   text-white cursor-not-allowed"
+                  : "bg-opacity-100 button text-white"
+              }`}
               onClick={handleConfirm}
+              disabled={loading}
             >
               Confirm
             </button>

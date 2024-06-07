@@ -28,7 +28,7 @@ const plans = [
     name: "ICP",
     value: "icp",
   },
- 
+
   {
     name: "CKBTC Wallet",
     value: "ckBTC",
@@ -66,6 +66,7 @@ const ProductDetails = () => {
   const [exchange, setExchange] = useState(1);
   const [loading3, setLoading3] = useState(true);
   const [paymentMethod2, SetPaymentMethod2] = useState("icp");
+  const [loading4, setLoading4] = useState(false);
 
   const paymentAddressForTransfer = usePaymentTransfer(
     parseInt(nft[0]?.fractional_token?.fee)
@@ -106,7 +107,7 @@ const ProductDetails = () => {
         (nft[0][0]?.price_per_share?.toFixed(6) / exchange) *
         quantity *
         Math.pow(10, 9);
-       const userid = Principal.fromText(principal);
+      const userid = Principal.fromText(principal);
 
       //const userid = Principal.fromText("2vxsx-fae");
       console.log(quantity);
@@ -159,11 +160,13 @@ const ProductDetails = () => {
 
     setOpen(!open);
     setConfirm(true);
+    setQuantity(1);
   };
 
   const handler = () => {
     setOpen(!open);
     setConfirm(true);
+    setQuantity(1);
   };
 
   const addToFavourites = async () => {
@@ -348,6 +351,7 @@ const ProductDetails = () => {
               quantity={quantity}
               incrementQuantity={incrementQuantity}
               decrementQuantity={decrementQuantity}
+              loading={loading3}
             />
             {license && (
               <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
@@ -460,14 +464,14 @@ const ProductDetails = () => {
                   <div className=" flex">
                     <span className="text-2xl flex font-semibold items-center gap-1">
                       {loading3 ? (
-                        <div className="h-6 w-[50px] bg-gray-100 rounded-2xl animate-pulse"></div>
+                        <div className="h-6 w-[150px] bg-gray-100 rounded-2xl "></div>
                       ) : (
                         (nft[0][0]?.price_per_share / exchange).toFixed(6)
                       )}
                       <span>ICP</span>
                       <span className="text-lg text-gray-500">
                         {loading2 ? (
-                          <div className="h-8 w-[50px] bg-gray-200 rounded animate-pulse"></div>
+                          <div className="h-8 w-[150px] bg-gray-200 rounded  "></div>
                         ) : (
                           (nft[0][0]?.price_per_share).toFixed(3)
                         )}

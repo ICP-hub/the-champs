@@ -21,7 +21,7 @@ const plans = [
     name: "ICP",
     value: "icp",
   },
- 
+
   {
     name: "CKBTC Wallet",
     value: "ckBTC",
@@ -480,6 +480,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
         quantity={quantity}
         incrementQuantity={incrementQuantity}
         decrementQuantity={decrementQuantity}
+        loading={loading3}
       />
 
       {/* Modal for insufficient balance */}
