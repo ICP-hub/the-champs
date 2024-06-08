@@ -202,11 +202,16 @@ const ProductPage = ({ name }) => {
                 <div className="w-1/4 text-center text-sm space-y-2">
                   <p>AVERAGE PRICE</p>
                   <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
-                    <IcpLogo />{" "}
                     {loading3 ? (
-                      <div className=" h-7  bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center animate-pulse"></div>
+                      <div className=" h-6  bg-gray-100 bg-opacity-100 text-[#7B7583]  gap-1 rounded-lg  animate-pulse">
+                        {" "}
+                        <IcpLogo />
+                      </div>
                     ) : (
-                      (volume / listingCount / exchange).toFixed(3)
+                      <span className="flex items-center justify-center gap-1">
+                        <IcpLogo />
+                        {(volume / listingCount / exchange).toFixed(3)}
+                      </span>
                     )}
                   </button>
                 </div>
@@ -219,11 +224,16 @@ const ProductPage = ({ name }) => {
                 <div className="w-1/4 text-center text-sm space-y-2">
                   <p>FLOOR PRICE</p>
                   <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
-                    <IcpLogo />{" "}
                     {loading3 ? (
-                      <div className=" h-7  bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center animate-pulse"></div>
+                      <div className=" h-6  bg-gray-100 bg-opacity-100 text-[#7B7583]  gap-1 rounded-lg  animate-pulse">
+                        {" "}
+                        <IcpLogo />
+                      </div>
                     ) : (
-                      (floorPrice / exchange).toFixed(3)
+                      <span className="flex items-center justify-center gap-1">
+                        <IcpLogo />
+                        {(floorPrice / exchange).toFixed(3)}
+                      </span>
                     )}
                   </button>
                 </div>
