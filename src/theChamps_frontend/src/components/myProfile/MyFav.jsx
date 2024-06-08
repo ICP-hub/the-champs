@@ -20,7 +20,6 @@ import { GoHeartFill } from "react-icons/go";
 
 const MyFav = () => {
   const { isConnected, principal } = useConnect();
-  const { id } = useParams();
   const [backend] = useCanister("backend");
   const [favourites, setFavourites] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -36,23 +35,29 @@ const MyFav = () => {
   const [favChanged, setFavChanged] = useState(false);
   const [exchange, setExchange] = useState(1);
   const [loading3, setLoading3] = useState(true);
+
   const getUsersFractionNFT = async () => {
-    try {
-      const res = await backend.getallfractionalnfts();
-      const favouritesRes = await backend.getfavourites();
+    if (isConnected) {
+      try {
+        const res = await backend.getallfractionalnfts();
+        const favouritesRes = await backend.getfavourites();
 
-      const favouriteProducts = res.filter((product) =>
-        favouritesRes.some(
-          (fav) =>
-            fav[0].id === product[1].nft.id &&
-            fav[0]?.owner.toText() === product[1]?.nft?.owner.toText()
-        )
-      );
+        const favouriteProducts = res.filter((product) =>
+          favouritesRes.some(
+            (fav) =>
+              fav[0].id === product[1].nft.id &&
+              fav[0]?.owner.toText() === product[1]?.nft?.owner.toText()
+          )
+        );
 
-      setFilteredProduct(favouriteProducts);
+        setFilteredProduct(favouriteProducts);
+        setLoading2(false);
+      } catch (error) {
+        console.log("Error while fetching user NFT", error);
+      }
+    } else {
+      toast.error("please connect to wellect");
       setLoading2(false);
-    } catch (error) {
-      console.log("Error while fetching user NFT", error);
     }
   };
 
@@ -115,20 +120,18 @@ const MyFav = () => {
       setFavLoad(true);
       const nft = product[1].nft;
       if (favourites.includes(nft.id)) {
-        const res = await backend.removefavourite([
+        await backend.removefavourite([
           {
             ...nft,
             id: BigInt(parseInt(nft.id)),
           },
-          Principal.fromText(id),
+          product[0],
         ]);
-        console.log(res);
-      } else {
-        const res = await backend.addfavourite(
-          Principal.fromText(id),
-          parseInt(nft.id)
+        setFilteredProduct((prevProducts) =>
+          prevProducts.filter((p) => p[1].nft.id !== nft.id)
         );
-        console.log(res);
+      } else {
+        await backend.addfavourite(product[0], parseInt(nft.id));
       }
     } catch (err) {
       console.error("Error toggling fav ", err);
@@ -136,6 +139,7 @@ const MyFav = () => {
       setFavChanged((prev) => !prev);
     }
   };
+
   const getExchangeRate = async () => {
     const paymentMethod = "FiatCurrency";
     const paymentOpt = { FiatCurrency: null }; // Initialize directly for FiatCurrency
@@ -170,6 +174,7 @@ const MyFav = () => {
   useEffect(() => {
     getExchangeRate();
   }, [backend]);
+
   return (
     <>
       <div className="flex text-xl mb-6 items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-1">
