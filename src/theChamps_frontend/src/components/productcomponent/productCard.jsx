@@ -16,6 +16,7 @@ import placeHolderImg from "../../assets/CHAMPS.png";
 import { Link } from "react-router-dom";
 import IcpLogo from "../../assets/IcpLogo";
 import BuyNowModal from "../common/BuyNowCard";
+
 const plans = [
   {
     name: "ICP",
@@ -93,7 +94,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   //     );
   //     setProductInFavourites(isProductInWishlist);
   //   }
-  console.log(selectedPlan.value);
+  // console.log(selectedPlan.value);
   // }, [product, favourites]);
 
   const imageHandler = () => {
@@ -173,6 +174,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     }
     getExchangeRate();
   }, [backend, selectedPlan.value]);
+
   const buyTokens = async () => {
     try {
       setLoading4(true);
@@ -208,8 +210,6 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
         paymentOpt,
         parseInt(price)
       );
-
-      console.log(res, "hello");
       if (res) {
         toast.success("nft purchased successfully");
       }
@@ -238,15 +238,13 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   // }, [open, backend, nft]);
 
   const handleConfirm = () => {
-    // Call usePaymentTransfer function only if the selected plan is "Plug Wallet"
-
-    // Call the usePaymentTransfer function
-    setShowHeader(true);
-
-    buyTokens();
-
-    setOpen(!open);
-    setConfirm(true);
+    console.log("confirm button");
+    // // Call usePaymentTransfer function only if the selected plan is "Plug Wallet"
+    // // Call the usePaymentTransfer function
+    // setShowHeader(true);
+    // buyTokens();
+    // setOpen(!open);
+    // setConfirm(true);
   };
 
   const handler = () => {
