@@ -15,7 +15,9 @@ import IconWrapper from "../common/IconWrapper";
 import placeHolderImg from "../../assets/CHAMPS.png";
 import { Link } from "react-router-dom";
 import IcpLogo from "../../assets/IcpLogo";
-import BuyNowModal from "../common/BuyNowCard";
+// import BuyNowModal from "../common/BuyNowCard";
+import champsImg from "../../assets/CHAMPS.png";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 const plans = [
   {
@@ -30,6 +32,7 @@ const plans = [
 ];
 import { GoHeartFill } from "react-icons/go";
 import { GoHeart } from "react-icons/go";
+import { HiMinus, HiPlus } from "react-icons/hi2";
 
 const ProductCard = ({ product, setShowHeader, showHeader }) => {
   const { isConnected, principal } = useConnect();
@@ -189,6 +192,8 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
       } else {
         paymentOpt = { icp: null };
       }
+
+      // Metadata
 
       console.log(paymentOpt, paymentMethod, "paymentmethod");
       // const userid = Principal.fromText("2vxsx-fae");
@@ -459,13 +464,14 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           </p>
           <button
             className="mt-4   button   text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
-            onClick={handleBuyNow} // Call handleBuyNow function when button is clicked
+            // onClick={handleBuyNow} // Call handleBuyNow function when button is clicked
           >
             Buy now
           </button>
         </div>
       </div>
-      <BuyNowModal
+      <BuyModal />
+      {/* <BuyNowModal
         isOpen={open}
         onClose={() => setOpen(false)}
         nft={product[0].price_per_share}
@@ -479,10 +485,10 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
         incrementQuantity={incrementQuantity}
         decrementQuantity={decrementQuantity}
         loading={loading3}
-      />
+      /> */}
 
       {/* Modal for insufficient balance */}
-      {showModal && (
+      {/* {showModal && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
           <div className=" z-10 bg-white p-4 rounded-lg flex flex-col space-x-5 space-y-8 items-center justify-center">
             <IconWrapper>
@@ -497,7 +503,63 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
             </button>
           </div>
         </div>
-      )}
+      )} */}
+    </div>
+  );
+};
+
+const BuyModal = () => {
+  return (
+    <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[400] grid place-items-center overflow-y-scroll cursor-pointer">
+      <div className="bg-white rounded-2xl p-4 md:px-6">
+        <h4 className="text-sm py-2 flex items-center justify-center w-full">
+          You are about to make a purchase!
+        </h4>
+        <div className="flex w-full items-center justify-center">
+          <div className="min-h-48 min-w-40 max-h-48 max-w-40 rounded-md overflow-hidden">
+            <img
+              src={champsImg}
+              alt="champs-img"
+              className="object-cover min-h-48 min-w-40 max-h-48 max-w-40"
+            />
+          </div>
+        </div>
+        <p className="py-2 text-xs text-center divide-y-2">
+          You are about to purchase this NFT from your connected wallet.
+        </p>
+        <div className="my-4 h-px w-full bg-gray-300"></div>
+        <h4 className="font-medium capitalize">payment method</h4>
+        <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2">
+          <button className="p-4 flex justify-between items-center border-2 rounded-md">
+            <span className="text-sm font-medium uppercase min-w-max">ICP</span>
+            <span>
+              <RiVerifiedBadgeFill color="#9ca3af" size={20} />
+            </span>
+          </button>
+          <button className="p-4 flex justify-between items-center border-2 rounded-md">
+            <span className="text-sm font-medium uppercase min-w-max">
+              CKBTC WALLET
+            </span>
+            <span>
+              <RiVerifiedBadgeFill color="#9ca3af" size={20} />
+            </span>
+          </button>
+        </div>
+        <div className="flex justify-between items-center font-medium my-4">
+          <span>Share</span>
+          <button className="flex border rounded-md overflow-hidden">
+            <div className="flex items-center justify-center p-2 bg-gray-300 h-full">
+              <HiMinus className="h-6" />
+            </div>
+            <span className="flex items-center justify-center px-4 py-2">
+              1
+            </span>
+            <div className="flex items-center justify-center p-2 bg-gray-300 h-full">
+              <HiPlus className="h-6" />
+            </div>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

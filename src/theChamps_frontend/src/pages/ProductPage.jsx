@@ -38,7 +38,7 @@ const ProductPage = ({ name }) => {
     try {
       const canister_id = Principal.fromText(id);
       const res = await backend.getcollectiondetails(canister_id);
-      console.log("hello");
+      // console.log("hello");
       setCollectionDetails(res);
       console.log(res);
     } catch (error) {
@@ -52,7 +52,7 @@ const ProductPage = ({ name }) => {
     try {
       const canister_id = Principal.fromText(id);
       const res = await backend.getcollectionwisefractionalnft(canister_id);
-      console.log("hello");
+      // console.log("hello");
       setCollection(res);
       setloading(false);
 
