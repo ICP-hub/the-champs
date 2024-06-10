@@ -18,6 +18,10 @@ import IcpLogo from "../../assets/IcpLogo";
 // import BuyNowModal from "../common/BuyNowCard";
 import champsImg from "../../assets/CHAMPS.png";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
+// Ledger import
+import { idlFactory } from "../../../../wallet/ledger.did";
+import { Actor, HttpAgent } from "@dfinity/agent";
+import { ids } from "../../../../DevConfig";
 
 const plans = [
   {
@@ -41,7 +45,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
 
   const [favourites, setFavourites] = useState();
   const [open, setOpen] = useState(false);
-  const [productInFavourites, setProductInFavourites] = useState(false);
+  // const [productInFavourites, setProductInFavourites] = useState(false);
 
   // const [productInFavourites, setProductInFavourites] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -52,7 +56,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   const [exchange, setExchange] = useState(1);
   const [confirm, setConfirm] = useState(true);
 
-  const [selectedPlan, setSelectedPlan] = useState(plans[0]);
+  const [selectedPlan, setSelectedPlan] = useState({ value: "icp" });
   const [loading4, setLoading4] = useState(false);
 
   // fav stats
@@ -244,7 +248,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
 
   const handleConfirm = () => {
     console.log("confirm button");
-    // // Call usePaymentTransfer function only if the selected plan is "Plug Wallet"
+    // // Call usePaymentTransfer function only if the setSelected plan is "Plug Wallet"
     // // Call the usePaymentTransfer function
     // setShowHeader(true);
     // buyTokens();
@@ -266,7 +270,6 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
       } else {
         // Proceed with the buy now action
         setOpen(true);
-
         setShowHeader(false);
       }
     } else {
@@ -465,19 +468,33 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           <button
             className="mt-4   button   text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
             // onClick={handleBuyNow} // Call handleBuyNow function when button is clicked
+            onClick={() => setOpen(true)}
           >
             Buy now
           </button>
         </div>
       </div>
-      <BuyModal />
+      {open && (
+        <BuyModal
+          onOpen={setOpen}
+          nft={product[0].price_per_share}
+          nftLogo={product[0].fractional_token.logo}
+          setSelected={setSelectedPlan}
+          selected={selectedPlan}
+          exchange={exchange}
+          quantity={quantity}
+          incrementQuantity={incrementQuantity}
+          decrementQuantity={decrementQuantity}
+          loading={loading3}
+        />
+      )}
       {/* <BuyNowModal
         isOpen={open}
         onClose={() => setOpen(false)}
         nft={product[0].price_per_share}
         nftLogo={product[0].fractional_token.logo}
         plans={plans}
-        selected={setSelectedPlan}
+        setSelected={setSelectedPlan}
         handleConfirm={handleConfirm}
         handler={handler}
         exchange={exchange}
@@ -508,60 +525,261 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   );
 };
 
-const BuyModal = () => {
+const BuyModal = ({
+  onOpen,
+  nft,
+  nftLogo,
+  setSelected,
+  selected,
+  exchange,
+  quantity,
+  incrementQuantity,
+  decrementQuantity,
+  loading,
+}) => {
+  let production = false;
+  const createTokenActor = (canisterId) => {
+    let host = production ? "https://icp-api.io" : "http://127.0.0.1:4943";
+    let identity = window.identity;
+    console.log("identity : ", identity);
+    const agent = new HttpAgent({
+      identity,
+    });
+    host: host;
+    let tokenActor = Actor.createActor(idlFactory, {
+      agent,
+      canisterId,
+    });
+
+    return tokenActor;
+  };
+
+  const formatTokenMetaData = (arr) => {
+    const resultObject = {};
+    arr.forEach((item) => {
+      const key = item[0];
+      const value = item[1][Object.keys(item[1])[0]]; // Extracting the value from the nested object
+      resultObject[key] = value;
+    });
+    return resultObject;
+  };
+
+  const continueICPTransaction = async (amount, transfer, sendPrincipal) => {
+    const actorICP = createTokenActor(ids.tokenCan);
+    transfer(amount, sendPrincipal, actorICP);
+  };
+
+  const handleConfirm = async () => {
+    const tokenActor = createTokenActor(
+      selected === "icp"
+        ? "ryjl3-tyaaa-aaaaa-aaaba-cai"
+        : "ckBTC"
+        ? "r7inp-6aaaa-aaaaa-aaabq-cai"
+        : null
+    );
+    // console.log("tokenActor console", tokenActor);
+    try {
+      const res = await tokenActor.icrc1_metadata();
+      console.log("ICRC1_META RESPONSE", res);
+    } catch (err) {
+      console.error("ICRC1_META ERROR ", err);
+    }
+  };
+
   return (
-    <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[400] grid place-items-center overflow-y-scroll cursor-pointer">
+    <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[400] grid place-items-center overflow-y-scroll no-scrollbar">
       <div className="bg-white rounded-2xl p-4 md:px-6">
-        <h4 className="text-sm py-2 flex items-center justify-center w-full">
+        <h4 className="text-sm py-2 flex items-center justify-center w-full font-semibold">
           You are about to make a purchase!
         </h4>
         <div className="flex w-full items-center justify-center">
           <div className="min-h-48 min-w-40 max-h-48 max-w-40 rounded-md overflow-hidden">
             <img
-              src={champsImg}
+              src={nftLogo.length > 10 ? nftLogo : champsImg}
               alt="champs-img"
               className="object-cover min-h-48 min-w-40 max-h-48 max-w-40"
             />
           </div>
         </div>
-        <p className="py-2 text-xs text-center divide-y-2">
+        <p className="py-2 text-xs text-center text-gray-500">
           You are about to purchase this NFT from your connected wallet.
         </p>
-        <div className="my-4 h-px w-full bg-gray-300"></div>
-        <h4 className="font-medium capitalize">payment method</h4>
-        <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2">
-          <button className="p-4 flex justify-between items-center border-2 rounded-md">
-            <span className="text-sm font-medium uppercase min-w-max">ICP</span>
-            <span>
-              <RiVerifiedBadgeFill color="#9ca3af" size={20} />
-            </span>
+        <div className="my-2 h-px w-full bg-gray-300"></div>
+        <h4 className="font-semibold capitalize">payment method</h4>
+        <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2 font-semibold">
+          <button
+            className={`p-4 flex justify-between items-center ${
+              selected.value === "icp"
+                ? "button text-white"
+                : "border-gray-300 border-2"
+            } rounded-md`}
+            onClick={() => setSelected({ value: "icp" })}
+          >
+            <span className="text-sm uppercase min-w-max">ICP</span>
+            {selected.value === "icp" && (
+              <span>
+                <RiVerifiedBadgeFill color="white" size={20} />
+              </span>
+            )}
           </button>
-          <button className="p-4 flex justify-between items-center border-2 rounded-md">
-            <span className="text-sm font-medium uppercase min-w-max">
-              CKBTC WALLET
-            </span>
-            <span>
-              <RiVerifiedBadgeFill color="#9ca3af" size={20} />
-            </span>
+          <button
+            className={`p-4 flex justify-between items-center ${
+              selected.value === "ckBTC"
+                ? "button text-white"
+                : "border-gray-300 border-2"
+            } rounded-md`}
+            onClick={() => setSelected({ value: "ckBTC" })}
+          >
+            <span className="text-sm uppercase min-w-max">CKBTC WALLET</span>
+            {selected.value === "ckBTC" && (
+              <span>
+                <RiVerifiedBadgeFill color="white" size={20} />
+              </span>
+            )}
           </button>
         </div>
-        <div className="flex justify-between items-center font-medium my-4">
+        <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
           <span>Share</span>
-          <button className="flex border rounded-md overflow-hidden">
-            <div className="flex items-center justify-center p-2 bg-gray-300 h-full">
+          <button
+            className="flex border rounded-md overflow-hidden items-center"
+            onClick={decrementQuantity}
+          >
+            <div className="flex items-center justify-center p-2 bg-gray-200 h-full">
               <HiMinus className="h-6" />
             </div>
             <span className="flex items-center justify-center px-4 py-2">
-              1
+              {quantity}
             </span>
-            <div className="flex items-center justify-center p-2 bg-gray-300 h-full">
+            <button
+              className="flex items-center justify-center p-2 bg-gray-200 h-full"
+              onClick={incrementQuantity}
+            >
               <HiPlus className="h-6" />
+            </button>
+          </button>
+        </div>
+        <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+          <span>Total</span>
+          {loading ? (
+            <span className="h-5 w-44 bg-gray-500 animate-pulse rounded-2xl"></span>
+          ) : (
+            <div className="flex gap-1 items-center">
+              <IcpLogo size={16} />
+              <span>{((nft * quantity) / exchange).toFixed(6)}</span>
+              <span className="text-gray-500">
+                ({(nft * quantity).toFixed(3)} USD)
+              </span>
             </div>
+          )}
+        </div>
+        <div className="py-2 text-xs text-center max-w-96 font-medium text-gray-500">
+          This process may take a minute. Transactions can not be reversed. By
+          clicking confirm you show acceptance to our
+          <span className="text-[#FC001E] underline ml-1">
+            Terms and Service
+          </span>
+          .
+        </div>
+        <div className="flex justify-end items-center space-x-4 my-2">
+          <button
+            className={`px-4 py-2 rounded-md border-2 border-gray-300 ${
+              loading && "animate-pulse"
+            }`}
+            disabled={loading}
+            onClick={() => onOpen(false)}
+          >
+            cancel
+          </button>
+          <button
+            className={`px-4 py-2 rounded-md font-medium button text-white ${
+              loading && "animate-pulse"
+            }`}
+            disabled={loading}
+            onClick={handleConfirm}
+          >
+            confirm
           </button>
         </div>
       </div>
     </div>
   );
 };
+
+// const BuyLoader = () => {
+//   return (
+//     <div className="bg-white rounded-2xl p-4 md:px-6">
+//       <h4 className="text-sm py-2 flex items-center justify-center w-full font-semibold">
+//         <span className="bg-gray-500 animate-pulse text-transparent rounded-md">
+//           You are about to make a purchase!
+//         </span>
+//       </h4>
+//       <div className="flex w-full items-center justify-center">
+//         <div className="min-h-48 min-w-40 max-h-48 max-w-40 rounded-md overflow-hidden animate-pulse">
+//           <img
+//             src={champsImg}
+//             alt="champs-img"
+//             className="object-cover min-h-48 min-w-40 max-h-48 max-w-40"
+//           />
+//         </div>
+//       </div>
+//       <p className="py-2 text-xs text-center text-gray-500">
+//         <span className="bg-gray-500 animate-pulse rounded-md">
+//           You are about to purchase this NFT from your connected wallet.
+//         </span>
+//       </p>
+//       <div className="my-2 h-px w-full bg-gray-300"></div>
+//       <h4 className="font-semibold capitalize bg-gray-300">
+//         <span className="text-transparent">payment method</span>
+//       </h4>
+//       <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2 font-semibold">
+//         <button className="p-4 flex justify-between items-center border-2 border-gray-300 rounded-md bg-gray-300 animate-pulse text-transparent">
+//           icp
+//         </button>
+//         <button className="p-4 flex justify-between items-center border-2 border-gray-300 rounded-md bg-gray-300 animate-pulse text-transparent">
+//           ckbtc
+//         </button>
+//       </div>
+//       <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+//         <span className="bg-gray-500 animate-pulse text-transparent rounded-md">
+//           Share
+//         </span>
+//         <button className="flex border rounded-md overflow-hidden items-center bg-gray-300 animate-pulse text-transparent">
+//           <div className="flex items-center justify-center p-2 bg-gray-300 h-full">
+//             <HiMinus className="h-6" color="rgb(209 213 219)" />
+//           </div>
+//           <span className="flex items-center justify-center px-4 py-2">1</span>
+//           <div className="flex items-center justify-center p-2 bg-gray-300 h-full">
+//             <HiPlus className="h-6" />
+//           </div>
+//         </button>
+//       </div>
+//       <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+//         <span className="rounded-md text-transparent bg-gray-300 animate-pulse">
+//           Total
+//         </span>
+//         <div className="flex gap-1 items-center text-transparent bg-gray-300 animate-pulse rounded-md">
+//           <IcpLogo size={16} />
+//           <span>1.392912</span>
+//           <span className="text-transparent">(15.000 USD)</span>
+//         </div>
+//       </div>
+//       <div className="py-2 text-xs text-start max-w-96 font-medium text-transparent">
+//         <span className="bg-gray-500 animate-pulse rounded-md">
+//           This process may take a minute. Transactions can not be reversed. By
+//           clicking confirm you show acceptance to our
+//         </span>
+//         <span className="underline ml-1">Terms and Service</span>.
+//       </div>
+//       <div className="flex justify-end items-center space-x-4 my-2 text-transparent">
+//         <button className="px-4 py-2 rounded-md border-2 border-gray-300 bg-gray-300 animate-pulse">
+//           cancel
+//         </button>
+//         <button className="px-4 py-2 rounded-md font-medium bg-gray-300 animate-pulse">
+//           confirm
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
 
 export default ProductCard;
