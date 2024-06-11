@@ -598,6 +598,7 @@ const BuyModal = ({
   };
 
   const transferApprove = async (currentBalance, currentMetaData) => {
+    console.log("curr meta ", currentMetaData);
     try {
       const decimals = parseInt(currentMetaData["icrc1:decimals"], 10);
       const sendableAmount = parseInt(
