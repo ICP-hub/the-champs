@@ -483,7 +483,6 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           exchange={exchange}
           loading={loading3}
           product={product}
-          ownerPrincipalPlug={principal}
         />
       )}
       {/* <BuyNowModal
@@ -532,11 +531,11 @@ const BuyModal = ({
   exchange,
   loading,
   product,
-  ownerPrincipalPlug,
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [metaData, setMetaData] = useState(null);
   const [balance, setBalance] = useState(0);
+  const { principal } = useConnect();
   const createTokenActor = (canisterId) => {
     let identity = window.identity;
     console.log("identity : ", identity);
@@ -569,29 +568,51 @@ const BuyModal = ({
   // };
 
   const handleConfirm = async () => {
-    let principalId;
-    if (selected.value === "icp") {
-      principalId = ids.ICPtokenCan;
-    } else if (selected.value === "ckBTC") {
-      principalId = ids.ckBTCtokenCan;
-    } else {
-      console.error("Invalid selection:", selected);
-      return;
-    }
-    const tokenActor = createTokenActor(principalId);
-    // console.log("tokenActor console", tokenActor);
     try {
-      const res = await tokenActor.icrc1_metadata();
-      console.log("ICRC1_META RESPONSE", res);
-      setMetaData(formatTokenMetaData(res));
-      let bal = await tokenActor.icrc1_balance_of({
-        owner: Principal.fromText(ownerPrincipalPlug),
-        subaccount: [],
-      });
-      console.log("balance : ", parseInt(bal));
-      setBalance(parseInt(bal));
+      const principalId =
+        selected.value === "icp"
+          ? ids.ICPtokenCan
+          : selected.value === "ckBTC"
+          ? ids.ckBTCtokenCan
+          : null;
+
+      const tokenActor = createTokenActor(Principal.fromText(principalId));
+
+      // Fetch metadata and balance
+      const [metadata, balance] = await Promise.all([
+        tokenActor.icrc1_metadata(),
+        tokenActor.icrc1_balance_of({
+          owner: Principal.fromText(principal),
+          subaccount: [],
+        }),
+      ]);
+
+      console.log("ICRC1_META RESPONSE", metadata);
+      setMetaData(formatTokenMetaData(metadata));
+
+      const parsedBalance = parseInt(balance, 10);
+      console.log("Balance:", parsedBalance);
+      setBalance(parsedBalance);
+      transferApprove(parsedBalance, metadata);
     } catch (err) {
-      console.error("ICRC1_META ERROR ", err);
+      console.error("ICRC1_META ERROR", err);
+    }
+  };
+
+  const transferApprove = (currentBalance, currentMetaData) => {
+    try {
+      const decimals = parseInt(currentMetaData?.["icrc1:decimals"], 10);
+      const sendableAmount = parseInt(
+        ((nft * quantity) / exchange) * Math.pow(10, decimals),
+        10
+      );
+      if (currentBalance > sendableAmount) {
+        console.log("We can send the amount");
+      } else {
+        console.log("Insufficient funds");
+      }
+    } catch (err) {
+      console.error("Error in transfer approve", err);
     }
   };
 
@@ -600,14 +621,14 @@ const BuyModal = ({
   };
 
   const handleIncrement = () => {
-    (prev) =>
-      prev < parseInt(product[0].fractional_token.totalSupply)
-        ? prev + 1
-        : prev;
+    setQuantity((prev) =>
+      prev < parseInt(product[0].fractional_token.totalSupply) ? prev + 1 : prev
+    );
   };
 
   console.log("metaData state ", metaData);
-  console.log("onwer principal ", ownerPrincipalPlug);
+  console.log("onwer principal ", principal);
+  console.log("owner balance ", balance);
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar">
