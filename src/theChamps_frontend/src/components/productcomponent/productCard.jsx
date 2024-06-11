@@ -58,7 +58,6 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
 
   const [selectedPlan, setSelectedPlan] = useState({ value: "icp" });
   const [loading4, setLoading4] = useState(false);
-
   // fav stats
   const [favChanged, setFavChanged] = useState(false);
   const [favMatched, setFavMatched] = useState(false);
@@ -182,54 +181,54 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     getExchangeRate();
   }, [backend, selectedPlan.value]);
 
-  const buyTokens = async () => {
-    try {
-      setLoading4(true);
-      const paymentMethod = selectedPlan.value;
-      let paymentOpt = null;
-      if (paymentMethod == "ckEth") {
-        paymentOpt = { cketh: null };
-      } else if (paymentMethod == "SOL") {
-        paymentOpt = { solana: "test" };
-      } else if (paymentMethod == "ckBTC") {
-        paymentOpt = { ckbtc: null };
-      } else {
-        paymentOpt = { icp: null };
-      }
+  // const buyTokens = async () => {
+  //   try {
+  //     setLoading4(true);
+  //     const paymentMethod = selectedPlan.value;
+  //     let paymentOpt = null;
+  //     if (paymentMethod == "ckEth") {
+  //       paymentOpt = { cketh: null };
+  //     } else if (paymentMethod == "SOL") {
+  //       paymentOpt = { solana: "test" };
+  //     } else if (paymentMethod == "ckBTC") {
+  //       paymentOpt = { ckbtc: null };
+  //     } else {
+  //       paymentOpt = { icp: null };
+  //     }
 
-      // Metadata
+  //     // Metadata
 
-      console.log(paymentOpt, paymentMethod, "paymentmethod");
-      // const userid = Principal.fromText("2vxsx-fae");
-      const price =
-        (product[0]?.price_per_share?.toFixed(4) / exchange) *
-        quantity *
-        Math.pow(10, 9);
-      const userid = Principal.fromText(principal);
-      console.log(quantity);
-      console.log(price);
-      console.log(paymentMethod2);
+  //     console.log(paymentOpt, paymentMethod, "paymentmethod");
+  //     // const userid = Principal.fromText("2vxsx-fae");
+  //     const price =
+  //       (product[0]?.price_per_share?.toFixed(4) / exchange) *
+  //       quantity *
+  //       Math.pow(10, 9);
+  //     const userid = Principal.fromText(principal);
+  //     console.log(quantity);
+  //     console.log(price);
+  //     console.log(paymentMethod2);
 
-      const res = await backend.buytokens(
-        product[1],
-        product[0]?.fractional_token?.owner,
-        userid,
+  //     const res = await backend.buytokens(
+  //       product[1],
+  //       product[0]?.fractional_token?.owner,
+  //       userid,
 
-        quantity,
-        paymentOpt,
-        parseInt(price)
-      );
-      if (res) {
-        toast.success("nft purchased successfully");
-      }
-      setLoading4(false);
-    } catch (error) {
-      console.log(error);
-      setLoading4(false);
+  //       quantity,
+  //       paymentOpt,
+  //       parseInt(price)
+  //     );
+  //     if (res) {
+  //       toast.success("nft purchased successfully");
+  //     }
+  //     setLoading4(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //     setLoading4(false);
 
-      setShowModal(true);
-    }
-  };
+  //     setShowModal(true);
+  //   }
+  // };
 
   // useEffect(() => {
   //   // Disable scroll when modal is open
@@ -484,6 +483,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           exchange={exchange}
           loading={loading3}
           product={product}
+          ownerPrincipalPlug={principal}
         />
       )}
       {/* <BuyNowModal
@@ -532,9 +532,11 @@ const BuyModal = ({
   exchange,
   loading,
   product,
+  ownerPrincipalPlug,
 }) => {
   const [quantity, setQuantity] = useState(1);
-
+  const [metaData, setMetaData] = useState(null);
+  const [balance, setBalance] = useState(0);
   const createTokenActor = (canisterId) => {
     let identity = window.identity;
     console.log("identity : ", identity);
@@ -561,10 +563,10 @@ const BuyModal = ({
     return resultObject;
   };
 
-  const continueICPTransaction = async (amount, transfer, sendPrincipal) => {
-    const actorICP = createTokenActor(ids.tokenCan);
-    transfer(amount, sendPrincipal, actorICP);
-  };
+  // const continueICPTransaction = async (amount, transfer, sendPrincipal) => {
+  //   const actorICP = createTokenActor(ids.tokenCan);
+  //   transfer(amount, sendPrincipal, actorICP);
+  // };
 
   const handleConfirm = async () => {
     let principalId;
@@ -576,12 +578,18 @@ const BuyModal = ({
       console.error("Invalid selection:", selected);
       return;
     }
-
     const tokenActor = createTokenActor(principalId);
-    console.log("tokenActor console", tokenActor);
+    // console.log("tokenActor console", tokenActor);
     try {
       const res = await tokenActor.icrc1_metadata();
       console.log("ICRC1_META RESPONSE", res);
+      setMetaData(formatTokenMetaData(res));
+      let bal = await tokenActor.icrc1_balance_of({
+        owner: Principal.fromText(ownerPrincipalPlug),
+        subaccount: [],
+      });
+      console.log("balance : ", parseInt(bal));
+      setBalance(parseInt(bal));
     } catch (err) {
       console.error("ICRC1_META ERROR ", err);
     }
@@ -597,6 +605,9 @@ const BuyModal = ({
         ? prev + 1
         : prev;
   };
+
+  console.log("metaData state ", metaData);
+  console.log("onwer principal ", ownerPrincipalPlug);
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar">
