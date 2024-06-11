@@ -591,45 +591,29 @@ const BuyModal = ({
 
       const parsedBalance = parseInt(balance);
       console.log("Balance:", parsedBalance);
-      // setBalance(parsedBalance);
-      transferApprove(parsedBalance, metaData);
+      transferApprove(parsedBalance, formatTokenMetaData(metadata));
     } catch (err) {
       console.error("ICRC1_META ERROR", err);
     }
   };
 
-  // console.log(product);
-  const transferApprove = (currentBalance, currentMetaData) => {
-    console.log("balance and meta ", currentBalance, currentMetaData);
-    // try {
-    //   const decimals = parseInt(currentMetaData?.["icrc1:decimals"], 10);
-    //   console.log("decimals", decimals);
-    //   const sendableAmount = parseInt(
-    //     ((nft * quantity) / exchange) * Math.pow(10, decimals),
-    //     10
-    //   );
-    //   console.log("sendable amount console ", sendableAmount);
-    //   if (currentBalance > sendableAmount) {
-    //     console.log("We can send the amount");
-    //     // let transaction = {
-    //     //   amount: Number(sendableAmount) + Number([metaData?.["icrc1:fee"]]),
-    //     //   from_subaccount: [],
-    //     //   spender: {
-    //     //     owner: Principal.fromText(ids.bookingCan),
-    //     //     subaccount: [],
-    //     //   },
-    //     //   fee: [metaData?.["icrc1:fee"]],
-    //     //   memo: [],
-    //     //   created_at_time: [],
-    //     //   expected_allowance: [],
-    //     //   expires_at: [],
-    //     // };
-    //   } else {
-    //     console.log("Insufficient funds");
-    //   }
-    // } catch (err) {
-    //   console.error("Error in transfer approve", err);
-    // }
+  const transferApprove = async (currentBalance, currentMetaData) => {
+    try {
+      const decimals = parseInt(currentMetaData["icrc1:decimals"], 10);
+      const sendableAmount = parseInt(
+        ((nft * quantity) / exchange) * Math.pow(10, decimals),
+        10
+      );
+      console.log("sendable amount console ", sendableAmount);
+      // transaction logic
+      if (currentBalance > sendableAmount) {
+        console.log("We can send the amount");
+      } else {
+        console.log("Insufficient funds");
+      }
+    } catch (err) {
+      console.error("Error in transfer approve", err);
+    }
   };
 
   const handleDecrement = () => {
