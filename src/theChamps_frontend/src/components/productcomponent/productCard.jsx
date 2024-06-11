@@ -535,6 +535,7 @@ const BuyModal = ({
   const [quantity, setQuantity] = useState(1);
   const [metaData, setMetaData] = useState(null);
   const { principal } = useConnect();
+  const [balance, setBalance] = useState(null);
   const createTokenActor = (canisterId) => {
     let identity = window.identity;
     console.log("identity : ", identity);
@@ -587,18 +588,24 @@ const BuyModal = ({
       ]);
 
       console.log("ICRC1_META RESPONSE", metadata);
-      setMetaData(formatTokenMetaData(metadata));
+      const formattedMetadata = formatTokenMetaData(metadata);
+      setMetaData(formattedMetadata);
 
-      const parsedBalance = parseInt(balance);
+      const parsedBalance = parseInt(balance, 10);
       console.log("Balance:", parsedBalance);
-      transferApprove(parsedBalance, formatTokenMetaData(metadata));
+      setBalance(parsedBalance);
     } catch (err) {
       console.error("ICRC1_META ERROR", err);
     }
   };
 
+  useEffect(() => {
+    if (metaData && balance !== null) {
+      transferApprove(balance, metaData);
+    }
+  }, [metaData, balance]);
+
   const transferApprove = async (currentBalance, currentMetaData) => {
-    console.log("curr meta ", currentMetaData);
     try {
       const decimals = parseInt(currentMetaData["icrc1:decimals"], 10);
       const sendableAmount = parseInt(
@@ -606,9 +613,22 @@ const BuyModal = ({
         10
       );
       console.log("sendable amount console ", sendableAmount);
-      // transaction logic
       if (currentBalance > sendableAmount) {
         console.log("We can send the amount");
+        // transaction logic
+        // let transaction = {
+        //   amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+        //   from_subaccount: [],
+        //   spender: {
+        //     owner: Principal.fromText(ids.bookingCan),
+        //     subaccount: [],
+        //   },
+        //   fee: currentMetaData["icrc1:fee"],
+        //   memo: [],
+        //   created_at_time: [],
+        //   expected_allowance: [],
+        //   expires_at: [],
+        // };
       } else {
         console.log("Insufficient funds");
       }
