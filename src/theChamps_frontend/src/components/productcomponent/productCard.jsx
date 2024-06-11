@@ -593,12 +593,14 @@ const BuyModal = ({
       const parsedBalance = parseInt(balance, 10);
       console.log("Balance:", parsedBalance);
       setBalance(parsedBalance);
-      transferApprove(parsedBalance, metadata);
+      transferApprove(parsedBalance, metaData);
     } catch (err) {
       console.error("ICRC1_META ERROR", err);
     }
   };
 
+  console.log((nft * quantity) / exchange);
+  // console.log(product);
   const transferApprove = (currentBalance, currentMetaData) => {
     try {
       const decimals = parseInt(currentMetaData?.["icrc1:decimals"], 10);
@@ -606,8 +608,22 @@ const BuyModal = ({
         ((nft * quantity) / exchange) * Math.pow(10, decimals),
         10
       );
+      console.log("sendable amount console ", sendableAmount);
       if (currentBalance > sendableAmount) {
         console.log("We can send the amount");
+        // let transaction = {
+        //   amount: Number(sendableAmount) + Number([metaData?.["icrc1:fee"]]),
+        //   from_subaccount: [],
+        //   spender: {
+        //     owner: Principal.fromText(ids.bookingCan),
+        //     subaccount: [],
+        //   },
+        //   fee: [metaData?.["icrc1:fee"]],
+        //   memo: [],
+        //   created_at_time: [],
+        //   expected_allowance: [],
+        //   expires_at: [],
+        // };
       } else {
         console.log("Insufficient funds");
       }
