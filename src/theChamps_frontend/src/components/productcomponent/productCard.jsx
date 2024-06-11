@@ -536,6 +536,8 @@ const BuyModal = ({
   const [metaData, setMetaData] = useState(null);
   const { principal } = useConnect();
   const [balance, setBalance] = useState(null);
+  const [tokenAct, setTokenAct] = useState(null);
+
   const createTokenActor = (canisterId) => {
     let identity = window.identity;
     console.log("identity : ", identity);
@@ -589,14 +591,13 @@ const BuyModal = ({
 
       console.log("ICRC1_META RESPONSE", metadata);
       const formattedMetadata = formatTokenMetaData(metadata);
+
       setMetaData(formattedMetadata);
+      setTokenAct(tokenActor);
 
       const parsedBalance = parseInt(balance, 10);
       console.log("Balance:", parsedBalance);
       setBalance(parsedBalance);
-
-      // Call transferApprove after setting metaData and balance
-      transferApprove(parsedBalance, formattedMetadata, tokenActor);
     } catch (err) {
       console.error("ICRC1_META ERROR", err);
     }
@@ -633,9 +634,8 @@ const BuyModal = ({
           expires_at: [],
         };
         console.log("transaction ", transaction);
-        console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
         const approveRes = await tokenActor.icrc2_approve(transaction);
-        console.log("Payment Approve Response ", approveRes);
+        console.log("approveRes ", approveRes);
       } else {
         console.log("Insufficient funds");
       }
@@ -643,7 +643,6 @@ const BuyModal = ({
       console.error("Error in transfer approve", err);
     }
   };
-
   // decrement qty
   const handleDecrement = () => {
     setQuantity((prev) => Math.max(prev - 1, 1));
@@ -657,6 +656,12 @@ const BuyModal = ({
 
   console.log("metaData state ", metaData);
   console.log("onwer principal ", principal);
+
+  useEffect(() => {
+    if (metaData && balance !== null && tokenAct) {
+      transferApprove(balance, metaData, tokenAct);
+    }
+  }, [metaData, balance, tokenAct]);
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar">
