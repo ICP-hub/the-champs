@@ -616,19 +616,20 @@ const BuyModal = ({
       if (currentBalance > sendableAmount) {
         console.log("We can send the amount");
         // transaction logic
-        // let transaction = {
-        //   amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
-        //   from_subaccount: [],
-        //   spender: {
-        //     owner: Principal.fromText(ids.bookingCan),
-        //     subaccount: [],
-        //   },
-        //   fee: currentMetaData["icrc1:fee"],
-        //   memo: [],
-        //   created_at_time: [],
-        //   expected_allowance: [],
-        //   expires_at: [],
-        // };
+        let transaction = {
+          amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+          from_subaccount: [],
+          spender: {
+            owner: product[1],
+            subaccount: [],
+          },
+          fee: currentMetaData["icrc1:fee"],
+          memo: [],
+          created_at_time: [],
+          expected_allowance: [],
+          expires_at: [],
+        };
+        console.log("transaction ", transaction);
       } else {
         console.log("Insufficient funds");
       }
