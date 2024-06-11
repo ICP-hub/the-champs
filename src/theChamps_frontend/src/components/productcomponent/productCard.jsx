@@ -534,7 +534,6 @@ const BuyModal = ({
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [metaData, setMetaData] = useState(null);
-  const [balance, setBalance] = useState(0);
   const { principal } = useConnect();
   const createTokenActor = (canisterId) => {
     let identity = window.identity;
@@ -590,46 +589,47 @@ const BuyModal = ({
       console.log("ICRC1_META RESPONSE", metadata);
       setMetaData(formatTokenMetaData(metadata));
 
-      const parsedBalance = parseInt(balance, 10);
+      const parsedBalance = parseInt(balance);
       console.log("Balance:", parsedBalance);
-      setBalance(parsedBalance);
+      // setBalance(parsedBalance);
       transferApprove(parsedBalance, metaData);
     } catch (err) {
       console.error("ICRC1_META ERROR", err);
     }
   };
 
-  console.log((nft * quantity) / exchange);
   // console.log(product);
   const transferApprove = (currentBalance, currentMetaData) => {
-    try {
-      const decimals = parseInt(currentMetaData?.["icrc1:decimals"], 10);
-      const sendableAmount = parseInt(
-        ((nft * quantity) / exchange) * Math.pow(10, decimals),
-        10
-      );
-      console.log("sendable amount console ", sendableAmount);
-      if (currentBalance > sendableAmount) {
-        console.log("We can send the amount");
-        // let transaction = {
-        //   amount: Number(sendableAmount) + Number([metaData?.["icrc1:fee"]]),
-        //   from_subaccount: [],
-        //   spender: {
-        //     owner: Principal.fromText(ids.bookingCan),
-        //     subaccount: [],
-        //   },
-        //   fee: [metaData?.["icrc1:fee"]],
-        //   memo: [],
-        //   created_at_time: [],
-        //   expected_allowance: [],
-        //   expires_at: [],
-        // };
-      } else {
-        console.log("Insufficient funds");
-      }
-    } catch (err) {
-      console.error("Error in transfer approve", err);
-    }
+    console.log("balance and meta ", currentBalance, currentMetaData);
+    // try {
+    //   const decimals = parseInt(currentMetaData?.["icrc1:decimals"], 10);
+    //   console.log("decimals", decimals);
+    //   const sendableAmount = parseInt(
+    //     ((nft * quantity) / exchange) * Math.pow(10, decimals),
+    //     10
+    //   );
+    //   console.log("sendable amount console ", sendableAmount);
+    //   if (currentBalance > sendableAmount) {
+    //     console.log("We can send the amount");
+    //     // let transaction = {
+    //     //   amount: Number(sendableAmount) + Number([metaData?.["icrc1:fee"]]),
+    //     //   from_subaccount: [],
+    //     //   spender: {
+    //     //     owner: Principal.fromText(ids.bookingCan),
+    //     //     subaccount: [],
+    //     //   },
+    //     //   fee: [metaData?.["icrc1:fee"]],
+    //     //   memo: [],
+    //     //   created_at_time: [],
+    //     //   expected_allowance: [],
+    //     //   expires_at: [],
+    //     // };
+    //   } else {
+    //     console.log("Insufficient funds");
+    //   }
+    // } catch (err) {
+    //   console.error("Error in transfer approve", err);
+    // }
   };
 
   const handleDecrement = () => {
@@ -644,7 +644,6 @@ const BuyModal = ({
 
   console.log("metaData state ", metaData);
   console.log("onwer principal ", principal);
-  console.log("owner balance ", balance);
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar">
