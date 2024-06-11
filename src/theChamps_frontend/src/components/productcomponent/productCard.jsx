@@ -594,18 +594,19 @@ const BuyModal = ({
       const parsedBalance = parseInt(balance, 10);
       console.log("Balance:", parsedBalance);
       setBalance(parsedBalance);
+
+      // Call transferApprove after setting metaData and balance
+      transferApprove(parsedBalance, formattedMetadata, tokenActor);
     } catch (err) {
       console.error("ICRC1_META ERROR", err);
     }
   };
 
-  useEffect(() => {
-    if (metaData && balance !== null) {
-      transferApprove(balance, metaData);
-    }
-  }, [metaData, balance]);
-
-  const transferApprove = async (currentBalance, currentMetaData) => {
+  const transferApprove = async (
+    currentBalance,
+    currentMetaData,
+    tokenActor
+  ) => {
     try {
       const decimals = parseInt(currentMetaData["icrc1:decimals"], 10);
       const sendableAmount = parseInt(
@@ -620,7 +621,9 @@ const BuyModal = ({
           amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
           from_subaccount: [],
           spender: {
-            owner: product[1],
+            // Need review on this
+            // owner: product[1],
+            owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
             subaccount: [],
           },
           fee: currentMetaData["icrc1:fee"],
@@ -630,6 +633,9 @@ const BuyModal = ({
           expires_at: [],
         };
         console.log("transaction ", transaction);
+        console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
+        const approveRes = await tokenActor.icrc2_approve(transaction);
+        console.log("Payment Approve Response ", approveRes);
       } else {
         console.log("Insufficient funds");
       }
@@ -638,6 +644,7 @@ const BuyModal = ({
     }
   };
 
+  // decrement qty
   const handleDecrement = () => {
     setQuantity((prev) => Math.max(prev - 1, 1));
   };

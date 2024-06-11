@@ -13,7 +13,6 @@ export const ids = {
     ? "wbxey-saaaa-aaaao-a3oeq-cai"
     : // "5mldq-waaaa-aaaan-qlqta-cai":
       "b77ix-eeaaa-aaaaa-qaada-cai",
-
   backendCan: production
     ? // "thtuv-wiaaa-aaaan-qloxa-cai":
       "5cjoy-nqaaa-aaaan-qlqsa-cai"
@@ -22,7 +21,7 @@ export const ids = {
     ? "w2sy5-iyaaa-aaaao-a3oga-cai"
     : "bd3sg-teaaa-aaaaa-qaaba-cai",
   bookingCan: production
-    ? "wiupe-eiaaa-aaaao-a3ofa-cai"
+    ? "krcsw-aaaaa-aaaak-akqea-cai"
     : "br5f7-7uaaa-aaaaa-qaaca-cai",
   ICPtokenCan: production
     ? "ryjl3-tyaaa-aaaaa-aaaba-cai"
