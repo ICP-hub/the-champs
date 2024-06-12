@@ -701,12 +701,15 @@ const BuyModal = ({
         };
 
         console.log("transaction ", transaction);
-        const approveRes = await tokenActor.icrc2_approve(transaction);
-        console.log("Payment Approve Response ", approveRes);
-
-        console.error(
-          "tokenActor.icrc2_approve is not a function or is incorrectly configured."
-        );
+        try {
+          const approveRes = await tokenActor.icrc2_approve(transaction);
+          console.log("Payment Approve Response ", approveRes);
+        } catch (err) {
+          console.error(
+            "tokenActor.icrc2_approve is not a function or is incorrectly configured . ",
+            err
+          );
+        }
       } else {
         console.log("Insufficient funds");
       }
