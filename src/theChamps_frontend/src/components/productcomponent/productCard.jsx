@@ -703,9 +703,19 @@ const BuyModal = ({
         console.log("transaction ", transaction);
         console.log("tokenActor ", tokenActor);
         await tokenActor
-          .icrc2_approve(transaction)
-          .then((res) => console.log("ICRC2 Approve Response ", res))
-          .catch((err) => console.error("Error in ICRC2 Approve ", err));
+          ?.icrc2_approve(transaction)
+          .then(async (res) => {
+            if (res?.Err) {
+              console.log("Approve Error Response");
+              return;
+            } else {
+              console.log("Approve Success Response ", res);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setLoading(false);
+          });
         // try {
         //   const approveRes = await tokenActor.icrc2_approve(transaction);
         //   console.log("Payment Approve Response ", approveRes);
