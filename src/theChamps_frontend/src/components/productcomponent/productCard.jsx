@@ -626,7 +626,7 @@ const BuyModal = ({
             owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
             subaccount: [],
           },
-          fee: parseInt(currentMetaData["icrc1:fee"]),
+          fee: [],
           memo: [],
           created_at_time: [],
           expected_allowance: [],
@@ -839,81 +839,81 @@ const BuyModal = ({
   );
 };
 
-const BuyLoader = () => {
-  return (
-    <div className="bg-white rounded-2xl p-4 md:px-6">
-      <h4 className="text-sm py-2 flex items-center justify-center w-full font-semibold">
-        <span className="bg-gray-500 animate-pulse text-transparent rounded-md">
-          You are about to make a purchase!
-        </span>
-      </h4>
-      <div className="flex w-full items-center justify-center">
-        <div className="min-h-48 min-w-40 max-h-48 max-w-40 rounded-md overflow-hidden animate-pulse">
-          <img
-            src={champsImg}
-            alt="champs-img"
-            className="object-cover min-h-48 min-w-40 max-h-48 max-w-40"
-          />
-        </div>
-      </div>
-      <p className="py-2 text-xs text-center text-gray-500">
-        <span className="bg-gray-500 animate-pulse rounded-md">
-          You are about to purchase this NFT from your connected wallet.
-        </span>
-      </p>
-      <div className="my-2 h-px w-full bg-gray-300"></div>
-      <h4 className="font-semibold capitalize bg-gray-300">
-        <span className="text-transparent">payment method</span>
-      </h4>
-      <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2 font-semibold">
-        <button className="p-4 flex justify-between items-center border-2 border-gray-300 rounded-md bg-gray-300 animate-pulse text-transparent">
-          icp
-        </button>
-        <button className="p-4 flex justify-between items-center border-2 border-gray-300 rounded-md bg-gray-300 animate-pulse text-transparent">
-          ckbtc
-        </button>
-      </div>
-      <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
-        <span className="bg-gray-500 animate-pulse text-transparent rounded-md">
-          Share
-        </span>
-        <button className="flex border rounded-md overflow-hidden items-center bg-gray-300 animate-pulse text-transparent">
-          <div className="flex items-center justify-center p-2 bg-gray-300 h-full">
-            <HiMinus className="h-6" color="rgb(209 213 219)" />
-          </div>
-          <span className="flex items-center justify-center px-4 py-2">1</span>
-          <div className="flex items-center justify-center p-2 bg-gray-300 h-full">
-            <HiPlus className="h-6" />
-          </div>
-        </button>
-      </div>
-      <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
-        <span className="rounded-md text-transparent bg-gray-300 animate-pulse">
-          Total
-        </span>
-        <div className="flex gap-1 items-center text-transparent bg-gray-300 animate-pulse rounded-md">
-          <IcpLogo size={16} />
-          <span>1.392912</span>
-          <span className="text-transparent">(15.000 USD)</span>
-        </div>
-      </div>
-      <div className="py-2 text-xs text-start max-w-96 font-medium text-transparent">
-        <span className="bg-gray-500 animate-pulse rounded-md">
-          This process may take a minute. Transactions can not be reversed. By
-          clicking confirm you show acceptance to our
-        </span>
-        <span className="underline ml-1">Terms and Service</span>.
-      </div>
-      <div className="flex justify-end items-center space-x-4 my-2 text-transparent">
-        <button className="px-4 py-2 rounded-md border-2 border-gray-300 bg-gray-300 animate-pulse">
-          cancel
-        </button>
-        <button className="px-4 py-2 rounded-md font-medium bg-gray-300 animate-pulse">
-          confirm
-        </button>
-      </div>
-    </div>
-  );
-};
+// const BuyLoader = () => {
+//   return (
+//     <div className="bg-white rounded-2xl p-4 md:px-6">
+//       <h4 className="text-sm py-2 flex items-center justify-center w-full font-semibold">
+//         <span className="bg-gray-500 animate-pulse text-transparent rounded-md">
+//           You are about to make a purchase!
+//         </span>
+//       </h4>
+//       <div className="flex w-full items-center justify-center">
+//         <div className="min-h-48 min-w-40 max-h-48 max-w-40 rounded-md overflow-hidden animate-pulse">
+//           <img
+//             src={champsImg}
+//             alt="champs-img"
+//             className="object-cover min-h-48 min-w-40 max-h-48 max-w-40"
+//           />
+//         </div>
+//       </div>
+//       <p className="py-2 text-xs text-center text-gray-500">
+//         <span className="bg-gray-500 animate-pulse rounded-md">
+//           You are about to purchase this NFT from your connected wallet.
+//         </span>
+//       </p>
+//       <div className="my-2 h-px w-full bg-gray-300"></div>
+//       <h4 className="font-semibold capitalize bg-gray-300">
+//         <span className="text-transparent">payment method</span>
+//       </h4>
+//       <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2 font-semibold">
+//         <button className="p-4 flex justify-between items-center border-2 border-gray-300 rounded-md bg-gray-300 animate-pulse text-transparent">
+//           icp
+//         </button>
+//         <button className="p-4 flex justify-between items-center border-2 border-gray-300 rounded-md bg-gray-300 animate-pulse text-transparent">
+//           ckbtc
+//         </button>
+//       </div>
+//       <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+//         <span className="bg-gray-500 animate-pulse text-transparent rounded-md">
+//           Share
+//         </span>
+//         <button className="flex border rounded-md overflow-hidden items-center bg-gray-300 animate-pulse text-transparent">
+//           <div className="flex items-center justify-center p-2 bg-gray-300 h-full">
+//             <HiMinus className="h-6" color="rgb(209 213 219)" />
+//           </div>
+//           <span className="flex items-center justify-center px-4 py-2">1</span>
+//           <div className="flex items-center justify-center p-2 bg-gray-300 h-full">
+//             <HiPlus className="h-6" />
+//           </div>
+//         </button>
+//       </div>
+//       <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+//         <span className="rounded-md text-transparent bg-gray-300 animate-pulse">
+//           Total
+//         </span>
+//         <div className="flex gap-1 items-center text-transparent bg-gray-300 animate-pulse rounded-md">
+//           <IcpLogo size={16} />
+//           <span>1.392912</span>
+//           <span className="text-transparent">(15.000 USD)</span>
+//         </div>
+//       </div>
+//       <div className="py-2 text-xs text-start max-w-96 font-medium text-transparent">
+//         <span className="bg-gray-500 animate-pulse rounded-md">
+//           This process may take a minute. Transactions can not be reversed. By
+//           clicking confirm you show acceptance to our
+//         </span>
+//         <span className="underline ml-1">Terms and Service</span>.
+//       </div>
+//       <div className="flex justify-end items-center space-x-4 my-2 text-transparent">
+//         <button className="px-4 py-2 rounded-md border-2 border-gray-300 bg-gray-300 animate-pulse">
+//           cancel
+//         </button>
+//         <button className="px-4 py-2 rounded-md font-medium bg-gray-300 animate-pulse">
+//           confirm
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
 
 export default ProductCard;
