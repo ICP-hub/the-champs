@@ -596,13 +596,20 @@ const BuyModal = ({
       setBalance(parsedBalance);
 
       // Call transferApprove after setting metaData and balance
-      transferApprove(parsedBalance, formattedMetadata, tokenActor, nft, quantity, exchange);
+      transferApprove(
+        parsedBalance,
+        formattedMetadata,
+        tokenActor,
+        nft,
+        quantity,
+        exchange
+      );
     } catch (err) {
       console.error("ICRC1_META ERROR", err);
     }
   };
 
- /*  const transferApprove = async (
+  /*  const transferApprove = async (
     currentBalance,
     currentMetaData,
     tokenActor
@@ -649,54 +656,57 @@ const BuyModal = ({
     currentMetaData,
     tokenActor,
     nft2,
-  quantity2,
-  exchange2
+    quantity2,
+    exchange2
   ) => {
     try {
       const decimals = Number(currentMetaData["icrc1:decimals"]);
       const nft = Number(nft2); // Ensure nft is a Number
       const quantity = Number(quantity2); // Ensure quantity is a Number
       const exchange = Number(exchange2); // Ensure exchange is a Number
-      
+
       // Calculate sendableAmount using Number arithmetic
-      const sendableAmount = Math.floor((nft * quantity * Math.pow(10, decimals)) / exchange);
+      const sendableAmount = Math.floor(
+        (nft * quantity * Math.pow(10, decimals)) / exchange
+      );
       console.log("sendable amount console ", sendableAmount);
-  
-      const fee = currentMetaData["icrc1:fee"] ? Number(currentMetaData["icrc1:fee"]) : 0;
+
+      const fee = currentMetaData["icrc1:fee"]
+        ? Number(currentMetaData["icrc1:fee"])
+        : 0;
       console.log(currentMetaData, "currentMetaData");
       console.log(fee, "currentMetaData['icrc1:fee']");
-  
+
       // Convert values to BigInt for further operations
       const sendableAmountBigInt = Number(sendableAmount);
       const feeBigInt = Number(fee);
       const currentBalanceBigInt = Number(currentBalance);
-  
+
       // Check if currentBalance is greater than sendableAmount + fee
       if (currentBalanceBigInt > sendableAmountBigInt + feeBigInt) {
         console.log("We can send the amount");
-  
+
         const transaction = {
           amount: sendableAmountBigInt + feeBigInt,
-          from_subaccount: [],  // Assuming this should be an empty array
+          from_subaccount: [], // Assuming this should be an empty array
           spender: {
             owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
-            subaccount: [],  // Assuming this should be an empty array
+            subaccount: [], // Assuming this should be an empty array
           },
-          fee: [Number(feeBigInt)],  // Making sure fee is an optional value
-          memo: [],  // Assuming this should be an empty array
-          created_at_time: [],  // Assuming this should be an empty array
-          expected_allowance: [],  // Assuming this should be an empty array
-          expires_at: [],  // Assuming this should be an empty array
+          fee: [Number(feeBigInt)], // Making sure fee is an optional value
+          memo: [], // Assuming this should be an empty array
+          created_at_time: [], // Assuming this should be an empty array
+          expected_allowance: [], // Assuming this should be an empty array
+          expires_at: [], // Assuming this should be an empty array
         };
-  
+
         console.log("transaction ", transaction);
-  
-        if (typeof tokenActor.icrc2_approve === 'function') {
-          const approveRes = await tokenActor.icrc2_approve(transaction);
-          console.log("Payment Approve Response ", approveRes);
-        } else {
-          console.error("tokenActor.icrc2_approve is not a function or is incorrectly configured.");
-        }
+        const approveRes = await tokenActor.icrc2_approve(transaction);
+        console.log("Payment Approve Response ", approveRes);
+
+        console.error(
+          "tokenActor.icrc2_approve is not a function or is incorrectly configured."
+        );
       } else {
         console.log("Insufficient funds");
       }
@@ -704,10 +714,6 @@ const BuyModal = ({
       console.error("Error in transfer approve", err);
     }
   };
-  
-  
-  
-  
 
   // decrement qty
   const handleDecrement = () => {
