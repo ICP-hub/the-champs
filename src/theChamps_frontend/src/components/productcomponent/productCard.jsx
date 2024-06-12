@@ -596,7 +596,7 @@ const BuyModal = ({
       setBalance(parsedBalance);
 
       // Call transferApprove after setting metaData and balance
-      transferApprove(parsedBalance, formattedMetadata, tokenActor);
+      transferApprove(parsedBalance, formattedMetadata, tokenActor, nft, quantity, exchange);
     } catch (err) {
       console.error("ICRC1_META ERROR", err);
     }
@@ -647,13 +647,16 @@ const BuyModal = ({
   const transferApprove = async (
     currentBalance,
     currentMetaData,
-    tokenActor
+    tokenActor,
+    nft2,
+  quantity2,
+  exchange2
   ) => {
     try {
       const decimals = Number(currentMetaData["icrc1:decimals"]);
-      const nft = Number(nft); // Ensure nft is a Number
-      const quantity = Number(quantity); // Ensure quantity is a Number
-      const exchange = Number(exchange); // Ensure exchange is a Number
+      const nft = Number(nft2); // Ensure nft is a Number
+      const quantity = Number(quantity2); // Ensure quantity is a Number
+      const exchange = Number(exchange2); // Ensure exchange is a Number
       
       // Calculate sendableAmount using Number arithmetic
       const sendableAmount = Math.floor((nft * quantity * Math.pow(10, decimals)) / exchange);
@@ -664,9 +667,9 @@ const BuyModal = ({
       console.log(fee, "currentMetaData['icrc1:fee']");
   
       // Convert values to BigInt for further operations
-      const sendableAmountBigInt = BigInt(sendableAmount);
-      const feeBigInt = BigInt(fee);
-      const currentBalanceBigInt = BigInt(currentBalance);
+      const sendableAmountBigInt = Number(sendableAmount);
+      const feeBigInt = Number(fee);
+      const currentBalanceBigInt = Number(currentBalance);
   
       // Check if currentBalance is greater than sendableAmount + fee
       if (currentBalanceBigInt > sendableAmountBigInt + feeBigInt) {
@@ -679,7 +682,7 @@ const BuyModal = ({
             owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
             subaccount: [],  // Assuming this should be an empty array
           },
-          fee: feeBigInt > 0n ? [feeBigInt] : [],  // Making sure fee is an optional value
+          fee: [Number(feeBigInt)],  // Making sure fee is an optional value
           memo: [],  // Assuming this should be an empty array
           created_at_time: [],  // Assuming this should be an empty array
           expected_allowance: [],  // Assuming this should be an empty array
