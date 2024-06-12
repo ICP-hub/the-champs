@@ -687,31 +687,17 @@ const BuyModal = ({
         console.log("We can send the amount");
 
         const transaction = {
-          fee: currentMetaData["icrc1:fee"],
-          from: {
-            owner: Principal.fromText(principal),
-            subaccount: [],
-          },
-          memo: [],
-          created_at_time: Date.now(),
           amount: sendableAmountBigInt + feeBigInt,
-          expected_allowance: [],
-          expires_at: [],
+          from_subaccount: [], // Assuming this should be an empty array
           spender: {
             owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
-            subaccount: [],
+            subaccount: [], // Assuming this should be an empty array
           },
-          // amount: sendableAmountBigInt + feeBigInt,
-          // from_subaccount: [], // Assuming this should be an empty array
-          // spender: {
-          //   owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
-          //   subaccount: [], // Assuming this should be an empty array
-          // },
-          // fee: [Number(feeBigInt)], // Making sure fee is an optional value
-          // memo: [], // Assuming this should be an empty array
-          // created_at_time: [], // Assuming this should be an empty array
-          // expected_allowance: [], // Assuming this should be an empty array
-          // expires_at: [], // Assuming this should be an empty array
+          fee: [Number(feeBigInt)], // Making sure fee is an optional value
+          memo: [], // Assuming this should be an empty array
+          created_at_time: [], // Assuming this should be an empty array
+          expected_allowance: [], // Assuming this should be an empty array
+          expires_at: [], // Assuming this should be an empty array
         };
 
         console.log("transaction ", transaction);
