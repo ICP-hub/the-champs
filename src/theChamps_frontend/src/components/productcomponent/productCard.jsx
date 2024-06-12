@@ -701,15 +701,20 @@ const BuyModal = ({
         };
 
         console.log("transaction ", transaction);
-        try {
-          const approveRes = await tokenActor.icrc2_approve(transaction);
-          console.log("Payment Approve Response ", approveRes);
-        } catch (err) {
-          console.error(
-            "tokenActor.icrc2_approve is not a function or is incorrectly configured . ",
-            err
-          );
-        }
+        console.log("tokenActor ", tokenActor);
+        await tokenActor
+          .icrc2_approve(transaction)
+          .then((res) => console.log("ICRC2 Approve Response ", res))
+          .catch((err) => console.error("Error in ICRC2 Approve ", err));
+        // try {
+        //   const approveRes = await tokenActor.icrc2_approve(transaction);
+        //   console.log("Payment Approve Response ", approveRes);
+        // } catch (err) {
+        //   console.error(
+        //     "tokenActor.icrc2_approve is not a function or is incorrectly configured . ",
+        //     err
+        //   );
+        // }
       } else {
         console.log("Insufficient funds");
       }
