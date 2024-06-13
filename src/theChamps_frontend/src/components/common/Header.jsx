@@ -86,7 +86,7 @@ const Header = () => {
               position: "fixed",
               minWidth: "100vw",
               top: 0,
-              zIndex: 40,
+              zIndex: 60,
             }}
             initial={{ y: -96 }}
             animate={{ y: 0 }}
@@ -163,7 +163,7 @@ const HeaderContent = () => {
       <div className="flex w-full justify-center items-center">
         <div className="hidden lg:flex justify-center w-full">
           <NavLinkItem to="/" text="Home" />
-          {["Collection", "About", "Contact"].map((item, index) => (
+          {["Collections", "About", "Contact"].map((item, index) => (
             <NavLinkItem
               key={index}
               to={"/" + item.toLowerCase()}
@@ -212,7 +212,7 @@ const HeaderIcon = ({ onToggle, isMenuOpen, toggleMenu }) => {
             transition={{ ease: easeInOut }}
           >
             <NavLinkItem to="/" text="Home" />
-            {["Collection", "About", "Contact"].map((item, index) => (
+            {["Collections", "About", "Contact"].map((item, index) => (
               <NavLinkItem
                 key={index}
                 to={"/" + item.toLowerCase()}

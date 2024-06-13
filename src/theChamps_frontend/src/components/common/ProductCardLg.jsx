@@ -312,6 +312,7 @@ const ProductCardLg = ({ prod }) => {
         </div>
       </div>
       <div className="p-6 absolute top-0 h-full w-full backface-hidden back flex flex-col">
+        <h3 className="text-2xl font-semibold">Collection description :- </h3>
         <div>{prod.details.description}</div>
         <div className="flex justify-end w-full pt-6 gap-4 text-sm mt-auto">
           <div className="w-full md:w-1/2 flex gap-4">

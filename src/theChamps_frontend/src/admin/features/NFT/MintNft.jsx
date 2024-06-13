@@ -33,7 +33,7 @@ const initialFormValues = {
       purpose: { Preview: null, Rendered: null },
     },
   ],
-  priceInUsd: "",
+  priceInUsd: 0,
   fee: "",
   decimals: "",
   owner: "",

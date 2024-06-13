@@ -303,33 +303,37 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
 
   // add or remove a favorite
   const toggleFav = async (product) => {
-    try {
-      setFavLoad(true);
-      if (favMatched) {
-        // Remove favorite
-        const nft = product[0].nft;
-        const res = await backend.removefavourite([
-          {
-            ...nft,
-            id: BigInt(parseInt(nft.id)),
-          },
-          Principal.fromText(id),
-        ]);
-        console.log(res);
-        // return; ? return need?
-      } else {
-        // Add favorite
-        const res = await backend.addfavourite(
-          Principal.fromText(id),
-          parseInt(product[0].nft.id)
-        );
-        console.log(res);
+    if (isConnected) {
+      try {
+        setFavLoad(true);
+        if (favMatched) {
+          // Remove favorite
+          const nft = product[0].nft;
+          const res = await backend.removefavourite([
+            {
+              ...nft,
+              id: BigInt(parseInt(nft.id)),
+            },
+            Principal.fromText(id),
+          ]);
+          console.log(res);
+          // return; ? return need?
+        } else {
+          // Add favorite
+          const res = await backend.addfavourite(
+            Principal.fromText(id),
+            parseInt(product[0].nft.id)
+          );
+          console.log(res);
+        }
+      } catch (err) {
+        console.error("error toggling fav ", err);
+      } finally {
+        // setFavLoad(false);   // This may cause bug????
+        setFavChanged((prev) => !prev);
       }
-    } catch (err) {
-      console.error("error toggling fav ", err);
-    } finally {
-      // setFavLoad(false);   // This may cause bug????
-      setFavChanged((prev) => !prev);
+    } else {
+      toast.error("Please connect to wellet ");
     }
   };
   /*************** Favourite review ****************/

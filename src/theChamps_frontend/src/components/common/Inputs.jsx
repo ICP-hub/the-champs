@@ -61,13 +61,23 @@ const TelInput = ({ setPhone, phoneNumber }) => {
       iti.destroy();
     };
   }, []);
-
+  const handleInput = (event) => {
+    event.target.value = event.target.value.replace(/\D/g, "");
+  };
   return (
     <div className="flex flex-col">
       <label className=" w-full font-medium  uppercase text-xs">
         Phone Number
       </label>
-      <input type="tel" id="phone" ref={phoneInputRef} />
+      <input
+        type="tel"
+        id="phoneNumber"
+        ref={phoneInputRef}
+        inputMode="numeric"
+        pattern="[0-9]*"
+        required
+        onInput={handleInput}
+      />
     </div>
   );
 };

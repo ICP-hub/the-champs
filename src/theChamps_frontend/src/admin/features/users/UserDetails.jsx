@@ -146,7 +146,9 @@ const NFTDetailCard = ({ nft }) => {
     <div className="bg-card rounded-2xl overflow-hidden flex flex-col space-x-2">
       <img
         src={
-          fractional_token.logo.length > 10 ? fractional_token.logo : ChampsImg
+          nftDetail?.fractional_token?.logo.length > 0
+            ? nftDetail?.fractional_token?.logo
+            : ChampsImg
         }
         alt="nft-img"
       />
@@ -161,11 +163,11 @@ const NFTDetailCard = ({ nft }) => {
         </span>
         <span className="flex gap-4">
           <label>NFT Name :</label>
-          <p>{nftDetail.fractional_token.name}</p>
+          <p>{nftDetail?.fractional_token?.name}</p>
         </span>
         <span className="flex gap-4">
           <label>Symbol :</label>
-          <p>{nftDetail.fractional_token.symbol}</p>
+          <p>{nftDetail?.fractional_token?.symbol}</p>
         </span>
         {/* <span className="flex gap-4">
           <label>NFT Attributes :</label>

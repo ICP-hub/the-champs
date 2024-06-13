@@ -22,7 +22,7 @@ function MainAdmin({ children }) {
 
   useEffect(() => {
     const checkIsAdmin = async () => {
-      if (isConnected && principal) {
+      if (!isConnected && !principal) {
         try {
           const res = await backend.checkisadmin(Principal.fromText(principal));
           setIsAdmin(res);
@@ -105,7 +105,7 @@ function MainAdmin({ children }) {
     return <FullScreenLoader />;
   }
 
-  if (isAdminChecked && !isAdmin) {
+  if (!isAdminChecked && isAdmin) {
     toast.error("You are not an admin");
     return <Navigate to="/" replace={true} />;
   }
