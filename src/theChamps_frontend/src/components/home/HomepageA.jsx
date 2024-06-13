@@ -18,6 +18,8 @@ import circle2 from "../../assets/icons/circle-02.svg";
 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useCanister, useConnect } from "@connect2ic/react";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageA /> : Homepage top.
 /* ----------------------------------------------------------------------------------------------------- */
@@ -56,10 +58,34 @@ const HomePageALeft = () => {
 };
 
 const HomePageALeftCommunityCounter = () => {
+  const { isConnected, principal } = useConnect();
+  const [backend] = useCanister("backend");
+  const [NFTs, SetNFTs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [img1, setimg1] = useState("");
+  const [img2, setimg2] = useState("");
+  const [img3, setimg3] = useState("");
+  const getUsersFractionNFT = async () => {
+    try {
+      const res = await backend.getallfractionalnfts();
+      SetNFTs(res);
+      console.log("all nft", res[0][1]?.fractional_token.logo);
+      setimg1(res[0][1]?.fractional_token?.logo);
+      setimg2(res[1][1]?.fractional_token?.logo);
+      setimg3(res[2][1]?.fractional_token?.logo);
+    } catch (error) {
+      console.log("Error while fetching user NFT", error);
+    }
+  };
+
+  useEffect(() => {
+    getUsersFractionNFT();
+  }, [backend, principal]);
+
   return (
     <div className="flex py-6 gap-4">
       <div className="flex flex-0 items-center -space-x-1.5">
-        {[anim1, anim2, anim3].map((src, index) => (
+        {[img1 || anim1, img2 || anim2, img3 || anim3].map((src, index) => (
           <img
             key={index}
             src={src}
@@ -69,7 +95,7 @@ const HomePageALeftCommunityCounter = () => {
         ))}
       </div>
       <div className="">
-        <p className="font-bold text-[32px]">20k+</p>
+        <p className="font-bold text-[32px]">{NFTs.length}+</p>
         <p className="font-normal text-xs text-[#7B7583]">Total NFT's</p>
       </div>
     </div>

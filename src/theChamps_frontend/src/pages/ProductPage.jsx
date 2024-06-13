@@ -300,7 +300,7 @@ const ProductPage = ({ name }) => {
                     )
                   }
                   endMessage={
-                    <p style={{ textAlign: "center" }}>
+                    <p style={{ textAlign: "center", marginTop: "10px" }}>
                       <b>Yay! You have seen it all</b>
                     </p>
                   }

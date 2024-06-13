@@ -122,7 +122,8 @@ const PlugWallet = () => {
               </IconWrapper>
               <p>Copy Address</p>
             </div>
-            <Link
+            <a
+              target="_blank"
               to="https://icscan.io/account/d1f2fcb239ed4510f7f1cfe07210a71aa3c8c2bd93e39ab7e1338ca9b37b6060"
               className="px-6 py-3 hover:bg-gray-200 flex gap-4 items-center"
             >
@@ -130,7 +131,7 @@ const PlugWallet = () => {
                 <IoMdSearch size={28} />
               </IconWrapper>
               <p>View in explorer</p>
-            </Link>
+            </a>
             <div
               className="px-6 py-3 hover:bg-gray-200 flex gap-4 items-center"
               onClick={userLogOut}

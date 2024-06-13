@@ -15,9 +15,12 @@ const Footer = () => {
         <div className="  px-6 lg:px-24">
           <div className="container mx-auto max-md:p-2 flex  max-md:flex-col py-4 ">
             <div className="flex mt-auto flex-col gap-2 w-2/3">
-              <h1 className="text-3xl font-bold font-orbitron  text-transparent mb-8 bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
+              <Link
+                to={"/"}
+                className="text-3xl font-bold font-orbitron  text-transparent mb-8 bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text"
+              >
                 Champs
-              </h1>
+              </Link>
               <p className="sm:w-1/2 text-sm text-gray-500">
                 Join our Discord channel or follow us on Twitter to keep up to
                 date with our latest work and announcements.
@@ -63,7 +66,7 @@ const Footer = () => {
               </p>
               <span className="flex gap-4">
                 <Link to="/privacy-policy">Privacy Policy</Link>
-                <Link to="/Terms-and-services">Terms and Service</Link>
+                <Link to="/Terms-and-services">Terms and Services</Link>
                 <BackToTopButton />
               </span>
             </div>

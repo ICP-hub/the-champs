@@ -136,7 +136,7 @@ const ContactForm = () => {
           )}
         </div>
       ))}
-      <TelInput setPhone={setPhone} />
+      <TelInput setPhone={setPhone} required />
       <CountryInput value={formData.country} onChange={handleCountryChange} />
       {errors.country && (
         <span className="text-red-500 text-sm">{errors.country}</span>

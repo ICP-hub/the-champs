@@ -280,18 +280,20 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   /*************** Favourite review ****************/
   // get favorites
   const getFav = async () => {
-    try {
-      setFavLoad(true);
-      const res = await backend.getfavourites();
-      const favIds = res.map((fav) => fav[0].id);
-      // console.log("fav nft id", favIds);
-      setFavourites(favIds); // store only ids
-      setFavMatched(favIds.includes(product[0].nft.id));
-    } catch (err) {
-      console.error("Error getting fav ", err);
-    } finally {
-      setFavLoad(false);
-    }
+    if (isConnected) {
+      try {
+        setFavLoad(true);
+        const res = await backend.getfavourites();
+        const favIds = res.map((fav) => fav[0].id);
+        // console.log("fav nft id", favIds);
+        setFavourites(favIds); // store only ids
+        setFavMatched(favIds.includes(product[0].nft.id));
+      } catch (err) {
+        console.error("Error getting fav ", err);
+      } finally {
+        setFavLoad(false);
+      }
+    } else console.log("fgh");
   };
 
   // fetch favorites : fetch in favChanged

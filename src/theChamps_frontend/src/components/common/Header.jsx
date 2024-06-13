@@ -157,7 +157,9 @@ const HeaderComplete = ({
 const HeaderContent = () => {
   return (
     <div className="flex items-center w-full">
-      <div className="text-3xl font-black font-orbitron">CHAMPS</div>
+      <Link to={"/"} className="text-3xl font-black font-orbitron">
+        CHAMPS
+      </Link>
       <div className="flex w-full justify-center items-center">
         <div className="hidden lg:flex justify-center w-full">
           <NavLinkItem to="/" text="Home" />

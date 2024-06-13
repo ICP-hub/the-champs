@@ -168,7 +168,7 @@ const ContactDetail = () => {
                 "Delete message"
               )}
             </button>
-            <button
+            {/* <button
               type="submit"
               className="uppercase bg-red-500 shadow-md dark:bg-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] "
             >
@@ -187,7 +187,7 @@ const ContactDetail = () => {
               ) : (
                 "Update message"
               )}
-            </button>
+            </button> */}
           </div>
         </form>
       )}

@@ -89,8 +89,9 @@ const CollectionPage = ({ name }) => {
                 <ProducrCardLgLoader key={index} />
               ))}
             </div>
-          ) : collectionSelector.allCollections == null ? (
-            <div className="text-center mt-8 px-6 lg:px-24 h-screen flex justify-center items-center">
+          ) : collectionSelector.allCollections == null ||
+            searchResults.length === 0 ? (
+            <div className="text-center mt-20 px-6 lg:px-24  flex justify-center items-center">
               <button className="px-4 py-2  cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
                 No collection found
               </button>
