@@ -16,13 +16,11 @@ const CollectionPage = ({ name }) => {
   const [backend] = useCanister("backend");
   const [collection, setCollection] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState();
-
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [search, setSearch] = useState(false);
   const { getAllCollections, isLoading } = CollectionApi();
   const collectionSelector = useSelector((state) => state.collections);
-  console.log(collectionSelector);
   const { id } = useParams();
 
   useEffect(() => {
@@ -89,39 +87,28 @@ const CollectionPage = ({ name }) => {
                 <ProducrCardLgLoader key={index} />
               ))}
             </div>
-          ) : collectionSelector.allCollections == null ? (
-            <div className="text-center mt-20 px-6 lg:px-24  flex justify-center items-center">
-              <button className="px-4 py-2  cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
-                No collection found
-              </button>
-            </div>
           ) : (
             <div className="grid min-[948px]:grid-cols-1 gap-x-8 gap-y-8 mt-8 px-6 lg:px-24">
               {search ? (
-                <>
-                  {searchResults?.map((prod, index) => (
+                searchResults.length > 0 ? (
+                  searchResults.map((prod, index) => (
                     <ProductCardLg prod={prod} key={index} />
-                  ))}
-                </>
+                  ))
+                ) : (
+                  <div className="text-center mt-20 px-6 lg:px-24 flex justify-center items-center">
+                    <button className="px-4 py-2 cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
+                      No collection found
+                    </button>
+                  </div>
+                )
               ) : (
-                <>
-                  {" "}
-                  {collectionSelector.allCollections?.map((prod, index) => (
-                    <ProductCardLg prod={prod} key={index} />
-                  ))}
-                </>
+                collectionSelector.allCollections?.map((prod, index) => (
+                  <ProductCardLg prod={prod} key={index} />
+                ))
               )}
             </div>
           )}
         </div>
-        {/* <div className="flex items-center justify-center w-full mt-12 gap-2 text-gray-300">
-          <div className="border border-gray-400 rounded-full p-1 hover:bg-gray-400">
-            <IoIosArrowBack size={20} />
-          </div>
-          <div className="border border-gray-400 rounded-full p-1 hover:bg-gray-400">
-            <IoIosArrowForward size={20} />
-          </div>
-        </div> */}
       </motion.div>
       <Footer />
     </>

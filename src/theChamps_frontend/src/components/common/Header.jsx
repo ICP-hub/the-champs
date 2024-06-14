@@ -85,6 +85,7 @@ const Header = () => {
               backdropFilter: "blur(15px)",
               position: "fixed",
               minWidth: "100vw",
+              WebkitBackdropFilter: "blur(15px)",
               top: 0,
               zIndex: 60,
             }}

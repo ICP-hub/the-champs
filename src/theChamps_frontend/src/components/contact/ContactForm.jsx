@@ -25,6 +25,14 @@ const ContactForm = () => {
       ...prevData,
       [name]: value,
     }));
+
+    // Remove error message when user starts typing
+    if (errors[name]) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: "",
+      }));
+    }
   };
 
   const handleCountryChange = (value) => {
@@ -32,6 +40,14 @@ const ContactForm = () => {
       ...prevData,
       country: value,
     }));
+
+    // Remove error message when user selects country
+    if (errors.country) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        country: "",
+      }));
+    }
   };
 
   const validateForm = (formData) => {
