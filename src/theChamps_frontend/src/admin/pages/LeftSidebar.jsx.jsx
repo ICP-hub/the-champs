@@ -34,14 +34,16 @@ import {
 } from "react-icons/md";
 // import Topbar from "../features/dashboard/Topbar";
 // import { RxAvatar } from "react-icons/rx";
-import { useConnect } from "@connect2ic/react";
+// import { useConnect } from "@connect2ic/react";
 import Avatar from "boring-avatars";
 import toast from "react-hot-toast";
 import useClipboard from "react-use-clipboard";
 import { RiCheckLine, RiFileCopyLine, RiLogoutBoxLine } from "react-icons/ri";
+import { useAuth } from "../../auth/useClient";
 
 const LeftSidebar = ({ isOpen }) => {
-  const { principal, isConnected, disconnect } = useConnect();
+  // const { principal, isConnected, disconnect } = useConnect();
+  const { principal, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [isCopied, setCopied] = useClipboard(principal, {
@@ -74,7 +76,8 @@ const LeftSidebar = ({ isOpen }) => {
 
   // disconnect
   const disconnectPlug = () => {
-    disconnect();
+    // disconnect();
+    logout();
     // location or useNavigate ???
     //window.location.href = "/";
     navigate("/");
@@ -88,7 +91,7 @@ const LeftSidebar = ({ isOpen }) => {
             <Avatar
               size={80}
               className="w-full h-full rounded-full"
-              name={principal}
+              name={principal?.toText()}
               variant="beam"
               colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
             />
@@ -99,7 +102,7 @@ const LeftSidebar = ({ isOpen }) => {
             </div>
             {principal ? (
               <p className="text-ellipsis line-clamp-1 text-sm text-gray-400">
-                {principal}
+                {principal?.toText()}
               </p>
             ) : (
               <span className="h-4 w-full bg-gray-100 rounded-sm animate-pulse"></span>

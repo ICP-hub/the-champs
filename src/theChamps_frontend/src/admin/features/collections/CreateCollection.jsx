@@ -3,12 +3,13 @@ import Select from "react-select";
 import { useDropzone } from "react-dropzone";
 import { TbDisabled, TbSquareRoundedChevronLeft } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
-import { useCanister, useConnect, useDialog } from "@connect2ic/react";
+// import { useCanister, useConnect, useDialog } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { TailSpin } from "react-loader-spinner";
 import toast from "react-hot-toast";
 import Toggle from "react-toggle";
 import TextHint from "../../components/admin-text-hint";
+import { useAuth } from "../../../auth/useClient";
 // import { useCanister } from "@connect2ic/react";
 // import * as nft from "../../../.dfx/local/canisters/theChamps_nft";
 
@@ -20,8 +21,9 @@ const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
   const [selectedRoyalty, setSelectedRoyalty] = useState("");
   const [collId, setCollId] = useState("");
   const [errorField, setErrorField] = useState(null);
-  const { principal, isConnected } = useConnect();
-  const [backend] = useCanister("backend");
+  // const { principal, isConnected } = useConnect();
+  const { principal, isAuthenticated } = useAuth();
+  const { backendActor } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     logo: {
@@ -178,7 +180,7 @@ const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
       }
       // console.log("formData:", formData);
       // console.log("Submitting collection creation request...");
-      const result = await backend.createcollection(
+      const result = await backendActor?.createcollection(
         { data: formData.logo.data, logo_type: formData.logo.logo_type },
         { data: formData.banner.data, logo_type: formData.banner.logo_type },
         formData.description,
@@ -221,7 +223,7 @@ const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
         return;
       }
       const id = Principal.fromText(collId);
-      const res = await backend.add_collection_to_map(id);
+      const res = await backendActor?.add_collection_to_map(id);
       toast.success(res);
       handleCreate();
       setFormSubmitted((prev) => !prev);

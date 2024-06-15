@@ -1,13 +1,16 @@
-import { useCanister, useConnect } from "@connect2ic/react";
+// import { useCanister, useConnect } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { RiErrorWarningFill } from "react-icons/ri";
+import { useAuth } from "../../auth/useClient";
 
 const CommonModal = ({ toggleModal, tokencanisterid }) => {
-  const { isConnected, principal } = useConnect();
-  const [backend] = useCanister("backend");
+  // const { isConnected, principal } = useConnect();
+  const { isAuthenticated } = useAuth();
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [receiver, setReceiver] = useState("");
   const [loading, setLoading] = useState(false);
   const handleChange = (e) => {
@@ -15,7 +18,7 @@ const CommonModal = ({ toggleModal, tokencanisterid }) => {
   };
 
   const handleTransferNow = async () => {
-    if (isConnected) {
+    if (isAuthenticated) {
       setLoading(true);
       try {
         const response = await backend.tranfertokens(

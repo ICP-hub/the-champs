@@ -5,9 +5,11 @@ import {
   getCollectionwiseNft,
   getSingleCollectionNFT,
 } from "../../../redux/reducers/nftReducer";
+import { useAuth } from "../auth/useClient";
 
 const NFTApi = () => {
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [nftLoading, setNFTLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -15,7 +17,9 @@ const NFTApi = () => {
   const getSingleCollectionWiseNFT = async (canisterId) => {
     try {
       setNFTLoading(true);
-      const res = await backend.getcollectionwisefractionalnft(canisterId);
+      const res = await backendActor?.getcollectionwisefractionalnft(
+        canisterId
+      );
       // console.log("single collection nft", res);
       dispatch(getSingleCollectionNFT(res));
     } catch (err) {
@@ -31,7 +35,7 @@ const NFTApi = () => {
       try {
         setNFTLoading(true);
         const promises = collectionIds.map((collectionId) =>
-          backend
+          backendActor
             .getcollectionwisefractionalnft(collectionId)
             .then((response) => ({ collectionId, nfts: response }))
             .catch((error) => {

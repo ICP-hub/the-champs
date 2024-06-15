@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { useParams } from "react-router";
-import { useBalance, useCanister, useConnect } from "@connect2ic/react";
-import { Principal } from "@dfinity/principal";
+// import { useBalance, useCanister, useConnect } from "@connect2ic/react";
+// import { Principal } from "@dfinity/principal";
 import { Link } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import ReadMore from "../common/ReadMore";
@@ -14,16 +14,19 @@ import ProductCardLoader from "../productcomponent/ProductCardLoader";
 import CommonModal from "../common/CommonModal";
 import InfiniteScroll from "react-infinite-scroll-component";
 import IcpLogo from "../../assets/IcpLogo";
+import { useAuth } from "../../auth/useClient";
 
 const MyProfileNFT = () => {
-  const { isConnected, principal } = useConnect();
+  // const { isConnected, principal } = useConnect();
+  const { isAuthenticated, principal } = useAuth();
   const { id } = useParams();
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [productInFavourites, setProductInFavourites] = useState(false);
   const [loading, setLoading] = useState(true); // Combined loading state
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [assets] = useBalance();
+  // const [assets] = useBalance();
   const [products, setProducts] = useState([]); // Array to hold all products
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(3); // Initial number of items per page
@@ -38,8 +41,9 @@ const MyProfileNFT = () => {
       try {
         setLoading(true);
         setError(null);
-        const res = await backend.getusersfractionnft(
-          Principal?.fromText(principal)
+        const res = await backendActor?.getusersfractionnft(
+          // Principal?.fromText(principal)
+          principal
         );
         const filteredData = res.filter((item) => {
           const ownerPrincipal = item[1].nft?.owner?.toText();
@@ -56,7 +60,7 @@ const MyProfileNFT = () => {
       }
     };
     getUsersFractionNFT();
-  }, [backend, principal]);
+  }, [backendActor, principal]);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -74,16 +78,16 @@ const MyProfileNFT = () => {
   }, [isModalOpen]);
 
   const handleBuyNow = () => {
-    if (isConnected) {
-      const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
-      if (icpWallet?.amount <= 0) {
-        setShowModal(true);
-      } else {
-        toast.success("Proceeding to buy");
-        // Implement logic to buy the NFT (assuming backend integration)
-      }
-    } else {
-      toast.error("Please login first");
+    if (isAuthenticated) {
+      //   const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
+      //   if (icpWallet?.amount <= 0) {
+      //     setShowModal(true);
+      //   } else {
+      //     toast.success("Proceeding to buy");
+      //     // Implement logic to buy the NFT (assuming backendActor integration)
+      //   }
+      // } else {
+      //   toast.error("Please login first");
     }
   };
 
@@ -115,7 +119,7 @@ const MyProfileNFT = () => {
     setLoading3(true);
 
     try {
-      const res = await backend.get_exchange_rates(
+      const res = await backendActor?.get_exchange_rates(
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
@@ -138,7 +142,7 @@ const MyProfileNFT = () => {
 
   useEffect(() => {
     getExchangeRate();
-  }, [backend]);
+  }, [backendActor]);
   return (
     <>
       <div className="flex text-xl mb-6 items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-1">

@@ -6,18 +6,21 @@ import {
   getSingleCollectionData,
 } from "../../../redux/reducers/collectionReducer";
 import { getCollectionIds } from "../../../redux/reducers/nftReducer";
+import { useAuth } from "../auth/useClient";
 
 const CollectionApi = () => {
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
+
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   // Get collection ids to filter collectionwisenft
   const getAllCollectionIds = async () => {
     try {
-      const res = await backend.getallCollectionids();
+      const res = await backendActor?.getallCollectionids();
       // If the plug principal required : then return ids : remove ids[1]
-      res.map((ids) => dispatch(getCollectionIds(ids[1])));
+      res?.map((ids) => dispatch(getCollectionIds(ids[1])));
     } catch (err) {
       console.error("Error fetching collection IDs", err);
     }
@@ -26,7 +29,7 @@ const CollectionApi = () => {
   const getSingleCollectionDetails = async (collectionId) => {
     setIsLoading(true);
     try {
-      const res = await backend.getcollectiondetails(collectionId);
+      const res = await backendActor?.getcollectiondetails(collectionId);
       dispatch(getSingleCollectionData(res));
     } catch (err) {
       console.error("Error fetching collection Details : ", err);
@@ -39,14 +42,16 @@ const CollectionApi = () => {
   const getAllCollections = async () => {
     setIsLoading(true);
     try {
-      const res = await backend.getallCollectionids();
+      const res = await backendActor?.getallCollectionids();
       if (res && res.length > 0) {
-        const collectionIds = res.map((coll) => coll[1]);
+        const collectionIds = res?.map((coll) => coll[1]);
         const allPrincipals = collectionIds;
 
         const fetchPrincipalDetails = async (principal) => {
           try {
-            const response = await backend.getcollectiondetails(principal);
+            const response = await backendActor?.getcollectiondetails(
+              principal
+            );
             return { canisterId: principal, details: response };
           } catch (err) {
             console.error("Error fetching", err);
@@ -56,7 +61,7 @@ const CollectionApi = () => {
 
         const fetchAllCollections = async () => {
           try {
-            const promises = allPrincipals[0].map(fetchPrincipalDetails);
+            const promises = allPrincipals[0]?.map(fetchPrincipalDetails);
             const results = await Promise.all(promises);
             return results;
           } catch (error) {
@@ -72,8 +77,8 @@ const CollectionApi = () => {
             // console.log("All collection details:", data);
             dispatch(
               getAllCollectionData({
-                canisterId: data.map((i) => i.canisterId),
-                allCollections: data.map((i) => i),
+                canisterId: data?.map((i) => i.canisterId),
+                allCollections: data?.map((i) => i),
                 featuredCollections: data.filter(
                   (collection) => collection.details.featured
                 ),

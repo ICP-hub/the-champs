@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import { useConnect } from "@connect2ic/react";
+import { useAuth } from "../../auth/useClient";
+// import { useConnect } from "@connect2ic/react";
 
 function Protected({ children }) {
-  const { isConnected } = useConnect();
+  // const { isConnected } = useConnect();
+  const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +25,7 @@ function Protected({ children }) {
     return <h1>loading...</h1>;
   }
 
-  if (!isConnected) {
+  if (!isAuthenticated) {
     return <Navigate to="/" replace={true} />;
   }
 

@@ -6,41 +6,53 @@ import { useNavigate, useParams } from "react-router";
 import AdminLoader from "../../components/laoding-admin";
 import ChampsImg from "../../../assets/CHAMPS.png";
 import { TbSquareRoundedChevronLeft } from "react-icons/tb";
+import { useAuth } from "../../../auth/useClient";
+
+// Getch userDetails
+const fetchUserDetails = async (
+  id,
+  backendActor,
+  setUserInfo,
+  setIsUserDataLoading
+) => {
+  try {
+    setIsUserDataLoading(true);
+    const res = await backendActor?.getUserdetailsbyid(Principal.fromText(id));
+    console.log(res);
+    setUserInfo(res.ok);
+  } catch (err) {
+    console.error("Error fetching user details : ", err);
+  } finally {
+    setIsUserDataLoading(false);
+  }
+};
 
 const UserDetail = () => {
   const { id } = useParams();
   const [isUserDataLoading, setIsUserDataLoading] = useState(false);
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
   useEffect(() => {
-    const fetchUserDetails = async () => {
-      try {
-        setIsUserDataLoading(true);
-        const res = await backend.getUserdetailsbyid(Principal.fromText(id));
-        console.log(res);
-        setUserInfo(res.ok);
-      } catch (err) {
-        console.error("Error fetching user details : ", err);
-      } finally {
-        setIsUserDataLoading(false);
-      }
-    };
-    fetchUserDetails();
+    fetchUserDetails(id, backendActor, setUserInfo, setIsUserDataLoading);
   }, []);
 
   return (
-    <div>
-      {isUserDataLoading ? (
-        <AdminLoader />
-      ) : (
-        <UserData id={id} userInfo={userInfo} />
-      )}
-    </div>
+    <div>{isUserDataLoading ? <AdminLoader /> : <UserData id={id} />}</div>
   );
 };
 
-const UserData = ({ id, userInfo }) => {
+const UserData = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const { backendActor } = useAuth();
+  const [isUserDataLoading, setIsUserDataLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    fetchUserDetails(id, backendActor, setUserInfo, setIsUserDataLoading);
+  }, [backendActor]);
+
   console.log("userInfo is :", userInfo);
   return (
     <div className="flex flex-col space-y-6">
@@ -54,9 +66,9 @@ const UserData = ({ id, userInfo }) => {
       <div className="rounded-md bg-card p-6 flex flex-col md:flex-row gap-8">
         <div className="flex items-center justify-center">
           <img
-            src={userInfo?.profileImage}
+            src={userInfo?.profileimage}
             alt="user-img"
-            className="h-64 min-w-max rounded-full"
+            className="h-64 w-64 rounded-full object-contain"
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -99,13 +111,16 @@ const UserData = ({ id, userInfo }) => {
 const Cards = ({ id }) => {
   const [nftLoading, setNftLoading] = useState(false);
   const [nftList, setNFTList] = useState(null);
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
 
   useEffect(() => {
     const fetchUserNFT = async () => {
       try {
         setNftLoading(true);
-        const res = await backend.getusersfractionnft(Principal.fromText(id));
+        const res = await backendActor?.getusersfractionnft(
+          Principal.fromText(id)
+        );
         console.log("user nft: ", res);
         setNFTList(res);
       } catch (err) {
@@ -123,7 +138,7 @@ const Cards = ({ id }) => {
         <div className="col-span-full flex items-center justify-center">
           Loading User NFTs...
         </div>
-      ) : nftList && nftList.length > 0 ? (
+      ) : nftList && nftList?.length > 0 ? (
         nftList.map((nft, index) => <NFTDetailCard key={index} nft={nft} />)
       ) : (
         <div className="col-span-full flex items-center justify-center">
@@ -146,8 +161,8 @@ const NFTDetailCard = ({ nft }) => {
     <div className="bg-card rounded-2xl overflow-hidden flex flex-col space-x-2">
       <img
         src={
-          nftDetail?.fractional_token?.logo.length > 0
-            ? nftDetail?.fractional_token?.logo
+          nftDetail.fractional_token.logo.length > 10
+            ? nftDetail.fractional_token.logo
             : ChampsImg
         }
         alt="nft-img"

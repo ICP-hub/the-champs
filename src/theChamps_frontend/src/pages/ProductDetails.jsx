@@ -13,7 +13,7 @@ import Footer from "../components/common/Footer";
 import MyProfileActivity from "../components/myProfile/MyProfileActivity";
 import { Link, useParams } from "react-router-dom";
 import { Principal } from "@dfinity/principal";
-import { useCanister, useTransfer, useConnect } from "@connect2ic/react";
+// import { useCanister, useTransfer, useConnect } from "@connect2ic/react";
 import { TailSpin } from "react-loader-spinner";
 import placeholderimg from "../assets/CHAMPS.png";
 import { RadioGroup } from "@headlessui/react";
@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import BuyNowModal from "../components/common/BuyNowCard";
 import IconWrapper from "../components/common/IconWrapper";
 import { RiErrorWarningLine } from "react-icons/ri";
+import { useAuth } from "../auth/useClient";
 
 const plans = [
   {
@@ -51,11 +52,13 @@ const usePaymentTransfer = (fee) => {
 const ProductDetails = () => {
   const [open, setOpen] = useState(false);
   const { index, id } = useParams();
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [nft, getNft] = useState("");
   const [confirm, setConfirm] = useState(true);
 
-  const { principal, disconnect } = useConnect();
+  // const { principal, disconnect } = useConnect();
+  const { principal } = useAuth();
   const [loading, setLoading] = useState(false);
   const [loading1, setLoading1] = useState(false);
   const [favourites, setFavourites] = useState();
@@ -75,7 +78,9 @@ const ProductDetails = () => {
     try {
       const canister_id = Principal.fromText(id);
 
-      const res = await backend.getcollectionwisefractionalnft(canister_id);
+      const res = await backendActor?.getcollectionwisefractionalnft(
+        canister_id
+      );
 
       const nftDetails = res.filter((item) => item[1].toText() === index);
 
@@ -89,7 +94,7 @@ const ProductDetails = () => {
   };
   useEffect(() => {
     getNftDetails();
-  }, [backend]);
+  }, [backendActor]);
 
   const buyTokens = async () => {
     try {
@@ -114,7 +119,7 @@ const ProductDetails = () => {
       console.log(price);
       console.log(paymentMethod2);
 
-      const res = await backend.buytokens(
+      const res = await backendActor?.buytokens(
         nft[0][1],
         nft[0][0]?.fractional_token?.owner,
         userid,
@@ -149,7 +154,7 @@ const ProductDetails = () => {
     return () => {
       document.body.style.overflowY = "auto";
     };
-  }, [open, backend, nft]);
+  }, [open, backendActor, nft]);
 
   const handleConfirm = () => {
     // Call usePaymentTransfer function only if the selected plan is "Plug Wallet"
@@ -173,7 +178,7 @@ const ProductDetails = () => {
     try {
       setLoading1(true);
       const canister_id = Principal.fromText(id);
-      const res = await backend.addfavourite(
+      const res = await backendActor?.addfavourite(
         canister_id,
         parseInt(nft[0][0].nft.id)
       );
@@ -187,7 +192,7 @@ const ProductDetails = () => {
   };
   const getFavourites = async () => {
     try {
-      const res = await backend.getfavourites();
+      const res = await backendActor?.getfavourites();
 
       setFavourites(res);
     } catch (error) {
@@ -202,13 +207,13 @@ const ProductDetails = () => {
       );
       setProductInFavourites(isProductInFavourites);
     }
-  }, [backend, favourites]);
+  }, [backendActor, favourites]);
 
   const removefavourite = async (product) => {
     try {
       setLoading1(true);
       const nft = product[0].nft;
-      const res = await backend.removefavourite([
+      const res = await backendActor?.removefavourite([
         {
           ...nft,
           id: BigInt(parseInt(nft.id)),
@@ -249,7 +254,7 @@ const ProductDetails = () => {
     setLoading3(true);
 
     try {
-      const res = await backend.get_exchange_rates(
+      const res = await backendActor?.get_exchange_rates(
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: paymentMethod2 } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
@@ -267,7 +272,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     getExchangeRate();
-  }, [selectedPlan.value, backend]);
+  }, [selectedPlan.value, backendActor]);
   const [quantity, setQuantity] = useState(1);
 
   const incrementQuantity = () =>

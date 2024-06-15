@@ -6,17 +6,19 @@ import ReadMore from "./ReadMore";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-import { useCanister, useConnect } from "@connect2ic/react";
+// import { useCanister, useConnect } from "@connect2ic/react";
 import toast from "react-hot-toast";
 import useClipboard from "react-use-clipboard";
 import IconWrapper from "../common/IconWrapper";
 import { MdDashboard } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Principal } from "@dfinity/principal";
+import { useAuth } from "../../auth/useClient";
 
 const SidebarMain = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { principal, disconnect, isConnected } = useConnect();
+  // const { principal, disconnect, isConnected } = useConnect();
+  const { principal, logout } = useAuth();
   const [isCopied, setCopied] = useClipboard(principal, {
     successDuration: 1000,
   });
@@ -261,7 +263,8 @@ const SidebarMain = () => {
                 </svg>
                 <button
                   onClick={() => {
-                    disconnect();
+                    // disconnect();
+                    logout();
 
                     toast.success("Logout successfully");
                   }}

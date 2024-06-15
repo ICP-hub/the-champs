@@ -1,12 +1,13 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ imports.
 /* ----------------------------------------------------------------------------------------------------- */
-import { useCanister, useConnect } from "@connect2ic/react";
+// import { useCanister, useConnect } from "@connect2ic/react";
 import soccer1 from "../../assets/images/soccer-1.jpeg";
 import { useParams } from "react-router";
 import { Principal } from "@dfinity/principal";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useAuth } from "../../auth/useClient";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Fake activityData
@@ -53,21 +54,21 @@ const activityData = [
 /*  @ <MyProfileActivity /> : my-profile/activity tab
 /* ----------------------------------------------------------------------------------------------------- */
 const MyProfileActivity = () => {
-  const { isConnected, principal } = useConnect();
+  // const { isConnected, principal } = useConnect();
+  const { isAuthenticated, principal } = useAuth();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState([]);
 
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
 
   useEffect(() => {
     const getUsersFractionNFT = async () => {
       try {
-        const res = await backend.getusersfractionnft(
-          Principal.fromText(principal)
-        );
+        const res = await backendActor?.getusersfractionnft(principal);
 
-        console.log("Response from backend:", res);
+        console.log("Response from backendActor:", res);
 
         const filteredData = res.filter((item) => {
           const ownerPrincipal = item.nft?.owner?.toText();
@@ -83,15 +84,16 @@ const MyProfileActivity = () => {
     };
 
     getUsersFractionNFT();
-  }, [backend, principal]);
+  }, [backendActor, principal]);
   useEffect(() => {
     const getalltransactions = async () => {
       try {
-        const res = await backend.getalltransactions(
-          Principal.fromText(principal)
+        const res = await backendActor?.getalltransactions(
+          // Principal.fromText(principal)
+          principal
         );
         console.log("transation", res);
-        console.log("Response from backend:", res);
+        console.log("Response from backendActor:", res);
 
         setProduct(res);
         setLoading(false);
@@ -101,7 +103,7 @@ const MyProfileActivity = () => {
     };
 
     getalltransactions();
-  }, [backend, principal]);
+  }, [backendActor, principal]);
 
   return (
     <div className="flex flex-col gap-4">

@@ -6,7 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 import ReadMore from "../common/ReadMore";
 import { useParams } from "react-router";
-import { useCanister, useBalance, useConnect } from "@connect2ic/react";
+// import { useCanister, useBalance, useConnect } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { TailSpin } from "react-loader-spinner";
 import image from "../../assets/images/soccer-1.jpeg";
@@ -37,11 +37,13 @@ const plans = [
 import { GoHeartFill } from "react-icons/go";
 import { GoHeart } from "react-icons/go";
 import { HiMinus, HiPlus } from "react-icons/hi2";
+import { useAuth } from "../../auth/useClient";
 
 const ProductCard = ({ product, setShowHeader, showHeader }) => {
-  const { isConnected, principal } = useConnect();
+  // const { isConnected, principal } = useConnect();
   const { id } = useParams();
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor, isAuthenticated, principal } = useAuth();
 
   const [favourites, setFavourites] = useState();
   const [open, setOpen] = useState(false);
@@ -50,7 +52,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   // const [productInFavourites, setProductInFavourites] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false); // State to manage modal visibility
-  const [assets] = useBalance();
+  // const [assets] = useBalance();
   const [image, setImage] = useState(product[0]?.fractional_token.logo);
   const [loading3, setLoading3] = useState(true);
   const [exchange, setExchange] = useState(1);
@@ -79,7 +81,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   //   }
   // };
 
-  const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
+  // const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
 
   // const getFavourites = async () => {
   //   try {
@@ -157,7 +159,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     setLoading3(true);
 
     try {
-      const res = await backend.get_exchange_rates(
+      const res = await backendActor?.get_exchange_rates(
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: paymentMethod2 } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
@@ -179,7 +181,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
       setPaymentMethod2("icp");
     }
     getExchangeRate();
-  }, [backend, selectedPlan.value]);
+  }, [backendActor, selectedPlan.value]);
 
   // const buyTokens = async () => {
   //   try {
@@ -262,7 +264,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   };
 
   const handleBuyNow = () => {
-    if (isConnected) {
+    if (isAuthenticated) {
       // Check if user has sufficient balance
       if (icpWallet?.amount <= 0) {
         setShowModal(true);
@@ -280,20 +282,18 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   /*************** Favourite review ****************/
   // get favorites
   const getFav = async () => {
-    if (isConnected) {
-      try {
-        setFavLoad(true);
-        const res = await backend.getfavourites();
-        const favIds = res.map((fav) => fav[0].id);
-        // console.log("fav nft id", favIds);
-        setFavourites(favIds); // store only ids
-        setFavMatched(favIds.includes(product[0].nft.id));
-      } catch (err) {
-        console.error("Error getting fav ", err);
-      } finally {
-        setFavLoad(false);
-      }
-    } else console.log("fgh");
+    try {
+      setFavLoad(true);
+      const res = await backendActor?.getfavourites();
+      const favIds = res.map((fav) => fav[0].id);
+      // console.log("fav nft id", favIds);
+      setFavourites(favIds); // store only ids
+      setFavMatched(favIds.includes(product[0].nft.id));
+    } catch (err) {
+      console.error("Error getting fav ", err);
+    } finally {
+      setFavLoad(false);
+    }
   };
 
   // fetch favorites : fetch in favChanged
@@ -303,13 +303,13 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
 
   // add or remove a favorite
   const toggleFav = async (product) => {
-    if (isConnected) {
+    if (isAuthenticated) {
       try {
         setFavLoad(true);
         if (favMatched) {
           // Remove favorite
           const nft = product[0].nft;
-          const res = await backend.removefavourite([
+          const res = await backendActor?.removefavourite([
             {
               ...nft,
               id: BigInt(parseInt(nft.id)),
@@ -320,17 +320,14 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           // return; ? return need?
         } else {
           // Add favorite
-          const res = await backend.addfavourite(
+          const res = await backendActor?.addfavourite(
             Principal.fromText(id),
             parseInt(product[0].nft.id)
           );
           console.log(res);
         }
       } catch (err) {
-        console.error("error toggling fav ", err);
-      } finally {
-        // setFavLoad(false);   // This may cause bug????
-        setFavChanged((prev) => !prev);
+        console.error("error while fetching productCard ", err);
       }
     } else {
       toast.error("Please connect to wellet ");
@@ -540,7 +537,8 @@ const BuyModal = ({
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [metaData, setMetaData] = useState(null);
-  const { principal } = useConnect();
+  // const { principal } = useConnect();
+  const { principal } = useAuth();
   const [balance, setBalance] = useState(null);
   const createTokenActor = (canisterId) => {
     let identity = window.identity;

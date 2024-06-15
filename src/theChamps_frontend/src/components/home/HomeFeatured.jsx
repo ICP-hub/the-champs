@@ -9,18 +9,20 @@ import NotAvailable from "../common/NotAvailable";
 import { useSelector } from "react-redux";
 import ProducrCardLgLoader from "../productcomponent/ProducrCardLgLoader";
 import { useCanister } from "@connect2ic/react";
+import { useAuth } from "../../auth/useClient";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomeFeatured /> : Homepage featured items.
 /* ----------------------------------------------------------------------------------------------------- */
 const HomeFeatured = () => {
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const { getAllCollections, isLoading } = CollectionApi();
   const collectionSelector = useSelector((state) => state.collections);
 
   useEffect(() => {
     getAllCollections();
-  }, [backend]);
+  }, [backendActor]);
 
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">

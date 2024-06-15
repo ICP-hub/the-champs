@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { useDropzone } from "react-dropzone";
 import { FaLastfm } from "react-icons/fa6";
-import { useCanister, useConnect } from "@connect2ic/react";
+// import { useCanister, useConnect } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { Form, useNavigate, useParams } from "react-router-dom";
 import { CiSquareRemove } from "react-icons/ci";
@@ -16,6 +16,7 @@ import { HiOutlineXMark } from "react-icons/hi2";
 import { TailSpin } from "react-loader-spinner";
 import { validateForm } from "./formValidation";
 import TextHint from "../../components/admin-text-hint";
+import { useAuth } from "../../../auth/useClient";
 
 const initialFormValues = {
   collectionId: "",
@@ -46,11 +47,12 @@ const initialFormValues = {
 const MintNft = () => {
   const [formData, setFormData] = useState(initialFormValues);
   const { slug } = useParams();
-  const { principal } = useConnect();
+  // const { principal } = useConnect();
+  const { principal } = useAuth();
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageArrayBuffer, setImageArrayBuffer] = useState(null);
   const [selectedPurpose, setSelectedPurpose] = useState("Preview");
-  const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [isMintLoading, setIsMintLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
@@ -74,8 +76,8 @@ const MintNft = () => {
       const FinalData = {
         ...formData,
         collectionId: Principal.fromText(slug),
-        ownerId: Principal.fromText(principal),
-        owner: principal,
+        ownerId: principal,
+        owner: principal.toText(),
         metaData: [
           {
             data: imageArrayBuffer,
@@ -91,7 +93,7 @@ const MintNft = () => {
       console.log(FinalData);
       try {
         setIsMintLoading(true);
-        const res = await backend.FractionalizeNFt(
+        const res = await backendActor?.FractionalizeNFt(
           FinalData.collectionId,
           FinalData.ownerId,
           FinalData.metaData,

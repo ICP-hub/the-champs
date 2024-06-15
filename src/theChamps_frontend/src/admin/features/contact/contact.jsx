@@ -4,16 +4,17 @@ import { Link } from "react-router-dom";
 import "regenerator-runtime/runtime";
 import { useCanister } from "@connect2ic/react";
 import AdminLoader from "../../components/laoding-admin";
+import { useAuth } from "../../../auth/useClient";
 // import { Grid } from "react-loader-spinner";
 
 const Contact = () => {
-  const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [sampleData, setSampleData] = useState([]);
 
   const getAllCollections = async () => {
     try {
-      const data = await backend.listContacts();
+      const data = await backendActor?.listContacts();
       setSampleData(data);
       setIsLoading(false);
       console.log("data", data);
@@ -28,9 +29,8 @@ const Contact = () => {
       getAllCollections();
     }, 1000);
     return () => clearTimeout(timer);
-  }, [backend]);
-
-  const columns = useMemo(
+  }, [backendActor]);
+  const columns = React.useMemo(
     () => [
       {
         Header: "Name",

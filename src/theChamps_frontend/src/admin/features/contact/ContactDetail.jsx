@@ -7,10 +7,11 @@ import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { Grid, TailSpin } from "react-loader-spinner";
 import AdminLoader from "../../components/laoding-admin";
+import { useAuth } from "../../../auth/useClient";
 const ContactDetail = () => {
   const navigate = useNavigate();
   const param = useParams();
-  const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +25,7 @@ const ContactDetail = () => {
 
   const getAllCollections = async () => {
     try {
-      const data = await backend.getContact(param.slug);
+      const data = await backendActor?.getContact(param.slug);
       if (data.ok) {
         setFormData({
           name: data.ok.name,
@@ -47,7 +48,7 @@ const ContactDetail = () => {
       getAllCollections();
     }, 1000);
     return () => clearTimeout(timer);
-  }, [backend]);
+  }, [backendActor]);
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {

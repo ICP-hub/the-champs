@@ -19,10 +19,12 @@ import placeholderImg from "../assets/CHAMPS.png";
 import IcpLogo from "../assets/IcpLogo";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useAuth } from "../auth/useClient";
 
 const ProductPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [collection, setCollection] = useState([]);
   const [loading, setloading] = useState(true);
   const { id } = useParams();
@@ -37,7 +39,7 @@ const ProductPage = ({ name }) => {
   const getCollectionDetails = async () => {
     try {
       const canister_id = Principal.fromText(id);
-      const res = await backend.getcollectiondetails(canister_id);
+      const res = await backendActor?.getcollectiondetails(canister_id);
       // console.log("hello");
       setCollectionDetails(res);
       console.log(res);
@@ -51,7 +53,9 @@ const ProductPage = ({ name }) => {
   const getCollectionWiseNft = async () => {
     try {
       const canister_id = Principal.fromText(id);
-      const res = await backend.getcollectionwisefractionalnft(canister_id);
+      const res = await backendActor?.getcollectionwisefractionalnft(
+        canister_id
+      );
       // console.log("hello");
       setCollection(res);
       setloading(false);
@@ -77,7 +81,7 @@ const ProductPage = ({ name }) => {
   useEffect(() => {
     getCollectionDetails();
     getCollectionWiseNft();
-  }, [backend, itemsPerPage]);
+  }, [backendActor, itemsPerPage]);
 
   const refresh = () => {
     setSearchResults([]);
@@ -142,7 +146,7 @@ const ProductPage = ({ name }) => {
     setLoading3(true);
 
     try {
-      const res = await backend.get_exchange_rates(
+      const res = await backendActor?.get_exchange_rates(
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
@@ -160,7 +164,7 @@ const ProductPage = ({ name }) => {
 
   useEffect(() => {
     getExchangeRate();
-  }, [backend]);
+  }, [backendActor]);
   return (
     <>
       {showHeader && <Header />} {/* Conditionally render the header */}

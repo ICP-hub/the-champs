@@ -1,12 +1,12 @@
 // Sidebar.js
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // import SidebarMain from "./SidebarMain";
-import {
-  ConnectDialog,
-  useBalance,
-  useConnect,
-  useDialog,
-} from "@connect2ic/react";
+// import {
+//   ConnectDialog,
+//   useBalance,
+//   useConnect,
+//   useDialog,
+// } from "@connect2ic/react";
 import { login, logout } from "../../../../redux/reducers/authReducer";
 import { useDispatch } from "react-redux";
 // import Avatar from "boring-avatars";
@@ -22,17 +22,30 @@ import { motion } from "framer-motion";
 // import { IoMdArrowDropup } from "react-icons/io";
 import PlugWallet from "./sidebar-components/PlugWallet";
 import ProfileSection from "./sidebar-components/ProfileSection";
+import { useAuth } from "../../auth/useClient";
+import WalletModal from "./WalletModal";
 
 const Sidebar = () => {
-  const { isConnected } = useConnect();
+  // const { isConnected } = useConnect();
+  const { isAuthenticated } = useAuth();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const handleWalletModalOpen = () => setIsLoggedIn(true);
+  const handleWalletModalClose = () => setIsLoggedIn(false);
+
   return (
     <>
-      <ConnectDialog dark={false} />
       <div className="w-full h-screen p-4 overflow-scroll scrollBox">
-        {isConnected ? <UserAthenticated /> : <UserNotAuthenticated />}
+        {isAuthenticated ? (
+          <UserAthenticated />
+        ) : (
+          <UserNotAuthenticated onModalOpen={handleWalletModalOpen} />
+        )}
         {/* <UserAthenticated /> */}
         {/* <UserNotAuthenticated /> */}
       </div>
+      {isLoggedIn ? (
+        <WalletModal onModalClose={handleWalletModalClose} />
+      ) : null}
     </>
   );
 };
@@ -49,8 +62,7 @@ const UserAthenticated = () => {
   );
 };
 
-const UserNotAuthenticated = () => {
-  const { open } = useDialog();
+const UserNotAuthenticated = ({ onModalOpen }) => {
   return (
     <div>
       <h1 className="text-sm md:text-md text-gray-500 text-left min-w-max">
@@ -62,7 +74,7 @@ const UserNotAuthenticated = () => {
       <motion.div
         whileTap={{ scale: 0.8 }}
         className="button text-sm md:text-md min-w-max flex items-center justify-center p-2 rounded-md text-white font-medium cursor-pointer"
-        onClick={() => open()}
+        onClick={onModalOpen}
       >
         Connect to wallet
       </motion.div>
@@ -78,7 +90,7 @@ const UserNotAuthenticated = () => {
 //         isOpen ? "translate-x-0" : "translate-x-full"
 //       }`}
 //     >
-//       {isConnected ? (
+//       {isAuthenticated ? (
 //         <SidebarMain />
 //       ) : (
 //         <div className="p-4 mt-24  h-screen bg-white ">

@@ -20,9 +20,10 @@ import { Toaster, toast } from "react-hot-toast";
 import { useCanister } from "@connect2ic/react";
 import { TailSpin } from "react-loader-spinner";
 import CountUp from "react-countup";
+import { useAuth } from "../../../auth/useClient";
 
 const DashBoard = () => {
-  const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [allStats, setAllStats] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,7 +31,7 @@ const DashBoard = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const res = await backend.getallstats();
+        const res = await backendActor?.getallstats();
         setAllStats(res);
       } catch (err) {
         console.error("Error fetching all stats : ", err);
@@ -39,7 +40,7 @@ const DashBoard = () => {
       }
     };
     fetchData();
-  }, [backend]);
+  }, [backendActor]);
 
   // console.log(allStats);
   const stats = [

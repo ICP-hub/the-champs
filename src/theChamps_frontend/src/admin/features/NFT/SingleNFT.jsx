@@ -14,10 +14,12 @@ import { TbSquareRoundedChevronLeft } from "react-icons/tb";
 import champsImg from "../../../assets/CHAMPS.png";
 // import { Grid } from "react-loader-spinner";
 import AdminLoader from "../../components/laoding-admin";
+import { useAuth } from "../../../auth/useClient";
 
 const SingleNFT = () => {
   const { collection, slug, id } = useParams();
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [isNFTLoading, setIsNFTLoading] = useState(false);
   const [nftDetail, setNFTDetail] = useState(null);
   const navigate = useNavigate();
@@ -26,7 +28,7 @@ const SingleNFT = () => {
     const fetchNFTDetail = async () => {
       try {
         setIsNFTLoading(true);
-        const res = await backend.getFractionalNftDetails(
+        const res = await backendActor?.getFractionalNftDetails(
           parseInt(id),
           Principal.fromText(slug),
           Principal.fromText(collection)

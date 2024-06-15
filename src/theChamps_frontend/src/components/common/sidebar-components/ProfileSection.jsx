@@ -3,10 +3,11 @@ import IconWrapper from "../IconWrapper";
 import { Link, useNavigate } from "react-router-dom";
 import { MdDashboard, MdFormatListBulletedAdd } from "react-icons/md";
 import { FaUserPen } from "react-icons/fa6";
-import { useCanister, useConnect } from "@connect2ic/react";
+// import { useCanister, useConnect } from "@connect2ic/react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Principal } from "@dfinity/principal";
+import { useAuth } from "../../../auth/useClient";
 
 const ProfileSection = () => {
   const navigate = useNavigate();
@@ -15,13 +16,15 @@ const ProfileSection = () => {
   const commonHeadingStyle =
     "text-sm font-bold uppercase text-gray-500 text-left min-w-max px-4 pt-3";
   const userInfo = useSelector((state) => state.auth);
-  const { principal, disconnect, isConnected } = useConnect();
+  // const { principal, disconnect, isConnected } = useConnect();
+  const { principal, isAuthenticated } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAdminChecked, setIsAdminChecked] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
 
-  console.log(backend);
+  console.log(backendActor);
 
   useEffect(() => {
     const checkConnection = async () => {
@@ -39,10 +42,11 @@ const ProfileSection = () => {
 
   useEffect(() => {
     const checkIsAdmin = async () => {
-      if (isConnected && principal) {
+      if (isAuthenticated && principal) {
         try {
-          const res = await backend.checkisadmin(
-            Principal?.fromText(principal)
+          const res = await backendActor?.checkisadmin(
+            // Principal?.fromText(principal)
+            principal
           );
           setIsAdmin(res);
           console.log("admin is ", res);
@@ -59,7 +63,7 @@ const ProfileSection = () => {
     };
 
     checkIsAdmin();
-  }, [isConnected, backend, principal]);
+  }, [isAuthenticated, backendActor, principal]);
 
   return (
     <>

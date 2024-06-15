@@ -4,11 +4,12 @@ import NFTPrice from "./NFTPrice";
 import UploadNFTImg from "./UploadNFTImg";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
+import { useAuth } from "../../../auth/useClient";
 
 const HeroNFT = () => {
   const [child, setChld] = useState(<MintNft />);
   const [selected, setSelected] = useState("");
-  const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const handeldetail = () => {
     setChld(<MintNft />);
   };

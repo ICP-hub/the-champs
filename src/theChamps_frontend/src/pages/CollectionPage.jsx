@@ -10,10 +10,12 @@ import ProducrCardLgLoader from "../components/productcomponent/ProducrCardLgLoa
 import CollectionApi from "../api/CollectionApi";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { useAuth } from "../auth/useClient";
 
 const CollectionPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [collection, setCollection] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,7 +28,7 @@ const CollectionPage = ({ name }) => {
   useEffect(() => {
     getAllCollections();
     setLoading(false);
-  }, [backend]);
+  }, [backendActor]);
 
   const handleSearch = (e) => {
     setSearch(true);

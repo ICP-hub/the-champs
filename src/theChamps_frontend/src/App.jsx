@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import appRoutes from "./app.routing";
 import { RouterProvider } from "react-router-dom";
 import { AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
@@ -14,7 +14,6 @@ function App() {
   });
 
   // console.log(isBgVisible);
-
   return (
     <div>
       <main className="App">

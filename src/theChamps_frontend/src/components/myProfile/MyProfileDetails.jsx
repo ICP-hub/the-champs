@@ -13,13 +13,14 @@ import toast from "react-hot-toast";
 
 import UserLogo from "../../assets/images/userlogo.png";
 import { useEffect, useState } from "react";
-import { useCanister, useConnect } from "@connect2ic/react";
-import { Principal } from "@dfinity/principal";
+// import { useCanister, useConnect } from "@connect2ic/react";
+// import { Principal } from "@dfinity/principal";
 import { Bars, InfinitySpin } from "react-loader-spinner";
 import Avatar from "boring-avatars";
 import { useSelector } from "react-redux";
 import useClipboard from "react-use-clipboard";
 import { RiCheckLine, RiFileCopyLine } from "react-icons/ri";
+import { useAuth } from "../../auth/useClient";
 
 const containerVariants = {
   hidden: { opacity: 0, x: 400, transition: { duration: 0.4 } },
@@ -28,13 +29,15 @@ const containerVariants = {
 };
 
 const MyProfileDetails = () => {
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const userInfo = useSelector((state) => state.auth);
   const [isCopied, setCopied] = useClipboard(userInfo?.userPlugPrincipal, {
     successDuration: 1000,
   });
   const [editMode, setEditMode] = useState(false);
-  const { isConnected, principal } = useConnect();
+  // const { isConnected, principal } = useConnect();
+  const { principal } = useAuth();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -101,7 +104,7 @@ const MyProfileDetails = () => {
 
   const getuserDetail = async () => {
     try {
-      const data = await backend.getUserdetailsbycaller();
+      const data = await backendActor?.getUserdetailsbycaller();
       if (data.ok) {
         setFormData(data.ok);
       }
@@ -297,9 +300,11 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
     }));
   };
   const [loading, setLoading] = useState(false);
-  const [backend] = useCanister("backend");
-  console.log("backend", backend);
-  const { isConnected, principal } = useConnect();
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
+  console.log("backendActor", backendActor);
+  // const { isConnected, principal } = useConnect();
+  const { isAuthenticated, principal } = useAuth();
   const userInfo = useSelector((state) => state.auth);
 
   const [errors, setErrors] = useState({});
@@ -325,7 +330,7 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isConnected) {
+    if (isAuthenticated) {
       try {
         if (validateForm()) {
           setLoading(true);
@@ -340,7 +345,7 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
           };
 
           console.log("record is", User);
-          const user = await backend.updateUser(User);
+          const user = await backendActor?.updateUser(User);
 
           if (user.ok) {
             console.log("Updated:", user.ok);

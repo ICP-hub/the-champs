@@ -18,12 +18,13 @@ import AdminLoader from "../../components/laoding-admin";
 import { AdminModal } from "../../components/admin-modal";
 import toast from "react-hot-toast";
 import { TbSquareRoundedChevronLeft } from "react-icons/tb";
+import { useAuth } from "../../../auth/useClient";
 
 const NFTList = () => {
   const { slug } = useParams();
   const { getSingleCollectionDetails, isLoading } = CollectionApi();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [modalLoader, setModalLoader] = useState(false);
   const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ const NFTList = () => {
   const handleRemoveCollection = async () => {
     try {
       setModalLoader(true);
-      const res = await backend.remove_collection_to_map(
+      const res = await backendActor?.remove_collection_to_map(
         Principal.fromText(slug)
       );
       toast.success("Collection removed successfully");

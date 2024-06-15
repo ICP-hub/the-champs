@@ -7,12 +7,14 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { motion } from "framer-motion";
 import AdminLoader from "../components/laoding-admin";
+import { useAuth } from "../../auth/useClient";
 // listUsers: () → (vec record {principal; record {twitter:text; email:text; discord:text; profileimage:text; lastName:text; telegram:text; firstName:text}}) query
 // User Component
 const User = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [isUserLoading, setIsUserLoading] = useState(false);
   const [userData, setUserData] = useState(null);
   const usersPerPage = 10;
@@ -37,7 +39,7 @@ const User = () => {
     const fetchUsers = async () => {
       try {
         setIsUserLoading(true);
-        const res = await backend.listUsers();
+        const res = await backendActor?.listUsers();
         console.log("response for list users:", res);
         setUserData(res);
       } catch (err) {
@@ -47,7 +49,7 @@ const User = () => {
       }
     };
     fetchUsers();
-  }, [backend]);
+  }, [backendActor]);
 
   return (
     <div className="flex flex-col">

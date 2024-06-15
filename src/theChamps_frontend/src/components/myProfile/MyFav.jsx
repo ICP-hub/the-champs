@@ -5,7 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 import ReadMore from "../common/ReadMore";
 import { useParams } from "react-router";
-import { useCanister, useBalance, useConnect } from "@connect2ic/react";
+// import { useCanister, useBalance, useConnect } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { InfinitySpin, TailSpin } from "react-loader-spinner";
 import { RiErrorWarningLine } from "react-icons/ri";
@@ -17,15 +17,17 @@ import ProductCardLoader from "../productcomponent/ProductCardLoader";
 import IcpLogo from "../../assets/IcpLogo";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { GoHeartFill } from "react-icons/go";
+import { useAuth } from "../../auth/useClient";
 
 const MyFav = () => {
-  const { isConnected, principal } = useConnect();
-  const [backend] = useCanister("backend");
+  // const { isConnected, principal } = useConnect();
+  // const [backend] = useCanister("backend");
+  const { backendActor, isAuthenticated, principal } = useAuth();
   const [favourites, setFavourites] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [assets] = useBalance();
+  // const [assets] = useBalance();
   const [filteredProduct, setFilteredProduct] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -37,10 +39,10 @@ const MyFav = () => {
   const [loading3, setLoading3] = useState(true);
 
   const getUsersFractionNFT = async () => {
-    if (isConnected) {
+    if (isAuthenticated) {
       try {
-        const res = await backend.getallfractionalnfts();
-        const favouritesRes = await backend.getfavourites();
+        const res = await backendActor?.getallfractionalnfts();
+        const favouritesRes = await backendActor?.getfavourites();
 
         const favouriteProducts = res.filter((product) =>
           favouritesRes.some(
@@ -63,18 +65,19 @@ const MyFav = () => {
 
   useEffect(() => {
     getUsersFractionNFT();
-  }, [backend, principal]);
+  }, [backendActor, principal]);
 
   const handleBuyNow = () => {
-    if (isConnected) {
-      const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
-      if (icpWallet?.amount <= 0) {
-        setShowModal(true);
-      } else {
-        toast.success("Proceeding to buy");
-      }
-    } else {
-      toast.success("Please login first");
+    if (isAuthenticated) {
+      // Review
+      //   const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
+      //   if (icpWallet?.amount <= 0) {
+      //     setShowModal(true);
+      //   } else {
+      //     toast.success("Proceeding to buy");
+      //   }
+      // } else {
+      //   toast.success("Please login first");
     }
   };
 
@@ -101,7 +104,7 @@ const MyFav = () => {
     const fetchFavourites = async () => {
       try {
         setFavLoad(true);
-        const res = await backend.getfavourites();
+        const res = await backendActor?.getfavourites();
         const favIds = res.map((fav) => fav[0].id);
         setFavourites(favIds);
       } catch (err) {
@@ -120,7 +123,7 @@ const MyFav = () => {
       setFavLoad(true);
       const nft = product[1].nft;
       if (favourites.includes(nft.id)) {
-        await backend.removefavourite([
+        await backendActor?.removefavourite([
           {
             ...nft,
             id: BigInt(parseInt(nft.id)),
@@ -131,7 +134,7 @@ const MyFav = () => {
           prevProducts.filter((p) => p[1].nft.id !== nft.id)
         );
       } else {
-        await backend.addfavourite(product[0], parseInt(nft.id));
+        await backendActor?.addfavourite(product[0], parseInt(nft.id));
       }
     } catch (err) {
       console.error("Error toggling fav ", err);
@@ -150,7 +153,7 @@ const MyFav = () => {
     setLoading3(true);
 
     try {
-      const res = await backend.get_exchange_rates(
+      const res = await backendActor?.get_exchange_rates(
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
@@ -173,7 +176,7 @@ const MyFav = () => {
 
   useEffect(() => {
     getExchangeRate();
-  }, [backend]);
+  }, [backendActor]);
 
   return (
     <>

@@ -6,12 +6,15 @@ import PlaceholderImg from "../../assets/CHAMPS.png";
 import IcpLogo from "../../assets/IcpLogo";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
+import { useAuth } from "../../auth/useClient";
+
 const ProductCardLg = ({ prod }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [collection, setCollection] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [backend] = useCanister("backend");
-  console.log("single collection is", prod);
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
+  // console.log("single collection is", prod);
   const id = prod.canisterId.toText();
   const [exchange, setExchange] = useState(1);
   const [loading3, setLoading3] = useState(true);
@@ -20,8 +23,10 @@ const ProductCardLg = ({ prod }) => {
   const getCollectionWiseNft = async () => {
     try {
       const canister_id = Principal.fromText(id);
-      const res = await backend.getcollectionwisefractionalnft(canister_id);
-      console.log("hello ss", res);
+      const res = await backendActor?.getcollectionwisefractionalnft(
+        canister_id
+      );
+      // console.log("hello ss", res);
       setImg1(res[0][0].fractional_token?.logo);
       setImg2(res[1][0].fractional_token?.logo);
       setCollection(res);
@@ -33,7 +38,7 @@ const ProductCardLg = ({ prod }) => {
 
   useEffect(() => {
     getCollectionWiseNft();
-  }, [backend]);
+  }, [backendActor]);
 
   const calculateVolume = (collection) => {
     return collection
@@ -69,11 +74,11 @@ const ProductCardLg = ({ prod }) => {
     setLoading3(true);
 
     try {
-      const res = await backend.get_exchange_rates(
+      const res = await backendActor?.get_exchange_rates(
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
-      console.log(res);
+      // console.log(res);
 
       if (res?.Ok?.rate) {
         const exchangeRate2 =
@@ -92,7 +97,7 @@ const ProductCardLg = ({ prod }) => {
 
   useEffect(() => {
     getExchangeRate();
-  }, [backend]);
+  }, [backendActor]);
   const volume = calculateVolume(collection);
   const listingCount = calculateListingCount(collection);
   const floorPrice = calculateFloorPrice(collection);

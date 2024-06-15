@@ -1,9 +1,11 @@
 import { useCanister } from "@connect2ic/react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useAuth } from "../auth/useClient";
 
 const UserSendAPI = () => {
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   //createContact
   const sendUserContact = async (userData, setFormSubmited) => {
@@ -17,7 +19,7 @@ const UserSendAPI = () => {
 
     try {
       setIsLoading(true);
-      const res = await backend.createContact(data);
+      const res = await backendActor?.createContact(data);
       console.log("Response form sendUserContact", res);
       setFormSubmited(true);
       toast.success("Submitted Successfully! We'll contact you soon!");

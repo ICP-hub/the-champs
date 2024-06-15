@@ -4,6 +4,7 @@
 import { useCanister } from "@connect2ic/react";
 import { useEffect, useState } from "react";
 import CountUp from "react-countup";
+import { useAuth } from "../../auth/useClient";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageD /> : Counts wallet, artists, value.
 /* ----------------------------------------------------------------------------------------------------- */
@@ -16,12 +17,13 @@ const HomePageD = () => {
     { value: "0", label: "NFT sales", unit: "x" },
   ]);
   const [counts, setCounts] = useState([]);
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
 
   useEffect(() => {
     const getStat = async () => {
       try {
-        const res = await backend.getallstats();
+        const res = await backendActor?.getallstats();
         console.log(res);
         // Assuming `res` is an object with the same keys as `dataBlocks`
         const newBlocks = [
@@ -49,7 +51,7 @@ const HomePageD = () => {
       }
     };
     getStat();
-  }, [backend]);
+  }, [backendActor]);
 
   useEffect(() => {
     const intervalIds = [];

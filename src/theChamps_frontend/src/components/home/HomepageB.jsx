@@ -23,6 +23,7 @@ import { Link } from "react-router-dom";
 import NotAvailable from "../common/NotAvailable";
 import { useSelector } from "react-redux";
 import { useCanister } from "@connect2ic/react";
+import { useAuth } from "../../auth/useClient";
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageB /> : Soccer collection.
@@ -32,7 +33,8 @@ const HomePageB = () => {
   const [numColumns, setNumColumns] = useState(2);
   const { getAllCollectionWiseNFT } = NFTApi();
   const [finalLoading, setFinalLoading] = useState(true);
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
 
   const nftData = useSelector((state) => state.nftData);
 
@@ -56,7 +58,7 @@ const HomePageB = () => {
   // Effect hook get collection onLoad;
   useEffect(() => {
     getAllCollectionIds();
-  }, [backend]);
+  }, [backendActor]);
 
   // Effect : nft data fetch
   useEffect(() => {
@@ -64,7 +66,7 @@ const HomePageB = () => {
     setTimeout(() => {
       setFinalLoading(false);
     }, 5000);
-  }, [nftData.collectionIds, backend]);
+  }, [nftData.collectionIds, backendActor]);
 
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
@@ -153,14 +155,14 @@ const HomePageB = () => {
 /* ----------------------------------------------------------------------------------------------------- */
 const NFTCard = ({ NFT, collection, nftData }) => {
   const [image, setImage] = useState(NFT[0]?.fractional_token?.logo);
-  console.log(NFT);
+  // console.log(NFT);
 
-  useEffect(() => {
-    // const img = NFT.metadata.map((item) => item.key_val_data);
-    // console.log("This console is coming from HOMEPAGE B  NFT:", NFT);
-    // console.log(Object.values(img));
-    // console.log(NFT);
-  }, [NFT]);
+  // useEffect(() => {
+  //   // const img = NFT.metadata.map((item) => item.key_val_data);
+  //   // console.log("This console is coming from HOMEPAGE B  NFT:", NFT);
+  //   // console.log(Object.values(img));
+  //   // console.log(NFT);
+  // }, [NFT]);
   // console.log(NFT.nft.owner.toText());
   // console.log(NFT);
   const handleImage = () => {

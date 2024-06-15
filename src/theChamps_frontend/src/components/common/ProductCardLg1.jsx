@@ -5,12 +5,14 @@ import IcpLogo from "../../assets/IcpLogo";
 import PlaceholderImg from "../../assets/CHAMPS.png";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
+import { useAuth } from "../../auth/useClient";
 
 const ProductCardLg = ({ prod }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [collection, setCollection] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [backend] = useCanister("backend");
+  // const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   console.log("single collection is", prod);
   const id = prod.canisterId.toText();
   const [img1, setImg1] = useState("");
@@ -20,7 +22,9 @@ const ProductCardLg = ({ prod }) => {
   const getCollectionWiseNft = async () => {
     try {
       const canister_id = Principal.fromText(id);
-      const res = await backend.getcollectionwisefractionalnft(canister_id);
+      const res = await backendActor?.getcollectionwisefractionalnft(
+        canister_id
+      );
       console.log("hello ss", res);
       setCollection(res);
       setImg1(res[0][0].fractional_token?.logo);
@@ -33,7 +37,7 @@ const ProductCardLg = ({ prod }) => {
 
   useEffect(() => {
     getCollectionWiseNft();
-  }, [backend]);
+  }, [backendActor]);
 
   const calculateVolume = (collection) => {
     return collection
@@ -80,7 +84,7 @@ const ProductCardLg = ({ prod }) => {
     setLoading3(true);
 
     try {
-      const res = await backend.get_exchange_rates(
+      const res = await backendActor?.get_exchange_rates(
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
@@ -98,7 +102,7 @@ const ProductCardLg = ({ prod }) => {
 
   useEffect(() => {
     getExchangeRate();
-  }, [backend]);
+  }, [backendActor]);
 
   const volume = calculateVolume(collection);
   const listingCount = calculateListingCount(collection);

@@ -10,27 +10,29 @@ import {
   IoMdRefresh,
   IoMdSearch,
 } from "react-icons/io";
-import { useBalance, useConnect } from "@connect2ic/react";
+// import { useBalance, useConnect } from "@connect2ic/react";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../../../../../redux/reducers/authReducer";
 import IcpLogo from "../../../assets/IcpLogo";
 import useClipboard from "react-use-clipboard";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../../auth/useClient";
 
 const PlugWallet = () => {
   const controls = useAnimation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { principal, disconnect } = useConnect();
-  const [assets] = useBalance();
-  const dispatch = useDispatch();
+  // const { principal, disconnect } = useConnect();
+  const { principal, logout } = useAuth();
+  // const [assets] = useBalance();
+  // const dispatch = useDispatch();
   const [isCopied, setCopied] = useClipboard(principal, {
     successDuration: 1000,
   });
 
-  const userInfo = useSelector((state) => state.auth);
+  // const userInfo = useSelector((state) => state.auth);
 
-  console.log("useinfo", userInfo);
+  // console.log("useinfo", userInfo);
   // Open close sidebar
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -53,22 +55,23 @@ const PlugWallet = () => {
   const viewInExplorer = () => {};
   // user logout
   const userLogOut = () => {
-    dispatch(logout());
-    disconnect();
+    // dispatch(logout());
+    // disconnect();
+    logout();
     toast.success("Logout successfully");
   };
 
   // Effect for setting userInfo : redux
-  useEffect(() => {
-    if (principal) {
-      const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
-      const icpBal = icpWallet?.amount;
-      // console.log(icpBal);
-      dispatch(login({ plugPrincipal: principal, plugBalance: icpBal }));
-    } else {
-      dispatch(logout());
-    }
-  }, [principal, assets]);
+  // useEffect(() => {
+  //   if (principal) {
+  //     const icpWallet = assets?.find((wallet) => wallet.name === "ICP");
+  //     const icpBal = icpWallet?.amount;
+  //     // console.log(icpBal);
+  //     dispatch(login({ plugPrincipal: principal, plugBalance: icpBal }));
+  //   } else {
+  //     dispatch(logout());
+  //   }
+  // }, [principal, assets]);
 
   return (
     <div className="flex w-full flex-col">
@@ -83,8 +86,8 @@ const PlugWallet = () => {
         <div className="flex flex-col flex-1">
           <div className="font-bold uppercase">USER ID</div>
           <div className="text-sm font-medium line-clamp-1 text-gray-600">
-            {userInfo.userPlugPrincipal ? (
-              userInfo.userPlugPrincipal
+            {principal ? (
+              principal.toText()
             ) : (
               <div className="w-full rounded-md h-5 bg-gray-300 animate-pulse"></div>
             )}

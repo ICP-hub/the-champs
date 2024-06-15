@@ -14,13 +14,14 @@ import CollectionApi from "../../../api/CollectionApi";
 import { useSelector } from "react-redux";
 import champsImg from "../../../assets/CHAMPS.png";
 import AdminLoader from "../../components/laoding-admin";
+import { useAuth } from "../../../auth/useClient";
 
 const Market = () => {
   const [sortOption, setSortOption] = useState("newest");
   const [isCreate, setIsCreate] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const { getAllCollections, isLoading } = CollectionApi();
-  const [backend] = useCanister("backend");
+  const { backendActor } = useAuth();
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const handleSortChange = (event) => {
@@ -40,7 +41,7 @@ const Market = () => {
   // Get Collections
   useEffect(() => {
     getAllCollections();
-  }, [backend, formSubmitted]);
+  }, [backendActor, formSubmitted]);
 
   return (
     <div>
