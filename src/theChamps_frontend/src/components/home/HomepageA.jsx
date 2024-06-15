@@ -19,7 +19,8 @@ import circle2 from "../../assets/icons/circle-02.svg";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useCanister, useConnect } from "@connect2ic/react";
+// import { useCanister, useConnect } from "@connect2ic/react";
+import { useAuth } from "../../auth/useClient";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ <HomePageA /> : Homepage top.
 /* ----------------------------------------------------------------------------------------------------- */
@@ -58,8 +59,9 @@ const HomePageALeft = () => {
 };
 
 const HomePageALeftCommunityCounter = () => {
-  const { isConnected, principal } = useConnect();
-  const [backend] = useCanister("backend");
+  // const { isConnected, principal } = useConnect();
+  const { principal, isAuthenticated, backendActor } = useAuth();
+  // const [backend] = useCanister("backend");
   const [NFTs, SetNFTs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [img1, setimg1] = useState("");
@@ -67,7 +69,7 @@ const HomePageALeftCommunityCounter = () => {
   const [img3, setimg3] = useState("");
   const getUsersFractionNFT = async () => {
     try {
-      const res = await backend.getallfractionalnfts();
+      const res = await backendActor.getallfractionalnfts();
       SetNFTs(res);
       console.log("all nft", res[0][1]?.fractional_token.logo);
       setimg1(res[0][1]?.fractional_token?.logo);
@@ -80,7 +82,7 @@ const HomePageALeftCommunityCounter = () => {
 
   useEffect(() => {
     getUsersFractionNFT();
-  }, [backend, principal]);
+  }, [backendActor, principal]);
 
   return (
     <div className="flex py-6 gap-4">
