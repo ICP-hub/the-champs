@@ -5,7 +5,7 @@ import { TbSquareRoundedChevronLeft } from "react-icons/tb";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
-// import { Grid, TailSpin } from "react-loader-spinner";
+import { Grid, TailSpin } from "react-loader-spinner";
 import AdminLoader from "../../components/laoding-admin";
 const ContactDetail = () => {
   const navigate = useNavigate();
@@ -62,9 +62,13 @@ const ContactDetail = () => {
     event.preventDefault();
     try {
       setLoading(true);
+      console.log(messages.id);
+      const res = await backend.deleteContact(messages.id);
+      
     } catch (error) {
       console.error("Error creating collection:", error);
     } finally {
+
       setLoading(false);
     }
   };
@@ -151,14 +155,17 @@ const ContactDetail = () => {
           </div>
 
           <div className="flex gap-4 justify-end">
-            <button className="uppercase bg-[#fff] shadow-md dark:bg-[#2e2e48] border border-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl   ">
+            <button
+              className="uppercase bg-[#fff] shadow-md dark:bg-[#2e2e48] border border-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl   "
+              onClick={handleDelete}
+            >
               {loading ? (
                 <div className="flex gap-3 items-center">
                   Delete message
                   <TailSpin
                     height="15"
                     width="15"
-                    color="white"
+                    color="black"
                     ariaLabel="tail-spin-loading"
                     radius="1"
                     visible={true}

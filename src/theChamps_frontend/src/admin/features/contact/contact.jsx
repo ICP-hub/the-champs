@@ -9,7 +9,6 @@ import AdminLoader from "../../components/laoding-admin";
 const Contact = () => {
   const [backend] = useCanister("backend");
   const [isLoading, setIsLoading] = useState(true);
-
   const [sampleData, setSampleData] = useState([]);
 
   const getAllCollections = async () => {
@@ -20,6 +19,7 @@ const Contact = () => {
       console.log("data", data);
     } catch (err) {
       console.error("error fetching messages : ", err);
+      setIsLoading(false); // Ensure loading state is turned off in case of error
     }
   };
 
@@ -29,18 +29,19 @@ const Contact = () => {
     }, 1000);
     return () => clearTimeout(timer);
   }, [backend]);
-  const columns = React.useMemo(
+
+  const columns = useMemo(
     () => [
       {
         Header: "Name",
         accessor: "name",
       },
       {
-        Header: "email",
+        Header: "Email",
         accessor: "email",
       },
       {
-        Header: "contact_number",
+        Header: "Contact Number",
         accessor: "contact_number",
       },
       {
@@ -55,12 +56,13 @@ const Contact = () => {
   const data = useMemo(() => sampleData, [sampleData]);
   // Get data from the second element of each sub-array
   const extractedData = data.map(([key, data]) => data);
-  console.log(extractedData);
 
   return (
     <div className="flex flex-col">
       {isLoading ? (
         <AdminLoader />
+      ) : extractedData.length === 0 ? (
+        <div>No data available</div>
       ) : (
         <Table columns={columns} data={extractedData} />
       )}
