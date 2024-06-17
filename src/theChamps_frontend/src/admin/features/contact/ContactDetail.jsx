@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Select from "react-select";
-import { useDropzone } from "react-dropzone";
 import { TbSquareRoundedChevronLeft } from "react-icons/tb";
 import { useNavigate, useParams } from "react-router-dom";
-import { useCanister } from "@connect2ic/react";
-import { Principal } from "@dfinity/principal";
-import { Grid, TailSpin } from "react-loader-spinner";
+import { TailSpin } from "react-loader-spinner";
 import AdminLoader from "../../components/laoding-admin";
 import { useAuth } from "../../../auth/useClient";
+
 const ContactDetail = () => {
   const navigate = useNavigate();
-  const param = useParams();
+  const { slug } = useParams();
   const { backendActor } = useAuth();
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +22,7 @@ const ContactDetail = () => {
 
   const getAllCollections = async () => {
     try {
-      const data = await backendActor?.getContact(param.slug);
+      const data = await backendActor?.getContact(slug);
       if (data.ok) {
         setFormData({
           name: data.ok.name,
@@ -34,12 +31,10 @@ const ContactDetail = () => {
           email: data.ok.email,
         });
         setMessages(data.ok);
-        console.log(data.ok);
       }
       setIsLoading(false);
-      console.log("data", data);
     } catch (error) {
-      console.log("reeegdf", error);
+      console.log("Error fetching contact:", error);
     }
   };
 
@@ -49,28 +44,17 @@ const ContactDetail = () => {
     }, 1000);
     return () => clearTimeout(timer);
   }, [backendActor]);
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      setLoading(true);
-    } catch (error) {
-      console.error("Error creating collection:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+
   const handleDelete = async (event) => {
     event.preventDefault();
     try {
       setLoading(true);
-      console.log(messages.id);
-      const res = await backend.deleteContact(messages.id);
-      
+      const res = await backendActor.deleteContact(messages.id);
     } catch (error) {
-      console.error("Error creating collection:", error);
+      console.error("Error deleting contact:", error);
     } finally {
-
       setLoading(false);
+      navigate("/admin/message");
     }
   };
 
@@ -83,14 +67,14 @@ const ContactDetail = () => {
               onClick={() => navigate(-1)}
               className="w-6 h-6 cursor-pointer"
             />
-            message detail
+            Message Detail
           </div>
         </h1>
       </div>
       {isLoading ? (
         <AdminLoader />
       ) : (
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleDelete}>
           <div className="flex justify-between gap-4">
             <div className="w-full">
               <label
@@ -109,7 +93,7 @@ const ContactDetail = () => {
             </div>
             <div className="w-full">
               <label
-                htmlFor="name"
+                htmlFor="email"
                 className="md:text-lg text-sm font-semibold"
               >
                 Email
@@ -118,13 +102,13 @@ const ContactDetail = () => {
                 type="text"
                 readOnly
                 className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-                value={formData?.email}
+                value={formData.email}
               />
             </div>
           </div>
           <div className="w-full">
             <label
-              htmlFor="logoData"
+              htmlFor="contact_number"
               className="md:text-lg text-sm font-semibold"
             >
               Contact Number
@@ -139,10 +123,10 @@ const ContactDetail = () => {
           </div>
           <div className="w-full">
             <label
-              htmlFor="logoType"
+              htmlFor="message"
               className="md:text-lg text-sm font-semibold"
             >
-              Message <br />
+              Message
             </label>
             <textarea
               cols="30"
@@ -157,8 +141,8 @@ const ContactDetail = () => {
 
           <div className="flex gap-4 justify-end">
             <button
-              className="uppercase bg-[#fff] shadow-md dark:bg-[#2e2e48] border border-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl   "
-              onClick={handleDelete}
+              type="submit"
+              className="uppercase bg-[#fff] shadow-md dark:bg-[#2e2e48] border border-red-500 flex items-center justify-start gap-3 px-4 py-2 rounded-xl"
             >
               {loading ? (
                 <div className="flex gap-3 items-center">
@@ -176,26 +160,6 @@ const ContactDetail = () => {
                 "Delete message"
               )}
             </button>
-            {/* <button
-              type="submit"
-              className="uppercase bg-red-500 shadow-md dark:bg-red-500  flex items-center justify-start gap-3 px-4 py-2 rounded-xl text-[#ffffff] bg:text-[#e1e1e1] "
-            >
-              {loading ? (
-                <div className="flex gap-3 items-center">
-                  Update message
-                  <TailSpin
-                    height="15"
-                    width="15"
-                    color="white"
-                    ariaLabel="tail-spin-loading"
-                    radius="1"
-                    visible={true}
-                  />
-                </div>
-              ) : (
-                "Update message"
-              )}
-            </button> */}
           </div>
         </form>
       )}
