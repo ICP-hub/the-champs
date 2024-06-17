@@ -7,7 +7,6 @@ import Blob "mo:base/Blob";
 import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Time "mo:base/Time";
-import Types "../DIP-20/types";
 
 module {
   public type Dip721NonFungibleToken = {
@@ -21,6 +20,8 @@ module {
     featured: Bool;
   };
 
+  public type Value = { #Nat : Nat; #Int : Int; #Blob : Blob; #Text : Text };
+
   public type TokenDetails = Result<Dip721NonFungibleToken, ApiError>;
 
   public type Dip721Transfererror = {
@@ -32,7 +33,7 @@ module {
 
   public type FractionalNFT = {
     nft: Nft;
-    fractional_token : Types.Metadata;
+    fractional_token : [(Text,Value)];
     price_per_share : Float;
   };
 
