@@ -75,40 +75,39 @@ const Header = () => {
     };
   }, [isSidenavOpen, isMenuOpen, location]);
 
+  const fixedStyle = {
+    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+    backdropFilter: "blur(15px)",
+    position: "fixed",
+    minWidth: "100vw",
+    WebkitBackdropFilter: "blur(15px)",
+    top: 0,
+    zIndex: 60,
+  };
+
   return (
     <div>
+      <HeaderComplete
+        sideNavToggle={sideNavToggle}
+        isSidenavOpen={isSidenavOpen}
+        isMenuOpen={isMenuOpen}
+        toggleMenu={toggleMenu}
+      />
       <AnimatePresence>
-        {isScrolled ? (
-          <motion.div
-            style={{
-              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-              backdropFilter: "blur(15px)",
-              position: "fixed",
-              minWidth: "100vw",
-              WebkitBackdropFilter: "blur(15px)",
-              top: 0,
-              zIndex: 60,
-            }}
-            initial={{ y: -96 }}
-            animate={{ y: 0 }}
-            exit={{ y: -96 }}
-            transition={{ duration: 0.3, ease: easeInOut }}
-          >
-            <HeaderComplete
-              sideNavToggle={sideNavToggle}
-              isSidenavOpen={isSidenavOpen}
-              isMenuOpen={isMenuOpen}
-              toggleMenu={toggleMenu}
-            />
-          </motion.div>
-        ) : (
+        <motion.div
+          style={isScrolled ? fixedStyle : { display: "none" }}
+          initial={{ y: -96 }}
+          animate={{ y: isScrolled ? 0 : -96 }}
+          exit={{ y: -96 }}
+          transition={{ duration: 0.3, ease: easeInOut }}
+        >
           <HeaderComplete
             sideNavToggle={sideNavToggle}
             isSidenavOpen={isSidenavOpen}
             isMenuOpen={isMenuOpen}
             toggleMenu={toggleMenu}
           />
-        )}
+        </motion.div>
       </AnimatePresence>
       <AnimatePresence>
         {isSidenavOpen && (

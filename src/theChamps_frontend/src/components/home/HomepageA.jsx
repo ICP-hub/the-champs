@@ -60,7 +60,7 @@ const HomePageALeft = () => {
 
 const HomePageALeftCommunityCounter = () => {
   // const { isConnected, principal } = useConnect();
-  const { principal, isAuthenticated, backendActor } = useAuth();
+  const { principal, backendActor } = useAuth();
   // const [backend] = useCanister("backend");
   const [NFTs, SetNFTs] = useState([]);
   const [loading, setLoading] = useState(false);

@@ -63,7 +63,7 @@ const UserData = () => {
         />
         User List
       </div>
-      <div className="rounded-md bg-card p-6 flex flex-col md:flex-row gap-8">
+      <div className="rounded-md bg-card p-6 flex flex-col md:flex-row gap-8 items-center">
         <div className="flex items-center justify-center">
           <img
             src={userInfo?.profileimage}
@@ -73,36 +73,36 @@ const UserData = () => {
         </div>
         <div className="flex flex-col gap-2">
           <span className="flex gap-4">
-            <label>Name : </label>
+            <label className="w-20">Name : </label>
             <h4>
               {userInfo?.firstName} {userInfo?.lastName}
             </h4>
           </span>
           <span className="flex gap-4">
-            <label>Principal : </label>
+            <label className="w-20">Principal : </label>
             <h4>{id}</h4>
           </span>
           <span className="flex gap-4">
-            <label>Email : </label>
+            <label className="w-20">Email : </label>
 
             <h4>{userInfo?.email}</h4>
           </span>
           <span className="flex gap-4">
-            <label>Telegram : </label>
+            <label className="w-20">Telegram : </label>
             <h4>{userInfo?.telegram}</h4>
           </span>
           <span className="flex gap-4">
-            <label>Twitter : </label>
+            <label className="w-20">Twitter : </label>
 
             <h4>{userInfo?.twitter}</h4>
           </span>
           <span className="flex gap-4">
-            <label>Discord : </label>
+            <label className="w-20">Discord : </label>
             <h4>{userInfo?.discord}</h4>
           </span>
         </div>
       </div>
-      <h1 className="text-2xl font-medium">NFTs owned by {id}</h1>
+      <h1 className="md:text-xl font-medium">NFTs owned by {id}</h1>
       <Cards id={id} />
     </div>
   );
