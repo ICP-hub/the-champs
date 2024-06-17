@@ -25,6 +25,14 @@ const WalletModal = ({ onModalClose }) => {
     await login(id);
   };
 
+  const animVar = {
+    initial: {
+      scale: 1,
+    },
+    hover: { scale: 1.04 },
+    transition: { duration: 0.3, stiffness: 300 },
+  };
+
   return (
     <div
       className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-50 grid place-items-center overflow-y-scroll cursor-pointer"
@@ -42,17 +50,21 @@ const WalletModal = ({ onModalClose }) => {
             onMouseLeave={() => setHoveredId(null)}
           >
             <motion.div
-              whileHover={{ scale: 1.05, originX: 0 }}
-              whileTap={{ scale: 1 }}
-              className={`p-4 mr-24 md:mr-32 w-full font-medium text-lg flex items-center gap-4 hover:bg-foreground ${
-                hoveredId === wallet.id && "button"
+              className={`px-8 py-6 mr-24 md:mr-32 w-full font-medium text-lg hover:bg-foreground ${
+                hoveredId === wallet.id && "button text-white"
               }`}
             >
-              <img
-                src={wallet.imgSrc}
-                className="max-h-16 min-h-16 max-w-16 min-w-16 object-contain"
-              />
-              <span>{wallet.defaultText}</span>
+              <motion.div
+                initial={{ scale: 1 }}
+                animate={{ scale: hoveredId === wallet.id ? 1.04 : 1 }}
+                className="flex items-center space-x-10"
+              >
+                <img
+                  src={wallet.imgSrc}
+                  className="max-h-16 min-h-16 max-w-16 min-w-16 object-contain"
+                />
+                <span>{wallet.defaultText}</span>
+              </motion.div>
             </motion.div>
           </div>
         ))}
