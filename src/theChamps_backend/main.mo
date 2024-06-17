@@ -8,14 +8,12 @@ import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import TrieMap "mo:base/TrieMap";
-import Blob "mo:base/Blob";
+import ICRCActorClass "../ICRC-1/ICRC-1";
 import Source "mo:uuid/async/SourceV4";
 import UUID "mo:uuid/UUID";
-import DIP20ActorClass "../DIP-20/token";
-import Typestoken "../DIP-20/types";
+import Typestoken "../ICRC-1/Types";
 import NFTActorClass "../DIP721-NFT/Nft";
 import Types "../DIP721-NFT/Types";
-import Root "../DIP-20/cap/Root";
 import Admin "./Admin/admin";
 import UsersTypes "./Users/Types";
 import ICRC "./ICRC";
@@ -24,8 +22,8 @@ import Float "mo:base/Float";
 import Nat64 "mo:base/Nat64";
 import Int64 "mo:base/Int64";
 import Int "mo:base/Int";
+import Nat8 "mo:base/Nat8";
 actor Champs {
-
     // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
     let g = Source.Source();
     stable let icpLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai";
@@ -186,8 +184,7 @@ actor Champs {
         _name : Text,
         _symbol : Text,
         _decimals : Nat8,
-        _totalSupply : Nat,
-        _fee : Nat,
+        _totalSupply : Nat
     ) : async (Types.FractionalNFTResult, Principal) {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
@@ -216,34 +213,47 @@ actor Champs {
                     case (#Ok(newnft)) {
                         Debug.print(debug_show (newnft));
                         Cycles.add<system>(500_000_000_000);
-                        let fractiontokens = await DIP20ActorClass.Token(
-                            _logo,
-                            _name,
-                            _symbol,
-                            _decimals,
-                            _totalSupply,
-                            champs,
-                            _fee,
-                        );
-                        ignore await fractiontokens.wallet_receive();
-                        let minttokens = await fractiontokens.mint(champs, _totalSupply);
-                        Debug.print(debug_show (minttokens));
-                        let approve = await fractiontokens.approve(champs, _totalSupply);
-                        Debug.print("THe output of the approve function is : " # debug_show (approve));
-                        let tokencanister : Principal = await fractiontokens.getCanisterId();
-                        Debug.print(debug_show (tokencanister));
-                        let tokenmetadata = {
-                            logo = _logo;
-                            name = _name;
-                            symbol = _symbol;
-                            decimals = _decimals;
-                            totalSupply = _totalSupply;
-                            owner = champs;
-                            fee = _fee;
+                        let initial_mints = [{
+                            account = { owner = user; subaccount = null };
+                            amount = _totalSupply;
+                        }];
+                        let init  = {
+                            decimals : Nat8 = _decimals;
+                            initial_mints : [{
+                              account : { owner : Principal; subaccount : ?Blob };
+                              amount : Nat; 
+                            }] = initial_mints;
+                            minting_account : { owner : Principal; subaccount : ?Blob } = { owner = user; subaccount = null };
+                            token_name : Text = _name;
+                            token_symbol : Text = _symbol;
+                            transfer_fee : Nat = 0;
                         };
+                        
+                        let fractiontokens = await ICRCActorClass.Ledger(init);
+                        
+                        ignore await fractiontokens.wallet_receive();
+                        
+                        let approve = await fractiontokens.icrc2_approve({from_subaccount  = null;spender = {owner = champs; subaccount = null;};amount = _totalSupply;expires_at = null;expected_allowance = null;memo = null;fee = null;created_at_time = null;});
 
+                        Debug.print("THe output of the approve function is : " # debug_show (approve));
+                        
+                        let tokencanister : Principal = await fractiontokens.getCanisterId();
+                        
+                        Debug.print(debug_show ());
+
+                        var name : Typestoken.Value = #Text(_name);
+                        var symbol : Typestoken.Value = #Text(_symbol);
+                        var decimals : Typestoken.Value = #Nat(Nat8.toNat(_decimals));
+                        var fee : Typestoken.Value = #Nat(0);
+                        
+                        let tokenmetadata = [
+                            ("icrc1:name", name),
+                            ("icrc1:symbol",symbol),
+                            ("icrc1:decimals",decimals),
+                            ("icrc1:fee", fee)
+                            ];
                         let nftdata = await getNFTdetails(nftcanisterid, newnft.token_id);
-                        let testSupply = Nat64.fromNat(_totalSupply);
+                        
                         let fractionNftDetails : Types.FractionalNFT = {
                             collectionid = nftcanisterid;
                             nft = nftdata;
@@ -284,7 +294,15 @@ actor Champs {
         //     throw Error.reject("User is not authenticated");
         // };
         let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-            transferFrom : (from : Principal, to : Principal, amount : Nat) -> async Typestoken.TxReceipt;
+            transferFrom : ({
+            spender_subaccount : ?Typestoken.Subaccount;
+            from : Typestoken.Account;
+            to : Typestoken.Account;
+            amount : Typestoken.Tokens;
+            fee : ?Typestoken.Tokens;
+            memo : ?Typestoken.Memo;
+            created_at_time : ?Typestoken.Timestamp;
+            }) -> async Result.Result<Typestoken.TxIndex, Typestoken.TransferFromError>;
         };
         switch (paymentOption) {
             case (#icp) {
@@ -294,12 +312,21 @@ actor Champs {
                         throw Error.reject(debug_show (index));
                     };
                     case (#Ok(res)) {
-                        let tokens = await tokencansiter_actor.transferFrom(from, to, numberoftokens);
+                        let transferparams = {
+                            spender_subaccount = null;
+                            from = { owner = from; subaccount = null };
+                            to = { owner = to; subaccount = null };
+                            amount = numberoftokens;
+                            fee = null;
+                            memo = null;
+                            created_at_time = null;
+                        };
+                        let tokens = await tokencansiter_actor.transferFrom(transferparams);
                         switch (tokens) {
-                            case (#Err(index)) {
+                            case (#err(index)) {
                                 throw Error.reject(debug_show (index));
                             };
-                            case (#Ok(data)) {
+                            case (#ok(data)) {
                                 return #Ok(data);
                             };
                         };
@@ -315,12 +342,21 @@ actor Champs {
                         throw Error.reject(debug_show (index));
                     };
                     case (#Ok(res)) {
-                        let tokens = await tokencansiter_actor.transferFrom(from, to, numberoftokens);
+                        let transferparamsckbtc = {
+                            spender_subaccount = null;
+                            from = { owner = from; subaccount = null };
+                            to = { owner = to; subaccount = null };
+                            amount = numberoftokens;
+                            fee = null;
+                            memo = null;
+                            created_at_time = null;
+                        };
+                        let tokens = await tokencansiter_actor.transferFrom(transferparamsckbtc);
                         switch (tokens) {
-                            case (#Err(index)) {
+                            case (#err(index)) {
                                 throw Error.reject(debug_show (index));
                             };
-                            case (#Ok(data)) {
+                            case (#ok(data)) {
                                 return #Ok(data);
                             };
                         };
@@ -331,20 +367,20 @@ actor Champs {
         };
     };
 
-    public shared ({ caller = user }) func tranfertokens(tokencanisterid : Principal, to : Principal, amount : Nat) : async Typestoken.TxReceipt {
+    public shared ({ caller = user }) func tranfertokens(tokencanisterid : Principal, to : Principal, amount : Nat) : async Result.Result<Typestoken.TxIndex,Typestoken.TransferError> {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
         let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-            transfer : (to : Principal, amount : Nat) -> async Typestoken.TxReceipt;
+            transfer : (to : Principal, amount : Nat) -> async Result.Result<Typestoken.TxIndex,Typestoken.TransferError>;
         };
         let tokens = await tokencansiter_actor.transfer(to, amount);
         switch (tokens) {
-            case (#Err(index)) {
+            case (#err(index)) {
                 throw Error.reject(debug_show (index));
             };
-            case (#Ok(data)) {
-                return #Ok(data);
+            case (#ok(data)) {
+                return #ok(data);
             };
         };
     };
@@ -387,17 +423,25 @@ actor Champs {
         };
     };
 
-    public shared ({ caller = user }) func getalltransactions(tokencanisterid : Principal, page : ?Nat32) : async Root.GetTransactionsResponseBorrowed {
-
-        // if (Principal.isAnonymous(user)) {
-        //     throw Error.reject("User is not authenticated");
-        // };
+    public shared ({caller = user}) func gettokenmetadata(tokencanisterid : Principal ): async [(Text, Typestoken.Value)] {
         let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-            getTransactions : (?Nat32) -> async Root.GetTransactionsResponseBorrowed;
+            icrc1_metadata : () -> async [(Text,Typestoken.Value)];
         };
-        let transactions = await tokencansiter_actor.getTransactions(page);
-        return transactions;
+        let metadata = await tokencansiter_actor.icrc1_metadata();
+        return metadata;
     };
+
+    // public shared ({ caller = user }) func getalltransactions(tokencanisterid : Principal, page : ?Nat32) : async Root.GetTransactionsResponseBorrowed {
+
+    //     // if (Principal.isAnonymous(user)) {
+    //     //     throw Error.reject("User is not authenticated");
+    //     // };
+    //     let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
+    //         getTransactions : (?Nat32) -> async Root.GetTransactionsResponseBorrowed;
+    //     };
+    //     let transactions = await tokencansiter_actor.getTransactions(page);
+    //     return transactions;
+    // };
 
     public func getusersfractionnft(user : Principal) : async [(Principal, Types.FractionalNFT, Principal)] {
         // if (Principal.isAnonymous(user)) {
@@ -584,12 +628,11 @@ actor Champs {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
-
         let nftcanisteractor = actor (Principal.toText(collectioncanisterid)) : actor {
             getNFT : (token_id : Types.TokenId) -> async Types.NftResult;
         };
         let fractiontokencanisteractor = actor (Principal.toText(tokencanister)) : actor {
-            getMetadata : () -> async Typestoken.Metadata;
+            icrc1_total_supply : () -> async Typestoken.Tokens ; icrc1_metadata : () -> async [(Text, Typestoken.Value)];
         };
         let metadata : Types.NftResult = await nftcanisteractor.getNFT(tokenid);
         switch (metadata) {
@@ -597,12 +640,13 @@ actor Champs {
                 throw Error.reject(debug_show (index));
             };
             case (#Ok(data)) {
-                let tokenmetadata = await fractiontokencanisteractor.getMetadata();
+                let totalsupply = await fractiontokencanisteractor.icrc1_total_supply();
+                let tokenmetadata = await fractiontokencanisteractor.icrc1_metadata();
                 let fractionalNftDetails : Types.FractionalNFT = {
                     collectionid = collectioncanisterid;
                     nft = data;
                     fractional_token = tokenmetadata;
-                    price_per_share = data.priceinusd / Float.fromInt64(Int64.fromNat64(Nat64.fromNat(tokenmetadata.totalSupply)));
+                    price_per_share = data.priceinusd / Float.fromInt64(Int64.fromNat64(Nat64.fromNat(totalsupply)));
                 };
                 return fractionalNftDetails;
             };
@@ -767,6 +811,7 @@ actor Champs {
         stablefavourites := Iter.toArray(favourites.entries());
         stablecontacts := Iter.toArray(contacts.entries());
         stablefractionalnftmap := Iter.toArray(fractionalnftmap.entries());
+        stableusers := Iter.toArray(users.entries());
 
     };
 
@@ -777,6 +822,7 @@ actor Champs {
         favourites := TrieMap.fromEntries(stablefavourites.vals(), Principal.equal, Principal.hash);
         contacts := TrieMap.fromEntries(stablecontacts.vals(), Text.equal, Text.hash);
         fractionalnftmap := TrieMap.fromEntries(stablefractionalnftmap.vals(), Principal.equal, Principal.hash);
+        users := TrieMap.fromEntries(stableusers.vals(), Principal.equal, Principal.hash);
     };
 
     // ******************************************************************************************************************************

@@ -19,7 +19,7 @@ dfx canister call theChamps_backend createcollection \
         };
         description = \"Your collection description here\";
         created_at = 123456789:nat64;
-        name = \"Your collection name here\"; 
+        name = \"Your collection name here\";
         symbol = \"Your collection symbol here\";
         maxLimit = 5000:nat16; 
         featured = true;
