@@ -7,9 +7,9 @@ export const validateForm = (formData, selectedImage) => {
   if (!formData.priceInUsd) {
     errors.priceInUsd = "NFT Price is required";
   }
-  if (!formData.fee) {
-    errors.fee = "Processing Fee is required";
-  }
+  // if (!formData.fee) {
+  //   errors.fee = "Processing Fee is required";
+  // }
   if (!formData.metaData[0].description) {
     errors.description = "Description is required";
   }

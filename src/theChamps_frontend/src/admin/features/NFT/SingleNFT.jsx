@@ -33,7 +33,7 @@ const SingleNFT = () => {
           Principal.fromText(slug),
           Principal.fromText(collection)
         );
-        // console.log('Response getFractionalNFTDetails : ',res);
+        // console.log("Response getFractionalNFTDetails : ", res);
         setNFTDetail(res);
       } catch (err) {
         console.error("Error fecthing fractionalNFTdetails : ", err);

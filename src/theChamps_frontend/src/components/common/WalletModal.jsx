@@ -45,6 +45,7 @@ const WalletModal = ({ onModalClose }) => {
             onClick={(e) => {
               e.stopPropagation(); // Prevent modal close on child click
               loginHandler(wallet.id);
+              onModalClose();
             }}
             onMouseEnter={() => setHoveredId(wallet.id)}
             onMouseLeave={() => setHoveredId(null)}

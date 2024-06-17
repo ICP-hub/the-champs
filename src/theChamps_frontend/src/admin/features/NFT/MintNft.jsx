@@ -88,7 +88,7 @@ const MintNft = () => {
         ],
         logo: selectedImage,
         decimals: 2,
-        symbol: "random",
+        symbol: formData.symbol ? formData.symbol : "random",
       };
       console.log(FinalData);
       try {
@@ -101,7 +101,7 @@ const MintNft = () => {
           FinalData.logo,
           FinalData.name,
           FinalData.symbol,
-          parseInt(FinalData.fee),
+          // parseInt(FinalData.fee),
           parseInt(FinalData.totalSupply), // This is total supply? didn't understand the meaning // For share value?
           FinalData.decimals
         );
@@ -268,7 +268,6 @@ const MintNft = () => {
             <p className="text-red-500 text-xs">{formErrors.selectedImage}</p>
           )}
         </div>
-
         <div>
           <div className="flex items-center gap-2">
             <label htmlFor="name" className="md:text-lg text-sm font-semibold">
@@ -360,23 +359,25 @@ const MintNft = () => {
             <p className="text-red-500 text-xs">{formErrors.totalSupply}</p>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Processing Fee:
-          </label>
-          <TextHint text="Enter the processing fee for the NFT." />
+        <div>
+          <div className="flex items-center gap-2">
+            <label htmlFor="name" className="md:text-lg text-sm font-semibold">
+              Symbol:
+            </label>
+            <TextHint text="Enter Symbol of the NFT." />
+          </div>
+          <input
+            className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
+            type="text"
+            name="symbol"
+            min="0"
+            value={formData.symbol}
+            onChange={handleChange}
+          />
+          {formErrors.fee && (
+            <p className="text-red-500 text-xs">{formErrors.fee}</p>
+          )}
         </div>
-        <input
-          className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
-          type="number"
-          name="fee"
-          min="0"
-          value={formData.fee}
-          onChange={handleChange}
-        />
-        {formErrors.fee && (
-          <p className="text-red-500 text-xs">{formErrors.fee}</p>
-        )}
         <div>
           <div className="flex items-center gap-2">
             <label
