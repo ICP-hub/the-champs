@@ -180,7 +180,7 @@ actor Champs {
         to : Principal,
         metadata : Types.MetadataDesc,
         priceinusd : Float,
-        _logo : Text,
+        _logo : Types.LogoResult,
         _name : Text,
         _symbol : Text,
         _decimals : Nat8,
@@ -202,9 +202,9 @@ actor Champs {
             };
             case (?id) {
                 let nftcanisteractor = actor (Principal.toText(nftcanisterid)) : actor {
-                    mintDip721 : (to : Principal, metadata : Types.MetadataDesc, priceinusd : Float) -> async Types.MintReceipt;
+                    mintDip721 : (to : Principal, metadata : Types.MetadataDesc, priceinusd : Float , logo : Types.LogoResult) -> async Types.MintReceipt;
                 };
-                let mintednft = await nftcanisteractor.mintDip721(to, metadata, priceinusd);
+                let mintednft = await nftcanisteractor.mintDip721(to, metadata, priceinusd, _logo);
                 let champs = await idQuick();
                 switch (mintednft) {
                     case (#Err(index)) {

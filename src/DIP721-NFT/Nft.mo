@@ -97,6 +97,7 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
                 forsale = false;
                 listed = true;
                 priceinusd = item.priceinusd;
+                logo = item.logo;
               };
               return update;
             } else {
@@ -214,7 +215,7 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
     return List.toArray(nfts);
   };
 
-  public shared func mintDip721(to: Principal, metadata: Types.MetadataDesc , priceinusd : Float) : async Types.MintReceipt {
+  public shared func mintDip721(to: Principal, metadata: Types.MetadataDesc , priceinusd : Float, logo : Types.LogoResult) : async Types.MintReceipt {
     if (not List.some(custodians, func (custodian : Principal) : Bool { custodian == to })) {
       return #Err(#Unauthorized);
     };
@@ -228,6 +229,7 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
       forsale = false;
       listed = true;
       priceinusd = priceinusd;
+      logo = logo;
     };
     nfts := List.push(nft, nfts);
     transactionId += 1;
@@ -260,6 +262,7 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
                 forsale = item.forsale;
                 listed = item.listed;
                 priceinusd = item.priceinusd;
+                logo = item.logo;
               };
               return update;
             } else {
@@ -295,6 +298,7 @@ shared actor class Dip721NFT(custodian: Principal, init : Types.Dip721NonFungibl
                 forsale = item.forsale;
                 listed = item.listed;
                 priceinusd = item.priceinusd;
+                logo = item.logo;
               };
               return update;
             } else {
