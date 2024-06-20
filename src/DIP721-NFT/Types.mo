@@ -98,6 +98,7 @@ module {
   public type Nft = {
     owner: Principal;
     id: TokenId;
+    logo : LogoResult;
     metadata: MetadataDesc;
     locked: Bool;
     forsale: Bool;
