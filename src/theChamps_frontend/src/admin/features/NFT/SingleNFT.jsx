@@ -46,6 +46,7 @@ const SingleNFT = () => {
   }, []);
 
   console.log("single nft detail", nftDetail);
+
   return (
     <div className="rounded-lg bg-card text-textall h-full shadow-md p-6">
       <div className="flex gap-4 items-center font-bold text-lg tracking-wider">
@@ -62,11 +63,11 @@ const SingleNFT = () => {
           <div className="min-h-64 min-w-64 rounded-lg p-2 border-2 border-divider max-h-64 max-w-64">
             <img
               src={
-                nftDetail?.fractional_token.logo.length > 10
-                  ? nftDetail?.fractional_token.logo
+                nftDetail.nft.logo.data.length > 10
+                  ? nftDetail.nft.logo.data
                   : champsImg
               }
-              alt={nftDetail?.fractional_token.name}
+              alt={nftDetail?.fractional_token[0][1].Text}
               className="rounded-lg h-full w-full"
             />
           </div>
@@ -76,7 +77,9 @@ const SingleNFT = () => {
                 <span>NFT name</span>
                 <span>:</span>
               </div>
-              <p className="font-bold">{nftDetail?.fractional_token.name}</p>
+              <p className="font-bold">
+                {nftDetail?.fractional_token[0][1].Text}
+              </p>
             </div>
             <div className="font-medium flex gap-2">
               <div className="min-w-32 flex justify-between">
@@ -117,7 +120,7 @@ const SingleNFT = () => {
                 {nftDetail?.nft.listed ? "Yes" : "No"}
               </p>
             </div>
-            <div className="font-medium flex gap-2">
+            {/* <div className="font-medium flex gap-2">
               <div className="min-w-32 flex justify-between">
                 <span>Total Share</span>
                 <span>:</span>
@@ -125,7 +128,7 @@ const SingleNFT = () => {
               <p className="font-bold">
                 {parseInt(nftDetail?.fractional_token.totalSupply)}
               </p>
-            </div>
+            </div> */}
             <div className="font-medium flex gap-2">
               <div className="min-w-32 flex justify-between">
                 <span>Price/Share</span>

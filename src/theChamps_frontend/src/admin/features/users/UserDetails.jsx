@@ -7,6 +7,7 @@ import AdminLoader from "../../components/laoding-admin";
 import ChampsImg from "../../../assets/CHAMPS.png";
 import { TbSquareRoundedChevronLeft } from "react-icons/tb";
 import { useAuth } from "../../../auth/useClient";
+import { transformTokenData } from "../../utils/functions";
 
 // Getch userDetails
 const fetchUserDetails = async (
@@ -152,17 +153,13 @@ const Cards = ({ id }) => {
 const NFTDetailCard = ({ nft }) => {
   const [collectionId, nftDetail, nftId] = nft;
   console.log("nftDetail ", nftDetail);
-  // const metadataItem = nftDetail?.metadata[0];
-  // const keyValData = metadataItem?.key_val_data[0];
-  // const attributeName = keyValData?.key;
-  // const attributeVal = keyValData?.val?.TextContent;
-
+  const tokenData = transformTokenData(nftDetail.fractional_token);
   return (
     <div className="bg-card rounded-2xl overflow-hidden flex flex-col space-x-2">
       <img
         src={
-          nftDetail.fractional_token.logo.length > 10
-            ? nftDetail.fractional_token.logo
+          nftDetail.nft.logo.data.length > 10
+            ? nftDetail.nft.logo.data
             : ChampsImg
         }
         alt="nft-img"
@@ -178,11 +175,11 @@ const NFTDetailCard = ({ nft }) => {
         </span>
         <span className="flex gap-4">
           <label>NFT Name :</label>
-          <p>{nftDetail?.fractional_token?.name}</p>
+          <p>{tokenData.name}</p>
         </span>
         <span className="flex gap-4">
           <label>Symbol :</label>
-          <p>{nftDetail?.fractional_token?.symbol}</p>
+          <p>{tokenData.symbol}</p>
         </span>
         {/* <span className="flex gap-4">
           <label>NFT Attributes :</label>
@@ -192,8 +189,8 @@ const NFTDetailCard = ({ nft }) => {
           </span>
         </span> */}
         <span className="flex gap-4">
-          <label>Total Share :</label>
-          <p>{Number(nftDetail.fractional_token.totalSupply)}</p>
+          <label>Price : </label>
+          <p>$ {Number(nftDetail.nft.priceinusd)}</p>
         </span>
         <span className="flex gap-4">
           <label>Price/Share :</label>

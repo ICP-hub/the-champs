@@ -19,6 +19,7 @@ import IcpLogo from "../../assets/IcpLogo";
 import champsImg from "../../assets/CHAMPS.png";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 // Ledger import
+import { useAuth } from "../../auth/useClient";
 import { idlFactory } from "../../../../wallet/ledger.did";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { host, ids } from "../../../../DevConfig";
@@ -37,14 +38,12 @@ const plans = [
 import { GoHeartFill } from "react-icons/go";
 import { GoHeart } from "react-icons/go";
 import { HiMinus, HiPlus } from "react-icons/hi2";
-import { useAuth } from "../../auth/useClient";
 
 const ProductCard = ({ product, setShowHeader, showHeader }) => {
   // const { isConnected, principal } = useConnect();
   const { id } = useParams();
   // const [backend] = useCanister("backend");
-  const { backendActor, isAuthenticated, principal } = useAuth();
-
+  const { backendActor } = useAuth();
   const [favourites, setFavourites] = useState();
   const [open, setOpen] = useState(false);
   // const [productInFavourites, setProductInFavourites] = useState(false);
@@ -53,7 +52,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false); // State to manage modal visibility
   // const [assets] = useBalance();
-  const [image, setImage] = useState(product[0]?.fractional_token.logo);
+  // const [image, setImage] = useState(product[0]?.fractional_token.logo);
   const [loading3, setLoading3] = useState(true);
   const [exchange, setExchange] = useState(1);
   const [confirm, setConfirm] = useState(true);
@@ -105,9 +104,9 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   // console.log(selectedPlan.value);
   // }, [product, favourites]);
 
-  const imageHandler = () => {
-    setImage(placeHolderImg);
-  };
+  // const imageHandler = () => {
+  //   setImage(placeHolderImg);
+  // };
 
   // const removeFavourites = async (
   //   canisterid,
@@ -159,7 +158,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     setLoading3(true);
 
     try {
-      const res = await backendActor?.get_exchange_rates(
+      const res = await backendActor.get_exchange_rates(
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: paymentMethod2 } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
@@ -264,7 +263,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   };
 
   const handleBuyNow = () => {
-    if (isAuthenticated) {
+    if (isConnected) {
       // Check if user has sufficient balance
       if (icpWallet?.amount <= 0) {
         setShowModal(true);
@@ -284,7 +283,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   const getFav = async () => {
     try {
       setFavLoad(true);
-      const res = await backendActor?.getfavourites();
+      const res = await backendActor.getfavourites();
       const favIds = res.map((fav) => fav[0].id);
       // console.log("fav nft id", favIds);
       setFavourites(favIds); // store only ids
@@ -303,34 +302,33 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
 
   // add or remove a favorite
   const toggleFav = async (product) => {
-    if (isAuthenticated) {
-      try {
-        setFavLoad(true);
-        if (favMatched) {
-          // Remove favorite
-          const nft = product[0].nft;
-          const res = await backendActor?.removefavourite([
-            {
-              ...nft,
-              id: BigInt(parseInt(nft.id)),
-            },
-            Principal.fromText(id),
-          ]);
-          console.log(res);
-          // return; ? return need?
-        } else {
-          // Add favorite
-          const res = await backendActor?.addfavourite(
-            Principal.fromText(id),
-            parseInt(product[0].nft.id)
-          );
-          console.log(res);
-        }
-      } catch (err) {
-        console.error("error while fetching productCard ", err);
+    try {
+      setFavLoad(true);
+      if (favMatched) {
+        // Remove favorite
+        const nft = product[0].nft;
+        const res = await backendActor.removefavourite([
+          {
+            ...nft,
+            id: BigInt(parseInt(nft.id)),
+          },
+          Principal.fromText(id),
+        ]);
+        console.log(res);
+        // return; ? return need?
+      } else {
+        // Add favorite
+        const res = await backendActor.addfavourite(
+          Principal.fromText(id),
+          parseInt(product[0].nft.id)
+        );
+        console.log(res);
       }
-    } else {
-      toast.error("Please connect to wellet ");
+    } catch (err) {
+      console.error("error toggling fav ", err);
+    } finally {
+      // setFavLoad(false);   // This may cause bug????
+      setFavChanged((prev) => !prev);
     }
   };
   /*************** Favourite review ****************/
@@ -359,10 +357,10 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           <motion.img
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            src={image}
-            alt={product[0]?.fractional_token.name}
+            src={product[0].nft.logo.data}
+            alt={product[0]?.fractional_token[0][1].Text}
             className="rounded-t-lg  object-cover cursor-pointer overflow-hidden "
-            onError={imageHandler}
+            // onError={imageHandler}
           ></motion.img>
         </Link>
       </div>
@@ -480,7 +478,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
         <BuyModal
           onOpen={setOpen}
           nft={product[0].price_per_share}
-          nftLogo={product[0].fractional_token.logo}
+          nftLogo={product[0].nft.logo.data}
           setSelected={setSelectedPlan}
           selected={selectedPlan}
           exchange={exchange}
@@ -538,7 +536,6 @@ const BuyModal = ({
   const [quantity, setQuantity] = useState(1);
   const [metaData, setMetaData] = useState(null);
   // const { principal } = useConnect();
-  const { principal } = useAuth();
   const [balance, setBalance] = useState(null);
   const createTokenActor = (canisterId) => {
     let identity = window.identity;
@@ -600,20 +597,13 @@ const BuyModal = ({
       setBalance(parsedBalance);
 
       // Call transferApprove after setting metaData and balance
-      transferApprove(
-        parsedBalance,
-        formattedMetadata,
-        tokenActor,
-        nft,
-        quantity,
-        exchange
-      );
+      transferApprove(parsedBalance, formattedMetadata, tokenActor);
     } catch (err) {
       console.error("ICRC1_META ERROR", err);
     }
   };
 
-  /*  const transferApprove = async (
+  const transferApprove = async (
     currentBalance,
     currentMetaData,
     tokenActor
@@ -637,7 +627,7 @@ const BuyModal = ({
             owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
             subaccount: [],
           },
-          fee: [],
+          fee: parseInt(currentMetaData["icrc1:fee"]),
           memo: [],
           created_at_time: [],
           expected_allowance: [],
@@ -647,87 +637,6 @@ const BuyModal = ({
         console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
         const approveRes = await tokenActor.icrc2_approve(transaction);
         console.log("Payment Approve Response ", approveRes);
-      } else {
-        console.log("Insufficient funds");
-      }
-    } catch (err) {
-      console.error("Error in transfer approve", err);
-    }
-  }; */
-
-  const transferApprove = async (
-    currentBalance,
-    currentMetaData,
-    tokenActor,
-    nft2,
-    quantity2,
-    exchange2
-  ) => {
-    try {
-      const decimals = Number(currentMetaData["icrc1:decimals"]);
-      const nft = Number(nft2); // Ensure nft is a Number
-      const quantity = Number(quantity2); // Ensure quantity is a Number
-      const exchange = Number(exchange2); // Ensure exchange is a Number
-
-      // Calculate sendableAmount using Number arithmetic
-      const sendableAmount = Math.floor(
-        (nft * quantity * Math.pow(10, decimals)) / exchange
-      );
-      console.log("sendable amount console ", sendableAmount);
-
-      const fee = currentMetaData["icrc1:fee"]
-        ? Number(currentMetaData["icrc1:fee"])
-        : 0;
-      console.log(currentMetaData, "currentMetaData");
-      console.log(fee, "currentMetaData['icrc1:fee']");
-
-      // Convert values to BigInt for further operations
-      const sendableAmountBigInt = Number(sendableAmount);
-      const feeBigInt = Number(fee);
-      const currentBalanceBigInt = Number(currentBalance);
-
-      // Check if currentBalance is greater than sendableAmount + fee
-      if (currentBalanceBigInt > sendableAmountBigInt + feeBigInt) {
-        console.log("We can send the amount");
-
-        const transaction = {
-          amount: sendableAmountBigInt + feeBigInt,
-          from_subaccount: [], // Assuming this should be an empty array
-          spender: {
-            owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
-            subaccount: [], // Assuming this should be an empty array
-          },
-          fee: [Number(feeBigInt)], // Making sure fee is an optional value
-          memo: [], // Assuming this should be an empty array
-          created_at_time: [], // Assuming this should be an empty array
-          expected_allowance: [], // Assuming this should be an empty array
-          expires_at: [], // Assuming this should be an empty array
-        };
-
-        console.log("transaction ", transaction);
-        console.log("tokenActor ", tokenActor);
-        await tokenActor
-          ?.icrc2_approve(transaction)
-          .then(async (res) => {
-            if (res?.Err) {
-              console.log("Error Response", res);
-              return;
-            } else {
-              console.log("Approve Success Response ", res);
-            }
-          })
-          .catch((err) => {
-            console.log("Approve Error Response ", err);
-          });
-        // try {
-        //   const approveRes = await tokenActor.icrc2_approve(transaction);
-        //   console.log("Payment Approve Response ", approveRes);
-        // } catch (err) {
-        //   console.error(
-        //     "tokenActor.icrc2_approve is not a function or is incorrectly configured . ",
-        //     err
-        //   );
-        // }
       } else {
         console.log("Insufficient funds");
       }
@@ -747,8 +656,8 @@ const BuyModal = ({
     );
   };
 
-  console.log("metaData state ", metaData);
-  console.log("onwer principal ", principal);
+  // console.log("metaData state ", metaData);
+  // console.log("onwer principal ", principal);
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar">

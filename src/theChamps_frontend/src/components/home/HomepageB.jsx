@@ -154,8 +154,7 @@ const HomePageB = () => {
 /*  @ <NFTCard /> : collection card.
 /* ----------------------------------------------------------------------------------------------------- */
 const NFTCard = ({ NFT, collection, nftData }) => {
-  const [image, setImage] = useState(NFT[0]?.fractional_token?.logo);
-  // console.log(NFT);
+  // const [image, setImage] = useState(NFT[0]?.fractional_token?.logo);
 
   // useEffect(() => {
   //   // const img = NFT.metadata.map((item) => item.key_val_data);
@@ -165,21 +164,25 @@ const NFTCard = ({ NFT, collection, nftData }) => {
   // }, [NFT]);
   // console.log(NFT.nft.owner.toText());
   // console.log(NFT);
-  const handleImage = () => {
-    setImage(soccer1);
-  };
+  // const handleImage = () => {
+  //   setImage(soccer1);
+  // };
+
+  // console.log(nftData[0].toText());
 
   return (
-    <Link to={`/collection/${nftData}/${NFT[1].toText()}`}>
+    <Link to={`/collection/${nftData[0].toText()}/${NFT[1].toText()}`}>
       <motion.div
         whileHover={{ translateY: -15 }}
         className="flex flex-col gap-4 cursor-pointer"
       >
         <img
-          src={image}
+          src={
+            NFT[0].nft.logo.data.length > 10 ? NFT[0].nft.logo.data : soccer1
+          }
           alt="image"
           className="rounded-2xl object-contain"
-          onError={handleImage}
+          // onError={handleImage}
         />
         <div className="flex flex-col">
           <h1 className="text-2xl font-bold line-clamp-1">

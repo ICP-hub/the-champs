@@ -65,10 +65,14 @@ const MintNft = () => {
     }));
   };
 
+  const getImageMimeType = (dataUrl) => {
+    const matches = dataUrl.match(/^data:(image\/[a-zA-Z0-9]+);base64,/);
+    return matches ? matches[1] : "image/png";
+  };
   // Creating NFT : Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const logoType = getImageMimeType(selectedImage);
     const errors = validateForm(formData, selectedImage);
     setFormErrors(errors);
 
@@ -86,11 +90,11 @@ const MintNft = () => {
             purpose: { [selectedPurpose]: null },
           },
         ],
-        logo: selectedImage,
+        logo: { data: selectedImage, logo_type: logoType },
         decimals: 2,
         symbol: formData.symbol ? formData.symbol : "random",
       };
-      console.log(FinalData);
+      // console.log(FinalData);
       try {
         setIsMintLoading(true);
         const res = await backendActor?.FractionalizeNFt(
@@ -98,7 +102,7 @@ const MintNft = () => {
           FinalData.ownerId,
           FinalData.metaData,
           parseFloat(FinalData.priceInUsd),
-          FinalData.logo,
+          { data: FinalData.logo.data, logo_type: FinalData.logo.logo_type },
           FinalData.name,
           FinalData.symbol,
           // parseInt(FinalData.fee),

@@ -39,15 +39,15 @@ const plans = [
   //   value: "paypal-payment",
   // },
 ];
-const usePaymentTransfer = (fee) => {
-  // Receiver address will be in .env file : for now dev id
-  const [transfer] = useTransfer({
-    to: "uktss-xp5gu-uwif5-hfpwu-rujms-foroa-4zdkd-ofspf-uqqre-wxqyj-cqe",
-    amount: Number(fee),
-  });
+// const usePaymentTransfer = (fee) => {
+//   // Receiver address will be in .env file : for now dev id
+//   const [transfer] = useTransfer({
+//     to: "uktss-xp5gu-uwif5-hfpwu-rujms-foroa-4zdkd-ofspf-uqqre-wxqyj-cqe",
+//     amount: Number(fee),
+//   });
 
-  return transfer;
-};
+//   return transfer;
+// };
 
 const ProductDetails = () => {
   const [open, setOpen] = useState(false);
@@ -71,9 +71,9 @@ const ProductDetails = () => {
   const [paymentMethod2, SetPaymentMethod2] = useState("icp");
   const [loading4, setLoading4] = useState(false);
 
-  const paymentAddressForTransfer = usePaymentTransfer(
-    parseInt(nft[0]?.fractional_token?.fee)
-  );
+  // const paymentAddressForTransfer = usePaymentTransfer(
+  //   parseInt(nft[0]?.fractional_token?.fee)
+  // );
   const getNftDetails = async () => {
     try {
       const canister_id = Principal.fromText(id);
@@ -158,14 +158,11 @@ const ProductDetails = () => {
 
   const handleConfirm = () => {
     // Call usePaymentTransfer function only if the selected plan is "Plug Wallet"
-
-    paymentAddressForTransfer(); // Call the usePaymentTransfer function
-
-    buyTokens();
-
-    setOpen(!open);
-    setConfirm(true);
-    setQuantity(1);
+    // paymentAddressForTransfer(); // Call the usePaymentTransfer function
+    // buyTokens();
+    // setOpen(!open);
+    // setConfirm(true);
+    // setQuantity(1);
   };
 
   const handler = () => {
@@ -347,7 +344,7 @@ const ProductDetails = () => {
               isOpen={open}
               onClose={() => setOpen(false)}
               nft={nft[0][0]?.price_per_share}
-              nftLogo={nft[0][0]?.fractional_token?.logo}
+              nftLogo={nft[0][0]?.nft?.logo}
               plans={plans}
               selected={setSelectedPlan}
               handleConfirm={handleConfirm}
