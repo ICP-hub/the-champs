@@ -36,8 +36,10 @@ const ProductPage = ({ name }) => {
   const [showHeader, setShowHeader] = useState(true);
   const [exchange, setExchange] = useState(1);
   const [loading3, setLoading3] = useState(true);
+  const [loading4, setLoading4] = useState(true);
   const getCollectionDetails = async () => {
     try {
+      setLoading4(true);
       const canister_id = Principal.fromText(id);
       const res = await backendActor?.getcollectiondetails(canister_id);
       // console.log("hello");
@@ -45,6 +47,7 @@ const ProductPage = ({ name }) => {
       console.log(res);
     } catch (error) {
       console.log(error);
+    } finally {
     }
   };
 
@@ -69,6 +72,8 @@ const ProductPage = ({ name }) => {
     } catch (error) {
       console.log(error);
       setHasMore(false);
+    } finally {
+      setLoading4(false);
     }
   };
 
@@ -123,10 +128,23 @@ const ProductPage = ({ name }) => {
       ? Math.min(...listedPrices).toFixed(3)
       : "0.00";
   };
+  useEffect(() => {
+    if (collection?.length > 0) {
+      const volume = calculateVolume(collection);
+      const listingCount = calculateListingCount(collection);
+      const floorPrice = calculateFloorPrice(collection);
+      setFloorPrice(floorPrice);
+      setListingCount(listingCount);
+      setVolume(volume);
+      // Set these values in state if needed
+    }
+  }, [collection]);
 
-  const volume = calculateVolume(collection);
-  const listingCount = calculateListingCount(collection);
-  const floorPrice = calculateFloorPrice(collection);
+  const [volume, setVolume] = useState(0);
+  const [listingCount, setListingCount] = useState(0);
+
+  const [floorPrice, setFloorPrice] = useState(0);
+
   const getExchangeRate = async () => {
     const paymentMethod = "FiatCurrency";
     let paymentOpt = null;
@@ -156,6 +174,7 @@ const ProductPage = ({ name }) => {
       console.log(exchangeRate2);
       setExchange(exchangeRate2);
     } catch (error) {
+      setExchange(1);
       console.log(error);
     } finally {
       setLoading3(false);
@@ -168,80 +187,94 @@ const ProductPage = ({ name }) => {
   return (
     <>
       {showHeader && <Header />} {/* Conditionally render the header */}
-      <div className="md:mt-44 left-0 right-0 px-6 lg:px-24">
-        <div className="w-full relative">
-          <img
-            src={
-              collectionDetails?.banner?.data
-                ? collectionDetails?.banner?.data
-                : placeholderImg
-            }
-            alt=""
-            className="w-full h-60 rounded-xl object-cover"
-          />
-          <div className="md:flex">
-            <div className="absolute md:top-32 top-0 p-4 md:mt-0 md:w-1/4 w-full md:left-16">
-              <Card
-                nftgeek={nftgeek}
-                toniq={toniq}
-                logo={collectionDetails?.logo?.data}
-              />
+      {loading4 ? (
+        <div className="animate-pulse flex space-x-4 px-6 md:mt-44 lg:px-24">
+          <div className="  bg-gray-300 h-32 w-32 rounded-xl"></div>
+          <div className="flex-1 space-y-4  ">
+            <div className="h-24 rounded-xl bg-gray-300  "></div>
+            <div className=" gap-4 flex items-center justify-center">
+              <div className="h-8 w-24 bg-gray-300 rounded"></div>
+              <div className="h-8 w-24 bg-gray-300 rounded"></div>
+              <div className="h-8 w-24 bg-gray-300 rounded"></div>
             </div>
-            <div className="right-0 md:w-[65%] md:ml-[33%] mt-64 md:mt-8">
-              <h1 className="text-3xl text-left font-bold font-sans mb-4 gap-1">
-                <span className="md:relative text-transparent bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
-                  {collectionDetails.name}
-                </span>
-              </h1>
-              {collectionDetails.description && (
-                <div>
-                  <ReadMore
-                    text={collectionDetails.description}
-                    maxLength={200}
-                    readmore={true}
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="md:mt-44 left-0 right-0 px-6 lg:px-24">
+            <div className="w-full relative">
+              <img
+                src={
+                  collectionDetails?.banner?.data
+                    ? collectionDetails?.banner?.data
+                    : placeholderImg
+                }
+                alt=""
+                className="w-full h-60 rounded-xl object-cover"
+              />
+              <div className="md:flex">
+                <div className="absolute md:top-32 top-0 p-4 md:mt-0 md:w-1/4 w-full md:left-16">
+                  <Card
+                    nftgeek={nftgeek}
+                    toniq={toniq}
+                    logo={collectionDetails?.logo?.data}
                   />
                 </div>
-              )}
-              <div className="mt-12 md:w-2/3 flex gap-4 flex-wrap">
-                <div className="w-1/4 text-center text-sm space-y-2">
-                  <p>AVERAGE PRICE</p>
-                  <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
-                    {loading3 ? (
-                      <div className=" h-6  bg-gray-100 bg-opacity-100 text-[#7B7583]  gap-1 rounded-lg  animate-pulse">
-                        {" "}
-                        <IcpLogo />
-                      </div>
-                    ) : (
-                      <span className="flex items-center justify-center gap-1">
-                        <IcpLogo />
-                        {(volume / listingCount / exchange).toFixed(3)}
-                      </span>
-                    )}
-                  </button>
-                </div>
-                <div className="w-1/4 text-center text-sm space-y-2">
-                  <p>LISTING</p>
-                  <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1.5 rounded-lg text-md flex items-center justify-center">
-                    {listingCount}
-                  </button>
-                </div>
-                <div className="w-1/4 text-center text-sm space-y-2">
-                  <p>FLOOR PRICE</p>
-                  <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
-                    {loading3 ? (
-                      <div className=" h-6  bg-gray-100 bg-opacity-100 text-[#7B7583]  gap-1 rounded-lg  animate-pulse">
-                        {" "}
-                        <IcpLogo />
-                      </div>
-                    ) : (
-                      <span className="flex items-center justify-center gap-1">
-                        <IcpLogo />
-                        {(floorPrice / exchange).toFixed(3)}
-                      </span>
-                    )}
-                  </button>
-                </div>
-                {/* <div className="w-1/4 text-center text-sm space-y-2">
+                <div className="right-0 md:w-[65%] md:ml-[33%] mt-64 md:mt-8">
+                  <h1 className="text-3xl text-left font-bold font-sans mb-4 gap-1">
+                    <span className="md:relative text-transparent bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
+                      {collectionDetails?.name}
+                    </span>
+                  </h1>
+                  {collectionDetails?.description && (
+                    <div>
+                      <ReadMore
+                        text={collectionDetails?.description}
+                        maxLength={200}
+                        readmore={true}
+                      />
+                    </div>
+                  )}
+                  <div className="mt-12 md:w-2/3 flex gap-4 flex-wrap">
+                    <div className="w-1/4 text-center text-sm space-y-2">
+                      <p>AVERAGE PRICE</p>
+                      <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
+                        {loading3 ? (
+                          <div className=" h-6  bg-gray-100 bg-opacity-100 text-[#7B7583]  gap-1 rounded-lg  animate-pulse">
+                            {" "}
+                            <IcpLogo />
+                          </div>
+                        ) : (
+                          <span className="flex items-center justify-center gap-1">
+                            <IcpLogo />
+                            {(volume / listingCount / exchange).toFixed(3)}
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                    <div className="w-1/4 text-center text-sm space-y-2">
+                      <p>LISTING</p>
+                      <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1.5 rounded-lg text-md flex items-center justify-center">
+                        {listingCount}
+                      </button>
+                    </div>
+                    <div className="w-1/4 text-center text-sm space-y-2">
+                      <p>FLOOR PRICE</p>
+                      <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
+                        {loading3 ? (
+                          <div className=" h-6  bg-gray-100 bg-opacity-100 text-[#7B7583]  gap-1 rounded-lg  animate-pulse">
+                            {" "}
+                            <IcpLogo />
+                          </div>
+                        ) : (
+                          <span className="flex items-center justify-center gap-1">
+                            <IcpLogo />
+                            {(floorPrice / exchange).toFixed(3)}
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                    {/* <div className="w-1/4 text-center text-sm space-y-2">
                   <p>MINTED</p>
                   <button className="w-full py-1.5 bg-gray-100 bg-opacity-100 text-[#7B7583] rounded-md text-md flex items-center justify-center">
                     184
@@ -253,11 +286,13 @@ const ProductPage = ({ name }) => {
                     184
                   </button>
                 </div> */}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
       <div className="left-0 right-0">
         <div>
           <h1 className="text-5xl font-bold font-sans mb-12 gap-1 px-6 lg:px-24">
@@ -274,7 +309,7 @@ const ProductPage = ({ name }) => {
               handleSearch={handleSearch}
             />
           </div>
-          {loading ? (
+          {loading4 ? (
             <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 max-lg:grid-cols-2 mt-4 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
               {Array.from({ length: 9 }, (_, index) => (
                 <ProductCardLoader key={index} />
@@ -284,11 +319,11 @@ const ProductPage = ({ name }) => {
             <>
               {grid ? (
                 <InfiniteScroll
-                  dataLength={searchResults.length}
+                  dataLength={searchResults?.length}
                   next={loadMoreItems}
                   hasMore={hasMore}
                   loader={
-                    searchResults.length == collection.length ? (
+                    searchResults?.length == collection?.length ? (
                       <div className="w-full flex items-center  mt-8 justify-center">
                         <p className="px-4 py-2  cursor-pointer  text-center rounded-lg w-48 productcardlgborder  ">
                           {" "}
