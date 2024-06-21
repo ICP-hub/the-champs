@@ -294,7 +294,7 @@ actor Champs {
         //     throw Error.reject("User is not authenticated");
         // };
         let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-            transferFrom : ({
+            icrc2_transfer_from : ({
             spender_subaccount : ?Typestoken.Subaccount;
             from : Typestoken.Account;
             to : Typestoken.Account;
@@ -321,7 +321,7 @@ actor Champs {
                             memo = null;
                             created_at_time = null;
                         };
-                        let tokens = await tokencansiter_actor.transferFrom(transferparams);
+                        let tokens = await tokencansiter_actor.icrc2_transfer_from(transferparams);
                         switch (tokens) {
                             case (#err(index)) {
                                 throw Error.reject(debug_show (index));
@@ -351,7 +351,7 @@ actor Champs {
                             memo = null;
                             created_at_time = null;
                         };
-                        let tokens = await tokencansiter_actor.transferFrom(transferparamsckbtc);
+                        let tokens = await tokencansiter_actor.icrc2_transfer_from(transferparamsckbtc);
                         switch (tokens) {
                             case (#err(index)) {
                                 throw Error.reject(debug_show (index));
@@ -371,10 +371,25 @@ actor Champs {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
-        let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-            transfer : (to : Principal, amount : Nat) -> async Result.Result<Typestoken.TxIndex,Typestoken.TransferError>;
+        let icrc1_transfer_paramas = {
+            from_subaccount : ?Typestoken.Subaccount = null;
+            to : { owner : Principal; subaccount : ?Typestoken.Subaccount } = { owner = to; subaccount = null };
+            amount : Typestoken.Tokens = amount;
+            fee : ?Typestoken.Tokens = null;
+            memo : ?Typestoken.Memo = null;
+            created_at_time : ?Typestoken.Timestamp = null;
         };
-        let tokens = await tokencansiter_actor.transfer(to, amount);
+        let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
+        icrc1_transfer : ({
+        from_subaccount : ?Typestoken.Subaccount;
+        to : Typestoken.Account;
+        amount : Typestoken.Tokens;
+        fee : ?Typestoken.Tokens;
+        memo : ?Typestoken.Memo;
+        created_at_time : ?Typestoken.Timestamp;
+  }) -> async Result.Result<Typestoken.TxIndex,Typestoken.TransferError>;
+        };
+        let tokens = await tokencansiter_actor.icrc1_transfer(icrc1_transfer_paramas);
         switch (tokens) {
             case (#err(index)) {
                 throw Error.reject(debug_show (index));
