@@ -536,17 +536,17 @@ const BuyModal = ({
   const [quantity, setQuantity] = useState(1);
   const [metaData, setMetaData] = useState(null);
   // const { principal } = useConnect();
+  const { principal } = useAuth();
   const [balance, setBalance] = useState(null);
   const createTokenActor = (canisterId) => {
     let identity = window.identity;
-    console.log("identity : ", identity);
+    // console.log("identity : ", identity);
     const agent = new HttpAgent({
       identity,
     });
     host: host;
     let tokenActor = Actor.createActor(idlFactory, {
       agent,
-      blsVerify: () => true,
       canisterId,
     });
 
@@ -569,21 +569,21 @@ const BuyModal = ({
   // };
 
   const handleConfirm = async () => {
+    const principalId =
+      selected.value === "icp"
+        ? ids.ICPtokenCan
+        : selected.value === "ckBTC"
+        ? ids.ckBTCtokenCan
+        : null;
     try {
-      const principalId =
-        selected.value === "icp"
-          ? ids.ICPtokenCan
-          : selected.value === "ckBTC"
-          ? ids.ckBTCtokenCan
-          : null;
-
+      // console.log(principalId);
       const tokenActor = createTokenActor(Principal.fromText(principalId));
-
+      // console.log(tokenActor);
       // Fetch metadata and balance
       const [metadata, balance] = await Promise.all([
         tokenActor.icrc1_metadata(),
         tokenActor.icrc1_balance_of({
-          owner: Principal.fromText(principal),
+          owner: principal,
           subaccount: [],
         }),
       ]);
@@ -597,7 +597,7 @@ const BuyModal = ({
       setBalance(parsedBalance);
 
       // Call transferApprove after setting metaData and balance
-      transferApprove(parsedBalance, formattedMetadata, tokenActor);
+      // transferApprove(parsedBalance, formattedMetadata, tokenActor);
     } catch (err) {
       console.error("ICRC1_META ERROR", err);
     }
