@@ -44,10 +44,12 @@ const ProductPage = ({ name }) => {
       const res = await backendActor?.getcollectiondetails(canister_id);
       // console.log("hello");
       setCollectionDetails(res);
+      setLoading4(false);
       console.log(res);
     } catch (error) {
       console.log(error);
     } finally {
+      setLoading4(false);
     }
   };
 
@@ -61,7 +63,6 @@ const ProductPage = ({ name }) => {
       );
       // console.log("hello");
       setCollection(res);
-      setloading(false);
 
       // Adjust slice end value based on itemsPerPage
       setSearchResults(res.slice(0, itemsPerPage));
@@ -69,11 +70,10 @@ const ProductPage = ({ name }) => {
       if (res.length === 0) {
         setHasMore(false);
       }
+      setloading(false);
     } catch (error) {
       console.log(error);
       setHasMore(false);
-    } finally {
-      setLoading4(false);
     }
   };
 
@@ -174,7 +174,6 @@ const ProductPage = ({ name }) => {
       console.log(exchangeRate2);
       setExchange(exchangeRate2);
     } catch (error) {
-      setExchange(1);
       console.log(error);
     } finally {
       setLoading3(false);
@@ -184,6 +183,7 @@ const ProductPage = ({ name }) => {
   useEffect(() => {
     getExchangeRate();
   }, [backendActor]);
+  console.log(collection);
   return (
     <>
       {showHeader && <Header />} {/* Conditionally render the header */}
@@ -200,81 +200,80 @@ const ProductPage = ({ name }) => {
           </div>
         </div>
       ) : (
-        <>
-          <div className="md:mt-44 left-0 right-0 px-6 lg:px-24">
-            <div className="w-full relative">
-              <img
-                src={
-                  collectionDetails?.banner?.data
-                    ? collectionDetails?.banner?.data
-                    : placeholderImg
-                }
-                alt=""
-                className="w-full h-60 rounded-xl object-cover"
-              />
-              <div className="md:flex">
-                <div className="absolute md:top-32 top-0 p-4 md:mt-0 md:w-1/4 w-full md:left-16">
-                  <Card
-                    nftgeek={nftgeek}
-                    toniq={toniq}
-                    logo={collectionDetails?.logo?.data}
-                  />
-                </div>
-                <div className="right-0 md:w-[65%] md:ml-[33%] mt-64 md:mt-8">
-                  <h1 className="text-3xl text-left font-bold font-sans mb-4 gap-1">
-                    <span className="md:relative text-transparent bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
-                      {collectionDetails?.name}
-                    </span>
-                  </h1>
-                  {collectionDetails?.description && (
-                    <div>
-                      <ReadMore
-                        text={collectionDetails?.description}
-                        maxLength={200}
-                        readmore={true}
-                      />
-                    </div>
-                  )}
-                  <div className="mt-12 md:w-2/3 flex gap-4 flex-wrap">
-                    <div className="w-1/4 text-center text-sm space-y-2">
-                      <p>AVERAGE PRICE</p>
-                      <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
-                        {loading3 ? (
-                          <div className=" h-6  bg-gray-100 bg-opacity-100 text-[#7B7583]  gap-1 rounded-lg  animate-pulse">
-                            {" "}
-                            <IcpLogo />
-                          </div>
-                        ) : (
-                          <span className="flex items-center justify-center gap-1">
-                            <IcpLogo />
-                            {(volume / listingCount / exchange).toFixed(3)}
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                    <div className="w-1/4 text-center text-sm space-y-2">
-                      <p>LISTING</p>
-                      <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1.5 rounded-lg text-md flex items-center justify-center">
-                        {listingCount}
-                      </button>
-                    </div>
-                    <div className="w-1/4 text-center text-sm space-y-2">
-                      <p>FLOOR PRICE</p>
-                      <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
-                        {loading3 ? (
-                          <div className=" h-6  bg-gray-100 bg-opacity-100 text-[#7B7583]  gap-1 rounded-lg  animate-pulse">
-                            {" "}
-                            <IcpLogo />
-                          </div>
-                        ) : (
-                          <span className="flex items-center justify-center gap-1">
-                            <IcpLogo />
-                            {(floorPrice / exchange).toFixed(3)}
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                    {/* <div className="w-1/4 text-center text-sm space-y-2">
+        <div className="md:mt-44 left-0 right-0 px-6 lg:px-24">
+          <div className="w-full relative">
+            <img
+              src={
+                collectionDetails?.banner?.data
+                  ? collectionDetails?.banner?.data
+                  : placeholderImg
+              }
+              alt=""
+              className="w-full h-60 rounded-xl object-cover"
+            />
+            <div className="md:flex">
+              <div className="absolute md:top-32 top-0 p-4 md:mt-0 md:w-1/4 w-full md:left-16">
+                <Card
+                  nftgeek={nftgeek}
+                  toniq={toniq}
+                  logo={collectionDetails?.logo?.data}
+                />
+              </div>
+              <div className="right-0 md:w-[65%] md:ml-[33%] mt-64 md:mt-8">
+                <h1 className="text-3xl text-left font-bold font-sans mb-4 gap-1">
+                  <span className="md:relative text-transparent bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
+                    {collectionDetails?.name}
+                  </span>
+                </h1>
+                {collectionDetails?.description && (
+                  <div>
+                    <ReadMore
+                      text={collectionDetails?.description}
+                      maxLength={200}
+                      readmore={true}
+                    />
+                  </div>
+                )}
+                <div className="mt-12 md:w-2/3 flex gap-4 flex-wrap">
+                  <div className="w-1/4 text-center text-sm space-y-2">
+                    <p>AVERAGE PRICE</p>
+                    <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
+                      {loading3 ? (
+                        <div className=" h-6  bg-gray-100 bg-opacity-100 text-[#7B7583]  gap-1 rounded-lg  animate-pulse">
+                          {" "}
+                          <IcpLogo />
+                        </div>
+                      ) : (
+                        <span className="flex items-center justify-center gap-1">
+                          <IcpLogo />
+                          {(volume / listingCount / exchange).toFixed(3)}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                  <div className="w-1/4 text-center text-sm space-y-2">
+                    <p>LISTING</p>
+                    <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1.5 rounded-lg text-md flex items-center justify-center">
+                      {listingCount}
+                    </button>
+                  </div>
+                  <div className="w-1/4 text-center text-sm space-y-2">
+                    <p>FLOOR PRICE</p>
+                    <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
+                      {loading3 ? (
+                        <div className=" h-6  bg-gray-100 bg-opacity-100 text-[#7B7583]  gap-1 rounded-lg  animate-pulse">
+                          {" "}
+                          <IcpLogo />
+                        </div>
+                      ) : (
+                        <span className="flex items-center justify-center gap-1">
+                          <IcpLogo />
+                          {(floorPrice / exchange).toFixed(3)}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                  {/* <div className="w-1/4 text-center text-sm space-y-2">
                   <p>MINTED</p>
                   <button className="w-full py-1.5 bg-gray-100 bg-opacity-100 text-[#7B7583] rounded-md text-md flex items-center justify-center">
                     184
@@ -286,12 +285,11 @@ const ProductPage = ({ name }) => {
                     184
                   </button>
                 </div> */}
-                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
       <div className="left-0 right-0">
         <div>
@@ -309,7 +307,7 @@ const ProductPage = ({ name }) => {
               handleSearch={handleSearch}
             />
           </div>
-          {loading4 ? (
+          {loading ? (
             <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 max-lg:grid-cols-2 mt-4 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
               {Array.from({ length: 9 }, (_, index) => (
                 <ProductCardLoader key={index} />
@@ -319,7 +317,7 @@ const ProductPage = ({ name }) => {
             <>
               {grid ? (
                 <InfiniteScroll
-                  dataLength={searchResults?.length}
+                  dataLength={searchResults.length}
                   next={loadMoreItems}
                   hasMore={hasMore}
                   loader={
