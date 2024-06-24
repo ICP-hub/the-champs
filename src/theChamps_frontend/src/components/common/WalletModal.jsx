@@ -4,24 +4,15 @@ import PlugSvg from "../../assets/wallet-images/plug.png";
 import NFIDSvg from "../../assets/wallet-images/nfid.png";
 import StoicSvg from "../../assets/wallet-images/stoic.png";
 import DfinitySvg from "../../assets/wallet-images/dfinity.svg";
+import { useAuth } from "../../auth/useClient";
 
 const WalletModal = ({ onModalClose }) => {
-  const whitelist = ["krcsw-aaaaa-aaaak-akqea-cai"];
-
-  const handleLogin = async (loginFunction) => {
-    try {
-      const userObject = await loginFunction(whitelist);
-      console.log(userObject);
-    } catch (error) {
-      console.error("Login failed", error);
-    }
-  };
-
+  const { login } = useAuth();
   const walletOptions = [
-    { name: "Plug", image: PlugSvg, login: PlugLogin },
-    { name: "NFID", image: NFIDSvg, login: NFIDLogin },
-    { name: "Stoic", image: StoicSvg, login: StoicLogin },
-    { name: "Internet Identity", image: DfinitySvg, login: IdentityLogin },
+    { name: "Plug", image: PlugSvg, provider: "Plug" },
+    { name: "NFID", image: NFIDSvg, provider: "NFID" },
+    { name: "Stoic", image: StoicSvg, provider: "Stoic" },
+    { name: "Internet Identity", image: DfinitySvg, provider: "Identity" },
   ];
 
   const animationVar = {
@@ -47,7 +38,7 @@ const WalletModal = ({ onModalClose }) => {
             whileTap="hover"
             variants={animationVar}
             className="px-8 py-3 mr-24 md:mr-32 w-full font-medium text-lg hover:bg-foreground"
-            onClick={() => handleLogin(wallet.login)}
+            onClick={() => login(wallet.provider)}
           >
             <div className="flex items-center space-x-4">
               <img

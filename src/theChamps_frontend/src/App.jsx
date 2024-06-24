@@ -11,8 +11,8 @@ function App() {
   const { logout, authClient, isAuthenticated, principal, backendActor } =
     useAuth();
 
-  console.log("principal from app", principal);
-  console.log("isAuth form app", isAuthenticated);
+  // console.log("principal from app", principal);
+  // console.log("isAuth form app", isAuthenticated);
   useMotionValueEvent(scrollY, "change", (scrollVal) => {
     // console.log("scroll", scrollVal);
     scrollVal > 0 ? setIsBgVisible(false) : setIsBgVisible(true);
