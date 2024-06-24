@@ -536,17 +536,18 @@ const BuyModal = ({
   const [quantity, setQuantity] = useState(1);
   const [metaData, setMetaData] = useState(null);
   // const { principal } = useConnect();
+  const { principal } = useAuth();
   const [balance, setBalance] = useState(null);
+  const [buyLoading, setBuyLoading] = useState(false);
   const createTokenActor = (canisterId) => {
     let identity = window.identity;
-    console.log("identity : ", identity);
+    // console.log("identity : ", identity);
     const agent = new HttpAgent({
       identity,
     });
     host: host;
     let tokenActor = Actor.createActor(idlFactory, {
       agent,
-      blsVerify: () => true,
       canisterId,
     });
 
@@ -569,21 +570,22 @@ const BuyModal = ({
   // };
 
   const handleConfirm = async () => {
+    const principalId =
+      selected.value === "icp"
+        ? ids.ICPtokenCan
+        : selected.value === "ckBTC"
+        ? ids.ckBTCtokenCan
+        : null;
     try {
-      const principalId =
-        selected.value === "icp"
-          ? ids.ICPtokenCan
-          : selected.value === "ckBTC"
-          ? ids.ckBTCtokenCan
-          : null;
-
+      // console.log(principalId);
+      setBuyLoading(true);
       const tokenActor = createTokenActor(Principal.fromText(principalId));
-
+      // console.log(tokenActor);
       // Fetch metadata and balance
       const [metadata, balance] = await Promise.all([
         tokenActor.icrc1_metadata(),
         tokenActor.icrc1_balance_of({
-          owner: Principal.fromText(principal),
+          owner: principal,
           subaccount: [],
         }),
       ]);
@@ -595,11 +597,12 @@ const BuyModal = ({
       const parsedBalance = parseInt(balance, 10);
       console.log("Balance:", parsedBalance);
       setBalance(parsedBalance);
-
       // Call transferApprove after setting metaData and balance
       transferApprove(parsedBalance, formattedMetadata, tokenActor);
     } catch (err) {
       console.error("ICRC1_META ERROR", err);
+    } finally {
+      setBuyLoading(false);
     }
   };
 
@@ -618,20 +621,33 @@ const BuyModal = ({
       if (currentBalance > sendableAmount) {
         console.log("We can send the amount");
         // transaction logic
+        // let transaction = {
+        //   amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+        //   from_subaccount: [],
+        //   spender: {
+        //     // Need review on this
+        //     // owner: product[1],
+        //     owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
+        //     subaccount: [],
+        //   },
+        //   fee: parseInt(currentMetaData["icrc1:fee"]),
+        //   memo: [],
+        //   created_at_time: [],
+        //   expected_allowance: [],
+        //   expires_at: [],
+        // };
         let transaction = {
-          amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
           from_subaccount: [],
           spender: {
-            // Need review on this
-            // owner: product[1],
-            owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
+            owner: principal,
             subaccount: [],
           },
+          amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+          expected_allowance: [],
+          expires_at: [],
           fee: parseInt(currentMetaData["icrc1:fee"]),
           memo: [],
           created_at_time: [],
-          expected_allowance: [],
-          expires_at: [],
         };
         console.log("transaction ", transaction);
         console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
@@ -764,13 +780,14 @@ const BuyModal = ({
             cancel
           </button>
           <button
-            className={`px-4 py-2 rounded-md font-medium button text-white ${
-              loading && "animate-pulse"
-            }`}
+            className={`px-4 py-2 rounded-md font-medium text-white flex items-center justify-center gap-2 ${
+              buyLoading ? "bg-gray-500" : "button"
+            } ${loading && "animate-pulse"}`}
             disabled={loading}
             onClick={handleConfirm}
           >
             confirm
+            {buyLoading && <TailSpin color="#FFFFFF" height={24} width={24} />}
           </button>
         </div>
       </div>
