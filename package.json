@@ -32,6 +32,7 @@
     "country-state-city": "^3.2.1",
     "framer-motion": "^11.0.24",
     "heroicons-react": "^1.4.1",
+    "ic-auth": "^0.9.1",
     "intersection-observer": "^0.12.2",
     "intl-tel-input": "^21.1.4",
     "react-copy-to-clipboard": "^5.1.0",

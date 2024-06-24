@@ -1,5 +1,5 @@
 // Sidebar.js
-import { useEffect, useState } from "react";
+import { useState } from "react";
 // import SidebarMain from "./SidebarMain";
 // import {
 //   ConnectDialog,
@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 //   useConnect,
 //   useDialog,
 // } from "@connect2ic/react";
-import { login, logout } from "../../../../redux/reducers/authReducer";
-import { useDispatch } from "react-redux";
+// import { login, logout } from "../../../../redux/reducers/authReducer";
+// import { useDispatch } from "react-redux";
 // import Avatar from "boring-avatars";
 // import {
 //   IoMdArrowDropdown,
@@ -43,9 +43,7 @@ const Sidebar = () => {
         {/* <UserAthenticated /> */}
         {/* <UserNotAuthenticated /> */}
       </div>
-      {isLoggedIn ? (
-        <WalletModal onModalClose={handleWalletModalClose} />
-      ) : null}
+      {isLoggedIn && <WalletModal onModalClose={handleWalletModalClose} />}
     </>
   );
 };

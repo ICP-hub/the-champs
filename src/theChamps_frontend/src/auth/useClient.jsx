@@ -163,6 +163,7 @@ export const useAuthClient = (options = defaultOptions) => {
 
 export const AuthProvider = ({ children }) => {
   const auth = useAuthClient();
+  console.log("auth is ", auth);
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 };
 
