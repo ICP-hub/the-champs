@@ -349,6 +349,14 @@
   display: none;
 }
 
+.gradient-text {
+  font-weight: bold;
+  background: linear-gradient(to right, #fc001e, #ff7d57);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
 /*toggle bar */
 
 .react-toggle {

@@ -200,7 +200,7 @@ const ProductPage = ({ name }) => {
           </div>
         </div>
       ) : (
-        <div className="md:mt-44 left-0 right-0 px-6 lg:px-24">
+        <div className="md:mt-24 left-0 right-0 px-6 lg:px-24">
           <div className="w-full relative">
             <img
               src={

@@ -24,17 +24,17 @@ import { idlFactory } from "../../../../wallet/ledger.did";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { host, ids } from "../../../../DevConfig";
 
-const plans = [
-  {
-    name: "ICP",
-    value: "icp",
-  },
+// const plans = [
+//   {
+//     name: "ICP",
+//     value: "icp",
+//   },
 
-  {
-    name: "CKBTC Wallet",
-    value: "ckBTC",
-  },
-];
+//   {
+//     name: "CKBTC Wallet",
+//     value: "ckBTC",
+//   },
+// ];
 import { GoHeartFill } from "react-icons/go";
 import { GoHeart } from "react-icons/go";
 import { HiMinus, HiPlus } from "react-icons/hi2";
@@ -49,13 +49,13 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   // const [productInFavourites, setProductInFavourites] = useState(false);
 
   // const [productInFavourites, setProductInFavourites] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false); // State to manage modal visibility
+  // const [loading, setLoading] = useState(false);
+  // const [showModal, setShowModal] = useState(false); // State to manage modal visibility
   // const [assets] = useBalance();
   // const [image, setImage] = useState(product[0]?.fractional_token.logo);
   const [loading3, setLoading3] = useState(true);
   const [exchange, setExchange] = useState(1);
-  const [confirm, setConfirm] = useState(true);
+  // const [confirm, setConfirm] = useState(true);
 
   const [selectedPlan, setSelectedPlan] = useState({ value: "icp" });
   const [loading4, setLoading4] = useState(false);
@@ -256,27 +256,27 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     // setConfirm(true);
   };
 
-  const handler = () => {
-    setOpen(!open);
-    setConfirm(true);
-    setShowHeader(true);
-  };
+  // const handler = () => {
+  //   setOpen(!open);
+  //   setConfirm(true);
+  //   setShowHeader(true);
+  // };
 
-  const handleBuyNow = () => {
-    if (isConnected) {
-      // Check if user has sufficient balance
-      if (icpWallet?.amount <= 0) {
-        setShowModal(true);
-      } else {
-        // Proceed with the buy now action
-        setOpen(true);
-        setShowHeader(false);
-      }
-    } else {
-      setOpen(true);
-      setShowHeader(false);
-    }
-  };
+  // const handleBuyNow = () => {
+  //   if (isConnected) {
+  //     // Check if user has sufficient balance
+  //     if (icpWallet?.amount <= 0) {
+  //       setShowModal(true);
+  //     } else {
+  //       // Proceed with the buy now action
+  //       setOpen(true);
+  //       setShowHeader(false);
+  //     }
+  //   } else {
+  //     setOpen(true);
+  //     setShowHeader(false);
+  //   }
+  // };
 
   /*************** Favourite review ****************/
   // get favorites
@@ -352,7 +352,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           <TailSpin color="#FC001E" height={80} width={80} />
         </div>
       )}
-      <div className="overflow-hidden ">
+      <div className="overflow-hidden flex items-center justify-center">
         <Link to={`/collection/${id}/${product[1].toText()}`}>
           <motion.img
             whileHover={{ scale: 1.1 }}
@@ -523,7 +523,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   );
 };
 
-const BuyModal = ({
+export const BuyModal = ({
   onOpen,
   nft,
   nftLogo,
@@ -618,44 +618,44 @@ const BuyModal = ({
         10
       );
       console.log("sendable amount console ", sendableAmount);
-      if (currentBalance > sendableAmount) {
-        console.log("We can send the amount");
-        // transaction logic
-        // let transaction = {
-        //   amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
-        //   from_subaccount: [],
-        //   spender: {
-        //     // Need review on this
-        //     // owner: product[1],
-        //     owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
-        //     subaccount: [],
-        //   },
-        //   fee: parseInt(currentMetaData["icrc1:fee"]),
-        //   memo: [],
-        //   created_at_time: [],
-        //   expected_allowance: [],
-        //   expires_at: [],
-        // };
-        let transaction = {
-          from_subaccount: [],
-          spender: {
-            owner: principal,
-            subaccount: [],
-          },
-          amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
-          expected_allowance: [],
-          expires_at: [],
-          fee: parseInt(currentMetaData["icrc1:fee"]),
-          memo: [],
-          created_at_time: [],
-        };
-        console.log("transaction ", transaction);
-        console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
-        const approveRes = await tokenActor.icrc2_approve(transaction);
-        console.log("Payment Approve Response ", approveRes);
-      } else {
-        console.log("Insufficient funds");
-      }
+      // if (currentBalance > sendableAmount) {
+      //   console.log("We can send the amount");
+      // transaction logic
+      // let transaction = {
+      //   amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+      //   from_subaccount: [],
+      //   spender: {
+      //     // Need review on this
+      //     // owner: product[1],
+      //     owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
+      //     subaccount: [],
+      //   },
+      //   fee: parseInt(currentMetaData["icrc1:fee"]),
+      //   memo: [],
+      //   created_at_time: [],
+      //   expected_allowance: [],
+      //   expires_at: [],
+      // };
+      let transaction = {
+        from_subaccount: [],
+        spender: {
+          owner: principal,
+          subaccount: [],
+        },
+        amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+        expected_allowance: [],
+        expires_at: [],
+        fee: parseInt(currentMetaData["icrc1:fee"]),
+        memo: [],
+        created_at_time: [],
+      };
+      console.log("transaction ", transaction);
+      console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
+      const approveRes = await tokenActor.icrc2_approve(transaction);
+      console.log("Payment Approve Response ", approveRes);
+      // } else {
+      //   console.log("Insufficient funds");
+      // }
     } catch (err) {
       console.error("Error in transfer approve", err);
     }
@@ -686,7 +686,7 @@ const BuyModal = ({
             <img
               src={nftLogo.length > 10 ? nftLogo : champsImg}
               alt="champs-img"
-              className="object-cover min-h-48 min-w-40 max-h-48 max-w-40"
+              className="object-contain min-h-48 min-w-40 max-h-48 max-w-40"
             />
           </div>
         </div>

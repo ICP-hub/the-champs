@@ -169,9 +169,12 @@ const NFTCard = ({ NFT, collection, nftData }) => {
   // };
 
   // console.log(nftData[0].toText());
+  const nft_id = parseInt(NFT[0].nft.id);
 
   return (
-    <Link to={`/collection/${nftData[0].toText()}/${NFT[1].toText()}`}>
+    <Link
+      to={`/collection/${nftData[0].toText()}/${NFT[1].toText()}/${nft_id}`}
+    >
       <motion.div
         whileHover={{ translateY: -15 }}
         className="flex flex-col gap-4 cursor-pointer"
