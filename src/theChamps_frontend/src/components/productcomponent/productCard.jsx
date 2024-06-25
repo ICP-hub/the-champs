@@ -645,7 +645,7 @@ export const BuyModal = ({
         amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
         expected_allowance: [],
         expires_at: [],
-        fee: parseInt(currentMetaData["icrc1:fee"]),
+        fee: [currentMetaData["icrc1:fee"]],
         memo: [],
         created_at_time: [],
       };
