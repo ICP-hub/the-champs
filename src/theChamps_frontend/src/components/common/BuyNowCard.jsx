@@ -1,157 +1,289 @@
-import React, { useState } from "react";
-import { RadioGroup } from "@headlessui/react";
+import { Actor, HttpAgent } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
+import { TailSpin } from "react-loader-spinner";
 import IcpLogo from "../../assets/IcpLogo";
-import placeholderimg from "../../assets/CHAMPS.png";
-import { IoMdAdd } from "react-icons/io";
-import { HiMinus } from "react-icons/hi";
+import { HiMinus, HiPlus } from "react-icons/hi2";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
+import { useState } from "react";
+import { useAuth } from "../../auth/useClient";
+import { idlFactory } from "../../../../wallet/ledger.did";
+import { host, ids } from "../../../../DevConfig";
+import toast from "react-hot-toast";
 
-const BuyNowModal = ({
-  isOpen,
-  nft,
+const BuyNowCard = ({
+  onOpen,
+  price_share,
   nftLogo,
-  plans,
+  setSelected,
   selected,
-  handleConfirm,
-  handler,
   exchange,
-  quantity,
-  incrementQuantity,
-  decrementQuantity,
   loading,
+  product,
 }) => {
+  const [quantity, setQuantity] = useState(1);
+  const [metaData, setMetaData] = useState(null);
+  // const { principal } = useConnect();
+  const { isAuthenticated, principal } = useAuth();
+  const [balance, setBalance] = useState(null);
+  const [buyLoading, setBuyLoading] = useState(false);
+  const createTokenActor = (canisterId) => {
+    let identity = window.identity;
+    // console.log("identity : ", identity);
+    const agent = new HttpAgent({
+      identity,
+    });
+    host: host;
+    let tokenActor = Actor.createActor(idlFactory, {
+      agent,
+      canisterId,
+    });
+
+    return tokenActor;
+  };
+
+  const formatTokenMetaData = (arr) => {
+    const resultObject = {};
+    arr.forEach((item) => {
+      const key = item[0];
+      const value = item[1][Object.keys(item[1])[0]]; // Extracting the value from the nested object
+      resultObject[key] = value;
+    });
+    return resultObject;
+  };
+
+  // const continueICPTransaction = async (amount, transfer, sendPrincipal) => {
+  //   const actorICP = createTokenActor(ids.tokenCan);
+  //   transfer(amount, sendPrincipal, actorICP);
+  // };
+
+  const handleConfirm = async () => {
+    if (!isAuthenticated) {
+      toast.error("You need to login first");
+      return;
+    }
+    const principalId =
+      selected.value === "icp"
+        ? ids.ICPtokenCan
+        : selected.value === "ckBTC"
+        ? ids.ckBTCtokenCan
+        : null;
+    try {
+      // console.log(principalId);
+      setBuyLoading(true);
+      const tokenActor = createTokenActor(Principal.fromText(principalId));
+      // console.log(tokenActor);
+      // Fetch metadata and balance
+      const [metadata, balance] = await Promise.all([
+        tokenActor.icrc1_metadata(),
+        tokenActor.icrc1_balance_of({
+          owner: principal,
+          subaccount: [],
+        }),
+      ]);
+
+      console.log("ICRC1_META RESPONSE", metadata);
+      const formattedMetadata = formatTokenMetaData(metadata);
+      setMetaData(formattedMetadata);
+
+      const parsedBalance = parseInt(balance, 10);
+      console.log("Balance:", parsedBalance);
+      setBalance(parsedBalance);
+      // Call transferApprove after setting metaData and balance
+      transferApprove(parsedBalance, formattedMetadata, tokenActor);
+    } catch (err) {
+      console.error("ICRC1_META ERROR", err);
+    } finally {
+      setBuyLoading(false);
+    }
+  };
+
+  const transferApprove = async (
+    currentBalance,
+    currentMetaData,
+    tokenActor
+  ) => {
+    try {
+      const decimals = parseInt(currentMetaData["icrc1:decimals"], 10);
+      const sendableAmount = parseInt(
+        ((price_share * quantity) / exchange) * Math.pow(10, decimals),
+        10
+      );
+      console.log("sendable amount console ", sendableAmount);
+      // if (currentBalance > sendableAmount) {
+      //   console.log("We can send the amount");
+      // transaction logic
+      // let transaction = {
+      //   amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+      //   from_subaccount: [],
+      //   spender: {
+      //     // Need review on this
+      //     // owner: product[1],
+      //     owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
+      //     subaccount: [],
+      //   },
+      //   fee: parseInt(currentMetaData["icrc1:fee"]),
+      //   memo: [],
+      //   created_at_time: [],
+      //   expected_allowance: [],
+      //   expires_at: [],
+      // };
+      let transaction = {
+        from_subaccount: [],
+        spender: {
+          owner: principal,
+          subaccount: [],
+        },
+        amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+        expected_allowance: [],
+        expires_at: [],
+        fee: [currentMetaData["icrc1:fee"]],
+        memo: [],
+        created_at_time: [],
+      };
+      console.log("transaction ", transaction);
+      console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
+      const approveRes = await tokenActor.icrc2_approve(transaction);
+      console.log("Payment Approve Response ", approveRes);
+      // } else {
+      //   console.log("Insufficient funds");
+      // }
+    } catch (err) {
+      console.error("Error in transfer approve", err);
+    }
+  };
+
+  // decrement qty
+  // const handleDecrement = () => {
+  //   setQuantity((prev) => Math.max(prev - 1, 1));
+  // };
+
+  // const handleIncrement = () => {
+  //   setQuantity((prev) =>
+  //     prev < parseInt(product[0].fractional_token.totalSupply) ? prev + 1 : prev
+  //   );
+  // };
+
+  // console.log("metaData state ", metaData);
+  // console.log("onwer principal ", principal);
+
   return (
-    isOpen && (
-      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-80">
-        <div className="md:w-[28%] w-[75%] rounded-xl bg-white z-10 p-8 pt-4 pb-4">
-          <p className="text-center font-bold text-sm">
-            You are about to make a purchase!
-          </p>
-          <div className="flex items-center justify-center mt-4">
+    <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar top-0">
+      <div className="bg-white rounded-2xl p-4 md:px-6">
+        <h4 className="text-sm py-2 flex items-center justify-center w-full font-semibold">
+          You are about to make a purchase!
+        </h4>
+        <div className="flex w-full items-center justify-center">
+          <div className="min-h-48 min-w-40 max-h-48 max-w-40 rounded-md overflow-hidden">
             <img
-              src={nftLogo ? nftLogo : placeholderimg}
-              alt=""
-              className="w-1/2 md:h-40 h-20 rounded-lg shadow-md"
+              src={nftLogo.length > 10 ? nftLogo : champsImg}
+              alt="champs-img"
+              className="object-contain min-h-48 min-w-40 max-h-48 max-w-40"
             />
           </div>
-          <p className="text-center text-gray-400 mt-4 text-sm">
-            You are about to purchase this NFT from your connected wallet.
-          </p>
-          <div className="border-[1px] mt-2 mb-4 border-gray-200 w-full"></div>
-          <RadioGroup value={selected} onChange={(plan) => selected(plan)}>
-            <RadioGroup.Label className="text-black xl:text-sm text-xs font-semibold uppercase tracking-wider w-full">
-              Payment Method
-            </RadioGroup.Label>
-            <div className="grid xl:grid-cols-2 grid-cols-2 gap-4 pt-2 max-sm:flex max-sm:flex-col font-medium">
-              {plans.map((plan) => (
-                <RadioGroup.Option
-                  key={plan.name}
-                  value={plan}
-                  className={({ active, checked }) =>
-                    `border-2 p-3 rounded-xl text-sm uppercase ${
-                      active ? "button text-white border-none" : "bg-white"
-                    }`
-                  }
-                >
-                  {({ active, checked }) => (
-                    <RadioGroup.Label className="flex justify-between w-full ml-2 items-center">
-                      <p>{plan.name}</p>
-                      {active && (
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          className="h-6 w-6"
-                        >
-                          <circle
-                            cx={12}
-                            cy={12}
-                            r={12}
-                            fill="#fff"
-                            opacity="0.2"
-                          />
-                          <path
-                            d="M7 13l3 3 7-7"
-                            stroke="#fff"
-                            strokeWidth={1.5}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      )}
-                    </RadioGroup.Label>
-                  )}
-                </RadioGroup.Option>
-              ))}
-            </div>
-          </RadioGroup>
-
-          <div className="flex items-center justify-between mt-4">
-            <p className="text-sm font-semibold">SHARE:</p>
-            <div className="flex items-center">
-              <button
-                className="px-3 py-1 border rounded-l-md bg-gray-200"
-                onClick={decrementQuantity}
-              >
-                <HiMinus size={24} />
-              </button>
-              <span className="px-4 py-1 border-t border-b">{quantity}</span>
-              <button
-                className="px-3 py-1 border rounded-r-md bg-gray-200"
-                onClick={incrementQuantity}
-              >
-                <IoMdAdd size={24} />
-              </button>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between font-bold text-sm mt-4">
-            <p>TOTAL:</p>
-
-            {loading ? (
-              <div className="h-6 w-[150px] bg-gray-200 rounded-2xl animate-pulse"></div>
-            ) : (
-              <p className="flex items-center gap-1">
-                <IcpLogo size={16} />
-                {((nft * quantity) / exchange).toFixed(6)}
-                <span className="text-XS text-gray-500">
-                  ({(nft * quantity).toFixed(3)} USD)
-                </span>
-              </p>
+        </div>
+        <p className="py-2 text-xs text-center text-gray-500">
+          You are about to purchase this NFT from your connected wallet.
+        </p>
+        <div className="my-2 h-px w-full bg-gray-300"></div>
+        <h4 className="font-semibold capitalize">payment method</h4>
+        <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2 font-semibold">
+          <button
+            className={`p-4 flex justify-between items-center ${
+              selected.value === "icp"
+                ? "button text-white"
+                : "border-gray-300 border-2"
+            } rounded-md`}
+            onClick={() => setSelected({ value: "icp" })}
+          >
+            <span className="text-sm uppercase min-w-max">ICP</span>
+            {selected.value === "icp" && (
+              <span>
+                <RiVerifiedBadgeFill color="white" size={20} />
+              </span>
             )}
-          </div>
-          <div className="mt-2 md:block hidden text-center text-gray-400 text-xs">
-            This process may take a minute. Transactions can not be reversed. By
-            clicking confirm you show acceptance to our{" "}
-            <span className="text-[#FC001E] underline">Terms and Service</span>.
-          </div>
-          <div className="flex items-center gap-4 justify-end mt-4 text-md text-white font-medium">
+          </button>
+          <button
+            className={`p-4 flex justify-between items-center ${
+              selected.value === "ckBTC"
+                ? "button text-white"
+                : "border-gray-300 border-2"
+            } rounded-md`}
+            onClick={() => setSelected({ value: "ckBTC" })}
+          >
+            <span className="text-sm uppercase min-w-max">CKBTC WALLET</span>
+            {selected.value === "ckBTC" && (
+              <span>
+                <RiVerifiedBadgeFill color="white" size={20} />
+              </span>
+            )}
+          </button>
+        </div>
+        {/* <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+          <span>Share</span>
+          <div className="flex border rounded-md overflow-hidden items-center">
             <button
-              className={` rounded-md px-5 py-2 text-md flex items-center justify-center ${
-                loading
-                  ? " bg-gradient-to-r from-[#ec8995] to-[#f6b19d]   text-white cursor-not-allowed"
-                  : "bg-opacity-100 button text-white"
-              }`}
-              onClick={handler}
-              disabled={loading}
+              className="flex items-center justify-center p-2 bg-gray-200 h-full"
+              onClick={handleDecrement}
             >
-              Cancel
+              <HiMinus className="h-6" />
             </button>
+            <span className="flex items-center justify-center px-4 py-2">
+              {quantity}
+            </span>
             <button
-              button
-              className={` rounded-md px-5 py-2 text-md flex items-center justify-center ${
-                loading
-                  ? " bg-gradient-to-r from-[#ec8995] to-[#f6b19d]   text-white cursor-not-allowed"
-                  : "bg-opacity-100 button text-white"
-              }`}
-              onClick={handleConfirm}
-              disabled={loading}
+              className="flex items-center justify-center p-2 bg-gray-200 h-full"
+              onClick={handleIncrement}
             >
-              Confirm
+              <HiPlus className="h-6" />
             </button>
           </div>
+        </div> */}
+        <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+          <span>Total</span>
+          {loading ? (
+            <span className="h-5 w-44 bg-gray-500 animate-pulse rounded-2xl"></span>
+          ) : (
+            <div className="flex gap-1 items-center">
+              <IcpLogo size={16} />
+              <span>{((price_share * quantity) / exchange).toFixed(6)}</span>
+              <span className="text-gray-500">
+                ({(price_share * quantity).toFixed(3)} USD)
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="py-2 text-xs text-center max-w-96 font-medium text-gray-500">
+          This process may take a minute. Transactions can not be reversed. By
+          clicking confirm you show acceptance to our
+          <span className="text-[#FC001E] underline ml-1">
+            Terms and Service
+          </span>
+          .
+        </div>
+        <div className="flex justify-end items-center space-x-4 my-2">
+          <button
+            className={`px-4 py-2 rounded-md border-2 border-gray-300 ${
+              loading && "animate-pulse"
+            }`}
+            disabled={loading}
+            onClick={() => onOpen(false)}
+          >
+            cancel
+          </button>
+          <button
+            className={`px-4 py-2 rounded-md font-medium text-white flex items-center justify-center gap-2 ${
+              buyLoading ? "bg-gray-500" : "button"
+            } ${loading && "animate-pulse"}`}
+            disabled={loading}
+            onClick={handleConfirm}
+          >
+            confirm
+            {buyLoading && <TailSpin color="#FFFFFF" height={24} width={24} />}
+          </button>
         </div>
       </div>
-    )
+    </div>
   );
 };
 
-export default BuyNowModal;
+export default BuyNowCard;

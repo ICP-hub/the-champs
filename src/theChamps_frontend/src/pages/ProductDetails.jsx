@@ -23,29 +23,75 @@ import { useAuth } from "../auth/useClient";
 import { PiFileTextBold, PiLinkBold } from "react-icons/pi";
 import { HiMiniUserCircle, HiOutlineDocumentText } from "react-icons/hi2";
 import { motion } from "framer-motion";
+import BuyNowCard from "../components/common/BuyNowCard";
 
 const ProductDetails = () => {
-  const [nftLoading, setNftLoading] = useState(false);
+  const [nftLoading, setNftLoading] = useState(true);
   const { slug, index, id } = useParams();
   const { backendActor } = useAuth();
   const [nftData, setNftData] = useState(null);
+  const [collectionData, setCollectionData] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [exchange, setExchange] = useState(1);
+  const [selectedPlan, setSelectedPlan] = useState({ value: "icp" });
+  const [loading3, setLoading3] = useState(true);
 
-  // Get nft details
+  // Get NFT details
   const getNftDetails = async () => {
     try {
-      setNftLoading(true);
-      const response = await backendActor.getFractionalNftDetails(
-        parseInt(id),
-        Principal.fromText(index),
-        Principal.fromText(slug)
-      );
-      console.log("fetched nft res ", response);
+      const parsedId = parseInt(id);
+      const principalIndex = Principal.fromText(index);
+      const principalSlug = Principal.fromText(slug);
+
+      const [nftResponse, collectionResponse] = await Promise.all([
+        backendActor.getFractionalNftDetails(
+          parsedId,
+          principalIndex,
+          principalSlug
+        ),
+        backendActor.getcollectiondetails(principalSlug),
+      ]);
+
+      setCollectionData(collectionResponse);
+      setNftData(nftResponse);
+      console.log("collectionRes", collectionResponse);
+      console.log("nftRes", nftResponse);
     } catch (err) {
-      console.error("Error fetching fractionlize nft details ", err);
+      console.error("Error fetching fractionalized NFT details:", err);
     } finally {
       setNftLoading(false);
     }
   };
+
+  // exchange rate
+  const getExchangeRate = async () => {
+    const paymentOpt = { FiatCurrency: null };
+    const paymentMethod = selectedPlan.value === "ckBTC" ? "btc" : "icp";
+    const paymentOpt1 =
+      paymentMethod === "btc"
+        ? { Cryptocurrency: null }
+        : { FiatCurrency: null };
+
+    try {
+      const res = await backendActor.get_exchange_rates(
+        { class: paymentOpt, symbol: "usd" },
+        { class: paymentOpt1, symbol: paymentMethod }
+      );
+      console.log("excahnge res", res);
+      const exchangeRate2 =
+        parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
+      // console.log(exchangeRate2);
+      setExchange(exchangeRate2);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading3(false);
+    }
+  };
+
+  useEffect(() => {
+    getExchangeRate();
+  }, [backendActor, selectedPlan.value]);
 
   // Effects
   useEffect(() => {
@@ -55,22 +101,38 @@ const ProductDetails = () => {
   return (
     <>
       <Header />
+      {open && (
+        <BuyNowCard
+          onOpen={setOpen}
+          price_share={nftData.price_per_share}
+          nftLogo={nftData.nft.logo.data}
+          setSelected={setSelectedPlan}
+          selected={selectedPlan}
+          exchange={exchange}
+          loading={loading3}
+          product={nftData}
+        />
+      )}
       {nftLoading ? (
-        <div>Loading...</div>
+        <Loader />
       ) : (
-        <div className="md:mt-24 mt-8 left-0 right-0 gap-8 px-6 lg:px-24">
-          <div className="flex max-md:flex-col">
-            <div className="overflow-hidden max-md:flex max-md:items-center max-md:justify-center">
+        <div className="lg:mt-24 mt-8 left-0 right-0 gap-8 px-6 xl:px-24">
+          <div className="flex max-lg:flex-col">
+            <div className="overflow-hidden max-lg:flex max-lg:items-center max-lg:justify-center">
               <div className="p-2 border-2 rounded-2xl overflow-hidden border-gray-300">
                 <motion.img
                   whileHover={{ scale: 1.1 }}
-                  src={placeholderimg}
+                  src={
+                    nftData.nft.logo.data.length > 10
+                      ? nftData.nft.logo.data
+                      : placeholderimg
+                  }
                   alt="nft name"
-                  className="h-64 w-64 object-contain rounded-2xl"
+                  className="h-64 w-64 object-fill rounded-2xl"
                 />
               </div>
             </div>
-            <div className="md:pl-12 flex-1 max-md:py-8">
+            <div className="lg:pl-12 flex-1 max-lg:py-8">
               <Link
                 to={`/collection/${id}`}
                 className="text-xl font-medium flex items-center gap-2 pb-4"
@@ -78,30 +140,36 @@ const ProductDetails = () => {
                 <IoArrowBack />
                 Back to Collections
               </Link>
-              <div className="py-4 md:py-8 flex justify-between items-center">
+              <div className="py-4 lg:py-8 flex justify-between items-center">
                 <div>
                   <h1 className="text-2xl gradient-text">NFT Name</h1>
-                  <h6 className="text-gray-500">By someone</h6>
+                  <h6 className="text-gray-500 capitalize font-medium">
+                    By {collectionData.name}
+                  </h6>
                 </div>
                 <span>
                   <CiHeart size={32} />
                 </span>
               </div>
-              <div className="py-4 flex max-md:flex-col md:justify-between md:items-center">
-                <span>price</span>
+              <div className="py-4 flex max-lg:flex-col lg:justify-between lg:items-center">
+                <div className="flex items-center font-semibold text-lg">
+                  {(nftData.price_per_share / exchange).toFixed(3)} ICP (
+                  {nftData.price_per_share.toFixed(3)} USD) / Share
+                </div>
                 <motion.button
                   whileTap={{ scale: 0.9 }}
-                  className="button px-4 py-2 rounded-lg text-white max-md:mt-4 max-w-max"
+                  className="button px-4 py-2 rounded-lg text-white max-lg:mt-4 max-w-max"
+                  onClick={() => setOpen(true)}
                 >
                   Buy Now
                 </motion.button>
               </div>
               <div className="py-4">
-                <div className="rounded-2xl border-2 p-4 md:p-8 border-gray-300">
-                  <div className="flex flex-col lg:flex-row lg:items-center">
-                    <h1 className="font-medium text-lg max-lg:pb-2">Details</h1>
-                    <div className="lg:px-12 flex max-lg:flex-col lg:items-center font-semibold text-sm">
-                      <div className="lg:px-12 max-lg:py-2">
+                <div className="rounded-2xl border-2 p-4 lg:p-8 border-gray-300">
+                  <div className="flex flex-col xl:flex-row xl:items-center">
+                    <h1 className="font-medium text-lg max-xl:pb-2">Details</h1>
+                    <div className="xl:px-12 flex max-xl:flex-col xl:items-center font-semibold text-sm">
+                      <div className="xl:px-12 max-xl:py-2 min-w-max">
                         <div className="cursor-pointer flex gap-2 items-center">
                           <IconWrapper>
                             <PiLinkBold size={24} />
@@ -109,15 +177,19 @@ const ProductDetails = () => {
                           <h6>View on Chain</h6>
                         </div>
                       </div>
-                      <div className="lg:px-12 max-lg:py-2">
+                      <div className="max-xl:py-2 xl:max-w-48 relative">
                         <div className="flex gap-2 items-center cursor-pointer">
-                          <IconWrapper>
-                            <HiMiniUserCircle size={24} />
-                          </IconWrapper>
-                          <span>User: xys</span>
+                          <span className="absolute">
+                            <IconWrapper>
+                              <HiMiniUserCircle size={24} />
+                            </IconWrapper>
+                          </span>
+                          <span className="truncate ml-8">
+                            Owner: {nftData.nft.owner.toText()}
+                          </span>
                         </div>
                       </div>
-                      <div className="lg:px-12 max-lg:py-2">
+                      <div className="xl:px-12 max-xl:py-2">
                         <div className="flex gap-2 items-center cursor-pointer">
                           <IconWrapper>
                             <PiFileTextBold size={24} />
@@ -128,15 +200,7 @@ const ProductDetails = () => {
                     </div>
                   </div>
                   <p className="text-start py-8">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Blanditiis alias quia vitae, consectetur laborum fugit
-                    dolorem. Illum aliquid neque debitis blanditiis? Porro, qui
-                    voluptatem. Voluptatibus praesentium necessitatibus eligendi
-                    quaerat. Ipsa perferendis quos quisquam modi, saepe ducimus
-                    dignissimos nihil, iste dolores illo dicta, inventore esse
-                    corrupti. Perferendis sit eum possimus eaque rem quidem,
-                    iusto quibusdam iure suscipit tenetur nobis ratione
-                    incidunt!
+                    {nftData.nft.metadata[0].description}
                   </p>
                 </div>
               </div>
@@ -146,6 +210,111 @@ const ProductDetails = () => {
       )}
       <Footer />
     </>
+  );
+};
+
+// Loader
+const Loader = () => {
+  const { id } = useParams();
+  return (
+    <div className="lg:mt-24 mt-8 left-0 right-0 gap-8 px-6 xl:px-24">
+      <div className="flex max-lg:flex-col">
+        <div className="overflow-hidden max-lg:flex max-lg:items-center max-lg:justify-center">
+          <div className="p-2 border-2 rounded-2xl overflow-hidden border-gray-300 animate-pulse">
+            <img
+              src={placeholderimg}
+              alt="nft name"
+              className="h-64 w-64 object-fill rounded-2xl"
+            />
+          </div>
+        </div>
+        <div className="lg:pl-12 flex-1 max-lg:py-8">
+          <Link
+            to={`/collection/${id}`}
+            className="text-xl font-medium flex items-center gap-2 pb-4"
+          >
+            <IoArrowBack />
+            Back to Collections
+          </Link>
+          <div className="py-4 lg:py-8 flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl bg-gray-500 animate-pulse text-gray-500 mb-2 rounded-md">
+                NFT Name
+              </h1>
+              <h6 className="text-gray-500 capitalize font-medium flex gap-2">
+                <span className="bg-gray-300 animate-pulse text-gray-300 rounded-md">
+                  By
+                </span>
+                <span className="bg-gray-300 animate-pulse text-gray-300 rounded-md">
+                  Collection One
+                </span>
+              </h6>
+            </div>
+            <span className="h-8 w-8 bg-gray-300"></span>
+          </div>
+          <div className="py-4 flex max-lg:flex-col lg:justify-between lg:items-center">
+            <div className="flex gap-2 text-lg">
+              <span className="bg-gray-500 animate-pulse text-gray-500 rounded-md">
+                00.000 ICP
+              </span>
+              <span className="bg-gray-500 animate-pulse text-gray-500 rounded-md">
+                00.000 USD
+              </span>
+              <span className="bg-gray-500 animate-pulse text-gray-500 rounded-md">
+                /Share
+              </span>
+            </div>
+            <button className="bg-gray-500 text-gray-500 animate-pulse px-4 py-2 rounded-lg max-lg:mt-4 max-w-max">
+              Buy Now
+            </button>
+          </div>
+          <div className="py-4">
+            <div className="rounded-2xl border-2 p-4 lg:p-8 border-gray-300">
+              <div className="flex flex-col xl:flex-row xl:items-center">
+                <h1 className="font-medium text-lg max-xl:pb-2 bg-gray-500 animate-pulse text-gray-500 rounded-md">
+                  Details
+                </h1>
+                <div className="xl:px-12 flex max-xl:flex-col xl:items-center font-semibold text-sm">
+                  <div className="xl:px-12 max-xl:py-2 min-w-max">
+                    <div className="cursor-pointer flex gap-2 items-center">
+                      <span className="h-6 w-6 bg-gray-300"></span>
+                      <h6 className="bg-gray-300 animate-pulse text-gray-300 rounded-md">
+                        View on Chain
+                      </h6>
+                    </div>
+                  </div>
+                  <div className="max-xl:py-2 xl:max-w-48 relative">
+                    <div className="flex gap-2 items-center cursor-pointer">
+                      <span className="h-6 w-6 bg-gray-300"></span>
+                      <span className="bg-gray-300 animate-pulse text-gray-300 rounded-md">
+                        Owner: xxxxxxxx
+                      </span>
+                    </div>
+                  </div>
+                  <div className="xl:px-12 max-xl:py-2">
+                    <div className="flex gap-2 items-center cursor-pointer">
+                      <span className="h-6 w-6 bg-gray-300"></span>
+                      <h6 className="bg-gray-300 animate-pulse text-gray-300 rounded-md">
+                        License
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="text-start py-8 bg-gray-300 animate-pulse text-gray-300 rounded-md mt-4">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Magni
+                doloremque reprehenderit rem distinctio, non commodi, aut
+                exercitationem debitis perferendis recusandae nam consequuntur
+                quidem, eos iure quae necessitatibus ipsa. Dignissimos, modi
+                quae. Enim eligendi sequi impedit, quae numquam aut quaerat
+                optio beatae ut incidunt veniam accusamus eos sunt recusandae
+                aspernatur maxime?
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -411,19 +580,19 @@ const ProductDetails = () => {
 
 //       {loading2 ? (
 //         <div>
-//           <div class="md:mt-24 mt-8 left-0 right-0 gap-8 px-6 lg:px-24">
+//           <div class="lg:mt-24 mt-8 left-0 right-0 gap-8 px-6 xl:px-24">
 //             <div class="space-y-4 animate-pulse"></div>
 
-//             <div class="md:flex gap-8 mt-8 space-y-4 md:space-y-0">
-//               <div class="md:w-1/4 w-full mb-16 space-y-4">
+//             <div class="lg:flex gap-8 mt-8 space-y-4 lg:space-y-0">
+//               <div class="lg:w-1/4 w-full mb-16 space-y-4">
 //                 <div class="h-full bg-gray-200 rounded w-full animate-pulse"></div>
 //               </div>
 
-//               <div class="gap-8 md:w-3/4 space-y-4">
+//               <div class="gap-8 lg:w-3/4 space-y-4">
 //                 <div class="flex items-center gap-4">
 //                   <div class="h-4 bg-gray-200 rounded w-1/2 animate-pulse"></div>
 //                 </div>
-//                 <div class="flex items-center justify-between mt-10 space-y-4 md:space-y-0">
+//                 <div class="flex items-center justify-between mt-10 space-y-4 lg:space-y-0">
 //                   <div class="space-y-2">
 //                     <div class="h-8 bg-gray-200 rounded w-3/4 animate-pulse"></div>
 //                     <div class="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
@@ -432,7 +601,7 @@ const ProductDetails = () => {
 //                     <div class="h-10 bg-gray-200 rounded w-32 animate-pulse"></div>
 //                   </div>
 //                 </div>
-//                 <div class="flex justify-between mt-6 space-y-4 md:space-y-0">
+//                 <div class="flex justify-between mt-6 space-y-4 lg:space-y-0">
 //                   <div class="flex">
 //                     <div class="h-4 bg-gray-200 rounded w-32 animate-pulse"></div>
 //                   </div>
@@ -442,7 +611,7 @@ const ProductDetails = () => {
 //                 </div>
 //                 <div class="w-full flex items-center justify-center mt-5 mb-8">
 //                   <div class="w-full rounded-2xl border-[1px] border-gray-400 p-6 space-y-4">
-//                     <div class="md:flex justify-start gap-2">
+//                     <div class="lg:flex justify-start gap-2">
 //                       <div class="h-8 bg-gray-200 rounded w-1/4 animate-pulse"></div>
 //                       <div class="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
 //                     </div>
@@ -464,7 +633,7 @@ const ProductDetails = () => {
 //             </div>
 //           )}
 
-//           <div className="md:mt-24 mt-8 left-0 right-0 gap-8 px-6 lg:px-24">
+//           <div className="lg:mt-24 mt-8 left-0 right-0 gap-8 px-6 xl:px-24">
 //             <BuyNowModal
 //               isOpen={open}
 //               onClose={() => setOpen(false)}
@@ -501,15 +670,15 @@ const ProductDetails = () => {
 //               </div>
 //             )}
 
-//             <div className="md:flex gap-8">
-//               <div className="md:w-1/4 w-full  mb-16 ">
+//             <div className="lg:flex gap-8">
+//               <div className="lg:w-1/4 w-full  mb-16 ">
 //                 <Card
 //                   nftgeek={nftgeek}
 //                   toniq={toniq}
 //                   logo={nft[0][0]?.fractional_token?.logo}
 //                 />
 //               </div>
-//               <div className=" gap-8 md:w-3/4  ">
+//               <div className=" gap-8 lg:w-3/4  ">
 //                 <div className="flex items-center gap-4">
 //                   <Link
 //                     to={`/collection/${id}`}
@@ -619,7 +788,7 @@ const ProductDetails = () => {
 //                 <div className="w-full flex items-center justify-center mt-5 mb-8">
 //                   <div className=" w-full   rounded-2xl   border-[1px] border-gray-400 ">
 //                     <div className="m-6">
-//                       <div className="md:flex justify-start gap-2 ">
+//                       <div className="lg:flex justify-start gap-2 ">
 //                         <p className="font-bold text-lg ">Details</p>
 //                         <div className="flex mb-2">
 //                           <svg
