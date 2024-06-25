@@ -23,11 +23,12 @@ const BuyNowCard = ({
   const [quantity, setQuantity] = useState(1);
   const [metaData, setMetaData] = useState(null);
   // const { principal } = useConnect();
-  const { isAuthenticated, principal } = useAuth();
+  const { isAuthenticated, principal, identity } = useAuth();
   const [balance, setBalance] = useState(null);
   const [buyLoading, setBuyLoading] = useState(false);
+
   const createTokenActor = (canisterId) => {
-    let identity = window.identity;
+    // console.log(identity);
     // console.log("identity : ", identity);
     const agent = new HttpAgent({
       identity,
