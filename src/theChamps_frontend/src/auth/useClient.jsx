@@ -1,111 +1,163 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { PlugLogin, StoicLogin, NFIDLogin, IdentityLogin } from "ic-auth";
 import { createActor } from "../../../../.dfx/local/canisters/theChamps_backend";
-import { Principal } from "@dfinity/principal";
+import { AuthClient } from "@dfinity/auth-client";
+import { HttpAgent } from "@dfinity/agent";
+
+// Create a utility function to initialize the backendActor
+const initBackendActor = (identity) => {
+  const agentOptions = identity
+    ? { identity, verifyQuerySignatures: false }
+    : { verifyQuerySignatures: false };
+
+  const agent = new HttpAgent(agentOptions);
+
+  // You can specify your canister ID here directly
+  const backendCanisterId =
+    process.env.CANISTER_ID_THECHAMPS_BACKEND ||
+    process.env.CANISTER_ID_THECHAMPS_BACKEND;
+
+  return createActor(backendCanisterId, {
+    agentOptions: agentOptions,
+  });
+};
 
 const AuthContext = createContext();
 
-const canisterID = process.env.CANISTER_ID_THECHAMPS_BACKEND;
-const whitelist = [process.env.CANISTER_ID_THECHAMPS_BACKEND];
+const defaultOptions = {
+  createOptions: {
+    idleOptions: {
+      idleTimeout: 1000 * 60 * 30, // set to 30 minutes
+      disableDefaultIdleCallback: true, // disable the default reload behavior
+    },
+  },
+  loginOptionsII: {
+    identityProvider:
+      process.env.DFX_NETWORK === "ic"
+        ? "https://identity.ic0.app/#authorize"
+        : `http://rdmx6-jaaaa-aaaaa-aaadq-cai.localhost:4943`,
+  },
+  loginOptionsNFID: {
+    identityProvider:
+      process.env.DFX_NETWORK === "ic"
+        ? `https://nfid.one/authenticate/?applicationName=my-ic-app#authorize`
+        : `https://nfid.one/authenticate/?applicationName=my-ic-app#authorize`,
+  },
+};
 
-export const useAuthClient = () => {
+export const useAuthClient = (options = defaultOptions) => {
+  const [authClient, setAuthClient] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [principal, setPrincipal] = useState(null);
-  const [backendActor, setBackendActor] = useState(createActor(canisterID));
   const [identity, setIdentity] = useState(null);
+  const [principal, setPrincipal] = useState(null);
+  const [backendActor, setBackendActor] = useState(null);
 
-  // Save state to sessionStorage
-  const saveAuthState = (userObject) => {
-    const expirationTime = Date.now() + 1000 * 60 * 60 * 24;
-    sessionStorage.setItem("isAuthenticated", true);
-    sessionStorage.setItem("principal", userObject.principal);
-    sessionStorage.setItem("identity", JSON.stringify(userObject.agent));
-    sessionStorage.setItem("expirationTime", expirationTime.toString());
-  };
+  const backendCanisterId =
+    process.env.CANISTER_ID_THECHAMPS_BACKEND ||
+    process.env.CANISTER_ID_THECHAMPS_BACKEND;
 
-  // Load state from sessionStorage
-  const loadAuthState = () => {
-    const savedIsAuthenticated =
-      sessionStorage.getItem("isAuthenticated") === "true";
-    const savedPrincipal = sessionStorage.getItem("principal");
-    const savedIdentity = sessionStorage.getItem("identity");
-    const expirationTime = sessionStorage.getItem("expirationTime");
+  const frontendCanisterId =
+    process.env.CANISTER_ID_THECHAMPS_FRONTEND ||
+    process.env.CANISTER_ID_THECHAMPS_FRONTEND;
 
-    if (expirationTime && Date.now() > Number(expirationTime)) {
-      clearAuthState(); // Clear if expired
-    } else if (savedIsAuthenticated && savedPrincipal && savedIdentity) {
-      setIsAuthenticated(true);
-      setPrincipal(Principal.fromText(savedPrincipal));
-      setIdentity(JSON.parse(savedIdentity));
-    }
-  };
+  useEffect(() => {
+    const initAuthClient = async () => {
+      const client = await AuthClient.create(options.createOptions);
+      setAuthClient(client);
 
-  // Clear state from sessionStorage
-  const clearAuthState = () => {
-    sessionStorage.removeItem("isAuthenticated");
-    sessionStorage.removeItem("principal");
-    sessionStorage.removeItem("identity");
-    sessionStorage.removeItem("expirationTime");
-  };
+      const isAuthenticated = await client.isAuthenticated();
+      const identity = client.getIdentity();
+      const principal = identity.getPrincipal();
 
-  // Login
-  const login = async (provider) => {
-    let userObject = {
-      principal: "Not Connected.",
-      agent: undefined,
-      provider: "N/A",
+      if (principal.toText() === "2vxsx-fae") {
+        await logout();
+        return;
+      }
+
+      setIsAuthenticated(isAuthenticated);
+      setIdentity(identity);
+      setPrincipal(principal);
+
+      const actor =
+        isAuthenticated && !principal.isAnonymous()
+          ? initBackendActor(identity)
+          : initBackendActor(null); // Initialize with anonymous identity if not authenticated
+
+      setBackendActor(actor);
     };
-    if (provider === "Plug") {
-      userObject = await PlugLogin(whitelist);
-    } else if (provider === "Stoic") {
-      userObject = await StoicLogin();
-    } else if (provider === "NFID") {
-      userObject = await NFIDLogin();
-    } else if (provider === "Identity") {
-      userObject = await IdentityLogin();
-    }
-    setIsAuthenticated(true);
-    setPrincipal(Principal.fromText(userObject.principal));
-    setIdentity(userObject.agent);
-
-    // Save to sessionStorage
-    saveAuthState(userObject);
-  };
-
-  // Logout
-  const logout = () => {
-    setIsAuthenticated(false);
-    setPrincipal(null);
-    setIdentity(null);
-
-    // Clear from sessionStorage
-    clearAuthState();
-  };
-
-  // Init auth
-  const initAuthClient = async () => {
-    loadAuthState();
-  };
-
-  useEffect(() => {
     initAuthClient();
-  }, [isAuthenticated]);
+  }, [options.createOptions]);
 
-  useEffect(() => {
-    // Set logout after 24 hours
-    if (isAuthenticated) {
-      const logoutTimer = setTimeout(logout, 1000 * 60 * 60 * 24);
-      return () => clearTimeout(logoutTimer);
+  const login = async (provider) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (
+          authClient.isAuthenticated() &&
+          (await authClient.getIdentity().getPrincipal().isAnonymous()) ===
+            false
+        ) {
+          clientInfo(authClient);
+          resolve(authClient);
+        } else {
+          let opt = provider === "ii" ? "loginOptionsII" : "loginOptionsNFID";
+          authClient.login({
+            ...options[opt],
+            onError: (error) => reject(error),
+            onSuccess: () => {
+              clientInfo(authClient);
+              resolve(authClient);
+            },
+          });
+        }
+      } catch (error) {
+        console.log("error", error);
+        reject(error);
+      }
+    });
+  };
+
+  const clientInfo = async (client) => {
+    const isAuthenticated = await client.isAuthenticated();
+    const identity = client.getIdentity();
+    const principal = identity.getPrincipal();
+
+    if (principal.toText() === "2vxsx-fae") {
+      await logout();
+      return;
     }
-  }, [isAuthenticated]);
+
+    setAuthClient(client);
+    setIsAuthenticated(isAuthenticated);
+    setIdentity(identity);
+    setPrincipal(principal);
+
+    const actor =
+      isAuthenticated && identity && principal && !principal.isAnonymous()
+        ? initBackendActor(identity)
+        : initBackendActor(null); // Initialize with anonymous identity if not authenticated
+
+    setBackendActor(actor);
+
+    return true;
+  };
+
+  const logout = async () => {
+    await authClient?.logout();
+    setIsAuthenticated(false);
+    setIdentity(null);
+    setPrincipal(null);
+    setBackendActor(initBackendActor(null)); // Initialize with anonymous identity on logout
+  };
 
   return {
-    isAuthenticated,
     login,
     logout,
-    principal,
-    backendActor,
+    authClient,
+    isAuthenticated,
     identity,
+    principal,
+    frontendCanisterId,
+    backendCanisterId,
+    backendActor,
   };
 };
 

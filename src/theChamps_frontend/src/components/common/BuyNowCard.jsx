@@ -27,10 +27,10 @@ const BuyNowCard = ({
   const { isAuthenticated, principal, identity } = useAuth();
   const [balance, setBalance] = useState(null);
   const [buyLoading, setBuyLoading] = useState(false);
-  // const [testPrincipal, setTestPrincipal] = useState(null);
+  const [testPrincipal, setTestPrincipal] = useState(null);
 
   const createTokenActor = async (canisterId) => {
-    console.log("identity is", identity);
+    // console.log(identity);
     // console.log("identity : ", identity);
     //let identity = principal;
     //console.log("identity : ",identity)
@@ -212,7 +212,7 @@ const BuyNowCard = ({
       let transaction = {
         from_subaccount: [],
         spender: {
-          owner: principal,
+          owner: testPrincipal,
           subaccount: [],
         },
         amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
@@ -248,19 +248,16 @@ const BuyNowCard = ({
   // console.log("metaData state ", metaData);
   // console.log("onwer principal ", principal);
 
-  // useEffect(() => {
-  //   const fetchIdentity = async () => {
-  //     const authClient = await AuthClient.create();
-  //     const identity = authClient.getIdentity();
-  //     const principal = identity.getPrincipal();
-  //     setTestPrincipal(principal);
-  //   };
+  useEffect(() => {
+    const fetchIdentity = async () => {
+      const authClient = await AuthClient.create();
+      const identity = authClient.getIdentity();
+      const principal = identity.getPrincipal();
+      setTestPrincipal(principal);
+    };
 
-  //   fetchIdentity();
-  // }, []);
-
-  // console.log("testPrincipal is ", testPrincipal);
-  // console.log("testPrincipal (text) ", testPrincipal.toText());
+    fetchIdentity();
+  }, []);
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar top-0">
