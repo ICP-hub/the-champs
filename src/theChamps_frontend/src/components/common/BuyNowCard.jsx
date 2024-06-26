@@ -4,7 +4,7 @@ import { TailSpin } from "react-loader-spinner";
 import IcpLogo from "../../assets/IcpLogo";
 import { HiMinus, HiPlus } from "react-icons/hi2";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../auth/useClient";
 import { idlFactory } from "../../../../wallet/ledger.did";
 import { host, ids } from "../../../../DevConfig";
@@ -27,21 +27,22 @@ const BuyNowCard = ({
   const { isAuthenticated, principal } = useAuth();
   const [balance, setBalance] = useState(null);
   const [buyLoading, setBuyLoading] = useState(false);
+  const [testPrincipal, setTestPrincipal] = useState(null);
 
   const createTokenActor = async (canisterId) => {
     // console.log(identity);
     // console.log("identity : ", identity);
     //let identity = principal;
     //console.log("identity : ",identity)
-  const authClient = await AuthClient.create();
-  const identity = await authClient.getIdentity();
-  console.log("identity : ",identity)
-  const principal = identity.getPrincipal();
-  console.log('ankur :', principal)
-  
+    const authClient = await AuthClient.create();
+    const identity = await authClient.getIdentity();
+    console.log("identity : ", identity);
+    const principal = identity.getPrincipal();
+    console.log("ankur :", principal.toText());
+
     const agent = new HttpAgent({
       identity,
-      host
+      host,
     });
     let tokenActor = Actor.createActor(idlFactory, {
       agent,
@@ -66,7 +67,7 @@ const BuyNowCard = ({
   //   transfer(amount, sendPrincipal, actorICP);
   // };
 
-/*   const handleConfirm = async () => {
+  /*   const handleConfirm = async () => {
     if (!isAuthenticated) {
       toast.error("You need to login first");
       return;
@@ -114,28 +115,33 @@ const BuyNowCard = ({
       toast.error("You need to log in first");
       return;
     }
-  
+
     const principalId = getPrincipalId(selected.value);
     if (!principalId) {
       toast.error("Invalid token selection");
       return;
     }
-  
+
     console.log(`Selected principalId: ${principalId}`);
-  
+
     try {
       setBuyLoading(true);
-      const tokenActor = await createTokenActor(Principal.fromText(principalId));
-  
-      const { metadata, balance } = await fetchMetadataAndBalance(tokenActor, principal);
-      
+      const tokenActor = await createTokenActor(
+        Principal.fromText(principalId)
+      );
+
+      const { metadata, balance } = await fetchMetadataAndBalance(
+        tokenActor,
+        principal
+      );
+
       const formattedMetadata = formatTokenMetaData(metadata);
       setMetaData(formattedMetadata);
-  
+
       const parsedBalance = parseInt(balance, 10);
       console.log("Balance:", parsedBalance);
       setBalance(parsedBalance);
-  
+
       transferApprove(parsedBalance, formattedMetadata, tokenActor);
     } catch (err) {
       console.error("Error during token confirmation:", err);
@@ -144,7 +150,7 @@ const BuyNowCard = ({
       setBuyLoading(false);
     }
   };
-  
+
   const getPrincipalId = (tokenType) => {
     switch (tokenType) {
       case "icp":
@@ -155,7 +161,7 @@ const BuyNowCard = ({
         return null;
     }
   };
-  
+
   const fetchMetadataAndBalance = async (tokenActor, ownerPrincipal) => {
     try {
       const [metadata, balance] = await Promise.all([
@@ -172,8 +178,6 @@ const BuyNowCard = ({
       throw err;
     }
   };
-  
-  
 
   const transferApprove = async (
     currentBalance,
@@ -208,7 +212,7 @@ const BuyNowCard = ({
       let transaction = {
         from_subaccount: [],
         spender: {
-          owner: principal,
+          owner: testPrincipal,
           subaccount: [],
         },
         amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
@@ -243,6 +247,20 @@ const BuyNowCard = ({
 
   // console.log("metaData state ", metaData);
   // console.log("onwer principal ", principal);
+
+  useEffect(() => {
+    const fetchIdentity = async () => {
+      const authClient = await AuthClient.create();
+      const identity = authClient.getIdentity();
+      const principal = identity.getPrincipal();
+      setTestPrincipal(principal);
+    };
+
+    fetchIdentity();
+  }, []);
+
+  console.log("testPrincipal is ", testPrincipal);
+  console.log("testPrincipal (text) ", testPrincipal);
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar top-0">
