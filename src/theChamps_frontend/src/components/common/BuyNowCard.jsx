@@ -212,7 +212,7 @@ const BuyNowCard = ({
       let transaction = {
         from_subaccount: [],
         spender: {
-          owner: testPrincipal,
+          owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
           subaccount: [],
         },
         amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
