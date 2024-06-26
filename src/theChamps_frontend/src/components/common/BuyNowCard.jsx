@@ -260,7 +260,7 @@ const BuyNowCard = ({
   }, []);
 
   console.log("testPrincipal is ", testPrincipal);
-  console.log("testPrincipal (text) ", testPrincipal);
+  console.log("testPrincipal (text) ", testPrincipal.toText());
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar top-0">
