@@ -9,6 +9,7 @@ import { useAuth } from "../../auth/useClient";
 import { idlFactory } from "../../../../wallet/ledger.did";
 import { host, ids } from "../../../../DevConfig";
 import toast from "react-hot-toast";
+import { AuthClient } from "@dfinity/auth-client";
 
 const BuyNowCard = ({
   onOpen,
@@ -23,17 +24,23 @@ const BuyNowCard = ({
   const [quantity, setQuantity] = useState(1);
   const [metaData, setMetaData] = useState(null);
   // const { principal } = useConnect();
-  const { isAuthenticated, principal, identity } = useAuth();
+  const { isAuthenticated, principal } = useAuth();
   const [balance, setBalance] = useState(null);
   const [buyLoading, setBuyLoading] = useState(false);
 
-  const createTokenActor = (canisterId) => {
+  const createTokenActor = async (canisterId) => {
     // console.log(identity);
     // console.log("identity : ", identity);
+    //let identity = principal;
+    //console.log("identity : ",identity)
+  const authClient = await AuthClient.create();
+  const identity = await authClient.getIdentity();
+  console.log("identity : ",identity)
+
     const agent = new HttpAgent({
       identity,
+      host
     });
-    host: host;
     let tokenActor = Actor.createActor(idlFactory, {
       agent,
       canisterId,
@@ -57,7 +64,7 @@ const BuyNowCard = ({
   //   transfer(amount, sendPrincipal, actorICP);
   // };
 
-  const handleConfirm = async () => {
+/*   const handleConfirm = async () => {
     if (!isAuthenticated) {
       toast.error("You need to login first");
       return;
@@ -68,6 +75,8 @@ const BuyNowCard = ({
         : selected.value === "ckBTC"
         ? ids.ckBTCtokenCan
         : null;
+
+        console.log(principalId, 'principalId')
     try {
       // console.log(principalId);
       setBuyLoading(true);
@@ -96,7 +105,73 @@ const BuyNowCard = ({
     } finally {
       setBuyLoading(false);
     }
+  }; */
+
+  const handleConfirm = async () => {
+    if (!isAuthenticated) {
+      toast.error("You need to log in first");
+      return;
+    }
+  
+    const principalId = getPrincipalId(selected.value);
+    if (!principalId) {
+      toast.error("Invalid token selection");
+      return;
+    }
+  
+    console.log(`Selected principalId: ${principalId}`);
+  
+    try {
+      setBuyLoading(true);
+      const tokenActor = await createTokenActor(Principal.fromText(principalId));
+  
+      const { metadata, balance } = await fetchMetadataAndBalance(tokenActor, principal);
+      
+      const formattedMetadata = formatTokenMetaData(metadata);
+      setMetaData(formattedMetadata);
+  
+      const parsedBalance = parseInt(balance, 10);
+      console.log("Balance:", parsedBalance);
+      setBalance(parsedBalance);
+  
+      transferApprove(parsedBalance, formattedMetadata, tokenActor);
+    } catch (err) {
+      console.error("Error during token confirmation:", err);
+      toast.error("An error occurred while confirming the token");
+    } finally {
+      setBuyLoading(false);
+    }
   };
+  
+  const getPrincipalId = (tokenType) => {
+    switch (tokenType) {
+      case "icp":
+        return ids.ICPtokenCan;
+      case "ckBTC":
+        return ids.ckBTCtokenCan;
+      default:
+        return null;
+    }
+  };
+  
+  const fetchMetadataAndBalance = async (tokenActor, ownerPrincipal) => {
+    try {
+      const [metadata, balance] = await Promise.all([
+        tokenActor.icrc1_metadata(),
+        tokenActor.icrc1_balance_of({
+          owner: ownerPrincipal,
+          subaccount: [],
+        }),
+      ]);
+      console.log("Fetched metadata:", metadata);
+      return { metadata, balance };
+    } catch (err) {
+      console.error("Error fetching metadata and balance:", err);
+      throw err;
+    }
+  };
+  
+  
 
   const transferApprove = async (
     currentBalance,
