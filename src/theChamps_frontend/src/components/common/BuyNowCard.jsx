@@ -24,21 +24,21 @@ const BuyNowCard = ({
   const [quantity, setQuantity] = useState(1);
   const [metaData, setMetaData] = useState(null);
   // const { principal } = useConnect();
-  const { isAuthenticated, principal } = useAuth();
+  const { isAuthenticated, principal, identity } = useAuth();
   const [balance, setBalance] = useState(null);
   const [buyLoading, setBuyLoading] = useState(false);
-  const [testPrincipal, setTestPrincipal] = useState(null);
+  // const [testPrincipal, setTestPrincipal] = useState(null);
 
   const createTokenActor = async (canisterId) => {
-    // console.log(identity);
+    console.log("identity is", identity);
     // console.log("identity : ", identity);
     //let identity = principal;
     //console.log("identity : ",identity)
-    const authClient = await AuthClient.create();
-    const identity = await authClient.getIdentity();
-    console.log("identity : ", identity);
-    const principal = identity.getPrincipal();
-    console.log("ankur :", principal.toText());
+    // const authClient = await AuthClient.create();
+    // const identity = await authClient.getIdentity();
+    // console.log("identity : ", identity);
+    // const principal = identity.getPrincipal();
+    // console.log("ankur :", principal.toText());
 
     const agent = new HttpAgent({
       identity,
@@ -212,7 +212,7 @@ const BuyNowCard = ({
       let transaction = {
         from_subaccount: [],
         spender: {
-          owner: testPrincipal,
+          owner: principal,
           subaccount: [],
         },
         amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
@@ -248,19 +248,19 @@ const BuyNowCard = ({
   // console.log("metaData state ", metaData);
   // console.log("onwer principal ", principal);
 
-  useEffect(() => {
-    const fetchIdentity = async () => {
-      const authClient = await AuthClient.create();
-      const identity = authClient.getIdentity();
-      const principal = identity.getPrincipal();
-      setTestPrincipal(principal);
-    };
+  // useEffect(() => {
+  //   const fetchIdentity = async () => {
+  //     const authClient = await AuthClient.create();
+  //     const identity = authClient.getIdentity();
+  //     const principal = identity.getPrincipal();
+  //     setTestPrincipal(principal);
+  //   };
 
-    fetchIdentity();
-  }, []);
+  //   fetchIdentity();
+  // }, []);
 
-  console.log("testPrincipal is ", testPrincipal);
-  console.log("testPrincipal (text) ", testPrincipal.toText());
+  // console.log("testPrincipal is ", testPrincipal);
+  // console.log("testPrincipal (text) ", testPrincipal.toText());
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar top-0">
