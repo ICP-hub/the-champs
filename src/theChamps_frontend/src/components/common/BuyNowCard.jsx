@@ -36,7 +36,9 @@ const BuyNowCard = ({
   const authClient = await AuthClient.create();
   const identity = await authClient.getIdentity();
   console.log("identity : ",identity)
-
+  const principal = identity.getPrincipal();
+  console.log('ankur :', principal)
+  
     const agent = new HttpAgent({
       identity,
       host
