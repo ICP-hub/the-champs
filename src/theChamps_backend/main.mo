@@ -258,6 +258,7 @@ actor Champs {
                             collectionid = nftcanisterid;
                             nft = nftdata;
                             fractional_token = tokenmetadata;
+                            totalSupply = _totalSupply;
                             price_per_share = priceinusd / Float.fromInt64(Int64.fromNat64(Nat64.fromNat(_totalSupply)));
                         };
                         switch (fractionalnftmap.get(to)) {
@@ -661,7 +662,9 @@ actor Champs {
                     collectionid = collectioncanisterid;
                     nft = data;
                     fractional_token = tokenmetadata;
+                    totalSupply = totalsupply;
                     price_per_share = data.priceinusd / Float.fromInt64(Int64.fromNat64(Nat64.fromNat(totalsupply)));
+                    
                 };
                 return fractionalNftDetails;
             };
