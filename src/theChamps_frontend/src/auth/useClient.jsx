@@ -52,7 +52,7 @@ export const useAuthClient = () => {
         userObject = await IdentityLogin();
       }
 
-      const identity = userObject.agent;
+      const identity = await userObject.agent._identity;
       const principal = Principal.fromText(userObject.principal);
       // const actor = createActor(canisterID, { agentOptions: { identity } });
 

@@ -231,7 +231,10 @@ const BuyNowCard = ({
         toast.error(errorMessage);
         return;
       } else {
-        afterPaymentApprove(parseInt(res?.Ok).toString(), sendableAmount);
+        afterPaymentApprove(
+          parseInt(approveRes?.Ok).toString(),
+          sendableAmount
+        );
       }
       // } else {
       //   console.log("Insufficient Balance to purchase");
