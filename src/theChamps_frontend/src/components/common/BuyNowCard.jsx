@@ -10,6 +10,7 @@ import { idlFactory } from "../../../../wallet/ledger.did";
 import { host, ids } from "../../../../DevConfig";
 import toast from "react-hot-toast";
 import { AuthClient } from "@dfinity/auth-client";
+import champsImg from "../../assets/CHAMPS.png";
 
 const BuyNowCard = ({
   onOpen,
@@ -19,18 +20,21 @@ const BuyNowCard = ({
   selected,
   exchange,
   loading,
-  product,
+  nftdetails,
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [metaData, setMetaData] = useState(null);
   // const { principal } = useConnect();
-  const { isAuthenticated, principal, identity } = useAuth();
+  const { isAuthenticated, principal, identity, backendActor } = useAuth();
   const [balance, setBalance] = useState(null);
   const [buyLoading, setBuyLoading] = useState(false);
-  const [testPrincipal, setTestPrincipal] = useState(null);
+  // const [testPrincipal, setTestPrincipal] = useState(null);
+  const selectedMethodToBuy = selected.value.toLowerCase();
+
+  // console.log(selectedMethodToBuy);
 
   console.log("identity is ", identity);
-
+  // console.log("NFTDetails ", nftdetails[0].nft.owner);
   const createTokenActor = async (canisterId) => {
     //console.log("identity : ",identity)
     // const authClient = await AuthClient.create();
@@ -199,7 +203,7 @@ const BuyNowCard = ({
       //   from_subaccount: [],
       //   spender: {
       //     // Need review on this
-      //     // owner: product[1],
+      //     // owner: nftdetails[1],
       //     owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
       //     subaccount: [],
       //   },
@@ -251,32 +255,46 @@ const BuyNowCard = ({
     console.log(
       `You are going to send ,${amount} and your payment ID is ${paymentId}`
     );
+    // NFTID , From , To , PaymentOptions,Total Amount
+    try {
+      const paymentResponse = await backendActor.buytokens(
+        nftdetails[1],
+        principal,
+        nftdetails[0].nft.owner,
+        parseInt(quantity),
+        selectedMethodToBuy,
+        parseInt(amount)
+      );
+      console.log("Payment Success Response ", paymentResponse);
+    } catch (err) {
+      console.error("Insufficient fund in wallet ", err);
+    }
   };
 
   // decrement qty
-  // const handleDecrement = () => {
-  //   setQuantity((prev) => Math.max(prev - 1, 1));
-  // };
+  const handleDecrement = () => {
+    setQuantity((prev) => Math.max(prev - 1, 1));
+  };
 
-  // const handleIncrement = () => {
-  //   setQuantity((prev) =>
-  //     prev < parseInt(product[0].fractional_token.totalSupply) ? prev + 1 : prev
-  //   );
-  // };
+  const handleIncrement = () => {
+    setQuantity((prev) =>
+      prev < parseInt(nftdetails[0].totalSupply) ? prev + 1 : prev
+    );
+  };
 
   // console.log("metaData state ", metaData);
   // console.log("onwer principal ", principal);
 
-  useEffect(() => {
-    const fetchIdentity = async () => {
-      const authClient = await AuthClient.create();
-      const identity = authClient.getIdentity();
-      const principal = identity.getPrincipal();
-      setTestPrincipal(principal);
-    };
+  // useEffect(() => {
+  //   const fetchIdentity = async () => {
+  //     const authClient = await AuthClient.create();
+  //     const identity = authClient.getIdentity();
+  //     const principal = identity.getPrincipal();
+  //     setTestPrincipal(principal);
+  //   };
 
-    fetchIdentity();
-  }, []);
+  //   fetchIdentity();
+  // }, []);
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar top-0">
@@ -330,7 +348,7 @@ const BuyNowCard = ({
             )}
           </button>
         </div>
-        {/* <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+        <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
           <span>Share</span>
           <div className="flex border rounded-md overflow-hidden items-center">
             <button
@@ -349,7 +367,7 @@ const BuyNowCard = ({
               <HiPlus className="h-6" />
             </button>
           </div>
-        </div> */}
+        </div>
         <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
           <span>Total</span>
           {loading ? (

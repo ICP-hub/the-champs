@@ -354,7 +354,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           selected={selectedPlan}
           exchange={exchange}
           loading={loading3}
-          product={product}
+          nftdetails={product}
         />
       )}
       <div

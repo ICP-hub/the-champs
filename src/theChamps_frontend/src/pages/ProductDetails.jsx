@@ -110,7 +110,7 @@ const ProductDetails = () => {
           selected={selectedPlan}
           exchange={exchange}
           loading={loading3}
-          product={nftData}
+          nftdetails={nftData}
         />
       )}
       {nftLoading ? (
