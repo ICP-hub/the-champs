@@ -29,7 +29,7 @@ const BuyNowCard = ({
   const [buyLoading, setBuyLoading] = useState(false);
   const [testPrincipal, setTestPrincipal] = useState(null);
 
-  // console.log("identity is ", identity);
+  console.log("identity is ", identity);
 
   const createTokenActor = async (canisterId) => {
     //console.log("identity : ",identity)
@@ -162,6 +162,7 @@ const BuyNowCard = ({
   };
 
   const fetchMetadataAndBalance = async (tokenActor, ownerPrincipal) => {
+    console.log(tokenActor, ownerPrincipal.toText());
     try {
       const [metadata, balance] = await Promise.all([
         tokenActor.icrc1_metadata(),
