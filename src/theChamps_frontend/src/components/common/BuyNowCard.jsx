@@ -29,10 +29,9 @@ const BuyNowCard = ({
   const [buyLoading, setBuyLoading] = useState(false);
   const [testPrincipal, setTestPrincipal] = useState(null);
 
+  // console.log("identity is ", identity);
+
   const createTokenActor = async (canisterId) => {
-    // console.log(identity);
-    // console.log("identity : ", identity);
-    //let identity = principal;
     //console.log("identity : ",identity)
     // const authClient = await AuthClient.create();
     // const identity = await authClient.getIdentity();
@@ -115,14 +114,13 @@ const BuyNowCard = ({
       toast.error("You need to log in first");
       return;
     }
-
     const principalId = getPrincipalId(selected.value);
     if (!principalId) {
       toast.error("Invalid token selection");
       return;
     }
 
-    console.log(`Selected principalId: ${principalId}`);
+    // console.log(`Selected principalId: ${principalId}`);
 
     try {
       setBuyLoading(true);
@@ -146,9 +144,10 @@ const BuyNowCard = ({
     } catch (err) {
       console.error("Error during token confirmation:", err);
       toast.error("An error occurred while confirming the token");
-    } finally {
-      setBuyLoading(false);
     }
+    // finally {
+    //   setBuyLoading(false);
+    // }
   };
 
   const getPrincipalId = (tokenType) => {
@@ -212,7 +211,7 @@ const BuyNowCard = ({
       let transaction = {
         from_subaccount: [],
         spender: {
-          owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
+          owner: Principal.fromText(ids.backendCan),
           subaccount: [],
         },
         amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
@@ -223,15 +222,31 @@ const BuyNowCard = ({
         created_at_time: [],
       };
       console.log("transaction ", transaction);
-      console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
+      // console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
       const approveRes = await tokenActor.icrc2_approve(transaction);
       console.log("Payment Approve Response ", approveRes);
+      if (approveRes.Err) {
+        const errorMessage = `Insufficient funds. Balance: ${approveRes.Err.InsufficientFunds.balance}`;
+        toast.error(errorMessage);
+        return;
+      } else {
+        afterPaymentApprove(parseInt(res?.Ok).toString(), sendableAmount);
+      }
       // } else {
-      //   console.log("Insufficient funds");
+      //   console.log("Insufficient Balance to purchase");
       // }
     } catch (err) {
       console.error("Error in transfer approve", err);
+    } finally {
+      setBuyLoading(false);
     }
+  };
+
+  // After approve payment
+  const afterPaymentApprove = async (paymentId, amount) => {
+    console.log(
+      `You are going to send ,${amount} and your payment ID is ${paymentId}`
+    );
   };
 
   // decrement qty

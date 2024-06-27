@@ -24,7 +24,7 @@ const ProfileSection = () => {
   // const [backend] = useCanister("backend");
   const { backendActor } = useAuth();
 
-  console.log(backendActor);
+  // console.log(backendActor);
 
   useEffect(() => {
     const checkConnection = async () => {
@@ -49,7 +49,7 @@ const ProfileSection = () => {
             principal
           );
           setIsAdmin(res);
-          console.log("admin is ", res);
+          // console.log("admin is ", res);
         } catch (error) {
           console.error("Error checking isAdmin:", error);
           setIsAdmin(false);

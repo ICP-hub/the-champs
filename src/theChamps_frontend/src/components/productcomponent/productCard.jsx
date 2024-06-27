@@ -467,9 +467,9 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
             </>
           )} */}
           </div>
-          <p className="text-gray-500 text-sm">
+          {/* <p className="text-gray-500 text-sm">
             <ReadMore text={product[1].toText()} maxLength={20} />
-          </p>
+          </p> */}
           <div className="flex justify-between  mb-4">
             <p className="mt-4    bg-opacity-100  py-2  flex  gap-1 rounded-md w-[50%]">
               <IcpLogo />

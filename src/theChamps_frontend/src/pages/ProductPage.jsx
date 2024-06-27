@@ -358,7 +358,7 @@ const ProductPage = ({ name }) => {
                   <div className="grid grid-cols-1 px-6 lg:px-24 sm:grid-cols-2 lg:grid-cols-3 gap-12 mt-4 justify-center">
                     {searchResults.map((product, index) => (
                       <ProductCard
-                        key={product.id}
+                        key={index}
                         product={product}
                         setShowHeader={setShowHeader}
                       />
