@@ -34,6 +34,7 @@ module {
   public type FractionalNFT = {
     nft: Nft;
     fractional_token : [(Text,Value)];
+    totalSupply : Nat;
     price_per_share : Float;
   };
 
