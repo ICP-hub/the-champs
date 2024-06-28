@@ -35,6 +35,7 @@ const ProductDetails = () => {
   const [exchange, setExchange] = useState(1);
   const [selectedPlan, setSelectedPlan] = useState({ value: "icp" });
   const [loading3, setLoading3] = useState(true);
+  const [paymentMethod2, SetPaymentMethod2] = useState("icp");
 
   // Get NFT details
   const getNftDetails = async () => {
@@ -65,22 +66,38 @@ const ProductDetails = () => {
 
   // exchange rate
   const getExchangeRate = async () => {
-    const paymentOpt = { FiatCurrency: null };
-    const paymentMethod = selectedPlan.value === "ckBTC" ? "btc" : "icp";
-    const paymentOpt1 =
-      paymentMethod === "btc"
-        ? { Cryptocurrency: null }
-        : { FiatCurrency: null };
+    const paymentMethod = "FiatCurrency";
+    let paymentOpt = null;
+    if (paymentMethod == "Cryptocurrency") {
+      paymentOpt = { Cryptocurrency: null };
+    } else if (paymentMethod == "FiatCurrency") {
+      paymentOpt = { FiatCurrency: null };
+    }
+    const paymentMethod1 = "Cryptocurrency";
+    let paymentOpt1 = null;
+    if (paymentMethod1 == "Cryptocurrency") {
+      paymentOpt1 = { Cryptocurrency: null };
+    } else if (paymentMethod1 == "FiatCurrency") {
+      paymentOpt1 = { FiatCurrency: null };
+    }
+
+    if (selectedPlan.value == "ckBTC") {
+      SetPaymentMethod2("btc");
+    } else {
+      SetPaymentMethod2("icp");
+    }
+
+    setLoading3(true);
 
     try {
-      const res = await backendActor.get_exchange_rates(
-        { class: paymentOpt, symbol: "usd" },
-        { class: paymentOpt1, symbol: paymentMethod }
+      const res = await backendActor?.get_exchange_rates(
+        { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
+        { class: paymentOpt1, symbol: paymentMethod2 } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
-      console.log("excahnge res", res);
+      console.log(res);
       const exchangeRate2 =
         parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
-      // console.log(exchangeRate2);
+      console.log(exchangeRate2);
       setExchange(exchangeRate2);
     } catch (error) {
       console.log(error);
@@ -91,7 +108,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     getExchangeRate();
-  }, [backendActor, selectedPlan.value]);
+  }, [selectedPlan.value, backendActor]);
 
   // Effects
   useEffect(() => {
@@ -134,7 +151,7 @@ const ProductDetails = () => {
             </div>
             <div className="lg:pl-12 flex-1 max-lg:py-8">
               <Link
-                to={`/collection/${id}`}
+                to={`/collection/${slug}`}
                 className="text-xl font-medium flex items-center gap-2 pb-4"
               >
                 <IoArrowBack />

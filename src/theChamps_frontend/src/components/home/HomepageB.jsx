@@ -140,7 +140,7 @@ const HomePageB = () => {
       )}
 
       <span className="flex justify-center gap-4 py-6">
-        <Link to="/collection">
+        <Link to="/collections">
           <CustomButton>
             View collections <MdArrowOutward size={24} />{" "}
           </CustomButton>
