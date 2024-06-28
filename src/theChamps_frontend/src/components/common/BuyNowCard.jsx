@@ -255,6 +255,9 @@ const BuyNowCard = ({
     console.log(
       `You are going to send ,${amount} and your payment ID is ${paymentId}`
     );
+    const paymentOptions = {
+      [selectedMethodToBuy]: null,
+    };
     // NFTID , From , To , PaymentOptions,Total Amount
     try {
       const paymentResponse = await backendActor.buytokens(
@@ -262,7 +265,7 @@ const BuyNowCard = ({
         principal,
         nftdetails[0].nft.owner,
         parseInt(quantity),
-        selectedMethodToBuy,
+        paymentOptions,
         parseInt(amount)
       );
       console.log("Payment Success Response ", paymentResponse);
