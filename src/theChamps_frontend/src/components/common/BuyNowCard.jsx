@@ -237,7 +237,8 @@ const BuyNowCard = ({
       } else {
         afterPaymentApprove(
           parseInt(approveRes?.Ok).toString(),
-          sendableAmount
+          sendableAmount,
+          currentBalance
         );
       }
       // } else {
@@ -251,7 +252,7 @@ const BuyNowCard = ({
   };
 
   // After approve payment
-  const afterPaymentApprove = async (paymentId, amount) => {
+  const afterPaymentApprove = async (paymentId, amount, currentBalance) => {
     console.log(
       `You are going to send ,${amount} and your payment ID is ${paymentId}`
     );
@@ -271,6 +272,7 @@ const BuyNowCard = ({
       console.log("Payment Success Response ", paymentResponse);
     } catch (err) {
       console.error("Insufficient fund in wallet ", err);
+      toast.error("Insufficient fund in wallet. Balance : ", currentBalance);
     }
   };
 
