@@ -33,7 +33,7 @@ const BuyNowCard = ({
 
   // console.log(selectedMethodToBuy);
 
-  console.log("identity is ", identity);
+  // console.log("identity is ", identity);
   // console.log("NFTDetails ", nftdetails[0].nft.owner);
   const createTokenActor = async (canisterId) => {
     //console.log("identity : ",identity)
@@ -195,55 +195,59 @@ const BuyNowCard = ({
         10
       );
       console.log("sendable amount console ", sendableAmount);
-      // if (currentBalance > sendableAmount) {
-      //   console.log("We can send the amount");
-      // transaction logic
-      // let transaction = {
-      //   amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
-      //   from_subaccount: [],
-      //   spender: {
-      //     // Need review on this
-      //     // owner: nftdetails[1],
-      //     owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
-      //     subaccount: [],
-      //   },
-      //   fee: parseInt(currentMetaData["icrc1:fee"]),
-      //   memo: [],
-      //   created_at_time: [],
-      //   expected_allowance: [],
-      //   expires_at: [],
-      // };
-      let transaction = {
-        from_subaccount: [],
-        spender: {
-          owner: Principal.fromText(ids.backendCan),
-          subaccount: [],
-        },
-        amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
-        expected_allowance: [],
-        expires_at: [],
-        fee: [currentMetaData["icrc1:fee"]],
-        memo: [],
-        created_at_time: [],
-      };
-      console.log("transaction ", transaction);
-      // console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
-      const approveRes = await tokenActor.icrc2_approve(transaction);
-      console.log("Payment Approve Response ", approveRes);
-      if (approveRes.Err) {
-        const errorMessage = `Insufficient funds. Balance: ${approveRes.Err.InsufficientFunds.balance}`;
-        toast.error(errorMessage);
-        return;
+      console.log("current balance console ", currentBalance);
+      if (currentBalance > sendableAmount) {
+        //   console.log("We can send the amount");
+        // transaction logic
+        // let transaction = {
+        //   amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+        //   from_subaccount: [],
+        //   spender: {
+        //     // Need review on this
+        //     // owner: nftdetails[1],
+        //     owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
+        //     subaccount: [],
+        //   },
+        //   fee: parseInt(currentMetaData["icrc1:fee"]),
+        //   memo: [],
+        //   created_at_time: [],
+        //   expected_allowance: [],
+        //   expires_at: [],
+        // };
+        let transaction = {
+          from_subaccount: [],
+          spender: {
+            owner: Principal.fromText(ids.backendCan),
+            subaccount: [],
+          },
+          amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+          expected_allowance: [],
+          expires_at: [],
+          fee: [currentMetaData["icrc1:fee"]],
+          memo: [],
+          created_at_time: [],
+        };
+        console.log("transaction ", transaction);
+        // console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
+        const approveRes = await tokenActor.icrc2_approve(transaction);
+        console.log("Payment Approve Response ", approveRes);
+        if (approveRes.Err) {
+          const errorMessage = `Insufficient funds. Balance: ${approveRes.Err.InsufficientFunds.balance}`;
+          toast.error(errorMessage);
+          return;
+        } else {
+          afterPaymentApprove(
+            parseInt(approveRes?.Ok).toString(),
+            sendableAmount,
+            currentBalance
+          );
+        }
       } else {
-        afterPaymentApprove(
-          parseInt(approveRes?.Ok).toString(),
-          sendableAmount,
-          currentBalance
+        console.log("Insufficient Balance to purchase");
+        toast.error(
+          `Insufficient balance. Balance : ${currentBalance / 10 ** 8}`
         );
       }
-      // } else {
-      //   console.log("Insufficient Balance to purchase");
-      // }
     } catch (err) {
       console.error("Error in transfer approve", err);
     } finally {
