@@ -159,7 +159,9 @@ const ProductDetails = () => {
               </Link>
               <div className="py-4 lg:py-8 flex justify-between items-center">
                 <div>
-                  <h1 className="text-2xl gradient-text">NFT Name</h1>
+                  <h1 className="text-2xl gradient-text">
+                    {nftData.fractional_token[0][1].Text}
+                  </h1>
                   <h6 className="text-gray-500 capitalize font-medium">
                     By {collectionData.name}
                   </h6>
@@ -169,10 +171,14 @@ const ProductDetails = () => {
                 </span>
               </div>
               <div className="py-4 flex max-lg:flex-col lg:justify-between lg:items-center">
-                <div className="flex items-center font-semibold text-lg">
-                  {(nftData.price_per_share / exchange).toFixed(3)} ICP (
-                  {nftData.price_per_share.toFixed(3)} USD) / Share
-                </div>
+                {loading3 ? (
+                  <div className="w-64 bg-gray-500 h-6 rounded-md animate-pulse"></div>
+                ) : (
+                  <div className="flex items-center font-semibold text-lg">
+                    {(nftData.price_per_share / exchange).toFixed(3)} ICP (
+                    {nftData.price_per_share.toFixed(3)} USD) / Share
+                  </div>
+                )}
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   className="button px-4 py-2 rounded-lg text-white max-lg:mt-4 max-w-max"

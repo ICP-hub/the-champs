@@ -367,7 +367,11 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           </div>
         )}
         <div className="overflow-hidden flex items-center justify-center">
-          <Link to={`/collection/${id}/${product[1].toText()}`}>
+          <Link
+            to={`/collection/${id}/${product[1].toText()}/${parseInt(
+              product[0].nft.id
+            )}`}
+          >
             <motion.img
               whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
