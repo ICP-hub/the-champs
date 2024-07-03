@@ -16,37 +16,34 @@ function MainAdmin({ children }) {
   const [isOpen, setIsOpen] = useState(window.innerWidth > 960);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   // const { principal, isConnected } = useConnect();
-  const { principal, isAuthenticated } = useAuth();
+  const { principal, isAuthenticated, backendActor } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAdminChecked, setIsAdminChecked] = useState(false);
   const [loading, setLoading] = useState(true);
   // const [backend] = useCanister("backend");
-  const { backendActor } = useAuth();
 
-  // useEffect(() => {
-  //   const checkIsAdmin = async () => {
-  //     if (isAuthenticated && principal) {
-  //       try {
-  //         const res = await backendActor?.checkisadmin(
-  //           Principal.fromText(principal)
-  //         );
-  //         setIsAdmin(res);
-  //         console.log("Admin status:", res);
-  //       } catch (error) {
-  //         console.error("Error checking isAdmin:", error);
-  //         setIsAdmin(false);
-  //       } finally {
-  //         setIsAdminChecked(true);
-  //         setLoading(false);
-  //       }
-  //     } else {
-  //       setIsAdminChecked(true);
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const checkIsAdmin = async () => {
+      if (isAuthenticated && principal) {
+        try {
+          const res = await backendActor.checkisadmin(principal);
+          setIsAdmin(res);
+          console.log("Admin status:", res);
+        } catch (error) {
+          console.error("Error checking isAdmin:", error);
+          setIsAdmin(false);
+        } finally {
+          setIsAdminChecked(true);
+          setLoading(false);
+        }
+      } else {
+        setIsAdminChecked(true);
+        setLoading(false);
+      }
+    };
 
-  //   checkIsAdmin();
-  // }, [isAuthenticated, backendActor, principal]);
+    checkIsAdmin();
+  }, [isAuthenticated, principal]);
 
   useEffect(() => {
     const debounce = (func, delay) => {
@@ -106,14 +103,14 @@ function MainAdmin({ children }) {
     };
   }, [windowWidth, isOpen]);
 
-  // if (loading) {
-  //   return <FullScreenLoader />;
-  // }
+  if (loading) {
+    return <FullScreenLoader />;
+  }
 
-  // if (isAdminChecked && !isAdmin) {
-  //   toast.error("You are not an admin");
-  //   return <Navigate to="/" replace={true} />;
-  // }
+  if (isAdminChecked && !isAdmin) {
+    toast.error("You are not an admin");
+    return <Navigate to="/" replace={true} />;
+  }
 
   return (
     <div className={`${theme} bg-background`}>
