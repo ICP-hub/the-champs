@@ -20,7 +20,7 @@ const HomePageJ = () => {
       <p className="font-normal text-[22px] text-[#7B7583] max-[900px]:text-sm">
         Invest and manage all your NFTs at one place
       </p>
-      <Link to="/collection">
+      <Link to="/collections">
         <CustomButton>
           Get Started <MdArrowOutward size={24} />
         </CustomButton>
