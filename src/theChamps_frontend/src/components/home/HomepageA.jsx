@@ -47,7 +47,7 @@ const HomePageALeft = () => {
         celebrities is joining the NFT space on Champ.
       </div>
       <span className="mt-10">
-        <Link to="/collection">
+        <Link to="/collections">
           <CustomButton>
             Buy Now <MdArrowOutward size={24} />
           </CustomButton>
