@@ -368,17 +368,17 @@ actor Champs {
         };
     };
 
-    public shared ({ caller = user }) func tranfertokens(tokencanisterid : Principal, to : Principal, amount : Nat) : async Result.Result<Typestoken.TxIndex,Typestoken.TransferError> {
+    public shared ({ caller = user }) func transfertokens(tokencanisterid : Principal, to : Principal, amount : Nat) : async Result.Result<Typestoken.TxIndex,Typestoken.TransferError> {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
-        let icrc1_transfer_paramas = {
-            from_subaccount : ?Typestoken.Subaccount = null;
-            to : { owner : Principal; subaccount : ?Typestoken.Subaccount } = { owner = to; subaccount = null };
-            amount : Typestoken.Tokens = amount;
-            fee : ?Typestoken.Tokens = null;
-            memo : ?Typestoken.Memo = null;
-            created_at_time : ?Typestoken.Timestamp = null;
+        let icrc1_transfer_paramas  = {
+            from_subaccount  = null;
+            to  = { owner = to; subaccount = null };
+            amount = amount;
+            fee  = null;
+            memo = null;
+            created_at_time = null;
         };
         let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
         icrc1_transfer : ({
@@ -388,14 +388,14 @@ actor Champs {
         fee : ?Typestoken.Tokens;
         memo : ?Typestoken.Memo;
         created_at_time : ?Typestoken.Timestamp;
-  }) -> async Result.Result<Typestoken.TxIndex,Typestoken.TransferError>;
+  }) -> async Typestoken.Result<Typestoken.TxIndex,Typestoken.TransferError>;
         };
         let tokens = await tokencansiter_actor.icrc1_transfer(icrc1_transfer_paramas);
         switch (tokens) {
-            case (#err(index)) {
-                throw Error.reject(debug_show (index));
-            };
-            case (#ok(data)) {
+            case (#Err(index)) {
+                throw (Error.reject(debug_show (index)));
+            }; 
+            case (#Ok(data)) {
                 return #ok(data);
             };
         };
