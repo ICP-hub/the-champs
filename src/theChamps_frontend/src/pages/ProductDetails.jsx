@@ -24,6 +24,7 @@ import { PiFileTextBold, PiLinkBold } from "react-icons/pi";
 import { HiMiniUserCircle, HiOutlineDocumentText } from "react-icons/hi2";
 import { motion } from "framer-motion";
 import BuyNowCard from "../components/common/BuyNowCard";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 
 const ProductDetails = () => {
   const [nftLoading, setNftLoading] = useState(true);
@@ -31,11 +32,15 @@ const ProductDetails = () => {
   const { backendActor } = useAuth();
   const [nftData, setNftData] = useState(null);
   const [collectionData, setCollectionData] = useState(null);
+  const [favourites, setFavourites] = useState();
   const [open, setOpen] = useState(false);
   const [exchange, setExchange] = useState(1);
   const [selectedPlan, setSelectedPlan] = useState({ value: "icp" });
   const [loading3, setLoading3] = useState(true);
   const [paymentMethod2, SetPaymentMethod2] = useState("icp");
+  const [favChanged, setFavChanged] = useState(false);
+  const [favMatched, setFavMatched] = useState(false);
+  const [favLoad, setFavLoad] = useState(false);
 
   // Get NFT details
   const getNftDetails = async () => {
@@ -106,6 +111,59 @@ const ProductDetails = () => {
     }
   };
 
+  /*************** Favourite review ****************/
+  // get favorites
+  const getFav = async () => {
+    try {
+      setFavLoad(true);
+      const res = await backendActor.getfavourites();
+      const favIds = res.map((fav) => fav[0].id);
+      // console.log("fav nft id", favIds);
+      setFavourites(favIds); // store only ids
+      setFavMatched(favIds.includes(nftData.nft.id));
+    } catch (err) {
+      console.error("Error getting fav ", err);
+    } finally {
+      setFavLoad(false);
+    }
+  };
+
+  // add or remove a favorite
+  const toggleFav = async () => {
+    try {
+      setFavLoad(true);
+      if (favMatched) {
+        // Remove favorite
+        const nft = nftData.nft;
+        const res = await backendActor.removefavourite([
+          {
+            ...nft,
+            id: BigInt(parseInt(nft.id)),
+          },
+          Principal.fromText(slug),
+        ]);
+        // console.log(res);
+        // return; ? return need?
+      } else {
+        // Add favorite
+        const res = await backendActor.addfavourite(
+          Principal.fromText(slug),
+          parseInt(nftData.nft.id)
+        );
+        // console.log(res);
+      }
+    } catch (err) {
+      console.error("error toggling fav ", err);
+    } finally {
+      // setFavLoad(false);   // This may cause bug????
+      setFavChanged((prev) => !prev);
+    }
+  };
+  // fetch favorites : fetch in favChanged
+  useEffect(() => {
+    if (nftData) getFav();
+  }, [favChanged, nftData]);
+
   useEffect(() => {
     getExchangeRate();
   }, [selectedPlan.value, backendActor]);
@@ -166,8 +224,27 @@ const ProductDetails = () => {
                     By {collectionData.name}
                   </h6>
                 </div>
-                <span>
-                  <CiHeart size={32} />
+                <span className="flex items-center justify-center">
+                  {favLoad ? (
+                    <TailSpin
+                      height="30px"
+                      width="30px"
+                      color="black"
+                      ariaLabel="tail-spin-loading"
+                      radius="1"
+                      visible={true}
+                    />
+                  ) : (
+                    <button onClick={toggleFav}>
+                      {favMatched ? (
+                        <IconWrapper>
+                          <GoHeartFill size={32} />
+                        </IconWrapper>
+                      ) : (
+                        <GoHeart size={32} />
+                      )}
+                    </button>
+                  )}
                 </span>
               </div>
               <div className="py-4 flex max-lg:flex-col lg:justify-between lg:items-center">

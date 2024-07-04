@@ -9,7 +9,7 @@ import ReadMore from "../common/ReadMore";
 import { motion } from "framer-motion";
 import placeHolderImg from "../../assets/CHAMPS.png";
 import IconWrapper from "../common/IconWrapper";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import ProductCardLoader from "../productcomponent/ProductCardLoader";
 import CommonModal from "../common/CommonModal";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -242,7 +242,7 @@ const MyProfileNFT = () => {
                           <div className="h-6 bg-gray-300 rounded-2xl animate-pulse w-24"></div>
                         ) : (
                           <span className="font-semibold">
-                            {prod[1].price_per_share / exchange.toFixed(3)}
+                            {(prod[1].price_per_share / exchange).toFixed(3)}
                           </span>
                         )}
                       </p>
@@ -278,13 +278,13 @@ const Loader = () => {
 
 const TransferModal = ({ nft, onClose, exchange, loading }) => {
   const [quantity, setQuantity] = useState(1);
-  const [tokenActor, setTokenActor] = useState(null);
+  // const [tokenActor, setTokenActor] = useState(null);
   const [buyLoading, setBuyLoading] = useState(false);
   const { identity, isAuthenticated, principal, backendActor } = useAuth();
-  const [balance, setBalance] = useState(null);
-  const [metaData, setMetaData] = useState(null);
+  // const [balance, setBalance] = useState(null);
+  // const [metaData, setMetaData] = useState(null);
   const [transferTo, setTransferTo] = useState("");
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
   // decrement qty
   const handleDecrement = () => {
     setQuantity((prev) => Math.max(prev - 1, 1));
@@ -296,158 +296,186 @@ const TransferModal = ({ nft, onClose, exchange, loading }) => {
     );
   };
 
-  const createTokenActor = async (canisterId) => {
-    const agent = new HttpAgent({
-      identity,
-      host,
-    });
-    let tokenActor = Actor.createActor(idlFactory, {
-      agent,
-      canisterId,
-    });
+  // const createTokenActor = async (canisterId) => {
+  //   const agent = new HttpAgent({
+  //     identity,
+  //     host,
+  //   });
+  //   let tokenActor = Actor.createActor(idlFactory, {
+  //     agent,
+  //     canisterId,
+  //   });
 
-    return tokenActor;
-  };
+  //   return tokenActor;
+  // };
 
-  /*****************Token Functions : copied from buynow card ******************/
-  const fetchMetadataAndBalance = async (tokenActor, ownerPrincipal) => {
-    console.log(tokenActor, ownerPrincipal.toText());
-    try {
-      const [metadata, balance] = await Promise.all([
-        tokenActor.icrc1_metadata(),
-        tokenActor.icrc1_balance_of({
-          owner: ownerPrincipal,
-          subaccount: [],
-        }),
-      ]);
-      console.log("Fetched metadata:", metadata);
-      return { metadata, balance };
-    } catch (err) {
-      console.error("Error fetching metadata and balance:", err);
-      throw err;
-    }
-  };
-  const formatTokenMetaData = (arr) => {
-    const resultObject = {};
-    arr.forEach((item) => {
-      const key = item[0];
-      const value = item[1][Object.keys(item[1])[0]]; // Extracting the value from the nested object
-      resultObject[key] = value;
-    });
-    return resultObject;
-  };
+  // /*****************Token Functions : copied from buynow card ******************/
+  // const fetchMetadataAndBalance = async (tokenActor, ownerPrincipal) => {
+  //   console.log(tokenActor, ownerPrincipal.toText());
+  //   try {
+  //     const [metadata, balance] = await Promise.all([
+  //       tokenActor.icrc1_metadata(),
+  //       tokenActor.icrc1_balance_of({
+  //         owner: ownerPrincipal,
+  //         subaccount: [],
+  //       }),
+  //     ]);
+  //     console.log("Fetched metadata:", metadata);
+  //     return { metadata, balance };
+  //   } catch (err) {
+  //     console.error("Error fetching metadata and balance:", err);
+  //     throw err;
+  //   }
+  // };
+  // const formatTokenMetaData = (arr) => {
+  //   const resultObject = {};
+  //   arr.forEach((item) => {
+  //     const key = item[0];
+  //     const value = item[1][Object.keys(item[1])[0]]; // Extracting the value from the nested object
+  //     resultObject[key] = value;
+  //   });
+  //   return resultObject;
+  // };
 
-  const transferApprove = async (
-    currentBalance,
-    currentMetaData,
-    tokenActor
-  ) => {
-    try {
-      const decimals = parseInt(currentMetaData["icrc1:decimals"], 10);
-      const sendableAmount = parseInt(
-        ((nft[1].price_per_share * quantity) / exchange) *
-          Math.pow(10, decimals),
-        10
-      );
-      console.log("sendable amount console ", sendableAmount);
-      console.log("current balance console ", currentBalance);
+  // const transferApprove = async (
+  //   currentBalance,
+  //   currentMetaData,
+  //   tokenActor
+  // ) => {
+  //   try {
+  //     const decimals = parseInt(currentMetaData["icrc1:decimals"], 10);
+  //     const sendableAmount = parseInt(
+  //       ((nft[1].price_per_share * quantity) / exchange) *
+  //         Math.pow(10, decimals),
+  //       10
+  //     );
+  //     console.log("sendable amount console ", sendableAmount);
+  //     console.log("current balance console ", currentBalance);
 
-      let transaction = {
-        from_subaccount: [],
-        spender: {
-          owner: Principal.fromText(ids.backendCan),
-          subaccount: [],
-        },
-        amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
-        expected_allowance: [],
-        expires_at: [],
-        fee: [currentMetaData["icrc1:fee"]],
-        memo: [],
-        created_at_time: [],
-      };
-      console.log("transaction ", transaction);
-      // console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
-      const approveRes = await tokenActor.icrc2_approve(transaction);
-      console.log("Payment Approve Response ", approveRes);
-      if (approveRes.Err) {
-        const errorMessage = `Insufficient funds. Balance: ${approveRes.Err.InsufficientFunds.balance}`;
-        toast.error(errorMessage);
-        return;
-      } else {
-        afterPaymentApprove(
-          parseInt(approveRes?.Ok).toString(),
-          sendableAmount,
-          currentBalance
-        );
-      }
-    } catch (err) {
-      console.error("Error in transfer approve", err);
-      toast.error("Payment approve declined");
-    } finally {
-      setBuyLoading(false);
-    }
-  };
+  //     let transaction = {
+  //       from_subaccount: [],
+  //       spender: {
+  //         owner: Principal.fromText(ids.backendCan),
+  //         subaccount: [],
+  //       },
+  //       amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+  //       expected_allowance: [],
+  //       expires_at: [],
+  //       fee: [currentMetaData["icrc1:fee"]],
+  //       memo: [],
+  //       created_at_time: [],
+  //     };
+  //     console.log("transaction ", transaction);
+  //     // console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
+  //     const approveRes = await tokenActor.icrc2_approve(transaction);
+  //     console.log("Payment Approve Response ", approveRes);
+  //     if (approveRes.Err) {
+  //       const errorMessage = `Insufficient funds. Balance: ${approveRes.Err.InsufficientFunds.balance}`;
+  //       toast.error(errorMessage);
+  //       return;
+  //     } else {
+  //       afterPaymentApprove(
+  //         parseInt(approveRes?.Ok).toString(),
+  //         sendableAmount,
+  //         currentBalance
+  //       );
+  //     }
+  //   } catch (err) {
+  //     console.error("Error in transfer approve", err);
+  //     toast.error("Payment approve declined");
+  //   } finally {
+  //     setBuyLoading(false);
+  //   }
+  // };
 
-  // After approve payment
-  const afterPaymentApprove = async (paymentId, amount, currentBalance) => {
-    console.log(
-      `You are going to send ,${amount} and your payment ID is ${paymentId}`
-    );
-    // NFTID , To , amount
-    try {
-      const paymentResponse = await backendActor.tranfertokens(
-        nft[2],
-        Principal.fromText(transferTo),
-        parseInt(amount)
-      );
-      console.log("Payment Success Response ", paymentResponse);
-    } catch (err) {
-      console.error("Error after payment approve ", err);
-      // toast.error("Insufficient fund in wallet. Balance : ", currentBalance);
-    }
-  };
+  // // After approve payment
+  // const afterPaymentApprove = async (paymentId, amount, currentBalance) => {
+  //   console.log(
+  //     `You are going to send ,${amount} and your payment ID is ${paymentId}`
+  //   );
+  //   // NFTID , To , amount
+  //   try {
+  //     const paymentResponse = await backendActor.tranfertokens(
+  //       nft[2],
+  //       Principal.fromText(transferTo),
+  //       parseInt(amount)
+  //     );
+  //     console.log("Payment Success Response ", paymentResponse);
+  //   } catch (err) {
+  //     console.error("Error after payment approve ", err);
+  //     // toast.error("Insufficient fund in wallet. Balance : ", currentBalance);
+  //   }
+  // };
 
-  /**************************** */
+  // /**************************** */
 
-  const handleConfirm = async () => {
-    if (!isAuthenticated) {
-      toast.error("You need to log in first");
-      return;
-    }
+  // const handleConfirm = async () => {
+  //   if (!isAuthenticated) {
+  //     toast.error("You need to log in first");
+  //     return;
+  //   }
 
-    // const isValid = validateString(transferTo);
-    // if (!isValid) {
-    //   setError(true);
-    //   return;
-    // }
+  //   // const isValid = validateString(transferTo);
+  //   // if (!isValid) {
+  //   //   setError(true);
+  //   //   return;
+  //   // }
 
-    try {
-      setBuyLoading(true);
-      const tokenActor = await createTokenActor(
-        Principal.fromText(ids.ICPtokenCan)
-      );
-      const { metadata, balance } = await fetchMetadataAndBalance(
-        tokenActor,
-        principal
-      );
+  //   try {
+  //     setBuyLoading(true);
+  //     const tokenActor = await createTokenActor(
+  //       Principal.fromText(ids.ICPtokenCan)
+  //     );
+  //     const { metadata, balance } = await fetchMetadataAndBalance(
+  //       tokenActor,
+  //       principal
+  //     );
 
-      const formattedMetadata = formatTokenMetaData(metadata);
-      setMetaData(formattedMetadata);
+  //     const formattedMetadata = formatTokenMetaData(metadata);
+  //     setMetaData(formattedMetadata);
 
-      const parsedBalance = parseInt(balance, 10);
-      console.log("Balance:", parsedBalance);
-      setBalance(parsedBalance);
+  //     const parsedBalance = parseInt(balance, 10);
+  //     console.log("Balance:", parsedBalance);
+  //     setBalance(parsedBalance);
 
-      transferApprove(parsedBalance, formattedMetadata, tokenActor);
-    } catch (err) {
-      console.error("Error transfering nft ", err);
-    }
-  };
+  //     transferApprove(parsedBalance, formattedMetadata, tokenActor);
+  //   } catch (err) {
+  //     console.error("Error transfering nft ", err);
+  //   }
+  // };
 
   // const validateString = (str) => {
   //   const regexPattern = /^([a-z0-9]{5}-){11}[a-z0-9]{3}$/i;
   //   return regexPattern.test(str);
   // };
+  // console.log(nft);
+  const handleConfirm = async () => {
+    if (!isAuthenticated) {
+      toast.error("You need to login first");
+      return;
+    }
+    // Check principal on length basis : change to regex later
+    if (transferTo.length < 60) {
+      toast.error("Invalid principal ID");
+      return;
+    }
+    try {
+      setBuyLoading(true);
+      const paymentResponse = await backendActor.transfertokens(
+        nft[2],
+        Principal.fromText(transferTo),
+        // parseInt(amount)
+        parseInt(quantity)
+      );
+      console.log("Transfer nft response", paymentResponse);
+    } catch (err) {
+      console.error("Error after payment approve ", err);
+      // toast.error("Insufficient fund in wallet. Balance : ", currentBalance);
+      toast.error("failed to transfer nft");
+    } finally {
+      setBuyLoading(false);
+    }
+  };
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar top-0">
@@ -508,7 +536,7 @@ const TransferModal = ({ nft, onClose, exchange, loading }) => {
             <div className="flex gap-1 items-center">
               <IcpLogo size={16} />
               <span>
-                {((nft[1].price_per_share * quantity) / exchange).toFixed(3)}
+                {((nft[1].price_per_share * quantity) / exchange).toFixed(6)}
               </span>
               <span className="text-gray-500">
                 ({(nft[1].price_per_share * quantity).toFixed(3)} USD)
