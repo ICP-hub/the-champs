@@ -41,19 +41,7 @@ const CollectionPage = ({ name }) => {
     setSearchResults(filteredResults);
   };
 
-  const handleSort = () => {
-    const sortedResults = [...searchResults].sort((a, b) =>
-      a.details.name.localeCompare(b.details.name)
-    );
-    setSearchResults(sortedResults);
-  };
-
-  const handleSortByPrice = () => {
-    const sortedResults = [...searchResults].sort(
-      (a, b) => parseInt(a.data.created_at) - parseInt(b.data.created_at)
-    );
-    setSearchResults(sortedResults);
-  };
+   
 
   return (
     <>
@@ -98,9 +86,9 @@ const CollectionPage = ({ name }) => {
                   ))
                 ) : (
                   <div className="text-center mt-20 px-6 lg:px-24 flex justify-center items-center">
-                    <button className="px-4 py-2 cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
+                    <p className="px-4 py-2 cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
                       No collection found
-                    </button>
+                    </p>
                   </div>
                 )
               ) : (

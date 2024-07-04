@@ -17,9 +17,9 @@ function MainAdmin({ children }) {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   // const { principal, isConnected } = useConnect();
   const { principal, isAuthenticated, backendActor } = useAuth();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isAdminChecked, setIsAdminChecked] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(true);
+  const [isAdminChecked, setIsAdminChecked] = useState(true);
+  const [loading, setLoading] = useState(false);
   // const [backend] = useCanister("backend");
 
   useEffect(() => {
@@ -27,14 +27,13 @@ function MainAdmin({ children }) {
       if (isAuthenticated && principal) {
         try {
           const res = await backendActor.checkisadmin(principal);
-          setIsAdmin(res);
+
           console.log("Admin status:", res);
         } catch (error) {
           console.error("Error checking isAdmin:", error);
           setIsAdmin(false);
         } finally {
           setIsAdminChecked(true);
-          setLoading(false);
         }
       } else {
         setIsAdminChecked(true);

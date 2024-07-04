@@ -128,7 +128,7 @@ const Setup = ({ openModal }) => {
 
 const VideoModal = ({ videoUrl, closeModal }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 mt-24 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg overflow-hidden w-11/12 md:w-3/4 lg:w-1/2">
         <div className="flex justify-end p-2">
           <button onClick={closeModal} className="text-black font-bold text-xl">

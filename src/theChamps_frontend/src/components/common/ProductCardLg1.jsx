@@ -248,8 +248,8 @@ const ProductCardLg = ({ prod }) => {
         <div className="flex justify-end w-full pt-6 gap-4 text-sm mt-auto">
           <div className="w-full md:w-1/2 flex gap-4">
             <Link
-              to={`/collections/${prod.canisterId.toText()}`}
-              className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57] text-white cursor-pointer rounded-lg w-full z-[1]"
+              to={`/collection/${prod.canisterId.toText()}`}
+              className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57] text-white cursor-pointer rounded-lg w-full z-[10]"
             >
               View Collection
             </Link>
