@@ -87,12 +87,12 @@ const HomePageALeftCommunityCounter = () => {
   return (
     <div className="flex py-6 gap-4">
       <div className="flex flex-0 items-center -space-x-1.5">
-        {[img1 || anim1, img2 || anim2, img3 || anim3].map((src, index) => (
+        {[soccer1, soccer2, soccer1].map((src, index) => (
           <img
             key={index}
             src={src}
             alt={`anim${index + 1}`}
-            className="flex-0 w-12 h-12 rounded-full ring-4 ring-offset-1 ring-white ring-offset-white object-cover"
+            className="flex-0 w-12 h-12 bg-gradient-to-tr object-contain from-[#FC001E] to-[#FF7D57]   rounded-full ring-4 ring-offset-1 ring-white ring-offset-white  "
           />
         ))}
       </div>

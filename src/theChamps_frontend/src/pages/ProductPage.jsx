@@ -113,9 +113,10 @@ const ProductPage = ({ name }) => {
   const calculateVolume = (collection) => {
     return collection
       .reduce((acc, nftArray) => {
-        const nft = nftArray[0].nft;
-        if (nft.listed) {
-          return acc + parseFloat(nft.priceinusd);
+        const nft = nftArray[0];
+        const nft1 = nftArray[0].nft;
+        if (nft1.listed) {
+          return acc + parseFloat(nft.price_per_share);
         }
         return acc;
       }, 0)
@@ -225,7 +226,7 @@ const ProductPage = ({ name }) => {
                   logo={collectionDetails?.logo?.data}
                 />
               </div>
-              <div className="right-0 md:w-[65%] md:ml-[33%] mt-64 md:mt-8">
+              <div className="right-0 md:w-[65%] md:ml-[33%] marginTop1 marginTop md:mt-8">
                 <h1 className="text-3xl text-left font-bold font-sans mb-4 gap-1">
                   <span className="md:relative text-transparent bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
                     {collectionDetails?.name}
@@ -240,8 +241,8 @@ const ProductPage = ({ name }) => {
                     />
                   </div>
                 )}
-                <div className="mt-12 md:w-2/3 flex gap-4 flex-wrap">
-                  <div className="w-1/4 text-center text-sm space-y-2">
+                <div className="mt-12 md:w-2/3 sm:flex gap-4 flex-wrap">
+                  <div className="sm:w-1/4 text-center text-sm space-y-2">
                     <p>AVERAGE PRICE</p>
                     <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
                       {loading3 ? (
@@ -257,13 +258,13 @@ const ProductPage = ({ name }) => {
                       )}
                     </button>
                   </div>
-                  <div className="w-1/4 text-center text-sm space-y-2">
+                  <div className="sm:w-1/4 text-center text-sm space-y-2">
                     <p>LISTING</p>
                     <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1.5 rounded-lg text-md flex items-center justify-center">
                       {listingCount}
                     </button>
                   </div>
-                  <div className="w-1/4 text-center text-sm space-y-2">
+                  <div className="sm:w-1/4 text-center text-sm space-y-2">
                     <p>FLOOR PRICE</p>
                     <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
                       {loading3 ? (

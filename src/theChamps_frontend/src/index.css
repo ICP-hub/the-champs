@@ -536,3 +536,13 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
+@media (min-width: 526px) and (max-width: 768px) {
+  .marginTop {
+    margin-top: 440px;
+  }
+}
+@media (max-width: 525px) {
+  .marginTop1 {
+    margin-top: 200px;
+  }
+}

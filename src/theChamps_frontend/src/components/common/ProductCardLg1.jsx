@@ -27,8 +27,8 @@ const ProductCardLg = ({ prod }) => {
       );
       console.log("hello ss", res);
       setCollection(res);
-      setImg1(res[0][0].fractional_token?.logo);
-      setImg2(res[1][0].fractional_token?.logo);
+      setImg1(res[0][0].nft.logo.data);
+      setImg2(res[1][0].nft.logo.data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -42,9 +42,10 @@ const ProductCardLg = ({ prod }) => {
   const calculateVolume = (collection) => {
     return collection
       .reduce((acc, nftArray) => {
-        const nft = nftArray[0].nft;
-        if (nft.listed) {
-          return acc + parseFloat(nft.priceinusd);
+        const nft = nftArray[0];
+        const nft1 = nftArray[0].nft;
+        if (nft1.listed) {
+          return acc + parseFloat(nft.price_per_share);
         }
         return acc;
       }, 0)

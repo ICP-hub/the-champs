@@ -189,7 +189,7 @@ const NFTCard = ({ NFT, collection, nftData }) => {
         />
         <div className="flex flex-col">
           <h1 className="text-2xl font-bold line-clamp-1">
-            {NFT[0]?.fractional_token?.name}
+            {NFT[0]?.fractional_token[0][1]?.Text}
           </h1>
           {/* Static collection pick for now we can show featured later */}
           <p className="text-[15px] text-[#7B7583]">{NFT[1].toText()}</p>
