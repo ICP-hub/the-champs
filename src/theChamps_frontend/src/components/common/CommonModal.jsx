@@ -21,7 +21,7 @@ const CommonModal = ({ toggleModal, tokencanisterid }) => {
     if (isAuthenticated) {
       setLoading(true);
       try {
-        const response = await backend.tranfertokens(
+        const response = await backend.transfertokens(
           tokencanisterid,
           Principal.fromText(receiver),
           BigInt(0)
