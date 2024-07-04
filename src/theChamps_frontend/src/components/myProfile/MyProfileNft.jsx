@@ -508,7 +508,7 @@ const TransferModal = ({ nft, onClose, exchange, loading }) => {
             <div className="flex gap-1 items-center">
               <IcpLogo size={16} />
               <span>
-                {((nft[1].price_per_share * quantity) / exchange).toFixed(6)}
+                {((nft[1].price_per_share * quantity) / exchange).toFixed(3)}
               </span>
               <span className="text-gray-500">
                 ({(nft[1].price_per_share * quantity).toFixed(3)} USD)
