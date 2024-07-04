@@ -247,7 +247,7 @@ const MyFav = () => {
                     <div className="p-2 mx-2">
                       <div className="flex justify-between font-bold items-center">
                         <h2 className="text-lg font-semibold mb-2">
-                          {product[1]?.fractional_token?.name}
+                          {product[1]?.fractional_token[0][1].Text}
                         </h2>
                         <span className="flex items-center justify-center">
                           {favLoad ? (
