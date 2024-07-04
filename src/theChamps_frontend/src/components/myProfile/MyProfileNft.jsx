@@ -469,7 +469,7 @@ const TransferModal = ({ nft, onClose, exchange, loading }) => {
       );
       console.log("Transfer nft response", paymentResponse);
     } catch (err) {
-      console.error("Error after payment approve ", err);
+      console.error("Error in nft transfer ", err);
       // toast.error("Insufficient fund in wallet. Balance : ", currentBalance);
       toast.error("failed to transfer nft");
     } finally {
