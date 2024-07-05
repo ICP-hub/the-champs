@@ -41,6 +41,7 @@ const ProductDetails = () => {
   const [favChanged, setFavChanged] = useState(false);
   const [favMatched, setFavMatched] = useState(false);
   const [favLoad, setFavLoad] = useState(false);
+  const [product, setProduct] = useState([]);
 
   // Get NFT details
   const getNftDetails = async () => {
@@ -60,6 +61,7 @@ const ProductDetails = () => {
 
       setCollectionData(collectionResponse);
       setNftData(nftResponse);
+      setProduct([nftResponse, principalIndex]);
       console.log("collectionRes", collectionResponse);
       console.log("nftRes", nftResponse);
     } catch (err) {
@@ -173,6 +175,8 @@ const ProductDetails = () => {
     getNftDetails();
   }, []);
 
+  // console.log("nftData in productDetails ", nftData);
+
   return (
     <>
       <Header />
@@ -185,7 +189,7 @@ const ProductDetails = () => {
           selected={selectedPlan}
           exchange={exchange}
           loading={loading3}
-          nftdetails={nftData}
+          nftdetails={product}
         />
       )}
       {nftLoading ? (
