@@ -31,7 +31,6 @@ const initialFormValues = {
           val: { TextContent: "" },
         },
       ],
-      purpose: { Preview: null, Rendered: null },
     },
   ],
   priceInUsd: 0,
