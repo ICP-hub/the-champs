@@ -4,6 +4,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { IoGridOutline } from "react-icons/io5";
 import { CiBoxList } from "react-icons/ci";
 import { HiMagnifyingGlass } from "react-icons/hi2";
+import { motion } from "framer-motion";
 
 const Searchbar = ({
   grid,
@@ -14,6 +15,7 @@ const Searchbar = ({
   collection,
   setSearchResults,
   setSearch,
+  setLoading,
 }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const menuButtonRef = useRef(null);
@@ -40,7 +42,9 @@ const Searchbar = ({
 
   const applyFilters = () => {
     setSearch(true);
+    setLoading(true);
     let sortedResults;
+
     switch (selectedOption) {
       case "name":
         sortedResults = [...collection].sort((a, b) =>
@@ -69,12 +73,17 @@ const Searchbar = ({
       default:
         sortedResults = collection;
     }
+
     setSearchResults(sortedResults);
 
     // Close the menu
     if (menuButtonRef.current) {
       menuButtonRef.current.click();
     }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   };
 
   return (

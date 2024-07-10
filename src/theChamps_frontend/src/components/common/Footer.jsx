@@ -3,7 +3,7 @@ import React from "react";
 import { BsInstagram } from "react-icons/bs";
 import { FaYoutube } from "react-icons/fa";
 import { RiTwitterFill } from "react-icons/ri";
-import BackToTopButton from "./BackToTop";
+import BackToTopButton, { scrollToTop } from "./BackToTop";
 import { Link } from "react-router-dom";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ Component Footer.
@@ -43,16 +43,24 @@ const Footer = () => {
               <div className="flex flex-col gap-4 max-md:gap-2">
                 <p className="font-semibold text-lg">Quick links</p>
                 <span className="text-gray-500 text-md flex flex-col items-start gap-2">
-                  <Link to="/about">About </Link>
-                  <Link to="/collection">Collection</Link>
+                  <Link to="/about" onClick={scrollToTop}>
+                    About{" "}
+                  </Link>
+                  <Link to="/collections" onClick={scrollToTop}>
+                    Collections
+                  </Link>
 
-                  <Link to="/faq">FAQs</Link>
+                  <Link to="/faq" onClick={scrollToTop}>
+                    FAQs
+                  </Link>
                 </span>
               </div>
               <div className="flex flex-col gap-4 max-md:gap-2">
                 <p className="font-semibold text-lg">Community</p>
                 <span className="text-gray-500 text-md flex flex-col items-start gap-1">
-                  <Link to="/contact">Get in touch</Link>
+                  <Link to="/contact" onClick={scrollToTop}>
+                    Get in touch
+                  </Link>
                 </span>
               </div>
             </div>
@@ -65,8 +73,16 @@ const Footer = () => {
                 reserved
               </p>
               <span className="flex gap-4">
-                <Link to="/privacy-policy">Privacy Policy</Link>
-                <Link to="/Terms-and-services">Terms and Services</Link>
+                <span className="gradient-text">
+                  <Link to="/privacy-policy" onClick={scrollToTop}>
+                    Privacy Policy
+                  </Link>
+                </span>
+                <span className="gradient-text">
+                  <Link to="/Terms-and-services" onClick={scrollToTop}>
+                    Terms and Services
+                  </Link>
+                </span>
                 <BackToTopButton />
               </span>
             </div>
