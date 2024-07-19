@@ -105,8 +105,8 @@ const MintNft = () => {
           FinalData.name,
           FinalData.symbol,
           // parseInt(FinalData.fee),
-          parseInt(FinalData.totalSupply), // This is total supply? didn't understand the meaning // For share value?
-          FinalData.decimals
+          FinalData.decimals,
+          parseInt(FinalData.totalSupply) // This is total supply? didn't understand the meaning // For share value?
         );
         console.log("NFT Created Successfully : ", res);
         toast.success("NFT Fractionalized Successfully");
