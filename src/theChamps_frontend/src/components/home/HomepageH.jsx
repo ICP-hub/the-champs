@@ -14,7 +14,7 @@ import { motion } from "framer-motion";
 /* ----------------------------------------------------------------------------------------------------- */
 const artistData = [
   {
-    name: "Steps Jobs",
+    name: "Jerry Aurum",
     role: "Artist",
     image: anim4,
     socials: [
@@ -24,8 +24,8 @@ const artistData = [
     ],
   },
   {
-    name: "Andry Moray",
-    role: "Blockchain",
+    name: "Grace Sabandar",
+    role: "Founder",
     image: anim5,
     socials: [
       { icon: <IoLogoTwitter size={16} />, link: "#" },
@@ -34,7 +34,7 @@ const artistData = [
     ],
   },
   {
-    name: "zaid Ed",
+    name: "Vinayak",
     role: "Developer",
     image: anim6,
     socials: [
@@ -44,8 +44,8 @@ const artistData = [
     ],
   },
   {
-    name: "Laila Ed",
-    role: "Marketing",
+    name: "Bruno Calabretta",
+    role: "Advisor",
     image: anim7,
     socials: [
       { icon: <IoLogoTwitter size={16} />, link: "#" },

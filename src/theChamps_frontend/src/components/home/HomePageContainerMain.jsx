@@ -23,11 +23,11 @@ const HomepageContainerMain = () => {
   return (
     <div>
       <HomePageA />
-      <Wallets />
+      {/* <Wallets /> */}
       <HomePageB />
       <CustomDivide />
-      <HomeFeatured />
-      <CustomDivide />
+      {/* <HomeFeatured /> */}
+      {/* <CustomDivide /> */}
       <HomePageC />
       <CustomDivide />
       <HomePageD />

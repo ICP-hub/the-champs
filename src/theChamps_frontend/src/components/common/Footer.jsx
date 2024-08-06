@@ -22,8 +22,10 @@ const Footer = () => {
                 Champs
               </Link>
               <p className="sm:w-1/2 text-sm text-gray-500">
-                Join our Discord channel or follow us on Twitter to keep up to
-                date with our latest work and announcements.
+                {/* Join our Discord channel or follow us on Twitter to keep up to
+                date with our latest work and announcements. */}
+                Follow us on social media to keep up to date with our latest
+                work and announcements.
               </p>
 
               <div className="flex gap-2 items-center">

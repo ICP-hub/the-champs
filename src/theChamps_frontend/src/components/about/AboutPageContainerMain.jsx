@@ -21,6 +21,13 @@ const AboutPageContainerMain = () => {
           </h1>
         </div>
         <p className="font-medium">{aboutData.description}</p>
+
+        {aboutData.authorDetail.map((author, index) => (
+          <div key={index} className="space-y-2">
+            <h4 className="font-semibold text-lg">{author.name}</h4>
+            <p className="font-medium">{author.quote}</p>
+          </div>
+        ))}
       </div>
       <div className="max-md:order-first">
         <img src={aboutData.image} alt="about" />

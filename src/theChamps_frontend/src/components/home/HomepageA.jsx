@@ -40,11 +40,11 @@ const HomePageALeft = () => {
   return (
     <div className="flex flex-col lg:max-w-[80%] gap-4 mt-10">
       <div className="font-bold text-[55px] leading-[72px] max-[900px]:text-3xl">
-        High Quality NFT Collection
+        Exclusive Digital Collectibles of your favorite players.
       </div>
       <div className="text-[22px] font-normal text-[#7B7583] max-[900px]:text-[16px]">
-        A 890 piece custom fractionalized NFTs of Indonesian football stars and
-        celebrities is joining the NFT space on Champ.
+        The chance to own a unique digital collectible of the 20 best Indonesian
+        Football Players.
       </div>
       <span className="mt-10">
         <Link to="/collections">
@@ -97,8 +97,9 @@ const HomePageALeftCommunityCounter = () => {
         ))}
       </div>
       <div className="">
-        <p className="font-bold text-[32px]">{NFTs.length}+</p>
-        <p className="font-normal text-xs text-[#7B7583]">Total NFT's</p>
+        {/* <p className="font-bold text-[32px]">{NFTs.length}+</p> */}
+        <p className="font-bold text-[32px]">10000+</p>
+        <p className="font-normal2 text-[#7B7583]">Fans</p>
       </div>
     </div>
   );

@@ -1,9 +1,22 @@
 import Setup2 from "../assets/images/nft-2.png";
 
 const aboutData = {
-  title: "Leading the Way in an Open Digital Economy at Champs",
+  title: "Pioneering the Digital Collectible Football space in Southeast Asia.",
   image: Setup2,
   description:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Venenatis urna cursus eget nunc scelerisque viverra mauris. Parturient montes nascetur ridiculus mus. A diam maecenas sed enim. Eget egestas purus viverra accumsan. Adipiscing bibendum est ultricies integer quis. Est sit amet facilisis magna etiam tempor orci eu. Ullamcorper velit sed ullamcorper morbi tincidunt ornare massa eget egestas. Bibendum enim facilisis gravida neque convallis a cras. Maecenas accumsan lacus vel facilisis. Sed elementum tempus egestas sed sed risus Elementum tempus egestas sed sed risus pretium quam vulputate dignissim. Tortor dignissim convallis aenean et tortor. Donec ultrices tincidunt arcu non sodales. Lacus luctus accumsan tortor posuere ac ut consequat semper viverra. Neque laoreet suspendisse interdum consectetur libero id faucibus nisl tincidunt. Enim lobortis scelerisque fermentum dui. Nisi lacus sed viverra tellus in hac habitasse platea dictumst. Sagittis purus sit amet volutpat. Lorem sed risus ultricies tristique nulla aliquet enim tortor at. Id cursus metus aliquam eleifend mi in nulla. Nunc id cursus metus aliquam eleifend mi in nulla. Congue nisi vitae suscipit tellus mauris. Pharetra sit amet aliquam id diam maecenas. Etiam sit amet nisl purus in mollis nunc.Tellus cras adipiscing enim eu turpis egestas. Integer enim neque volutpat ac tincidunt vitae semper. Senectus et netus et malesuada fames ac turpis egestas. Turpis cursus in hac habitasse. Eu tincidunt tortor aliquam nulla facilisi cras. Tempor commodo ullamcorper a lacus. Quisque egestas diam in arcu cursus. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit sed. Id interdum velit laoreet id. Ultrices neque ornare aenean euismod elementum. Mauris in aliquam sem fringilla ut morbi. Eu nisl nunc mi ipsum. At elementum eu facilisis sed.",
+    "Champs is dedicated to revolutionizing fan engagement in Indonesian football through digital collectibles. Our passion for the sport and belief in the power to foster community ties drive our commitment to this project. By blending these interests, we offer a unique platform that not only gives unique real-life perks to fans such as exclusive meet-and-greets and signed merchandise but also supports local talent by donating to different charities.This project is an opportunity to contribute to the sport's growth in Indonesia and pioneer a new approach in sports memorabilia, making our mission a deeply meaningful endeavor.Committed to this mission are two founders who share a passion for Indonesian Football.",
+  authorDetail: [
+    {
+      name: "Grace Sabandar",
+      quote:
+        "Grace Sabandar, President Director of PT Global Business Services, has over 20 years of experience in organizing national and international exhibitions across various industries. She is the Founder and Chair of the Ambassador & CEO Club, an international speaker, and received the “50 Asia’s Women Leaders Award” in 2016. Grace co-founded the Global Sportainment Network, and has been involved in significant sports and technology events in Indonesia.",
+    },
+
+    {
+      name: "Jerry Aurum",
+      quote:
+        "Jerry Aurum is a renowned Indonesian photographer with over 25 years of experience. Known for his diverse expertise in portrait, fashion, and landscape photography, Jerry has won numerous awards and authored several acclaimed books. His work has been featured in over a thousand publications, and he has completed over 2,500 projects for more than 400 clients in 12 countries.",
+    },
+  ],
 };
 export default aboutData;
