@@ -20,7 +20,6 @@ import IcpLogo from "../../assets/IcpLogo";
 // import { RiVerifiedBadgeFill } from "react-icons/ri";
 // Ledger import
 import { useAuth } from "../../auth/useClient";
-import nft1 from "../../assets/new/nft1.jpg";
 // import { idlFactory } from "../../../../wallet/ledger.did";
 // import { Actor, HttpAgent } from "@dfinity/agent";
 // import { host, ids } from "../../../../DevConfig";

@@ -24,7 +24,7 @@ import NotAvailable from "../common/NotAvailable";
 import { useSelector } from "react-redux";
 import { useCanister } from "@connect2ic/react";
 import { useAuth } from "../../auth/useClient";
-import nft1 from "../../assets/new/nft1.jpg";
+// import nft1 from "../../assets/new/nft1.jpg";
 import { transformTokenData } from "../../admin/utils/functions";
 
 /* ----------------------------------------------------------------------------------------------------- */

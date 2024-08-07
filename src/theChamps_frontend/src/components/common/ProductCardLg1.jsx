@@ -7,8 +7,6 @@ import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { useAuth } from "../../auth/useClient";
 
-import collectionImg from "../../assets/new/collection.png";
-
 const ProductCardLg = ({ prod }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [collection, setCollection] = useState([]);
