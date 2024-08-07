@@ -241,7 +241,7 @@ const ProductPage = ({ name }) => {
                     />
                   </div>
                 )}
-                <div className="mt-12 md:w-2/3 sm:flex gap-4 flex-wrap">
+                {/* <div className="mt-12 md:w-2/3 sm:flex gap-4 flex-wrap">
                   <div className="sm:w-1/4 text-center text-sm space-y-2">
                     <p>AVERAGE PRICE</p>
                     <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
@@ -279,8 +279,8 @@ const ProductPage = ({ name }) => {
                         </span>
                       )}
                     </button>
-                  </div>
-                  {/* <div className="w-1/4 text-center text-sm space-y-2">
+                  </div> */}
+                {/* <div className="w-1/4 text-center text-sm space-y-2">
                   <p>MINTED</p>
                   <button className="w-full py-1.5 bg-gray-100 bg-opacity-100 text-[#7B7583] rounded-md text-md flex items-center justify-center">
                     184
@@ -292,7 +292,7 @@ const ProductPage = ({ name }) => {
                     184
                   </button>
                 </div> */}
-                </div>
+                {/* </div> */}
               </div>
             </div>
           </div>
@@ -305,7 +305,7 @@ const ProductPage = ({ name }) => {
               {name}
             </span>
           </h1>
-          <div className="px-6 lg:px-24">
+          {/* <div className="px-6 lg:px-24">
             <Searchbar
               grid={grid}
               setGrid={setGrid}
@@ -316,7 +316,9 @@ const ProductPage = ({ name }) => {
               setSearchResults={setSearchResults}
               setSearch={setSearch}
             />
-          </div>
+          </div> */}
+          {/* blank space */}
+          <div className="h-16"></div>
           {loading ? (
             <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 max-lg:grid-cols-2 mt-4 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
               {Array.from({ length: 9 }, (_, index) => (
@@ -326,7 +328,8 @@ const ProductPage = ({ name }) => {
           ) : (
             <>
               {searchResults.length > 0 ? (
-                <div className="grid grid-cols-1 px-6 lg:px-24 sm:grid-cols-2 lg:grid-cols-3 gap-12 mt-4 justify-center">
+                // <div className="grid grid-cols-1 px-6 lg:px-24 sm:grid-cols-2 lg:grid-cols-3 gap-12 mt-4 justify-center">
+                <div className="px-6 lg:px-24">
                   {searchResults.map((product, index) => (
                     <ProductCard
                       key={index}

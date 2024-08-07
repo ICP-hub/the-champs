@@ -20,6 +20,7 @@ import IcpLogo from "../../assets/IcpLogo";
 // import { RiVerifiedBadgeFill } from "react-icons/ri";
 // Ledger import
 import { useAuth } from "../../auth/useClient";
+import nft1 from "../../assets/new/nft1.jpg";
 // import { idlFactory } from "../../../../wallet/ledger.did";
 // import { Actor, HttpAgent } from "@dfinity/agent";
 // import { host, ids } from "../../../../DevConfig";
@@ -375,6 +376,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
             <motion.img
               whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
+              // src={nft1}
               src={product[0].nft.logo.data}
               alt={product[0]?.fractional_token[0][1].Text}
               className="rounded-t-lg  object-cover cursor-pointer overflow-hidden "
@@ -382,9 +384,9 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
             ></motion.img>
           </Link>
         </div>
-        <div className="p-2 mx-2">
+        <div className="p-4 my-4">
           <div className="flex justify-between font-bold items-center">
-            <div className="text-lg font-semibold mb-2">
+            <div className="text-3xl font-semibold mb-2">
               {product[0]?.fractional_token[0][1]?.Text}
             </div>
 
@@ -474,9 +476,10 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           {/* <p className="text-gray-500 text-sm">
             <ReadMore text={product[1].toText()} maxLength={20} />
           </p> */}
-          <div className="flex justify-between  mb-4">
-            <p className="mt-4    bg-opacity-100  py-2  flex  gap-1 rounded-md w-[50%]">
-              <IcpLogo />
+          <div className="flex justify-between sm:items-center mb-4 max-sm:flex-col mt-8">
+            <p className="bg-opacity-100 py-2 flex gap-2 rounded-md w-[50%] text-xl font-medium">
+              {/* <IcpLogo /> */}
+              <span>IDR :</span>
               {loading3 ? (
                 <div className="h-6 w-[50px] bg-gray-100 rounded-2xl animate-pulse"></div>
               ) : (
@@ -484,7 +487,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
               )}
             </p>
             <button
-              className="mt-4   button   text-white   rounded-md w-[50%]  text-md flex items-center justify-center"
+              className="button px-4 py-2 text-white w-full sm:w-1/2 rounded-md text-md flex items-center justify-center"
               // onClick={handleBuyNow} // Call handleBuyNow function when button is clicked
               onClick={() => setOpen(true)}
             >

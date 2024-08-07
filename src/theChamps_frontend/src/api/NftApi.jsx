@@ -10,7 +10,7 @@ import { useAuth } from "../auth/useClient";
 const NFTApi = () => {
   // const [backend] = useCanister("backend");
   const { backendActor } = useAuth();
-  const [nftLoading, setNFTLoading] = useState(false);
+  const [nftLoading, setNFTLoading] = useState(true);
   const dispatch = useDispatch();
 
   // Get single nft by canister id

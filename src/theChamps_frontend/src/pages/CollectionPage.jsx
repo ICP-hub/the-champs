@@ -54,7 +54,7 @@ const CollectionPage = ({ name }) => {
               {name}
             </span>
           </h1>
-          <div className="px-6 lg:px-24 relative z-10">
+          {/* <div className="px-6 lg:px-24 relative z-10">
             <Searchbar
               grid={grid}
               setGrid={setGrid}
@@ -65,7 +65,7 @@ const CollectionPage = ({ name }) => {
               setSearch={setSearch}
               setLoading={setLoading}
             />
-          </div>
+          </div> */}
 
           {isLoading || loading ? (
             <div className="grid lg:grid-cols-1 xl:grid-cols-1 gap-8 max-lg:grid-cols-1 mt-8 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
