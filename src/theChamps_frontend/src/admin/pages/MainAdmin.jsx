@@ -103,57 +103,57 @@ function MainAdmin({ children }) {
 
   // console.log(loading);
 
-  // if (loading) {
-  //   return <FullScreenLoader />;
-  // } else {
-  //   if (!isAdmin) {
-  //     toast.error("You are not an admin");
-  //     return <Navigate to="/" replace={true} />;
-  //   } else {
-  return (
-    <div className={`${theme} bg-background`}>
-      <div className="text-textall layout">
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ marginLeft: -280 }}
-              animate={{ marginLeft: 0 }}
-              exit={{ marginLeft: -280 }}
-              transition={{
-                duration: 0.3,
-                staggerChildren: 0.2,
-              }}
-              className={`navigation border-r dark:border-r-gray-500 ${
-                windowWidth < 960 && "navigation-mode-over"
-              }`}
-            >
-              <LeftSidebar />
+  if (loading) {
+    return <FullScreenLoader />;
+  } else {
+    if (!isAdmin) {
+      toast.error("You are not an admin");
+      return <Navigate to="/" replace={true} />;
+    } else {
+      return (
+        <div className={`${theme} bg-background`}>
+          <div className="text-textall layout">
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{ marginLeft: -280 }}
+                  animate={{ marginLeft: 0 }}
+                  exit={{ marginLeft: -280 }}
+                  transition={{
+                    duration: 0.3,
+                    staggerChildren: 0.2,
+                  }}
+                  className={`navigation border-r dark:border-r-gray-500 ${
+                    windowWidth < 960 && "navigation-mode-over"
+                  }`}
+                >
+                  <LeftSidebar />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <motion.div className="flex flex-col">
+              <div className="relative flex items-center justify-between w-full h-16 min-h-16 px-4 md:px-6 shadow z-50 dark:shadow-none dark:border-b dark:border-b-gray-500 dark:bg-transparent bg-appbar">
+                <span
+                  className="p-1 rounded-full hover:bg-hover cursor-pointer transition duration-300 ease-in-out"
+                  onClick={handleToggle}
+                >
+                  <HiBars4
+                    size={24}
+                    color={theme === "light" ? "#64748b" : "white"}
+                  />
+                </span>
+              </div>
+              <div className="p-6 sm:p-8 min-h-screen">{children}</div>
             </motion.div>
-          )}
-        </AnimatePresence>
-        <motion.div className="flex flex-col">
-          <div className="relative flex items-center justify-between w-full h-16 min-h-16 px-4 md:px-6 shadow z-50 dark:shadow-none dark:border-b dark:border-b-gray-500 dark:bg-transparent bg-appbar">
-            <span
-              className="p-1 rounded-full hover:bg-hover cursor-pointer transition duration-300 ease-in-out"
-              onClick={handleToggle}
-            >
-              <HiBars4
-                size={24}
-                color={theme === "light" ? "#64748b" : "white"}
-              />
-            </span>
           </div>
-          <div className="p-6 sm:p-8 min-h-screen">{children}</div>
-        </motion.div>
-      </div>
-      {isOpen && windowWidth < 960 && (
-        <div className="overlay-display" onClick={handleToggle}></div>
-      )}
-      <ThemeSwitch toggleTheme={toggleTheme} />
-    </div>
-  );
+          {isOpen && windowWidth < 960 && (
+            <div className="overlay-display" onClick={handleToggle}></div>
+          )}
+          <ThemeSwitch toggleTheme={toggleTheme} />
+        </div>
+      );
+    }
+  }
 }
-// }
-// }
 
 export default MainAdmin;

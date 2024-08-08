@@ -26,7 +26,7 @@ export const useAuthClient = (options = defaultOptions) => {
   const [principal, setPrincipal] = useState(null);
   const [backendActor, setBackendActor] = useState(null);
 
-  const backendCanisterId = process.env.CANISTER_ID_MERCHSTORE_BACKEND;
+  const backendCanisterId = process.env.CANISTER_ID_THECHAMPS_BACKEND;
 
   useEffect(() => {
     const initAuthClient = async () => {
