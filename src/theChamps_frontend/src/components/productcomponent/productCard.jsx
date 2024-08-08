@@ -24,6 +24,8 @@ import { useAuth } from "../../auth/useClient";
 // import { Actor, HttpAgent } from "@dfinity/agent";
 // import { host, ids } from "../../../../DevConfig";
 
+import nft1 from "../../assets/nft1.jpg";
+
 // const plans = [
 //   {
 //     name: "ICP",
@@ -358,7 +360,8 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
         />
       )}
       <div
-        className="border   rounded-xl overflow-hidden "
+        // className="border rounded-xl overflow-hidden"
+        className="border rounded-xl overflow-hidden grid grid-cols-3 max-lg:grid-cols-1"
         style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
       >
         {loading4 && (
@@ -366,24 +369,25 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
             <TailSpin color="#FC001E" height={80} width={80} />
           </div>
         )}
-        <div className="overflow-hidden flex items-center justify-center">
+        <div className="overflow-hidden flex items-center justify-center col-span-2">
           <Link
             to={`/collection/${id}/${product[1].toText()}/${parseInt(
               product[0].nft.id
             )}`}
+            className="lg:p-6"
           >
             <motion.img
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
+              // whileHover={{ scale: 1.1 }}
+              // transition={{ duration: 0.2, ease: "easeInOut" }}
               // src={nft1}
               src={product[0].nft.logo.data}
               alt={product[0]?.fractional_token[0][1].Text}
-              className="rounded-t-lg  object-cover cursor-pointer overflow-hidden "
+              className="max-lg:rounded-t-xl lg:rounded-xl  object-cover cursor-pointer overflow-hidden "
               // onError={imageHandler}
             ></motion.img>
           </Link>
         </div>
-        <div className="p-4 my-4">
+        <div className="p-4 my-4 flex flex-col h-full w-full">
           <div className="flex justify-between font-bold items-center">
             <div className="text-3xl font-semibold mb-2">
               {product[0]?.fractional_token[0][1]?.Text}
@@ -475,7 +479,10 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           {/* <p className="text-gray-500 text-sm">
             <ReadMore text={product[1].toText()} maxLength={20} />
           </p> */}
-          <div className="flex justify-between sm:items-center mb-4 max-sm:flex-col mt-8">
+          <p className="line-clamp-6">
+            {product[0].nft.metadata[0].description}
+          </p>
+          <div className="flex justify-between sm:items-center mb-4 max-sm:flex-col mt-auto">
             <p className="bg-opacity-100 py-2 flex gap-2 rounded-md w-[50%] text-xl font-medium">
               {/* <IcpLogo /> */}
               <span>IDR :</span>

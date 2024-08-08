@@ -318,7 +318,7 @@ const ProductPage = ({ name }) => {
             />
           </div> */}
           {/* blank space */}
-          <div className="h-16"></div>
+          {/* <div className="h-16"></div> */}
           {loading ? (
             <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 max-lg:grid-cols-2 mt-4 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
               {Array.from({ length: 9 }, (_, index) => (

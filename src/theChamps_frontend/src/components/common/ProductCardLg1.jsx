@@ -6,6 +6,7 @@ import PlaceholderImg from "../../assets/CHAMPS.png";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { useAuth } from "../../auth/useClient";
+import collectionImg from "../../assets/collection.png";
 
 const ProductCardLg = ({ prod }) => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -141,10 +142,10 @@ const ProductCardLg = ({ prod }) => {
   return (
     <motion.div
       className="flip-card-inner border-2 border__animation rounded-2xl"
-      animate={isFlipped ? "back" : "front"}
-      variants={flipVariants}
+      // animate={isFlipped ? "back" : "front"}
+      // variants={flipVariants}
     >
-      <div className="p-6 border rounded-md backface-hidden grid grid-cols-1 md:grid-cols-2 md:space-x-6 max-md:space-y-6">
+      <div className="p-6 border rounded-md backface-hidden grid grid-cols-1 md:grid-cols-3 md:space-x-6 max-md:space-y-6">
         <div>
           <img
             src={
@@ -152,15 +153,16 @@ const ProductCardLg = ({ prod }) => {
                 ? prod.details.logo.data
                 : PlaceholderImg
             }
+            // src={collectionImg}
             alt={prod.details.name}
-            className="rounded-2xl object-cover z-[2] h-80 w-full"
+            className="rounded-2xl object-cover z-[2]"
           ></img>
         </div>
-        <div className="flex flex-col w-full h-full">
+        <div className="flex flex-col w-full h-full col-span-2">
           <div>
             <h1 className="font-bold text-2xl">{prod.details.name}</h1>
             <p className="text-sm text-[#7B7583] font-normal">
-              By {prod.canisterId.toText()}
+              {prod.canisterId.toText()}
             </p>
           </div>
           <p className="mt-4">{prod.details.description}</p>

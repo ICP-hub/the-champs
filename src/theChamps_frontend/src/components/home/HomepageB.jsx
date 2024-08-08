@@ -24,7 +24,7 @@ import NotAvailable from "../common/NotAvailable";
 import { useSelector } from "react-redux";
 import { useCanister } from "@connect2ic/react";
 import { useAuth } from "../../auth/useClient";
-// import nft1 from "../../assets/new/nft1.jpg";
+import nft1 from "../../assets/nft1.jpg";
 import { transformTokenData } from "../../admin/utils/functions";
 
 /* ----------------------------------------------------------------------------------------------------- */
@@ -82,16 +82,23 @@ const HomePageB = () => {
         <div className="flex flex-col">
           <div className="space-y-4">
             <img
-              src={nftData.collectionWiseNft[0].nfts[0][0].nft.logo.data}
+              src={
+                nftData.collectionWiseNft[0].nfts[
+                  nftData.collectionWiseNft[0].nfts.length - 1
+                ][0].nft.logo.data
+              }
+              // src={nft1}
               alt={
-                nftData.collectionWiseNft[0].nfts[0][0].fractional_token[0][1]
-                  .Text
+                nftData.collectionWiseNft[0].nfts[
+                  nftData.collectionWiseNft[0].nfts.length - 1
+                ][0].fractional_token[0][1].Text
               }
             />
             <h1 className="font-semibold text-xl">
               {
-                nftData.collectionWiseNft[0].nfts[0][0].fractional_token[0][1]
-                  .Text
+                nftData.collectionWiseNft[0].nfts[
+                  nftData.collectionWiseNft[0].nfts.length - 1
+                ][0].fractional_token[0][1].Text
               }
             </h1>
           </div>
