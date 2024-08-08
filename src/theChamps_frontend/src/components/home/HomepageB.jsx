@@ -70,6 +70,8 @@ const HomePageB = () => {
     // }, 5000);
   }, [nftData.collectionIds, backendActor]);
 
+  console.log("nft data from home b", nftData);
+
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
       <div className="flex gap-1 items-center justify-center">
