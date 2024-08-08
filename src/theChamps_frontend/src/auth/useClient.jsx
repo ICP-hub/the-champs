@@ -29,7 +29,6 @@ export const useAuthClient = (options = defaultOptions) => {
   const backendCanisterId = process.env.CANISTER_ID_MERCHSTORE_BACKEND;
 
   useEffect(() => {
-    setBackendActor(createActor("bkyz2-fmaaa-aaaaa-qaaaq-cai"));
     const initAuthClient = async () => {
       const client = await AuthClient.create(options.createOptions);
       setAuthClient(client);
