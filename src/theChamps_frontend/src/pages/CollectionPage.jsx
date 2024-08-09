@@ -11,6 +11,7 @@ import CollectionApi from "../api/CollectionApi";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useAuth } from "../auth/useClient";
+import CHAMPS from "../assets/CHAMPS.png";
 
 const CollectionPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
@@ -68,10 +69,47 @@ const CollectionPage = ({ name }) => {
           </div> */}
 
           {isLoading || loading ? (
-            <div className="grid lg:grid-cols-1 xl:grid-cols-1 gap-8 max-lg:grid-cols-1 mt-8 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
-              {Array.from({ length: 2 }, (_, index) => (
-                <ProducrCardLgLoader key={index} />
-              ))}
+            // <div className="grid lg:grid-cols-1 xl:grid-cols-1 gap-8 max-lg:grid-cols-1 mt-8 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
+            //   {Array.from({ length: 2 }, (_, index) => (
+            //     <ProducrCardLgLoader key={index} />
+            //   ))}
+            // </div>
+            <div
+              className="flip-card-inner border-2 rounded-2xl"
+              // animate={isFlipped ? "back" : "front"}
+              // variants={flipVariants}
+            >
+              <div className="p-6 border rounded-md backface-hidden grid grid-cols-1 md:grid-cols-3 md:space-x-6 max-md:space-y-6">
+                <div>
+                  <img
+                    src={CHAMPS}
+                    // src={collectionImg}
+                    alt="Loading.."
+                    className="rounded-2xl object-cover z-[2]"
+                  ></img>
+                </div>
+                <div className="flex flex-col w-full h-full col-span-2">
+                  <div>
+                    <h1 className="font-bold text-2xl bg-gray-400 max-w-max text-gray-400 rounded-xl animate-pulse">
+                      product name
+                    </h1>
+                    <p className="text-sm font-normal bg-gray-400 max-w-max text-gray-400 rounded-xl animate-pulse mt-2">
+                      krcsw-aaaaa-aaaak-akqea-cai.icp0.io
+                    </p>
+                  </div>
+                  <p className="bg-gray-400 text-gray-400 rounded-xl animate-pulse mt-2">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Ducimus laborum ipsa eveniet nesciunt facere delectus
+                    dolorem tempore placeat. Numquam beatae quam dolores? Ab,
+                    magni possimus numquam dolor ipsa facilis maiores!
+                  </p>
+                  <div className="mt-auto">
+                    <span className="px-4 py-2 bg-gray-400 max-w-max text-gray-400 rounded-xl animate-pulse mt-2 flex items-center justify-center cursor-pointer  max-md:mb-4">
+                      View Collection
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="grid min-[948px]:grid-cols-1 gap-x-8 gap-y-8 mt-8 px-6 lg:px-24">
