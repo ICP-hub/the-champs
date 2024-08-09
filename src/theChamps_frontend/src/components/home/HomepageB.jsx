@@ -31,14 +31,17 @@ import { transformTokenData } from "../../admin/utils/functions";
 /*  @ <HomePageB /> : Soccer collection.
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageB = () => {
-  const { getAllCollectionIds } = CollectionApi();
+  // const { getAllCollectionIds } = CollectionApi();
   const [numColumns, setNumColumns] = useState(2);
-  const { getAllCollectionWiseNFT, nftLoading } = NFTApi();
+  // const { getAllCollectionWiseNFT, nftLoading } = NFTApi();
   // const [finalLoading, setFinalLoading] = useState(true);
   // const [backend] = useCanister("backend");
   const { backendActor } = useAuth();
+  // const nftData = useSelector((state) => state.nftData);
 
-  const nftData = useSelector((state) => state.nftData);
+  // Added : 09-08-2024
+  const [isLoading, setIsLoading] = useState(true);
+  const [allNFT, setAllNFT] = useState(null);
 
   const updateBreakpoints = () => {
     const width = window.innerWidth;
@@ -51,26 +54,31 @@ const HomePageB = () => {
     }
   };
 
+  // Fetch all nfts
+  useEffect(() => {
+    const fetchAllNFT = async () => {
+      try {
+        setIsLoading(true);
+        const response = await backendActor.getallfractionalnfts();
+        // console.log("response latest nft ", response);
+        setAllNFT(response);
+      } catch (err) {
+        console.error("Error fetching latest NFT");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchAllNFT();
+  }, [backendActor]);
+
   useEffect(() => {
     window.addEventListener("resize", updateBreakpoints);
     updateBreakpoints();
     return () => window.removeEventListener("resize", updateBreakpoints);
   }, []);
 
-  // Effect hook get collection onLoad;
-  useEffect(() => {
-    getAllCollectionIds();
-  }, [backendActor]);
-
-  // Effect : nft data fetch
-  useEffect(() => {
-    getAllCollectionWiseNFT(nftData.collectionIds);
-    // setTimeout(() => {
-    //   setFinalLoading(false);
-    // }, 5000);
-  }, [nftData.collectionIds, backendActor]);
-
-  console.log("nft data from home b", nftData);
+  // console.log("allNFT", allNFT[allNFT?.length - 1][0].toText());
+  // console.log("allNFT", allNFT[allNFT?.length - 1][2].toText());
 
   return (
     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
@@ -78,49 +86,95 @@ const HomePageB = () => {
         <FancyHeader normal="Champ's" />
         <FancyHeader fancy="2024 Collection" />
       </div>
-      {nftLoading ? (
+      {isLoading ? (
         <div>Loading...</div>
-      ) : nftData.collectionWiseNft.length > 0 ? (
-        <div className="flex flex-col">
+      ) : allNFT?.length > 0 ? (
+        <Link
+          to={`collection/${allNFT[allNFT.length - 1][0].toText()}`}
+          className="flex flex-col"
+        >
           <div className="space-y-4">
             <img
-              src={
-                nftData.collectionWiseNft[0].nfts[
-                  nftData.collectionWiseNft[0].nfts.length - 1
-                ][0].nft.logo.data
-              }
+              src={allNFT[allNFT.length - 1][1].nft.logo.data}
               // src={nft1}
-              alt={
-                nftData.collectionWiseNft[0].nfts[
-                  nftData.collectionWiseNft[0].nfts.length - 1
-                ][0].fractional_token[0][1].Text
-              }
+              alt={allNFT[allNFT.length - 1][1].fractional_token[0][1].Text}
             />
             <h1 className="font-semibold text-xl">
-              {
-                nftData.collectionWiseNft[0].nfts[
-                  nftData.collectionWiseNft[0].nfts.length - 1
-                ][0].fractional_token[0][1].Text
-              }
+              {allNFT[allNFT.length - 1][1].fractional_token[0][1].Text}
             </h1>
           </div>
-          <span className="flex justify-center gap-4 py-6">
-            <Link
-              to={`collection/${nftData.collectionWiseNft[0].collectionId.toText()}
-`}
-            >
-              <CustomButton>
-                View collection <MdArrowOutward size={24} />{" "}
-              </CustomButton>
-            </Link>
-          </span>
-        </div>
+        </Link>
       ) : (
         <NotAvailable>Featured NFT not available</NotAvailable>
       )}
     </div>
   );
 
+  // Effect hook get collection onLoad;
+  // useEffect(() => {
+  //   getAllCollectionIds();
+  // }, [backendActor]);
+
+  // Effect : nft data fetch
+  // useEffect(() => {
+  //   getAllCollectionWiseNFT(nftData.collectionIds);
+  //   // setTimeout(() => {
+  //   //   setFinalLoading(false);
+  //   // }, 5000);
+  // }, [nftData.collectionIds, backendActor]);
+
+  // console.log("nft data from home b", nftData);
+
+  //   return (
+  //     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
+  //       <div className="flex gap-1 items-center justify-center">
+  //         <FancyHeader normal="Champ's" />
+  //         <FancyHeader fancy="2024 Collection" />
+  //       </div>
+  //       {nftLoading ? (
+  //         <div>Loading...</div>
+  //       ) : nftData.collectionWiseNft.length > 0 ? (
+  //         <div className="flex flex-col">
+  //           <div className="space-y-4">
+  //             <img
+  //               src={
+  //                 nftData.collectionWiseNft[0].nfts[
+  //                   nftData.collectionWiseNft[0].nfts.length - 1
+  //                 ][0].nft.logo.data
+  //               }
+  //               // src={nft1}
+  //               alt={
+  //                 nftData.collectionWiseNft[0].nfts[
+  //                   nftData.collectionWiseNft[0].nfts.length - 1
+  //                 ][0].fractional_token[0][1].Text
+  //               }
+  //             />
+  //             <h1 className="font-semibold text-xl">
+  //               {
+  //                 nftData.collectionWiseNft[0].nfts[
+  //                   nftData.collectionWiseNft[0].nfts.length - 1
+  //                 ][0].fractional_token[0][1].Text
+  //               }
+  //             </h1>
+  //           </div>
+  //           <span className="flex justify-center gap-4 py-6">
+  //             <Link
+  //               to={`collection/${nftData.collectionWiseNft[0].collectionId.toText()}
+  // `}
+  //             >
+  //               <CustomButton>
+  //                 View collection <MdArrowOutward size={24} />{" "}
+  //               </CustomButton>
+  //             </Link>
+  //           </span>
+  //         </div>
+  //       ) : (
+  //         <NotAvailable>Featured NFT not available</NotAvailable>
+  //       )}
+  //     </div>
+  //   );
+
+  /***************************Older */
   //   return (
   //     <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
   //       <div className="flex gap-2 max-md:flex-col justify-center">
