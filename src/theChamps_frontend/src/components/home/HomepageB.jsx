@@ -87,25 +87,40 @@ const HomePageB = () => {
         <FancyHeader fancy="2024 Collection" />
       </div>
       {isLoading ? (
-        <div>Loading...</div>
+        <div className="flex items-center justify-center w-full h-[500px] bg-gray-100 rounded-3xl animate-pulse">
+          Loading...
+        </div>
       ) : allNFT?.length > 0 ? (
         <Link
           to={`collection/${allNFT[allNFT.length - 1][0].toText()}`}
           className="flex flex-col"
         >
-          <div className="space-y-4">
-            <img
-              src={allNFT[allNFT.length - 1][1].nft.logo.data}
-              // src={nft1}
-              alt={allNFT[allNFT.length - 1][1].fractional_token[0][1].Text}
-            />
-            <h1 className="font-semibold text-xl">
+          <div className="space-y-4 rounded-3xl">
+            <div className="w-full border-2 rounded-3xl border-gray-500/5 p-4">
+              <div className="w-full border-2 rounded-2xl border-gray-500/10 p-4">
+                <div className="w-full border-2 rounded-2xl border-gray-500/20 p-4">
+                  <div className="w-full border-2 rounded-xl border-gray-500/30 p-4">
+                    <img
+                      src={allNFT[allNFT.length - 1][1].nft.logo.data}
+                      // src={nft1}
+                      alt={
+                        allNFT[allNFT.length - 1][1].fractional_token[0][1].Text
+                      }
+                      className="rounded-lg w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* <h1 className="font-semibold text-xl text-center ">
               {allNFT[allNFT.length - 1][1].fractional_token[0][1].Text}
-            </h1>
+            </h1> */}
           </div>
         </Link>
       ) : (
-        <NotAvailable>Featured NFT not available</NotAvailable>
+        <NotAvailable className="text-center">
+          Featured NFT not available
+        </NotAvailable>
       )}
     </div>
   );
