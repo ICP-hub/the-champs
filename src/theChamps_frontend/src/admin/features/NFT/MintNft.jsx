@@ -108,12 +108,12 @@ const MintNft = () => {
           FinalData.decimals,
           parseInt(FinalData.totalSupply) // This is total supply? didn't understand the meaning // For share value?
         );
-        console.log("NFT Created Successfully : ", res);
-        toast.success("NFT Fractionalized Successfully");
+        console.log("Digital Collectible Created Successfully : ", res);
+        toast.success("Digital Collectible created Successfully");
         navigate("/admin/collections");
       } catch (err) {
-        console.error("Error Creating NFT", err);
-        toast.error("Failed to Fractionalize NFT");
+        console.error("Error Creating collectible", err);
+        toast.error("Failed to create digital collectible");
       } finally {
         setIsMintLoading(false);
       }
@@ -189,15 +189,15 @@ const MintNft = () => {
           className="w-6 h-6 cursor-pointer"
           onClick={() => navigate("/admin/collections")}
         />
-        Fractionalize NFT
+        Create Digital Collectible
       </div>
       <div className="w-full flex flex-col gap-4 mt-6">
         <div>
           <div className="flex items-center gap-2">
             <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-              NFT Canister ID:
+              Collectible Canister ID:
             </label>
-            <TextHint text="This is the unique ID of the NFT canister." />
+            <TextHint text="This is the unique ID of the collectible canister." />
           </div>
           <input
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
@@ -211,7 +211,7 @@ const MintNft = () => {
             <label htmlFor="name" className="md:text-lg text-sm font-semibold">
               Owner:
             </label>
-            <TextHint text="This is the owner principal of the NFT." />
+            <TextHint text="This is the owner principal of the collectible." />
           </div>
           <input
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
@@ -223,9 +223,9 @@ const MintNft = () => {
         <div>
           <div className="flex items-center gap-2">
             <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-              NFT Name:
+              Collectible Name:
             </label>
-            <TextHint text="Enter the name of the NFT." />
+            <TextHint text="Enter the name of the Collectible." />
           </div>
           <input
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
@@ -245,9 +245,9 @@ const MintNft = () => {
               className="md:text-lg text-sm font-semibold"
               flex="flex-col"
             >
-              NFT Image:
+              Collectible Image:
             </label>
-            <TextHint text="Upload the image for the NFT." />
+            <TextHint text="Upload the image for the Collectible." />
           </div>
           {selectedImage && (
             <img
@@ -274,9 +274,9 @@ const MintNft = () => {
         <div>
           <div className="flex items-center gap-2">
             <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-              NFT Price:
+              Collectible Price:
             </label>
-            <TextHint text="Enter the price of the NFT in USD." />
+            <TextHint text="Enter the price of the collectible in IDR." />
           </div>
           <input
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
@@ -299,7 +299,7 @@ const MintNft = () => {
               >
                 Additional Attributes:
               </label>
-              <TextHint text="Add any additional attributes for the NFT to maintain its uniqueness. Each attribute should have a name and a value, helping to distinguish this NFT from others." />
+              <TextHint text="Add any additional attributes for the collectible to maintain its uniqueness. Each attribute should have a name and a value, helping to distinguish this collectible from others." />
             </div>
             <button
               className="button px-4 py-2 rounded-md text-white text-xs font-medium"
@@ -348,7 +348,7 @@ const MintNft = () => {
             >
               Total Supply:
             </label>
-            <TextHint text="Enter the total number of share for this nft" />
+            <TextHint text="Enter the total number of share for this collectible" />
           </div>
           <input
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
@@ -367,7 +367,7 @@ const MintNft = () => {
             <label htmlFor="name" className="md:text-lg text-sm font-semibold">
               Symbol:
             </label>
-            <TextHint text="Enter Symbol of the NFT." />
+            <TextHint text="Enter Symbol of the collectible." />
           </div>
           <input
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
@@ -389,7 +389,7 @@ const MintNft = () => {
             >
               Select Purpose:
             </label>
-            <TextHint text="Select the purpose of the NFT." />
+            <TextHint text="Select the purpose of the collectible." />
           </div>
           <select
             id="purpose"
@@ -409,7 +409,7 @@ const MintNft = () => {
             >
               Description:
             </label>
-            <TextHint text="Enter a description for the NFT." />
+            <TextHint text="Enter a description for the collectible." />
           </div>
           <textarea
             className="w-full px-3 py-2 mt-2 focus:outline-none rounded-lg dark:bg-[#3d3d5f] bg-white border dark:border-[#914fe66a]"
@@ -434,7 +434,7 @@ const MintNft = () => {
       <div className="flex justify-end">
         {isMintLoading ? (
           <div className="bg-gray-500 text-white px-4 py-2 mt-6 rounded-md flex gap-3 max-w-max items-center justify-center">
-            Creating NFT
+            Creating Digital Collectible
             <TailSpin
               height="15"
               width="15"
