@@ -11,6 +11,7 @@ import { host, ids } from "../../../../DevConfig";
 import toast from "react-hot-toast";
 import { AuthClient } from "@dfinity/auth-client";
 import champsImg from "../../assets/CHAMPS.png";
+import GopayLogo from "../../assets/wallet-images/Gopay.svg";
 
 const BuyNowCard = ({
   onOpen,
@@ -325,7 +326,15 @@ const BuyNowCard = ({
         </p>
         <div className="my-2 h-px w-full bg-gray-300"></div>
         <h4 className="font-semibold capitalize">payment method</h4>
-        <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2 font-semibold">
+        <button className="flex p-2 w-full gap-2 items-center text-white font-semibold border-2 border-gray-300 rounded-md">
+          <img
+            src={GopayLogo}
+            alt="gopay_logo"
+            className="h-10 w-48 object-cover"
+          />
+          <span>{/* <RiVerifiedBadgeFill color="white" size={32} /> */}</span>
+        </button>
+        {/* <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2 font-semibold">
           <button
             className={`p-4 flex justify-between items-center ${
               selected.value === "icp"
@@ -356,7 +365,7 @@ const BuyNowCard = ({
               </span>
             )}
           </button>
-        </div>
+        </div> */}
         <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
           <span>Share</span>
           <div className="flex border rounded-md overflow-hidden items-center">
@@ -383,7 +392,8 @@ const BuyNowCard = ({
             <span className="h-5 w-44 bg-gray-500 animate-pulse rounded-2xl"></span>
           ) : (
             <div className="flex gap-1 items-center">
-              <IcpLogo size={16} />
+              {/* <IcpLogo size={16} /> */}
+              IDR
               <span>{((price_share * quantity) / exchange).toFixed(6)}</span>
               <span className="text-gray-500">
                 ({(price_share * quantity).toFixed(3)} USD)
