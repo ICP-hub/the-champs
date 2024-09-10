@@ -13,9 +13,9 @@ const MyProfileA = ({ onTabChange }) => {
     onTabChange(tabIndex);
   };
 
-  const { backenActor } = useAuth();
+  //const { backenActor } = useAuth();
 
-  console.log("backend Actore check", backendActor);
+ // console.log("backend Actore check", backendActor);
 
   // console.log(location.state, "hello");
 
