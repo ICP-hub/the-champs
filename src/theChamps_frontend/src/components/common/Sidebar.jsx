@@ -28,22 +28,14 @@ import WalletModal from "./WalletModal";
 const Sidebar = () => {
   // const { isConnected } = useConnect();
   const { isAuthenticated } = useAuth();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const handleWalletModalOpen = () => setIsLoggedIn(true);
-  const handleWalletModalClose = () => setIsLoggedIn(false);
 
   return (
     <>
       <div className="w-full h-screen p-4 overflow-scroll scrollBox">
-        {isAuthenticated ? (
-          <UserAthenticated />
-        ) : (
-          <UserNotAuthenticated onModalOpen={handleWalletModalOpen} />
-        )}
+        {isAuthenticated ? <UserAthenticated /> : <UserNotAuthenticated />}
         {/* <UserAthenticated /> */}
         {/* <UserNotAuthenticated /> */}
       </div>
-      {isLoggedIn && <WalletModal onModalClose={handleWalletModalClose} />}
     </>
   );
 };
@@ -60,7 +52,8 @@ const UserAthenticated = () => {
   );
 };
 
-const UserNotAuthenticated = ({ onModalOpen }) => {
+const UserNotAuthenticated = () => {
+  const { login } = useAuth();
   return (
     <div>
       <h1 className="text-sm md:text-md text-gray-500 text-left min-w-max">
@@ -73,7 +66,7 @@ const UserNotAuthenticated = ({ onModalOpen }) => {
       <motion.div
         whileTap={{ scale: 0.8 }}
         className="button text-sm md:text-md min-w-max flex items-center justify-center p-2 rounded-md text-white font-medium cursor-pointer"
-        onClick={onModalOpen}
+        onClick={login}
       >
         Log in
       </motion.div>

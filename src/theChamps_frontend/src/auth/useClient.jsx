@@ -131,7 +131,12 @@ export const useAuthClient = () => {
         const isLogin = await nfid.getDelegationType();
         console.log(isLogin, "Delegation type");
         setIsAuthenticated(true);
-        setPrincipal();
+        setPrincipal(delegationResult.getPrincipal());
+        // Link canister to id
+        const backendActor = createActor(backendCanisterId, {
+          agentOptions: { identity, verifyQuerySignatures: false },
+        });
+        setBackendActor(backendActor);
       } catch (error) {
         console.error("Error during NFID call:", error);
         setError("Failed to get NFID delegation.");
