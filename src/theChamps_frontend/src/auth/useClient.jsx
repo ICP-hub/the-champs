@@ -6,21 +6,6 @@ import { Principal } from "@dfinity/principal";
 
 const AuthContext = createContext();
 
-// const defaultOptions = {
-//   createOptions: {
-//     idleOptions: {
-//       idleTimeout: 1000 * 60 * 30,
-//       disableDefaultIdleCallback: true,
-//     },
-//   },
-//   // loginOptionsII: {
-//   //   identityProvider: "https://identity.ic0.app/#authorize",
-//   // },
-//   loginOptionsNFID: {
-//     identityProvider: `https://nfid.one/authenticate/?applicationName=my-ic-app#authorize`,
-//   },
-// };
-
 export const useAuthClient = () => {
   const [authClient, setAuthClient] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -40,7 +25,7 @@ export const useAuthClient = () => {
             logo: "https://dev.nfid.one/static/media/id.300eb72f3335b50f5653a7d6ad5467b3.svg",
           },
           idleOptions: {
-            idleTimeout: 600000, // 10 minutes
+            idleTimeout: 600000,
             captureScroll: true,
             scrollDebounce: 100,
           },
@@ -51,76 +36,40 @@ export const useAuthClient = () => {
         setError("Failed to initialize NFID.");
       }
     };
-
     initNFID();
   }, []);
 
-  // useEffect(() => {
-  //   const initAuthClient = async () => {
-  //     const client = await AuthClient.create(options.createOptions);
-  //     setAuthClient(client);
+  useEffect(() => {
+    if (nfid) {
+      reloadStatus();
+    } else {
+      setBackendActor(createActor(backendCanisterId));
+    }
+  }, [nfid]);
 
-  //     const isAuthenticated = await client.isAuthenticated();
-  //     const identity = client.getIdentity();
-  //     const principal = identity.getPrincipal();
+  // Reload handle
+  const reloadStatus = async () => {
+    try {
+      const identity = nfid.getIdentity();
+      console.log("identity on reload", identity);
+      const backendActor = createActor(backendCanisterId, {
+        agentOptions: { identity, verifyQuerySignatures: false },
+      });
+      setBackendActor(backendActor);
+      setIsAuthenticated(true);
+      setPrincipal(identity.getPrincipal());
+      setIdentity(identity);
+    } catch (err) {
+      console.log("Error reloading nfid status", err);
+    }
+  };
 
-  //     // if (principal.toText() === "2vxsx-fae") {
-  //     //   await logout();
-  //     //   return;
-  //     // }
-
-  //     setIsAuthenticated(isAuthenticated);
-  //     setIdentity(identity);
-  //     setPrincipal(principal);
-  //     if (createActor) {
-  //       const backendActor = createActor(backendCanisterId, {
-  //         agentOptions: { identity, verifyQuerySignatures: false },
-  //       });
-  //       setBackendActor(backendActor);
-  //     }
-  //   };
-  //   initAuthClient();
-  // }, []);
-
-  // const clientInfo = async (client) => {
-  //   const isAuthenticated = await client.isAuthenticated();
-  //   const identity = client.getIdentity();
-  //   const principal = identity.getPrincipal();
-
-  //   // if (principal.toText() === "2vxsx-fae") {
-  //   //   await logout();
-  //   //   return;
-  //   // }
-
-  //   setAuthClient(client);
-  //   setIsAuthenticated(isAuthenticated);
-  //   setIdentity(identity);
-  //   setPrincipal(principal);
-
-  //   if (
-  //     createActor &&
-  //     isAuthenticated &&
-  //     identity &&
-  //     principal &&
-  //     !principal.isAnonymous()
-  //   ) {
-  //     const backendActor = createActor(backendCanisterId, {
-  //       agentOptions: { identity, verifyQuerySignatures: false },
-  //     });
-
-  //     setBackendActor(backendActor);
-  //   }
-
-  //   return true;
-  // };
-
+  // Login function
   const login = async () => {
     const canisterArray = [backendCanisterId];
     if (nfid) {
       try {
         const identity = nfid.getIdentity();
-        console.log("identity", identity);
-
         const delegationResult = await nfid.getDelegation({
           targets: canisterArray,
         });
@@ -128,8 +77,8 @@ export const useAuthClient = () => {
           delegationResult.getPrincipal()
         ).toText();
         console.log("user principal text", theUserPrincipal);
-        const isLogin = await nfid.getDelegationType();
-        console.log(isLogin, "Delegation type");
+        // const isLogin = await nfid.getDelegationType();
+        // console.log(isLogin, "Delegation type");
         setIsAuthenticated(true);
         setPrincipal(delegationResult.getPrincipal());
         // Link canister to id
@@ -137,6 +86,7 @@ export const useAuthClient = () => {
           agentOptions: { identity, verifyQuerySignatures: false },
         });
         setBackendActor(backendActor);
+        setIdentity(identity);
       } catch (error) {
         console.error("Error during NFID call:", error);
         setError("Failed to get NFID delegation.");
@@ -173,3 +123,62 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+
+// useEffect(() => {
+//   const initAuthClient = async () => {
+//     const client = await AuthClient.create(options.createOptions);
+//     setAuthClient(client);
+
+//     const isAuthenticated = await client.isAuthenticated();
+//     const identity = client.getIdentity();
+//     const principal = identity.getPrincipal();
+
+//     // if (principal.toText() === "2vxsx-fae") {
+//     //   await logout();
+//     //   return;
+//     // }
+
+//     setIsAuthenticated(isAuthenticated);
+//     setIdentity(identity);
+//     setPrincipal(principal);
+//     if (createActor) {
+//       const backendActor = createActor(backendCanisterId, {
+//         agentOptions: { identity, verifyQuerySignatures: false },
+//       });
+//       setBackendActor(backendActor);
+//     }
+//   };
+//   initAuthClient();
+// }, []);
+
+// const clientInfo = async (client) => {
+//   const isAuthenticated = await client.isAuthenticated();
+//   const identity = client.getIdentity();
+//   const principal = identity.getPrincipal();
+
+//   // if (principal.toText() === "2vxsx-fae") {
+//   //   await logout();
+//   //   return;
+//   // }
+
+//   setAuthClient(client);
+//   setIsAuthenticated(isAuthenticated);
+//   setIdentity(identity);
+//   setPrincipal(principal);
+
+//   if (
+//     createActor &&
+//     isAuthenticated &&
+//     identity &&
+//     principal &&
+//     !principal.isAnonymous()
+//   ) {
+//     const backendActor = createActor(backendCanisterId, {
+//       agentOptions: { identity, verifyQuerySignatures: false },
+//     });
+
+//     setBackendActor(backendActor);
+//   }
+
+//   return true;
+// };
