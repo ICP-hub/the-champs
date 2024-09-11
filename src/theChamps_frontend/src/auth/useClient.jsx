@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 // import { AuthClient } from "@dfinity/auth-client";
-// import { createActor } from "../../../../.dfx/local/canisters/theChamps_backend";
+import { createActor } from "../../../../.dfx/local/canisters/theChamps_backend";
 import { NFID } from "@nfid/embed";
 import { Principal } from "@dfinity/principal";
 
