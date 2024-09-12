@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-// import { AuthClient } from "@dfinity/auth-client";
+import { AuthClient } from "@dfinity/auth-client";
 import { createActor } from "../../../../.dfx/local/canisters/theChamps_backend";
 import { NFID } from "@nfid/embed";
 import { Principal } from "@dfinity/principal";
@@ -31,6 +31,8 @@ export const useAuthClient = () => {
           },
         });
         setNfid(nfIDInstance);
+        const client = await AuthClient.create(nfIDInstance);
+        setAuthClient(client);
       } catch (error) {
         console.error("Error initializing NFID:", error);
         setError("Failed to initialize NFID.");
@@ -107,7 +109,7 @@ export const useAuthClient = () => {
   };
 
   const logout = async () => {
-    await authClient?.logout();
+    await authClient.logout();
     setIsAuthenticated(false);
     setIdentity(null);
     setPrincipal(null);
