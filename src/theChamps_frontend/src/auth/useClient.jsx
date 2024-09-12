@@ -54,7 +54,9 @@ export const useAuthClient = () => {
     try {
       const identity = nfid.getIdentity();
       console.log("identity on reload", identity);
-      if (!identity.getPrincipal()) {
+      if (
+        Principal.from(delegationResult.getPrincipal()).toText() === "2vxsx-fae"
+      ) {
         console.log("principal", identity.getPrincipal());
         setIsAuthenticated(false);
         console.log("Anonymous identity detected. Authentication failed.");
@@ -109,7 +111,7 @@ export const useAuthClient = () => {
   };
 
   const logout = async () => {
-    await authClient.logout();
+    await authClient?.logout();
     setIsAuthenticated(false);
     setIdentity(null);
     setPrincipal(null);
