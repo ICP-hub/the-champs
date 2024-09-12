@@ -52,15 +52,24 @@ export const useAuthClient = () => {
     try {
       const identity = nfid.getIdentity();
       console.log("identity on reload", identity);
+      if (!identity.getPrincipal()) {
+        console.log("principal", identity.getPrincipal());
+        setIsAuthenticated(false);
+        console.log("Anonymous identity detected. Authentication failed.");
+        return;
+      }
+
       const backendActor = createActor(backendCanisterId, {
         agentOptions: { identity, verifyQuerySignatures: false },
       });
+
       setBackendActor(backendActor);
       setIsAuthenticated(true);
       setPrincipal(identity.getPrincipal());
       setIdentity(identity);
     } catch (err) {
       console.log("Error reloading nfid status", err);
+      setIsAuthenticated(false);
     }
   };
 
