@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { AuthClient } from "@dfinity/auth-client";
+// import { AuthClient } from "@dfinity/auth-client";
 import { createActor } from "../../../../.dfx/local/canisters/theChamps_backend";
 import { NFID } from "@nfid/embed";
 import { Principal } from "@dfinity/principal";
@@ -7,7 +7,7 @@ import { Principal } from "@dfinity/principal";
 const AuthContext = createContext();
 
 export const useAuthClient = () => {
-  const [authClient, setAuthClient] = useState(null);
+  // const [authClient, setAuthClient] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [identity, setIdentity] = useState(null);
   const [principal, setPrincipal] = useState(null);
@@ -31,8 +31,8 @@ export const useAuthClient = () => {
           },
         });
         setNfid(nfIDInstance);
-        const client = await AuthClient.create(nfIDInstance);
-        setAuthClient(client);
+        // const client = await AuthClient.create(nfIDInstance);
+        // setAuthClient(client);
       } catch (error) {
         console.error("Error initializing NFID:", error);
         setError("Failed to initialize NFID.");
@@ -109,7 +109,7 @@ export const useAuthClient = () => {
   };
 
   const logout = async () => {
-    await authClient?.logout();
+    await NFID._authClient.logout();
     setIsAuthenticated(false);
     setIdentity(null);
     setPrincipal(null);
@@ -119,7 +119,7 @@ export const useAuthClient = () => {
   return {
     login,
     logout,
-    authClient,
+    // authClient,
     isAuthenticated,
     identity,
     principal,
