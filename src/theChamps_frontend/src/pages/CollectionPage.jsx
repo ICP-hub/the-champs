@@ -43,7 +43,7 @@ const CollectionPage = ({ name }) => {
     <>
       <Header />
       <motion.div
-        className="left-0 right-0"
+        className="container mx-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}

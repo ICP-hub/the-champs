@@ -9,7 +9,7 @@ const FAQ = () => {
   return (
     <>
       <Header />
-      <div className="md:px-24 mt-44 max-md:px-6">
+      <div className="md:px-24 mt-44 max-md:px-6 container mx-auto">
         <div className="flex">
           <FancyHeader fancy="FAQ" />
         </div>

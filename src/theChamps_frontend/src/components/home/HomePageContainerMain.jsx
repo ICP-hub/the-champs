@@ -21,7 +21,7 @@ import Wallets from "./Wallets";
 /* ----------------------------------------------------------------------------------------------------- */
 const HomepageContainerMain = () => {
   return (
-    <div>
+    <div className="container mx-auto">
       <HomePageA />
       {/* <Wallets /> */}
       <HomePageB />

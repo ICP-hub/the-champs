@@ -9,7 +9,7 @@ const AboutPageContainerMain = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="  md:p-24 p-6 grid md:grid-cols-2"
+      className="md:p-24 p-6 grid md:grid-cols-2 container mx-auto"
     >
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-2">

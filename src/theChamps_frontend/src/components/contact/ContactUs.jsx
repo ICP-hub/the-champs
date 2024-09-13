@@ -13,7 +13,7 @@ const ContactUs = () => {
     <>
       <Header />
       <motion.div
-        className=" md:px-24 mt-28 max-md:px-6"
+        className=" md:px-24 mt-28 max-md:px-6 container mx-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -36,8 +36,8 @@ const ContactUs = () => {
               autoplay
             /> */}
             <div className="max-md:order-first">
-        <img src={image} alt="about" />
-      </div>
+              <img src={image} alt="about" />
+            </div>
           </div>
         </div>
       </motion.div>
