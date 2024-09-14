@@ -21,7 +21,7 @@ function App() {
   // console.log(isBgVisible);
   return (
     <div>
-      <main className="App">
+      <main className="App flex flex-col h-screen w-screen relative">
         <AnimatePresence mode="wait" initial={true}>
           <RouterProvider router={appRoutes} />
         </AnimatePresence>

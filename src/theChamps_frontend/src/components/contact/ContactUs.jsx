@@ -13,31 +13,23 @@ const ContactUs = () => {
     <>
       <Header />
       <motion.div
-        className=" md:px-24 mt-28 max-md:px-6 container mx-auto"
+        className="container mx-auto p-6 md:p-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="py-6 contact-wrapper">
-          <div className="max-w-[470px]">
+        <div className="mt-12 grid lg:grid-cols-2">
+          <div>
             <FancyHeader fancy="Talk to our team to get started" />
             <p>
               Please provide us with information about your company and we’ll
               get in touch shortly.
             </p>
-          </div>
-          <div className="grid lg:grid-cols-2">
             <ContactForm />
-            {/* <Player
-              src={ContactAnimation}
-              className="player contact-aside h-full w-full max-lg:order-first"
-              loop
-              autoplay
-            /> */}
-            <div className="max-md:order-first">
-              <img src={image} alt="about" />
-            </div>
+          </div>
+          <div className="max-lg:order-first">
+            <img src={image} alt="about" />
           </div>
         </div>
       </motion.div>

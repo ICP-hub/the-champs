@@ -81,7 +81,7 @@ const HomePageD = () => {
   }, []);
 
   return (
-    <div className="md:p-24 max-md:p-6 grid grid-cols-4 max-md:grid-cols-2 md:divide-x-2">
+    <div className="p-6 md:p-8 grid grid-cols-4 max-md:grid-cols-2 md:divide-x-2">
       {dataBlocks.map((block, index) => (
         <div
           key={index}

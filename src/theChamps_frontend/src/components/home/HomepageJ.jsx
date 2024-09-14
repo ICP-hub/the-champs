@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageJ = () => {
   return (
-    <div className="md:p-24 max-md:p-6 flex flex-col md:gap-8 max-md:gap-4 items-center justify-center">
+    <div className="p-6 md:p-8 flex flex-col md:gap-8 max-md:gap-4 items-center justify-center">
       <div className="flex flex-col justify-center items-center font-bold text-6xl max-[900px]:text-3xl">
         <h1>View our latest</h1>
         <span className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] inline-block text-transparent bg-clip-text pb-2">

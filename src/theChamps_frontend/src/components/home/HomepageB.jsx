@@ -81,7 +81,7 @@ const HomePageB = () => {
   // console.log("allNFT", allNFT[allNFT?.length - 1][2].toText());
 
   return (
-    <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
+    <div className="p-6 md:p-8 flex flex-col gap-8">
       <div className="flex gap-1 items-center justify-center">
         <FancyHeader normal="Champ's" />
         <FancyHeader fancy="2024 Collection" />

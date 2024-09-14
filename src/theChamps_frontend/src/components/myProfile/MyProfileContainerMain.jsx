@@ -51,7 +51,7 @@ const MyProfileContainerMain = () => {
   };
 
   return (
-    <div className="md:px-24 p-6 container mx-auto">
+    <div className="container mx-auto mt-12 p-6 md:p-8">
       <MyProfileA onTabChange={handleTabChange} />
       <MyProfileB activeTabIndex={activeTabIndex} />
     </div>

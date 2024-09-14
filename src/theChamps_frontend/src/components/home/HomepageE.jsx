@@ -27,7 +27,7 @@ const HomePageE = () => {
   };
 
   return (
-    <div className="md:p-24 max-md:p-6">
+    <div className="p-6 md:p-8">
       <FancyHeader normal="How it" fancy="works!" />
       <Setup openModal={openModal} />
       {isModalOpen && (

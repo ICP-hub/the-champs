@@ -26,7 +26,7 @@ import { useAuth } from "../../auth/useClient";
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageA = () => {
   return (
-    <div className="grid lg:grid-cols-2 md:p-24 max-md:p-6">
+    <div className="grid lg:grid-cols-2 p-6 md:p-8">
       <HomePageALeft />
       <HomePageARight />
     </div>

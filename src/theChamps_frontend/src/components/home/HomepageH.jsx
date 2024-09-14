@@ -60,7 +60,7 @@ const artistData = [
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageH = () => {
   return (
-    <div className="md:p-24 max-md:p-6">
+    <div className="p-6 md:p-8">
       <FancyHeader normal="Meet" fancy="the artists" />
       <Artists />
     </div>

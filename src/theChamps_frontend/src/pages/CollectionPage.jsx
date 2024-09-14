@@ -43,15 +43,15 @@ const CollectionPage = ({ name }) => {
     <>
       <Header />
       <motion.div
-        className="container mx-auto"
+        className="container mx-auto h-full"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="z-0 mt-24">
-          <h1 className="text-5xl font-bold font-sans mb-12 gap-1 px-6 lg:px-24">
-            <span className="relative text-transparent ml-2 bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
+        <div className="z-0 mt-12 p-6 md:p-8 h-full">
+          <h1 className="text-5xl font-bold font-sans mb-12 gap-1">
+            <span className="relative text-transparent bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
               {name}
             </span>
           </h1>
@@ -79,7 +79,7 @@ const CollectionPage = ({ name }) => {
               // animate={isFlipped ? "back" : "front"}
               // variants={flipVariants}
             >
-              <div className="p-6 border rounded-md backface-hidden grid grid-cols-1 md:grid-cols-3 md:space-x-6 max-md:space-y-6">
+              <div className="border rounded-md backface-hidden grid grid-cols-1 md:grid-cols-3 md:space-x-6 max-md:space-y-6">
                 <div>
                   <img
                     src={CHAMPS}

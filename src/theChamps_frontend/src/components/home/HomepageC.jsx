@@ -29,7 +29,7 @@ const ChooseCard = ({ imageSrc, title, description, custom }) => {
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageC = () => {
   return (
-    <div className="md:p-24 max-md:p-6">
+    <div className="p-6 md:p-8">
       <FancyHeader normal="Why" fancy="choose us?" />
       <div className="py-12 grid lg:grid-cols-4 gap-x-5 gap-y-5 sm:grid-cols-2 max-sm:grid-cols-1">
         {chooseCardsData.map((card, index) => (

@@ -111,7 +111,7 @@ const questions = [
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageI = () => {
   return (
-    <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
+    <div className="p-6 md:p-8 flex flex-col gap-8">
       <div className="flex flex-col justify-center items-center font-bold text-6xl max-[900px]:text-3xl">
         <h1>Your Questions,</h1>
         <span className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] inline-block text-transparent bg-clip-text">

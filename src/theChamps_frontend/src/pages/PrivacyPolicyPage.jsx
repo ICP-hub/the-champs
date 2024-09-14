@@ -7,7 +7,7 @@ const PrivacyPolicy = () => {
   return (
     <>
       <Header />
-      <div className="px-6 mt-24 lg:px-24">
+      <div className="container mx-auto p-6 md:p-8 mt-12">
         <h1 className="text-5xl font-bold font-sans mb-16    ">
           <span className="  text-transparent bg-gradient-to-r   from-[#FC001E] to-[#FF7D57] bg-clip-text">
             Privacy Policy

@@ -236,6 +236,12 @@
   border-radius: 10px;
 }
 
+.gradient_text {
+  background: linear-gradient(to bottom right, #fc001e, #ff7d57);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 /* .cards:hover {
   border: 2px solid transparent;
   border-radius: 16px;
