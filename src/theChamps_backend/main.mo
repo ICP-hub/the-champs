@@ -203,9 +203,11 @@ actor Champs {
             case (?id) {
                 let nftcanisteractor = actor (Principal.toText(nftcanisterid)) : actor {
                     mintDip721 : (to : Principal, metadata : Types.MetadataDesc, priceinusd : Float , logo : Types.LogoResult) -> async Types.MintReceipt;
+
+                    getallNFT : () -> async [Types.Nft];
                 };
                 let mintednft = await nftcanisteractor.mintDip721(to, metadata, priceinusd, _logo);
-                let champs = await idQuick();
+                let champs = await idQuick();  
                 switch (mintednft) {
                     case (#Err(index)) {
                         throw Error.reject(debug_show (index));
@@ -305,14 +307,14 @@ actor Champs {
             created_at_time : ?Typestoken.Timestamp;
             }) -> async Result.Result<Typestoken.TxIndex, Typestoken.TransferFromError>;
         };
-        switch (paymentOption) {
-            case (#icp) {
-                let response : ICRC.Result_2 = await icrc2_transferFrom(icpLedger, from, to, amount);
-                switch (response) {
-                    case (#Err(index)) {
-                        throw Error.reject(debug_show (index));
-                    };
-                    case (#Ok(res)) {
+        // switch (paymentOption) {
+        //     case (#icp) {
+        //         let response : ICRC.Result_2 = await icrc2_transferFrom(icpLedger, from, to, amount);
+        //         switch (response) {
+        //             case (#Err(index)) {
+        //                 throw Error.reject(debug_show (index));
+        //             };
+        //             case (#Ok(res)) {
                         let transferparams = {
                             spender_subaccount = null;
                             from = { owner = from; subaccount = null };
@@ -331,42 +333,42 @@ actor Champs {
                                 return #Ok(data);
                             };
                         };
-
-                        return #Ok(res);
-                    };
-                };
-            };
-            case (#ckbtc) {
-                let response : ICRC.Result_2 = await icrc2_transferFrom(ckbtcLedger, from, to, amount);
-                switch (response) {
-                    case (#Err(index)) {
-                        throw Error.reject(debug_show (index));
-                    };
-                    case (#Ok(res)) {
-                        let transferparamsckbtc = {
-                            spender_subaccount = null;
-                            from = { owner = from; subaccount = null };
-                            to = { owner = to; subaccount = null };
-                            amount = numberoftokens;
-                            fee = null;
-                            memo = null;
-                            created_at_time = null;
-                        };
-                        let tokens = await tokencansiter_actor.icrc2_transfer_from(transferparamsckbtc);
-                        switch (tokens) {
-                            case (#err(index)) {
-                                throw Error.reject(debug_show (index));
-                            };
-                            case (#ok(data)) {
-                                return #Ok(data);
-                            };
-                        };
-                        return #Ok(res);
-                    };
-                };
-            };
-        };
     };
+                //         return #Ok(res);
+                //     };
+                // // };
+            // };
+            // case (#ckbtc) {
+            //     let response : ICRC.Result_2 = await icrc2_transferFrom(ckbtcLedger, from, to, amount);
+            //     switch (response) {
+            //         case (#Err(index)) {
+            //             throw Error.reject(debug_show (index));
+            //         };
+            //         case (#Ok(res)) {
+            //             let transferparamsckbtc = {
+            //                 spender_subaccount = null;
+            //                 from = { owner = from; subaccount = null };
+            //                 to = { owner = to; subaccount = null };
+            //                 amount = numberoftokens;
+            //                 fee = null;
+            //                 memo = null;
+            //                 created_at_time = null;
+            //             };
+            //             let tokens = await tokencansiter_actor.icrc2_transfer_from(transferparamsckbtc);
+            //             switch (tokens) {
+            //                 case (#err(index)) {
+            //                     throw Error.reject(debug_show (index));
+            //                 };
+            //                 case (#ok(data)) {
+            //                     return #Ok(data);
+            //                 };
+            //             };
+            //             return #Ok(res);
+            //         };
+    //             };
+    //         };
+    //     };
+    // };
 
     public shared ({ caller = user }) func transfertokens(tokencanisterid : Principal, to : Principal, amount : Nat) : async Result.Result<Typestoken.TxIndex,Typestoken.TransferError> {
         // if (Principal.isAnonymous(user)) {

@@ -9,3 +9,4 @@ motoko-sha = "https://github.com/tgalal/motoko-sha#master@9e2468f51ef060ae04fde8
 motoko-bitcoin = "https://github.com/tgalal/motoko-bitcoin#master@10cf7f2efbba9bb4d077013db1b990143f193844"
 cap-motoko-library = "https://github.com/stephenandrews/cap-motoko-library#master@f3332361111e20788c9ecabba714332b31fbd5fb"
 uuid = "1.0.0"
+stable-trie = "0.0.1"
