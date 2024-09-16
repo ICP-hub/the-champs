@@ -24,6 +24,7 @@ import { PiFileTextBold, PiLinkBold } from "react-icons/pi";
 import { HiMiniUserCircle, HiOutlineDocumentText } from "react-icons/hi2";
 import { motion } from "framer-motion";
 import BuyNowCard from "../components/common/BuyNowCard";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 
 const ProductDetails = () => {
   const [nftLoading, setNftLoading] = useState(true);
@@ -31,10 +32,16 @@ const ProductDetails = () => {
   const { backendActor } = useAuth();
   const [nftData, setNftData] = useState(null);
   const [collectionData, setCollectionData] = useState(null);
+  const [favourites, setFavourites] = useState();
   const [open, setOpen] = useState(false);
   const [exchange, setExchange] = useState(1);
   const [selectedPlan, setSelectedPlan] = useState({ value: "icp" });
   const [loading3, setLoading3] = useState(true);
+  const [paymentMethod2, SetPaymentMethod2] = useState("icp");
+  const [favChanged, setFavChanged] = useState(false);
+  const [favMatched, setFavMatched] = useState(false);
+  const [favLoad, setFavLoad] = useState(false);
+  const [product, setProduct] = useState([]);
 
   // Get NFT details
   const getNftDetails = async () => {
@@ -54,6 +61,7 @@ const ProductDetails = () => {
 
       setCollectionData(collectionResponse);
       setNftData(nftResponse);
+      setProduct([nftResponse, principalIndex]);
       console.log("collectionRes", collectionResponse);
       console.log("nftRes", nftResponse);
     } catch (err) {
@@ -65,22 +73,38 @@ const ProductDetails = () => {
 
   // exchange rate
   const getExchangeRate = async () => {
-    const paymentOpt = { FiatCurrency: null };
-    const paymentMethod = selectedPlan.value === "ckBTC" ? "btc" : "icp";
-    const paymentOpt1 =
-      paymentMethod === "btc"
-        ? { Cryptocurrency: null }
-        : { FiatCurrency: null };
+    const paymentMethod = "FiatCurrency";
+    let paymentOpt = null;
+    if (paymentMethod == "Cryptocurrency") {
+      paymentOpt = { Cryptocurrency: null };
+    } else if (paymentMethod == "FiatCurrency") {
+      paymentOpt = { FiatCurrency: null };
+    }
+    const paymentMethod1 = "Cryptocurrency";
+    let paymentOpt1 = null;
+    if (paymentMethod1 == "Cryptocurrency") {
+      paymentOpt1 = { Cryptocurrency: null };
+    } else if (paymentMethod1 == "FiatCurrency") {
+      paymentOpt1 = { FiatCurrency: null };
+    }
+
+    if (selectedPlan.value == "ckBTC") {
+      SetPaymentMethod2("btc");
+    } else {
+      SetPaymentMethod2("icp");
+    }
+
+    setLoading3(true);
 
     try {
-      const res = await backendActor.get_exchange_rates(
-        { class: paymentOpt, symbol: "usd" },
-        { class: paymentOpt1, symbol: paymentMethod }
+      const res = await backendActor?.get_exchange_rates(
+        { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
+        { class: paymentOpt1, symbol: paymentMethod2 } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
-      console.log("excahnge res", res);
+      console.log(res);
       const exchangeRate2 =
         parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
-      // console.log(exchangeRate2);
+      console.log(exchangeRate2);
       setExchange(exchangeRate2);
     } catch (error) {
       console.log(error);
@@ -89,14 +113,69 @@ const ProductDetails = () => {
     }
   };
 
+  /*************** Favourite review ****************/
+  // get favorites
+  const getFav = async () => {
+    try {
+      setFavLoad(true);
+      const res = await backendActor.getfavourites();
+      const favIds = res.map((fav) => fav[0].id);
+      // console.log("fav nft id", favIds);
+      setFavourites(favIds); // store only ids
+      setFavMatched(favIds.includes(nftData.nft.id));
+    } catch (err) {
+      console.error("Error getting fav ", err);
+    } finally {
+      setFavLoad(false);
+    }
+  };
+
+  // add or remove a favorite
+  const toggleFav = async () => {
+    try {
+      setFavLoad(true);
+      if (favMatched) {
+        // Remove favorite
+        const nft = nftData.nft;
+        const res = await backendActor.removefavourite([
+          {
+            ...nft,
+            id: BigInt(parseInt(nft.id)),
+          },
+          Principal.fromText(slug),
+        ]);
+        // console.log(res);
+        // return; ? return need?
+      } else {
+        // Add favorite
+        const res = await backendActor.addfavourite(
+          Principal.fromText(slug),
+          parseInt(nftData.nft.id)
+        );
+        // console.log(res);
+      }
+    } catch (err) {
+      console.error("error toggling fav ", err);
+    } finally {
+      // setFavLoad(false);   // This may cause bug????
+      setFavChanged((prev) => !prev);
+    }
+  };
+  // fetch favorites : fetch in favChanged
+  useEffect(() => {
+    if (nftData) getFav();
+  }, [favChanged, nftData]);
+
   useEffect(() => {
     getExchangeRate();
-  }, [backendActor, selectedPlan.value]);
+  }, [selectedPlan.value, backendActor]);
 
   // Effects
   useEffect(() => {
     getNftDetails();
   }, []);
+
+  // console.log("nftData in productDetails ", nftData);
 
   return (
     <>
@@ -110,7 +189,7 @@ const ProductDetails = () => {
           selected={selectedPlan}
           exchange={exchange}
           loading={loading3}
-          product={nftData}
+          nftdetails={product}
         />
       )}
       {nftLoading ? (
@@ -134,7 +213,7 @@ const ProductDetails = () => {
             </div>
             <div className="lg:pl-12 flex-1 max-lg:py-8">
               <Link
-                to={`/collection/${id}`}
+                to={`/collection/${slug}`}
                 className="text-xl font-medium flex items-center gap-2 pb-4"
               >
                 <IoArrowBack />
@@ -142,20 +221,45 @@ const ProductDetails = () => {
               </Link>
               <div className="py-4 lg:py-8 flex justify-between items-center">
                 <div>
-                  <h1 className="text-2xl gradient-text">NFT Name</h1>
+                  <h1 className="text-2xl gradient-text">
+                    {nftData.fractional_token[0][1].Text}
+                  </h1>
                   <h6 className="text-gray-500 capitalize font-medium">
                     By {collectionData.name}
                   </h6>
                 </div>
-                <span>
-                  <CiHeart size={32} />
+                <span className="flex items-center justify-center">
+                  {favLoad ? (
+                    <TailSpin
+                      height="30px"
+                      width="30px"
+                      color="black"
+                      ariaLabel="tail-spin-loading"
+                      radius="1"
+                      visible={true}
+                    />
+                  ) : (
+                    <button onClick={toggleFav}>
+                      {favMatched ? (
+                        <IconWrapper>
+                          <GoHeartFill size={32} />
+                        </IconWrapper>
+                      ) : (
+                        <GoHeart size={32} />
+                      )}
+                    </button>
+                  )}
                 </span>
               </div>
               <div className="py-4 flex max-lg:flex-col lg:justify-between lg:items-center">
-                <div className="flex items-center font-semibold text-lg">
-                  {(nftData.price_per_share / exchange).toFixed(3)} ICP (
-                  {nftData.price_per_share.toFixed(3)} USD) / Share
-                </div>
+                {loading3 ? (
+                  <div className="w-64 bg-gray-500 h-6 rounded-md animate-pulse"></div>
+                ) : (
+                  <div className="flex items-center font-semibold text-lg">
+                    {(nftData.price_per_share / exchange).toFixed(3)} ICP (
+                    {nftData.price_per_share.toFixed(3)} USD) / Share
+                  </div>
+                )}
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   className="button px-4 py-2 rounded-lg text-white max-lg:mt-4 max-w-max"

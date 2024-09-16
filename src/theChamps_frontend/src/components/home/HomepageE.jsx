@@ -27,7 +27,7 @@ const HomePageE = () => {
   };
 
   return (
-    <div className="md:p-24 max-md:p-6">
+    <div className="p-6 md:p-8">
       <FancyHeader normal="How it" fancy="works!" />
       <Setup openModal={openModal} />
       {isModalOpen && (
@@ -47,13 +47,16 @@ const Setup = ({ openModal }) => {
             01
           </span>
           <h1 className="font-bold lg:text-[56px] max-lg:text-3xl">
-            Setup and connect your wallet.
+            {/* Setup and connect your wallet. */}
+            Create your account
           </h1>
           <p className="text-[#7B7583]">
-            The initial step involves setting up and connecting your digital
+            {/* The initial step involves setting up and connecting your digital
             wallet to our platform. This facilitates secure storage and
             management of cryptocurrency assets, enabling seamless transactions
-            within our ecosystem.
+            within our ecosystem. */}
+            The initial step involves creating your own account which should
+            take less than 2 minutes.
           </p>
           <button
             className="cursor-pointer flex items-center gap-4 font-bold pt-6 mt-auto"
@@ -72,15 +75,17 @@ const Setup = ({ openModal }) => {
             02
           </span>
           <h1 className="font-bold lg:text-[56px] max-lg:text-3xl">
-            Discover Iconic Players NFT
+            {/* Discover Iconic Players NFT */}
+            Discover our 2024 Collection
           </h1>
           <p className="text-[#7B7583]">
-            Upon accessing our platform, users are presented with an array of
+            {/* Upon accessing our platform, users are presented with an array of
             opportunities to explore. They can peruse through meticulously
             curated collections featuring iconic football player NFTs and
             prestigious club memberships. This process allows individuals to
             identify and engage with entities aligning with their preferences
-            and interests.
+            and interests. */}
+            View our unique digital collectible and all the perks included.
           </p>
           <button
             className="cursor-pointer flex items-center gap-4 font-bold pt-6 mt-auto"
@@ -101,15 +106,19 @@ const Setup = ({ openModal }) => {
             03
           </span>
           <h1 className="font-bold lg:text-[56px] max-lg:text-3xl">
-            Purchase Your Footplayer NFT
+            {/* Purchase Your Footplayer NFT */}
+            Purchase your Digital Collectible
           </h1>
           <p className="text-[#7B7583]">
-            Following the discovery phase, users proceed to acquire their
+            {/* Following the discovery phase, users proceed to acquire their
             desired football player NFT or club membership. This transaction is
             executed with utmost security and efficiency, wherein users select
             the desired asset, proceed to checkout, and complete the purchase
             using their connected wallet. This seamless process ensures that
-            users swiftly and securely obtain ownership of their chosen assets.
+            users swiftly and securely obtain ownership of their chosen assets. */}
+            After selecting your digital collectible, you can purchase it
+            through our safe and secure payment providers using GoPay, Bank
+            Transfer and or your Credit Card.
           </p>
           <button
             className="cursor-pointer flex items-center gap-4 font-bold pt-6"
@@ -128,7 +137,7 @@ const Setup = ({ openModal }) => {
 
 const VideoModal = ({ videoUrl, closeModal }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 mt-24 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg overflow-hidden w-11/12 md:w-3/4 lg:w-1/2">
         <div className="flex justify-end p-2">
           <button onClick={closeModal} className="text-black font-bold text-xl">

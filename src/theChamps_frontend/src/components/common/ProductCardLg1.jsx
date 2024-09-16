@@ -6,6 +6,7 @@ import PlaceholderImg from "../../assets/CHAMPS.png";
 import { useCanister } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import { useAuth } from "../../auth/useClient";
+import collectionImg from "../../assets/collection.png";
 
 const ProductCardLg = ({ prod }) => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -27,8 +28,8 @@ const ProductCardLg = ({ prod }) => {
       );
       console.log("hello ss", res);
       setCollection(res);
-      setImg1(res[0][0].fractional_token?.logo);
-      setImg2(res[1][0].fractional_token?.logo);
+      setImg1(res[0][0].nft.logo.data);
+      setImg2(res[1][0].nft.logo.data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -42,9 +43,10 @@ const ProductCardLg = ({ prod }) => {
   const calculateVolume = (collection) => {
     return collection
       .reduce((acc, nftArray) => {
-        const nft = nftArray[0].nft;
-        if (nft.listed) {
-          return acc + parseFloat(nft.priceinusd);
+        const nft = nftArray[0];
+        const nft1 = nftArray[0].nft;
+        if (nft1.listed) {
+          return acc + parseFloat(nft.price_per_share);
         }
         return acc;
       }, 0)
@@ -114,8 +116,17 @@ const ProductCardLg = ({ prod }) => {
 
   // motion variants
   const imgVariants = {
-    hover: { scale: 1.1, transition: { duration: 0.2, ease: "easeInOut" } },
-    initial: { scale: 1.01 },
+    hover: {
+      scale: 1.1,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut",
+        mass: 3,
+        stiffness: 400,
+        damping: 50,
+      },
+    },
+    initial: { scale: 1 },
   };
   const flipVariants = {
     front: {
@@ -131,10 +142,41 @@ const ProductCardLg = ({ prod }) => {
   return (
     <motion.div
       className="flip-card-inner border-2 border__animation rounded-2xl"
-      animate={isFlipped ? "back" : "front"}
-      variants={flipVariants}
+      // animate={isFlipped ? "back" : "front"}
+      // variants={flipVariants}
     >
-      <div className="p-6  backface-hidden flex md:flex-row flex-col gap-6 md:gap-6 h-full">
+      <div className="p-6 border rounded-md backface-hidden grid grid-cols-1 md:grid-cols-3 md:space-x-6 max-md:space-y-6">
+        <div>
+          <img
+            src={
+              prod.details.logo.data.length > 10
+                ? prod.details.logo.data
+                : PlaceholderImg
+            }
+            // src={collectionImg}
+            alt={prod.details.name}
+            className="rounded-2xl object-cover z-[2]"
+          ></img>
+        </div>
+        <div className="flex flex-col w-full h-full col-span-2">
+          <div>
+            <h1 className="font-bold text-2xl">{prod.details.name}</h1>
+            <p className="text-sm text-[#7B7583] font-normal">
+              {prod.canisterId.toText()}
+            </p>
+          </div>
+          <p className="mt-4">{prod.details.description}</p>
+          <div className="mt-auto">
+            <Link
+              to={`/collection/${prod.canisterId.toText()}`}
+              className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57] text-white cursor-pointer rounded-lg z-50 max-w-max max-md:mb-4"
+            >
+              View Collection
+            </Link>
+          </div>
+        </div>
+      </div>
+      {/* <div className="p-6  backface-hidden flex md:flex-row flex-col gap-6 md:gap-6 h-full">
         <div className="grid grid-cols-3 gap-4 w-full md:w-1/2">
           <div className="col-span-2 overflow-hidden rounded-2xl">
             <motion.img
@@ -248,8 +290,8 @@ const ProductCardLg = ({ prod }) => {
         <div className="flex justify-end w-full pt-6 gap-4 text-sm mt-auto">
           <div className="w-full md:w-1/2 flex gap-4">
             <Link
-              to={`/collections/${prod.canisterId.toText()}`}
-              className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57] text-white cursor-pointer rounded-lg w-full z-[1]"
+              to={`/collection/${prod.canisterId.toText()}`}
+              className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57] text-white cursor-pointer rounded-lg w-full z-[10]"
             >
               View Collection
             </Link>
@@ -261,7 +303,7 @@ const ProductCardLg = ({ prod }) => {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
     </motion.div>
   );
 };

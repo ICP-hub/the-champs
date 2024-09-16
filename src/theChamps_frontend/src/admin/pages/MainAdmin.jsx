@@ -5,7 +5,6 @@ import "../admin.styles.css";
 import "../theme.css";
 import { HiBars4 } from "react-icons/hi2";
 import ThemeSwitch from "../components/themeSwitch.jsx";
-// import { useCanister, useConnect } from "@connect2ic/react";
 import { Principal } from "@dfinity/principal";
 import FullScreenLoader from "../../pages/FullScreenLoader.jsx";
 import toast from "react-hot-toast";
@@ -15,38 +14,34 @@ import { useAuth } from "../../auth/useClient.jsx";
 function MainAdmin({ children }) {
   const [isOpen, setIsOpen] = useState(window.innerWidth > 960);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  // const { principal, isConnected } = useConnect();
-  const { principal, isAuthenticated } = useAuth();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { principal, isAuthenticated, backendActor } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(true);
   const [isAdminChecked, setIsAdminChecked] = useState(false);
   const [loading, setLoading] = useState(true);
-  // const [backend] = useCanister("backend");
-  const { backendActor } = useAuth();
 
-  // useEffect(() => {
-  //   const checkIsAdmin = async () => {
-  //     if (isAuthenticated && principal) {
-  //       try {
-  //         const res = await backendActor?.checkisadmin(
-  //           Principal.fromText(principal)
-  //         );
-  //         setIsAdmin(res);
-  //         console.log("Admin status:", res);
-  //       } catch (error) {
-  //         console.error("Error checking isAdmin:", error);
-  //         setIsAdmin(false);
-  //       } finally {
-  //         setIsAdminChecked(true);
-  //         setLoading(false);
-  //       }
-  //     } else {
-  //       setIsAdminChecked(true);
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const checkIsAdmin = async () => {
+      if (isAuthenticated && principal) {
+        try {
+          const res = await backendActor.checkisadmin(principal);
+          console.log("Admin status:", res);
+          if (res === true) {
+            setIsAdmin(true);
+          } else {
+            setIsAdmin(false);
+          }
+        } catch (error) {
+          console.error("Error checking isAdmin:", error);
+          setIsAdmin(false);
+        } finally {
+          setIsAdminChecked(true);
+          setLoading(false);
+        }
+      }
+    };
 
-  //   checkIsAdmin();
-  // }, [isAuthenticated, backendActor, principal]);
+    checkIsAdmin();
+  }, [isAuthenticated, principal, backendActor]);
 
   useEffect(() => {
     const debounce = (func, delay) => {
@@ -106,57 +101,59 @@ function MainAdmin({ children }) {
     };
   }, [windowWidth, isOpen]);
 
-  // if (loading) {
-  //   return <FullScreenLoader />;
-  // }
+  // console.log(loading);
 
-  // if (isAdminChecked && !isAdmin) {
-  //   toast.error("You are not an admin");
-  //   return <Navigate to="/" replace={true} />;
-  // }
-
-  return (
-    <div className={`${theme} bg-background`}>
-      <div className="text-textall layout">
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ marginLeft: -280 }}
-              animate={{ marginLeft: 0 }}
-              exit={{ marginLeft: -280 }}
-              transition={{
-                duration: 0.3,
-                staggerChildren: 0.2,
-              }}
-              className={`navigation border-r dark:border-r-gray-500 ${
-                windowWidth < 960 && "navigation-mode-over"
-              }`}
-            >
-              <LeftSidebar />
+  if (loading) {
+    return <FullScreenLoader />;
+  } else {
+    if (!isAdmin) {
+      toast.error("You are not an admin");
+      return <Navigate to="/" replace={true} />;
+    } else {
+      return (
+        <div className={`${theme} bg-background`}>
+          <div className="text-textall layout">
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{ marginLeft: -280 }}
+                  animate={{ marginLeft: 0 }}
+                  exit={{ marginLeft: -280 }}
+                  transition={{
+                    duration: 0.3,
+                    staggerChildren: 0.2,
+                  }}
+                  className={`navigation border-r dark:border-r-gray-500 ${
+                    windowWidth < 960 && "navigation-mode-over"
+                  }`}
+                >
+                  <LeftSidebar />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <motion.div className="flex flex-col">
+              <div className="relative flex items-center justify-between w-full h-16 min-h-16 px-4 md:px-6 shadow z-50 dark:shadow-none dark:border-b dark:border-b-gray-500 dark:bg-transparent bg-appbar">
+                <span
+                  className="p-1 rounded-full hover:bg-hover cursor-pointer transition duration-300 ease-in-out"
+                  onClick={handleToggle}
+                >
+                  <HiBars4
+                    size={24}
+                    color={theme === "light" ? "#64748b" : "white"}
+                  />
+                </span>
+              </div>
+              <div className="p-6 sm:p-8 min-h-screen">{children}</div>
             </motion.div>
-          )}
-        </AnimatePresence>
-        <motion.div className="flex flex-col">
-          <div className="relative flex items-center justify-between w-full h-16 min-h-16 px-4 md:px-6 shadow z-50 dark:shadow-none dark:border-b dark:border-b-gray-500 dark:bg-transparent bg-appbar">
-            <span
-              className="p-1 rounded-full hover:bg-hover cursor-pointer transition duration-300 ease-in-out"
-              onClick={handleToggle}
-            >
-              <HiBars4
-                size={24}
-                color={theme === "light" ? "#64748b" : "white"}
-              />
-            </span>
           </div>
-          <div className="p-6 sm:p-8 min-h-screen">{children}</div>
-        </motion.div>
-      </div>
-      {isOpen && windowWidth < 960 && (
-        <div className="overlay-display" onClick={handleToggle}></div>
-      )}
-      <ThemeSwitch toggleTheme={toggleTheme} />
-    </div>
-  );
+          {isOpen && windowWidth < 960 && (
+            <div className="overlay-display" onClick={handleToggle}></div>
+          )}
+          <ThemeSwitch toggleTheme={toggleTheme} />
+        </div>
+      );
+    }
+  }
 }
 
 export default MainAdmin;

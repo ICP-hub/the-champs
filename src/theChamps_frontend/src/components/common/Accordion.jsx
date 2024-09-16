@@ -15,10 +15,14 @@ const AccordionComponent = ({ question, answer, opened }) => {
   };
 
   return (
-    <div role="accordion" className="rounded-lg">
+    <div role="accordion" className="rounded-lg border border-gray-300">
       <button
         type="button"
-        className="w-full text-base font-semibold text-left py-4 px-6 bg-gray-100  flex items-center justify-between rounded-lg"
+        className={`w-full text-base font-semibold text-left py-4 px-6 flex items-center justify-between ${
+          isOpen
+            ? "bg-gradient-to-br from-[#fc001e] to-[#ff7d57] text-white rounded-t-lg"
+            : "bg-white rounded-lg"
+        }`}
         onClick={toggleAccordion}
       >
         <span className="mr-4">{question}</span>
@@ -35,6 +39,7 @@ const AccordionComponent = ({ question, answer, opened }) => {
             animate={{ height: "auto" }}
             exit={{ height: 0 }}
             transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+            className="bg-white rounded-b-lg"
           >
             <p className="p-5">{answer}</p>
           </motion.div>

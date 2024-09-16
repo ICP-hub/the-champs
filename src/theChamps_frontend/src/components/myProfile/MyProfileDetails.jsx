@@ -21,6 +21,7 @@ import { useSelector } from "react-redux";
 import useClipboard from "react-use-clipboard";
 import { RiCheckLine, RiFileCopyLine } from "react-icons/ri";
 import { useAuth } from "../../auth/useClient";
+import { Navigate } from "react-router";
 
 const containerVariants = {
   hidden: { opacity: 0, x: 400, transition: { duration: 0.4 } },
@@ -37,7 +38,7 @@ const MyProfileDetails = () => {
   });
   const [editMode, setEditMode] = useState(false);
   // const { isConnected, principal } = useConnect();
-  const { principal } = useAuth();
+  const { principal, isAuthenticated } = useAuth();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -128,6 +129,10 @@ const MyProfileDetails = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  if (!isAuthenticated) {
+    return <Navigate to="/" replace={true} />;
+  }
+
   return (
     <>
       {loading ? (
@@ -141,7 +146,7 @@ const MyProfileDetails = () => {
         </div>
       ) : (
         <div className="card">
-          <div className="relative overflow-hidden w-32 h-32 group">
+          <div className="relative overflow-hidden w-32 h-32 group flex">
             {formData?.profileimage ? (
               <img
                 src={formData?.profileimage}
@@ -292,13 +297,6 @@ const ProfileInfo = ({
 );
 
 const EditForm = ({ formData, setFormData, setEditMode }) => {
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
   const [loading, setLoading] = useState(false);
   // const [backend] = useCanister("backend");
   const { backendActor } = useAuth();
@@ -308,6 +306,18 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
   const userInfo = useSelector((state) => state.auth);
 
   const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -345,6 +355,7 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
           };
 
           console.log("record is", User);
+          setErrors({});
           const user = await backendActor?.updateUser(User);
 
           if (user.ok) {
@@ -373,9 +384,6 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
       className="infos md:w-6/12 w-full"
     >
       <div className="flex flex-col">
-        {errors.profileimage && (
-          <span className="text-red-500 text-sm">{errors.profileimage}</span>
-        )}
         <div>
           {/* <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
             <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
@@ -397,9 +405,9 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
           {/* <h4 className="text-[0.8rem]">@User Principal</h4> */}
         </div>
         <div className="py-2 flex flex-col gap-2 w-full">
-          <div className="flex gap-4">
-            <div>
-              <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
+          <div className="flex gap-4 max-lg:flex-col">
+            <div className="w-full">
+              <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden w-full">
                 <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
                   <RxAvatar size={24} color="white" />
                 </span>
@@ -415,18 +423,19 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
                 />
               </div>
               {errors.firstName && (
-                <span className="text-red-500 text-sm">{errors.firstName}</span>
+                <p className="text-red-500 text-sm">{errors.firstName}</p>
               )}
             </div>
-            <div>
-              <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden">
+
+            <div className="w-full">
+              <div className="py-2 border border-gray-400 rounded-md relative flex gap-2 overflow-hidden w-full">
                 <span className="button absolute top-0 bottom-0 flex items-center justify-center p-2">
                   <RxAvatar size={24} color="white" />
                 </span>
                 <input
                   type="text"
                   name="lastName"
-                  className="focus:outline-none outline-none bg-transparent pl-12 w-full text-[0.9rem]"
+                  className="focus:outline-none outline-none bg-transparent pl-12 text-[0.9rem]"
                   value={formData.lastName}
                   placeholder="Last Name"
                   onChange={handleChange}
@@ -509,6 +518,9 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
             <span className="text-red-500 text-sm">{errors.discord}</span>
           )}
         </div>
+        {errors.profileimage && (
+          <span className="text-red-500 text-sm">{errors.profileimage}</span>
+        )}
         <div className="links py-4">
           <motion.button
             whileTap={{ scale: 0.9 }}

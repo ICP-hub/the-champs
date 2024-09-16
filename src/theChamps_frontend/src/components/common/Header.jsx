@@ -15,6 +15,12 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { HiOutlineBars4 } from "react-icons/hi2";
 
+const fixedStyle = {
+  background: "rgba(255, 255, 255,0.85)",
+  backdropFilter: "blur(6px)",
+  WebkitBackdropFilter: "blur(3.9px)",
+};
+
 const Header = () => {
   const [isSidenavOpen, setIsSidenavOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -75,59 +81,56 @@ const Header = () => {
     };
   }, [isSidenavOpen, isMenuOpen, location]);
 
-  const fixedStyle = {
-    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-    backdropFilter: "blur(15px)",
-    position: "fixed",
-    minWidth: "100vw",
-    WebkitBackdropFilter: "blur(15px)",
-    top: 0,
-    zIndex: 60,
-  };
-
   return (
-    <div>
-      <HeaderComplete
-        sideNavToggle={sideNavToggle}
-        isSidenavOpen={isSidenavOpen}
-        isMenuOpen={isMenuOpen}
-        toggleMenu={toggleMenu}
-      />
-      <AnimatePresence>
-        <motion.div
-          style={isScrolled ? fixedStyle : { display: "none" }}
-          initial={{ y: -96 }}
-          animate={{ y: isScrolled ? 0 : -96 }}
-          exit={{ y: -96 }}
-          transition={{ duration: 0.3, ease: easeInOut }}
-        >
-          <HeaderComplete
-            sideNavToggle={sideNavToggle}
-            isSidenavOpen={isSidenavOpen}
-            isMenuOpen={isMenuOpen}
-            toggleMenu={toggleMenu}
-          />
-        </motion.div>
-      </AnimatePresence>
-      <AnimatePresence>
-        {isSidenavOpen && (
+    <div className={`${(isSidenavOpen || isMenuOpen) && "bg-white"}`}>
+      <div className="container mx-auto">
+        <HeaderComplete
+          sideNavToggle={sideNavToggle}
+          isSidenavOpen={isSidenavOpen}
+          isMenuOpen={isMenuOpen}
+          toggleMenu={toggleMenu}
+        />
+        <AnimatePresence>
           <motion.div
-            initial={{ x: 288 }}
-            animate={{ x: 0 }}
-            exit={{ x: 288 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="max-w-72 min-w-72 fixed right-0 bg-white z-40 top-24"
+            className="fixed left-0 top-0 right-0 z-[60]"
+            style={
+              isSidenavOpen || isMenuOpen ? { background: "white" } : fixedStyle
+            }
+            initial={{ y: -96, opacity: 0 }}
+            animate={{ y: isScrolled ? 0 : -96, opacity: 1 }}
+            exit={{ y: -96, opacity: 0 }}
+            transition={{ duration: 0.3, ease: easeInOut }}
           >
-            <Sidebar />
+            <motion.div className="container mx-auto">
+              <HeaderComplete
+                sideNavToggle={sideNavToggle}
+                isSidenavOpen={isSidenavOpen}
+                isMenuOpen={isMenuOpen}
+                toggleMenu={toggleMenu}
+              />
+            </motion.div>
           </motion.div>
+        </AnimatePresence>
+        <AnimatePresence>
+          {isSidenavOpen && (
+            <motion.div
+              initial={{ marginRight: -288 }}
+              animate={{ marginRight: 0 }}
+              exit={{ marginRight: -288 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="max-w-72 min-w-72 fixed right-0 z-40 top-24 bg-white"
+            >
+              <Sidebar />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {(isSidenavOpen || isMenuOpen) && (
+          <div
+            className="h-screen w-screen bg-[rgba(0,0,0,0.5)] z-30 fixed inset-0 top-24"
+            onClick={handleCloseAllSide}
+          ></div>
         )}
-      </AnimatePresence>
-      {(isSidenavOpen || isMenuOpen) && (
-        <div
-          className="h-full w-full bg-[rgba(0,0,0,0.5)] z-30 fixed top-24"
-          onClick={handleCloseAllSide}
-        ></div>
-      )}
+      </div>
     </div>
   );
 };
@@ -140,9 +143,7 @@ const HeaderComplete = ({
 }) => {
   return (
     <div
-      className={`flex justify-between w-full items-center px-6 md:px-24 max-h-24 min-h-24 ${
-        (isSidenavOpen || isMenuOpen) && "bg-white"
-      }`}
+      className={`flex justify-between w-full items-center max-h-24 min-h-24 px-6 md:px-8`}
     >
       <HeaderContent />
       <HeaderIcon

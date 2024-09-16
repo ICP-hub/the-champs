@@ -45,7 +45,7 @@ const DashBoard = () => {
   // console.log(allStats);
   const stats = [
     { label: "Total Collections", value: allStats?.totalCollections },
-    { label: "Total NFTs", value: allStats?.totalnfts },
+    { label: "Total Digital Collectible", value: allStats?.totalnfts },
     { label: "Total Users", value: allStats?.totalusers },
   ];
 

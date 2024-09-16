@@ -87,7 +87,7 @@ const HomePageG = () => {
   ];
 
   return (
-    <div className="md:p-24 max-md:p-6">
+    <div className="p-6 md:p-8">
       <FancyHeader normal="Champ's" fancy="Roadmap" />
       <div className="py-12">
         <div className="grid lg:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1 gap-x-4 gap-y-4">

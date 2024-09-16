@@ -9,9 +9,9 @@ const AboutPageContainerMain = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="  md:p-24 p-6 grid md:grid-cols-2"
+      className="grid md:grid-cols-2 container mx-auto"
     >
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-8 p-6 md:p-8 mt-12">
         <div className="flex flex-col gap-2">
           <span className="flex justify-start">
             <FancyHeader fancy="About Us" />
@@ -21,6 +21,12 @@ const AboutPageContainerMain = () => {
           </h1>
         </div>
         <p className="font-medium">{aboutData.description}</p>
+        {aboutData.authorDetail.map((author, index) => (
+          <div key={index} className="space-y-2">
+            <h4 className="font-semibold text-lg">{author.name}</h4>
+            <p className="font-medium">{author.quote}</p>
+          </div>
+        ))}
       </div>
       <div className="max-md:order-first">
         <img src={aboutData.image} alt="about" />

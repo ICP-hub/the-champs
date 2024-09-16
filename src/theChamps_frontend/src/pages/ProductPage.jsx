@@ -6,7 +6,7 @@ import { Principal } from "@dfinity/principal";
 
 import ProductCard from "../components/productcomponent/productCard";
 import ProductCardLoader from "../components/productcomponent/ProductCardLoader";
-import Searchbar from "../components/common/Searchbar";
+import Searchbar from "../components/common/SearchBarNft";
 import Card from "../components/common/Card";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
@@ -37,6 +37,7 @@ const ProductPage = ({ name }) => {
   const [exchange, setExchange] = useState(1);
   const [loading3, setLoading3] = useState(true);
   const [loading4, setLoading4] = useState(true);
+  const [search, setSearch] = useState(false);
   const getCollectionDetails = async () => {
     try {
       setLoading4(true);
@@ -61,11 +62,13 @@ const ProductPage = ({ name }) => {
       const res = await backendActor?.getcollectionwisefractionalnft(
         canister_id
       );
+
       // console.log("hello");
       setCollection(res);
+      console.log(res);
 
       // Adjust slice end value based on itemsPerPage
-      setSearchResults(res.slice(0, itemsPerPage));
+      setSearchResults(res);
 
       if (res.length === 0) {
         setHasMore(false);
@@ -95,11 +98,14 @@ const ProductPage = ({ name }) => {
   };
 
   const handleSearch = (e) => {
+    setSearch(true);
     const query = e.target.value;
     setSearchQuery(query);
 
     const filteredResults = collection.filter((item) =>
-      item[0].fractional_token.name.toLowerCase().includes(query.toLowerCase())
+      item[0].fractional_token[0][1].Text.toLowerCase().includes(
+        query.toLowerCase()
+      )
     );
     setSearchResults(filteredResults);
   };
@@ -107,9 +113,10 @@ const ProductPage = ({ name }) => {
   const calculateVolume = (collection) => {
     return collection
       .reduce((acc, nftArray) => {
-        const nft = nftArray[0].nft;
-        if (nft.listed) {
-          return acc + parseFloat(nft.priceinusd);
+        const nft = nftArray[0];
+        const nft1 = nftArray[0].nft;
+        if (nft1.listed) {
+          return acc + parseFloat(nft.price_per_share);
         }
         return acc;
       }, 0)
@@ -219,7 +226,7 @@ const ProductPage = ({ name }) => {
                   logo={collectionDetails?.logo?.data}
                 />
               </div>
-              <div className="right-0 md:w-[65%] md:ml-[33%] mt-64 md:mt-8">
+              <div className="right-0 md:w-[65%] md:ml-[33%] marginTop1 marginTop md:mt-8">
                 <h1 className="text-3xl text-left font-bold font-sans mb-4 gap-1">
                   <span className="md:relative text-transparent bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
                     {collectionDetails?.name}
@@ -234,8 +241,8 @@ const ProductPage = ({ name }) => {
                     />
                   </div>
                 )}
-                <div className="mt-12 md:w-2/3 flex gap-4 flex-wrap">
-                  <div className="w-1/4 text-center text-sm space-y-2">
+                {/* <div className="mt-12 md:w-2/3 sm:flex gap-4 flex-wrap">
+                  <div className="sm:w-1/4 text-center text-sm space-y-2">
                     <p>AVERAGE PRICE</p>
                     <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
                       {loading3 ? (
@@ -251,13 +258,13 @@ const ProductPage = ({ name }) => {
                       )}
                     </button>
                   </div>
-                  <div className="w-1/4 text-center text-sm space-y-2">
+                  <div className="sm:w-1/4 text-center text-sm space-y-2">
                     <p>LISTING</p>
                     <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1.5 rounded-lg text-md flex items-center justify-center">
                       {listingCount}
                     </button>
                   </div>
-                  <div className="w-1/4 text-center text-sm space-y-2">
+                  <div className="sm:w-1/4 text-center text-sm space-y-2">
                     <p>FLOOR PRICE</p>
                     <button className="w-full bg-gray-100 bg-opacity-100 text-[#7B7583] py-1 gap-1 rounded-lg text-md flex items-center justify-center">
                       {loading3 ? (
@@ -272,8 +279,8 @@ const ProductPage = ({ name }) => {
                         </span>
                       )}
                     </button>
-                  </div>
-                  {/* <div className="w-1/4 text-center text-sm space-y-2">
+                  </div> */}
+                {/* <div className="w-1/4 text-center text-sm space-y-2">
                   <p>MINTED</p>
                   <button className="w-full py-1.5 bg-gray-100 bg-opacity-100 text-[#7B7583] rounded-md text-md flex items-center justify-center">
                     184
@@ -285,7 +292,7 @@ const ProductPage = ({ name }) => {
                     184
                   </button>
                 </div> */}
-                </div>
+                {/* </div> */}
               </div>
             </div>
           </div>
@@ -298,76 +305,44 @@ const ProductPage = ({ name }) => {
               {name}
             </span>
           </h1>
-          <div className="px-6 lg:px-24">
+          {/* <div className="px-6 lg:px-24">
             <Searchbar
               grid={grid}
               setGrid={setGrid}
               gridrequired={true}
               value={searchQuery}
               handleSearch={handleSearch}
+              collection={collection}
+              setSearchResults={setSearchResults}
+              setSearch={setSearch}
             />
-          </div>
+          </div> */}
+          {/* blank space */}
+          {/* <div className="h-16"></div> */}
           {loading ? (
-            <div className="grid lg:grid-cols-3 xl:grid-cols-3 gap-8 max-lg:grid-cols-2 mt-4 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
-              {Array.from({ length: 9 }, (_, index) => (
+            <div className="mt-4 pb-4 px-6 lg:px-24">
+              {Array.from({ length: 1 }, (_, index) => (
                 <ProductCardLoader key={index} />
               ))}
             </div>
           ) : (
             <>
-              {grid ? (
-                <InfiniteScroll
-                  dataLength={searchResults.length}
-                  next={loadMoreItems}
-                  hasMore={hasMore}
-                  loader={
-                    searchResults?.length == collection?.length ? (
-                      <div className="w-full flex items-center  mt-8 justify-center">
-                        <p className="px-4 py-2  cursor-pointer  text-center rounded-lg w-48 productcardlgborder  ">
-                          {" "}
-                          End of the result
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="w-full flex items-center justify-center mt-8">
-                        <h4 className="px-4 py-2  cursor-pointer   text-center rounded-lg w-48 productcardlgborder ">
-                          Loading...
-                        </h4>
-                      </div>
-                    )
-                  }
-                  endMessage={
-                    <p style={{ textAlign: "center", marginTop: "10px" }}>
-                      <b>Yay! You have seen it all</b>
-                    </p>
-                  }
-                  refreshFunction={refresh}
-                  pullDownToRefresh
-                  pullDownToRefreshThreshold={3}
-                  pullDownToRefreshContent={
-                    <h3 style={{ textAlign: "center" }}>
-                      &#8595; Pull down to refresh
-                    </h3>
-                  }
-                  releaseToRefreshContent={
-                    <h3 style={{ textAlign: "center" }}>
-                      &#8593; Release to refresh
-                    </h3>
-                  }
-                >
-                  <div className="grid grid-cols-1 px-6 lg:px-24 sm:grid-cols-2 lg:grid-cols-3 gap-12 mt-4 justify-center">
-                    {searchResults.map((product, index) => (
-                      <ProductCard
-                        key={index}
-                        product={product}
-                        setShowHeader={setShowHeader}
-                      />
-                    ))}
-                  </div>
-                </InfiniteScroll>
+              {searchResults.length > 0 ? (
+                // <div className="grid grid-cols-1 px-6 lg:px-24 sm:grid-cols-2 lg:grid-cols-3 gap-12 mt-4 justify-center">
+                <div className="px-6 lg:px-24">
+                  {searchResults.map((product, index) => (
+                    <ProductCard
+                      key={index}
+                      product={product}
+                      setShowHeader={setShowHeader}
+                    />
+                  ))}
+                </div>
               ) : (
-                <div className="px-6 lg:px-24 mt-8">
-                  <ProductLists product={searchResults} />
+                <div className="text-center mt-20 px-6 lg:px-24 flex justify-center items-center">
+                  <p className="px-4 py-2 cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
+                    No Nft found
+                  </p>
                 </div>
               )}
             </>

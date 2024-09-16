@@ -63,8 +63,8 @@ const SingleNFT = () => {
           <div className="min-h-64 min-w-64 rounded-lg p-2 border-2 border-divider max-h-64 max-w-64">
             <img
               src={
-                nftDetail.nft.logo.data.length > 10
-                  ? nftDetail.nft.logo.data
+                nftDetail?.nft?.logo?.data?.length > 10
+                  ? nftDetail?.nft?.logo?.data
                   : champsImg
               }
               alt={nftDetail?.fractional_token[0][1].Text}

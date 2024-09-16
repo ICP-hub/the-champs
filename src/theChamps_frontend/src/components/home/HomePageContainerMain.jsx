@@ -21,13 +21,13 @@ import Wallets from "./Wallets";
 /* ----------------------------------------------------------------------------------------------------- */
 const HomepageContainerMain = () => {
   return (
-    <div>
+    <div className="container mx-auto space-y-8 mt-8">
       <HomePageA />
-      <Wallets />
+      {/* <Wallets /> */}
       <HomePageB />
       <CustomDivide />
-      <HomeFeatured />
-      <CustomDivide />
+      {/* <HomeFeatured /> */}
+      {/* <CustomDivide /> */}
       <HomePageC />
       <CustomDivide />
       <HomePageD />

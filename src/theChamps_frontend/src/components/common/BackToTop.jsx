@@ -2,6 +2,13 @@
 import React, { useState, useEffect } from "react";
 import { MdOutlineKeyboardArrowUp } from "react-icons/md";
 
+export const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+
 const BackToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -19,13 +26,6 @@ const BackToTopButton = () => {
 
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
 
   return (
     <button

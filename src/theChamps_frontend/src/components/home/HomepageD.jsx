@@ -11,47 +11,51 @@ import { useAuth } from "../../auth/useClient";
 
 const HomePageD = () => {
   const [dataBlocks, setDataBlocks] = useState([
-    { value: "1", label: "Total Users", unit: "k+" },
-    { value: "0", label: "Total Collections", unit: "k+" },
-    { value: "0", label: "Total NFTs", unit: "+" },
-    { value: "0", label: "NFT sales", unit: "x" },
+    // { value: "1", label: "Total Users", unit: "k+" },
+    // { value: "0", label: "Total Collections", unit: "k+" },
+    // { value: "0", label: "Total NFTs", unit: "+" },
+    // { value: "0", label: "NFT sales", unit: "x" },
+    { value: "10000", label: "Fans", unit: "+" },
+    { value: "1", label: "Total Collections" },
+    { value: "100000", label: "Digital Collectibles" },
+    { value: "0", label: "NFT sales" },
   ]);
   const [counts, setCounts] = useState([]);
   // const [backend] = useCanister("backend");
-  const { backendActor } = useAuth();
+  // const { backendActor } = useAuth();
 
-  useEffect(() => {
-    const getStat = async () => {
-      try {
-        const res = await backendActor?.getallstats();
-        console.log(res);
-        // Assuming `res` is an object with the same keys as `dataBlocks`
-        const newBlocks = [
-          {
-            value: parseInt(res.totalusers).toString(),
-            label: "Total Users",
-            unit: "k+",
-          },
-          {
-            value: parseInt(res.totalCollections).toString(),
-            label: "Total Collections",
-            unit: "k+",
-          },
-          {
-            value: parseInt(res.totalnfts).toString(),
-            label: "Total NFTs",
-            unit: "+",
-          },
-          { value: "0", label: "NFT sales", unit: "x" },
-        ];
-        setDataBlocks(newBlocks);
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getStat();
-  }, [backendActor]);
+  // useEffect(() => {
+  //   const getStat = async () => {
+  //     try {
+  //       const res = await backendActor?.getallstats();
+  //       console.log(res);
+  //       // Assuming `res` is an object with the same keys as `dataBlocks`
+  //       const newBlocks = [
+  //         {
+  //           value: parseInt(res.totalusers).toString(),
+  //           label: "Total Users",
+  //           unit: "k+",
+  //         },
+  //         {
+  //           value: parseInt(res.totalCollections).toString(),
+  //           label: "Total Collections",
+  //           unit: "k+",
+  //         },
+  //         {
+  //           value: parseInt(res.totalnfts).toString(),
+  //           label: "Total NFTs",
+  //           unit: "+",
+  //         },
+  //         { value: "0", label: "NFT sales", unit: "x" },
+  //       ];
+  //       setDataBlocks(newBlocks);
+  //       console.log(res);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getStat();
+  // }, [backendActor]);
 
   useEffect(() => {
     const intervalIds = [];
@@ -77,15 +81,15 @@ const HomePageD = () => {
   }, []);
 
   return (
-    <div className="md:p-24 max-md:p-6 grid grid-cols-4 max-md:grid-cols-2 md:divide-x-2">
+    <div className="p-6 md:p-8 grid grid-cols-4 max-md:grid-cols-2 md:divide-x-2">
       {dataBlocks.map((block, index) => (
         <div
           key={index}
           className="p-6 flex flex-col gap-4 sm:items-center sm:justify-center"
         >
-          <h1 className="font-bold text-7xl max-lg:text-3xl max-sm:text-lg">
+          <h1 className="font-bold text-5xl max-lg:text-3xl max-sm:text-lg">
             <CountUp end={block.value} duration={2} />
-            {/* {block.unit} */}
+            {block.unit}
           </h1>
           <p className="max-lg:text-sm sm:min-w-max text-[#7B7583]">
             {block.label}

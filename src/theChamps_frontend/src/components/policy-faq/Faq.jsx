@@ -9,7 +9,7 @@ const FAQ = () => {
   return (
     <>
       <Header />
-      <div className="md:px-24 mt-44 max-md:px-6">
+      <div className="container mx-auto p-6 md:p-8 mt-12">
         <div className="flex">
           <FancyHeader fancy="FAQ" />
         </div>
@@ -48,9 +48,9 @@ const FaqSearch = () => {
 
 const FaqContents = () => {
   return (
-    <div className="flex flex-col my-4 overflow-hidden">
+    <div className="flex flex-col my-4 overflow-hidden space-y-2">
       {FaqData.map((faq, index) => (
-        <div className="md:py-2" key={index}>
+        <div key={index}>
           <AccordionComponent
             question={faq.question}
             answer={faq.answer}

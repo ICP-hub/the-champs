@@ -8,19 +8,19 @@ export const chooseCardsData = [
     imageSrc: choose1,
     title: "Exclusive Access to Iconic Players",
     description:
-      "Gain access to a curated selection of iconic football player NFTs, representing legendary figures from past and present. Our platform offers a unique opportunity to own digital collectibles of your favorite players, immortalized on the blockchain forever.",
+      "Gain access to exclusive meet-and-greet events with the footballers. Get unique opportunities for dinner or special gatherings with the stars. Obtain signed merchandise and memorabilia. Participate in football-related events and friendly matches.",
   },
   {
     imageSrc: choose4,
-    title: "Personalized Fan Experience",
+    title: "Support Local Football Talent",
     description:
-      "Tailor your fan experience to suit your preferences and interests. Customize your profile, set notifications for player auctions and club updates, and receive personalized recommendations based on your collecting habits and favorite players. Our platform puts you in control of your football journey.        ",
+      "The Champs is committed to donating 10% of the sales to support local Indonesian football talent. Through donations to various charities, we ensure the proper development of local talent and participate in supporting the next generation of football stars.",
   },
   {
     imageSrc: choose2,
-    title: "Transparent and Secure Transactions",
+    title: "Secure & Easy to use",
     description:
-      "Our platform utilizes blockchain technology to ensure transparent and secure transactions. Each football player NFT is minted on the Ethereum blockchain, providing immutable ownership records and eliminating the risk of counterfeit or fraudulent activity.        ",
+      "Experience seamless and secure transactions on our website. Our payment system ensures your information is protected, and our user-friendly interface makes the account creation process hassle-free.",
   },
   {
     imageSrc: choose3,

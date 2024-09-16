@@ -10,95 +10,100 @@ import { AnimatePresence, motion } from "framer-motion";
 /* ----------------------------------------------------------------------------------------------------- */
 const questions = [
   {
-    question: "What is Champ's NFT Collection?",
+    question: "What is Champs’ Digital Collectible Collection?",
     answer: (
       <>
         <p>
-          Champ's NFT Collection is a curated set of digital artworks created by
-          talented artists.
+          Our new Digital Collectible Collection includes an exclusive picture
+          of 20 Indonesian Football stars taken by renowned photographer Jerry
+          Aurum.
         </p>
-        <p>
+        {/* <p>
           These artworks are tokenized on the blockchain, allowing collectors to
           own unique digital assets.
-        </p>
+        </p> */}
       </>
     ),
   },
   {
-    question: "How can we buy and invest in NFTs?",
+    question: "Who are the players in the Champs Season 2024?",
     answer: (
       <>
-        <p>
+        {/* <p>
           Buying and investing in NFTs involves purchasing digital assets using
           cryptocurrency on NFT marketplaces.
         </p>
         <p>
           Investors can participate in auctions or directly purchase NFTs from
           creators or secondary markets.
+        </p> */}
+      </>
+    ),
+  },
+  {
+    question: "Why choose Champs’ Digital Collectible?",
+    answer: (
+      <>
+        <p>
+          Champs is pioneering the Digital Collectible space for football fans
+          in Southeast Asia, making high-value collectibles accessible through
+          fractional ownership. Deeply integrated with Indonesian football,
+        </p>
+        <p>
+          It features top footballers and clubs, offering real-world benefits
+          like meet-and-greets and signed merchandise. Additionally, a
+          significant portion of proceeds supports the development of local
+          football talent, aligning fans' passion with a meaningful cause.
         </p>
       </>
     ),
   },
   {
-    question: "Why should we choose Champ's NFT?",
+    question: "Will other collections be added in the future?",
     answer: (
       <>
         <p>
-          Champ's NFT offers a unique collection of high-quality artworks
-          created by renowned artists.
+          Definitely. The 2024 collection is just a starting point for Champs
+          and we have exciting upcoming projects on their way.
         </p>
-        <p>
-          Each NFT is securely stored on the blockchain, ensuring authenticity
-          and provenance.
-        </p>
-      </>
-    ),
-  },
-  {
-    question: "Where can we buy and sell NFTs?",
-    answer: (
-      <>
-        <p>
-          NFTs can be bought and sold on various online marketplaces and
-          platforms dedicated to digital art and collectibles.
-        </p>
-        <p>
+        {/* <p>
           Popular marketplaces include OpenSea, Rarible, and Foundation, among
           others.
-        </p>
+        </p> */}
       </>
     ),
   },
   {
-    question: "How secure is Champ's token?",
+    question: "How do I contact customer service?",
     answer: (
       <>
         <p>
-          Champ's token is built on a secure blockchain network, ensuring
-          transparency and immutability.
+          {/* Champ's token is built on a secure blockchain network, ensuring
+          transparency and immutability. */}
+          You can reach out to us by email at xxxx@gmail.com.
         </p>
-        <p>
+        {/* <p>
           Smart contract audits and security measures are implemented to
           safeguard the token and protect investors' assets.
-        </p>
+        </p> */}
       </>
     ),
   },
-  {
-    question: "What is your contract address?",
-    answer: (
-      <>
-        <p>
-          The contract address for Champ's token is available on our official
-          website and can be verified on blockchain explorers.
-        </p>
-        <p>
-          Please refer to our documentation or contact support for further
-          assistance.
-        </p>
-      </>
-    ),
-  },
+  // {
+  //   question: "What is your contract address?",
+  //   answer: (
+  //     <>
+  //       <p>
+  //         The contract address for Champ's token is available on our official
+  //         website and can be verified on blockchain explorers.
+  //       </p>
+  //       <p>
+  //         Please refer to our documentation or contact support for further
+  //         assistance.
+  //       </p>
+  //     </>
+  //   ),
+  // },
 ];
 
 /* ----------------------------------------------------------------------------------------------------- */
@@ -106,7 +111,7 @@ const questions = [
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageI = () => {
   return (
-    <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
+    <div className="p-6 md:p-8 flex flex-col gap-8">
       <div className="flex flex-col justify-center items-center font-bold text-6xl max-[900px]:text-3xl">
         <h1>Your Questions,</h1>
         <span className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] inline-block text-transparent bg-clip-text">

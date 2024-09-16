@@ -10,6 +10,8 @@ import { idlFactory } from "../../../../wallet/ledger.did";
 import { host, ids } from "../../../../DevConfig";
 import toast from "react-hot-toast";
 import { AuthClient } from "@dfinity/auth-client";
+import champsImg from "../../assets/CHAMPS.png";
+import GopayLogo from "../../assets/wallet-images/Gopay.svg";
 
 const BuyNowCard = ({
   onOpen,
@@ -19,18 +21,21 @@ const BuyNowCard = ({
   selected,
   exchange,
   loading,
-  product,
+  nftdetails,
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [metaData, setMetaData] = useState(null);
   // const { principal } = useConnect();
-  const { isAuthenticated, principal, identity } = useAuth();
+  const { isAuthenticated, principal, identity, backendActor } = useAuth();
   const [balance, setBalance] = useState(null);
   const [buyLoading, setBuyLoading] = useState(false);
-  const [testPrincipal, setTestPrincipal] = useState(null);
+  // const [testPrincipal, setTestPrincipal] = useState(null);
+  const selectedMethodToBuy = selected.value.toLowerCase();
 
-  console.log("identity is ", identity);
+  // console.log(selectedMethodToBuy);
 
+  // console.log("identity is ", identity);
+  // console.log("NFTDetails ", nftdetails[0].nft.owner);
   const createTokenActor = async (canisterId) => {
     //console.log("identity : ",identity)
     // const authClient = await AuthClient.create();
@@ -191,54 +196,59 @@ const BuyNowCard = ({
         10
       );
       console.log("sendable amount console ", sendableAmount);
-      // if (currentBalance > sendableAmount) {
-      //   console.log("We can send the amount");
-      // transaction logic
-      // let transaction = {
-      //   amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
-      //   from_subaccount: [],
-      //   spender: {
-      //     // Need review on this
-      //     // owner: product[1],
-      //     owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
-      //     subaccount: [],
-      //   },
-      //   fee: parseInt(currentMetaData["icrc1:fee"]),
-      //   memo: [],
-      //   created_at_time: [],
-      //   expected_allowance: [],
-      //   expires_at: [],
-      // };
-      let transaction = {
-        from_subaccount: [],
-        spender: {
-          owner: Principal.fromText(ids.backendCan),
-          subaccount: [],
-        },
-        amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
-        expected_allowance: [],
-        expires_at: [],
-        fee: [currentMetaData["icrc1:fee"]],
-        memo: [],
-        created_at_time: [],
-      };
-      console.log("transaction ", transaction);
-      // console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
-      const approveRes = await tokenActor.icrc2_approve(transaction);
-      console.log("Payment Approve Response ", approveRes);
-      if (approveRes.Err) {
-        const errorMessage = `Insufficient funds. Balance: ${approveRes.Err.InsufficientFunds.balance}`;
-        toast.error(errorMessage);
-        return;
+      console.log("current balance console ", currentBalance);
+      if (currentBalance > sendableAmount) {
+        //   console.log("We can send the amount");
+        // transaction logic
+        // let transaction = {
+        //   amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+        //   from_subaccount: [],
+        //   spender: {
+        //     // Need review on this
+        //     // owner: nftdetails[1],
+        //     owner: Principal.fromText("l4mwy-piaaa-aaaak-akqdq-cai"),
+        //     subaccount: [],
+        //   },
+        //   fee: parseInt(currentMetaData["icrc1:fee"]),
+        //   memo: [],
+        //   created_at_time: [],
+        //   expected_allowance: [],
+        //   expires_at: [],
+        // };
+        let transaction = {
+          from_subaccount: [],
+          spender: {
+            owner: Principal.fromText(ids.backendCan),
+            subaccount: [],
+          },
+          amount: Number(sendableAmount) + Number(currentMetaData["icrc1:fee"]),
+          expected_allowance: [],
+          expires_at: [],
+          fee: [currentMetaData["icrc1:fee"]],
+          memo: [],
+          created_at_time: [],
+        };
+        console.log("transaction ", transaction);
+        // console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
+        const approveRes = await tokenActor.icrc2_approve(transaction);
+        console.log("Payment Approve Response ", approveRes);
+        if (approveRes.Err) {
+          const errorMessage = `Insufficient funds. Balance: ${approveRes.Err.InsufficientFunds.balance}`;
+          toast.error(errorMessage);
+          return;
+        } else {
+          afterPaymentApprove(
+            parseInt(approveRes?.Ok).toString(),
+            sendableAmount,
+            currentBalance
+          );
+        }
       } else {
-        afterPaymentApprove(
-          parseInt(approveRes?.Ok).toString(),
-          sendableAmount
+        console.log("Insufficient Balance to purchase");
+        toast.error(
+          `Insufficient balance. Balance : ${currentBalance / 10 ** 8}`
         );
       }
-      // } else {
-      //   console.log("Insufficient Balance to purchase");
-      // }
     } catch (err) {
       console.error("Error in transfer approve", err);
     } finally {
@@ -247,36 +257,54 @@ const BuyNowCard = ({
   };
 
   // After approve payment
-  const afterPaymentApprove = async (paymentId, amount) => {
+  const afterPaymentApprove = async (paymentId, amount, currentBalance) => {
     console.log(
       `You are going to send ,${amount} and your payment ID is ${paymentId}`
     );
+    const paymentOptions = {
+      [selectedMethodToBuy]: null,
+    };
+    // NFTID , From , To , PaymentOptions,Total Amount
+    try {
+      const paymentResponse = await backendActor.buytokens(
+        nftdetails[1],
+        principal,
+        nftdetails[0].nft.owner,
+        parseInt(quantity),
+        paymentOptions,
+        parseInt(amount)
+      );
+      console.log("Payment Success Response ", paymentResponse);
+    } catch (err) {
+      console.error("Insufficient fund in wallet ", err);
+      toast.error("Insufficient fund in wallet. Balance : ", currentBalance);
+    }
   };
 
   // decrement qty
-  // const handleDecrement = () => {
-  //   setQuantity((prev) => Math.max(prev - 1, 1));
-  // };
+  const handleDecrement = () => {
+    setQuantity((prev) => Math.max(prev - 1, 1));
+  };
 
-  // const handleIncrement = () => {
-  //   setQuantity((prev) =>
-  //     prev < parseInt(product[0].fractional_token.totalSupply) ? prev + 1 : prev
-  //   );
-  // };
+  const handleIncrement = () => {
+    setQuantity((prev) =>
+      prev < parseInt(nftdetails[0].totalSupply) ? prev + 1 : prev
+    );
+  };
 
   // console.log("metaData state ", metaData);
   // console.log("onwer principal ", principal);
 
-  useEffect(() => {
-    const fetchIdentity = async () => {
-      const authClient = await AuthClient.create();
-      const identity = authClient.getIdentity();
-      const principal = identity.getPrincipal();
-      setTestPrincipal(principal);
-    };
+  // useEffect(() => {
+  //   const fetchIdentity = async () => {
+  //     const authClient = await AuthClient.create();
+  //     const identity = authClient.getIdentity();
+  //     const principal = identity.getPrincipal();
+  //     setTestPrincipal(principal);
+  //   };
 
-    fetchIdentity();
-  }, []);
+  //   fetchIdentity();
+  // }, []);
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar top-0">
@@ -298,7 +326,15 @@ const BuyNowCard = ({
         </p>
         <div className="my-2 h-px w-full bg-gray-300"></div>
         <h4 className="font-semibold capitalize">payment method</h4>
-        <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2 font-semibold">
+        <button className="flex p-2 w-full gap-2 items-center text-white font-semibold border-2 border-gray-300 rounded-md">
+          <img
+            src={GopayLogo}
+            alt="gopay_logo"
+            className="h-10 w-48 object-cover"
+          />
+          <span>{/* <RiVerifiedBadgeFill color="white" size={32} /> */}</span>
+        </button>
+        {/* <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2 font-semibold">
           <button
             className={`p-4 flex justify-between items-center ${
               selected.value === "icp"
@@ -329,8 +365,8 @@ const BuyNowCard = ({
               </span>
             )}
           </button>
-        </div>
-        {/* <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+        </div> */}
+        <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
           <span>Share</span>
           <div className="flex border rounded-md overflow-hidden items-center">
             <button
@@ -349,14 +385,15 @@ const BuyNowCard = ({
               <HiPlus className="h-6" />
             </button>
           </div>
-        </div> */}
+        </div>
         <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
           <span>Total</span>
           {loading ? (
             <span className="h-5 w-44 bg-gray-500 animate-pulse rounded-2xl"></span>
           ) : (
             <div className="flex gap-1 items-center">
-              <IcpLogo size={16} />
+              {/* <IcpLogo size={16} /> */}
+              IDR
               <span>{((price_share * quantity) / exchange).toFixed(6)}</span>
               <span className="text-gray-500">
                 ({(price_share * quantity).toFixed(3)} USD)

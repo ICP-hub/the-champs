@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { getCurrentTab } from "../../../../redux/reducers/myProfileReducer";
+import { motion } from "framer-motion";
 
 const initialStateIndex = {
   Profile: 0,
@@ -16,27 +17,12 @@ const Tabs = ({ tabs, defaultTab, onTabChange }) => {
   const [selectedTabIndex, setSelectedTabIndex] = useState(
     initialStateIndex[state] || 0
   );
-  const tabUnderlineRef = useRef(null);
-  const tabsRef = useRef([]);
-  const dispatch = useDispatch();
 
-  const profileData = useSelector((state) => console.log(state));
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getCurrentTab(selectedTabIndex));
   }, [selectedTabIndex]);
-
-  // console.log(selectedTabIndex);
-  useEffect(() => {
-    const currentTab = tabsRef.current[selectedTabIndex];
-    const tabUnderlineWidth = currentTab?.clientWidth ?? 0;
-    const tabUnderlineLeft = currentTab?.offsetLeft ?? 0;
-
-    if (tabUnderlineRef.current) {
-      tabUnderlineRef.current.style.width = `${tabUnderlineWidth}px`;
-      tabUnderlineRef.current.style.left = `${tabUnderlineLeft}px`;
-    }
-  }, [selectedTabIndex, tabs]);
 
   const handleTabClick = (index) => {
     setSelectedTabIndex(index);
@@ -47,27 +33,64 @@ const Tabs = ({ tabs, defaultTab, onTabChange }) => {
 
   return (
     <div className="relative">
-      <div className="flex border-b-2 border-[#E9D6E5] md:gap-10 gap-4">
-        {tabs.map((tab, index) => (
-          <button
-            key={index}
-            ref={(el) => (tabsRef.current[index] = el)}
-            className={`${
-              index === selectedTabIndex
-                ? "bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] inline-block text-transparent bg-clip-text"
-                : "text-gray-600"
-            } font-semibold max-md:text-sm py-2 px-1 cursor-pointer`}
-            onClick={() => handleTabClick(index)}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-      <span
-        ref={tabUnderlineRef}
-        className="absolute bottom-0 block h-1 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] transition-all duration-300"
-      />
+      {tabs.map((tab, index) => (
+        <Chip
+          key={index}
+          text={tab}
+          selected={selectedTabIndex === index}
+          setSelected={() => handleTabClick(index)}
+        />
+      ))}
+      <div className="h-1 w-full bg-gray-200 absolute bottom-0"></div>
     </div>
+
+    // <div className="relative bg-gradient-to-br from-[#fc001e] to-[#ff7d57]">
+    //   <div className="flex border-b-2 border-[#E9D6E5] md:gap-10 gap-4">
+    //     {tabs.map((tab, index) => (
+    //       <button
+    //         key={index}
+    //         ref={(el) => (tabsRef.current[index] = el)}
+    //         className={`${
+    //           index === selectedTabIndex
+    //             ? "bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] inline-block text-transparent bg-clip-text"
+    //             : "text-gray-600"
+    //         } font-semibold max-md:text-sm py-2 px-1 cursor-pointer`}
+    //         onClick={() => handleTabClick(index)}
+    //       >
+    //         {tab}
+    //       </button>
+    //     ))}
+    //   </div>
+    //   <span
+    //     ref={tabUnderlineRef}
+    //     className="absolute bottom-0 block h-1 bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] transition-all duration-300"
+    //   />
+    // </div>
+  );
+};
+
+const Chip = ({ text, selected, setSelected }) => {
+  const animationVar = {
+    initial: { x: -100 },
+    animate: { x: 0, borderBottom: "#fc001e" },
+  };
+  return (
+    <button
+      onClick={setSelected}
+      className={`px-2.5 py-2 relative font-semibold text-sm md:text-xl hover:text-[#fc001e]
+         z-10`}
+    >
+      <div className={`relative z-10 py-2 ${selected && "gradient_text"}`}>
+        {text}
+      </div>
+      {selected && (
+        <motion.div
+          layoutId="pill-tab"
+          transition={{ type: "spring", duration: 0.5 }}
+          className="absolute inset-0 z-0 border-b-4 border-red-500"
+        ></motion.div>
+      )}
+    </button>
   );
 };
 

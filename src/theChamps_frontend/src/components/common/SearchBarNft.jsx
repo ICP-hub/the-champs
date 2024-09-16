@@ -4,7 +4,6 @@ import { Menu, Transition } from "@headlessui/react";
 import { IoGridOutline } from "react-icons/io5";
 import { CiBoxList } from "react-icons/ci";
 import { HiMagnifyingGlass } from "react-icons/hi2";
-import { motion } from "framer-motion";
 
 const Searchbar = ({
   grid,
@@ -15,7 +14,6 @@ const Searchbar = ({
   collection,
   setSearchResults,
   setSearch,
-  setLoading,
 }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const menuButtonRef = useRef(null);
@@ -42,68 +40,64 @@ const Searchbar = ({
 
   const applyFilters = () => {
     setSearch(true);
-    setLoading(true);
     let sortedResults;
-
     switch (selectedOption) {
       case "name":
         sortedResults = [...collection].sort((a, b) =>
-          a.details.name.localeCompare(b.details.name)
+          a[0].fractional_token[0][1].Text.localeCompare(
+            b[0].fractional_token[0][1].Text
+          )
         );
         break;
       case "name_reverse":
         sortedResults = [...collection].sort((a, b) =>
-          b.details.name.localeCompare(a.details.name)
+          b[0].fractional_token[0][1].Text.localeCompare(
+            a[0].fractional_token[0][1].Text
+          )
         );
         break;
       case "date":
         sortedResults = [...collection].sort((a, b) => {
-          const dateA = Number(BigInt(a.details.created_at) / BigInt(1000000));
-          const dateB = Number(BigInt(b.details.created_at) / BigInt(1000000));
+          const dateA = a[0].price_per_share;
+
+          const dateB = b[0].price_per_share;
           return dateB - dateA;
         });
         break;
       case "date_reverse":
         sortedResults = [...collection].sort((a, b) => {
-          const dateA = Number(BigInt(a.details.created_at) / BigInt(1000000));
-          const dateB = Number(BigInt(b.details.created_at) / BigInt(1000000));
+          const dateA = a[0].price_per_share;
+          const dateB = b[0].price_per_share;
           return dateA - dateB;
         });
         break;
       default:
         sortedResults = collection;
     }
-
     setSearchResults(sortedResults);
 
     // Close the menu
     if (menuButtonRef.current) {
       menuButtonRef.current.click();
     }
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
   };
 
   return (
     <>
       <div className="flex justify-between gap-2 ">
         <div
-          className={`flex text-xl items-center border-[1px] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-2 ${
-            gridrequired ? " sm:w-[80%]" : "sm:w-[85%]"
-          } overflow-hidden w-[60%] mb-4`}
+          className={`flex text-xl items-center border-[1px] sm:w-[85%] gap-4 text-gray-600 border-gray-400 rounded-md px-3 md:py-2  overflow-hidden w-[60%] mb-4`}
         >
           <CiSearch size={24} />
           <input
             type="text"
-            placeholder="Search our collection"
+            placeholder="Search our Nft"
             className="bg-transparent outline-none w-full"
             value={value}
             onChange={handleSearch}
           />
         </div>
-        <div className=" lg:w-[12%] ">
+        <div className=" lg:w-[13%] ">
           <Menu as="div" className="relative inline-block text-left w-full">
             <div>
               <Menu.Button
@@ -151,7 +145,7 @@ const Searchbar = ({
                     </button>
                   </div>
                   <div className="m-6 mt-2 text-center">
-                    <h1 className="text-md text-left font-medium">Sort By</h1>
+                    <h1 className="text-md text-left font-medium"> By Price</h1>
                     <button
                       className={`mt-2 flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300 bg-gradient-to-r hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg ${
                         selectedOption === "date"
@@ -160,7 +154,7 @@ const Searchbar = ({
                       }`}
                       onClick={handleSortByDate}
                     >
-                      Newest Creations
+                      High to Low
                     </button>
                     <button
                       className={`mt-2 flex items-center w-full justify-center text-gray-500 px-3 py-2 border-[1.5px] border-gray-300 bg-gradient-to-r hover:from-[#FF7D57] hover:to-[#FC001E] hover:border-white hover:text-white rounded-lg ${
@@ -170,9 +164,10 @@ const Searchbar = ({
                       }`}
                       onClick={handleSortByDateReverse}
                     >
-                      Oldest Creations
+                      Low to High
                     </button>
                   </div>
+
                   <div className="m-6 text-center">
                     <button
                       className="flex items-center w-full justify-center px-3 py-2 border-[1.5px] button border-white text-white rounded-lg bg-gradient-to-r from-[#FF7D57] to-[#FC001E]"

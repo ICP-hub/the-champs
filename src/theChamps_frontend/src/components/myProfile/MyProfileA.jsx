@@ -1,6 +1,7 @@
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ imports.
 /* ----------------------------------------------------------------------------------------------------- */
+import { useAuth } from "../../auth/useClient";
 import FancyHeader from "../common/FancyHeader";
 import Tabs from "../common/Tabs";
 /* ----------------------------------------------------------------------------------------------------- */
@@ -11,6 +12,10 @@ const MyProfileA = ({ onTabChange }) => {
     // console.log("curr tab ", tabIndex);
     onTabChange(tabIndex);
   };
+
+  //const { backenActor } = useAuth();
+
+  // console.log("backend Actore check", backendActor);
 
   // console.log(location.state, "hello");
 

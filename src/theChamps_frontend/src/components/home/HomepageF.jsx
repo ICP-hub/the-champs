@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 /* ----------------------------------------------------------------------------------------------------- */
 const HomePageF = () => {
   return (
-    <div className="md:p-24 max-md:p-6">
+    <div className="p-6 md:p-8">
       <div className="border-2 rounded-2xl flex py-12 flex-col gap-8">
         <FancyHeader normal="Never" fancy="miss a drop!" />
         <p className="text-[#7B7583] flex items-center justify-center max-sm:flex-col">

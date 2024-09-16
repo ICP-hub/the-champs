@@ -236,6 +236,12 @@
   border-radius: 10px;
 }
 
+.gradient_text {
+  background: linear-gradient(to bottom right, #fc001e, #ff7d57);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 /* .cards:hover {
   border: 2px solid transparent;
   border-radius: 16px;
@@ -535,4 +541,14 @@
 
 .no-scrollbar::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
+}
+@media (min-width: 526px) and (max-width: 768px) {
+  .marginTop {
+    margin-top: 440px;
+  }
+}
+@media (max-width: 525px) {
+  .marginTop1 {
+    margin-top: 200px;
+  }
 }

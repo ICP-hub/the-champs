@@ -25,7 +25,7 @@ const HomeFeatured = () => {
   }, [backendActor]);
 
   return (
-    <div className="md:p-24 max-md:p-6 flex flex-col gap-8">
+    <div className="p-6 md:p-8 flex flex-col gap-8">
       <FancyHeader normal="View" fancy="All featured collections" small />
       {isLoading ? (
         <div className="grid lg:grid-cols-1 xl:grid-cols-1 gap-8 max-lg:grid-cols-1 mt-8 max-sm:grid-cols-1  ">
