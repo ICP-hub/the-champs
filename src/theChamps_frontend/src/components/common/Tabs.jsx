@@ -80,9 +80,9 @@ const Chip = ({ text, selected, setSelected }) => {
       className={`px-2.5 py-2 relative font-semibold text-sm md:text-xl hover:text-[#fc001e]
          z-10`}
     >
-      <span className={`relative z-10 ${selected && "gradient_text"}`}>
+      <div className={`relative z-10 py-2 ${selected && "gradient_text"}`}>
         {text}
-      </span>
+      </div>
       {selected && (
         <motion.div
           layoutId="pill-tab"

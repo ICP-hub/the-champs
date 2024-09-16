@@ -43,7 +43,7 @@ const CollectionPage = ({ name }) => {
     <>
       <Header />
       <motion.div
-        className="container mx-auto h-full"
+        className="container mx-auto min-h-screen"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}

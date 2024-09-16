@@ -19,7 +19,6 @@ const fixedStyle = {
   background: "rgba(255, 255, 255,0.85)",
   backdropFilter: "blur(6px)",
   WebkitBackdropFilter: "blur(3.9px)",
-  border: "1px solid rgba(255, 255, 255, 0.3)",
 };
 
 const Header = () => {

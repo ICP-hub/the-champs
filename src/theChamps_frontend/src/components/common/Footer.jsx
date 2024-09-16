@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 /* ----------------------------------------------------------------------------------------------------- */
 const Footer = () => {
   return (
-    <div className="tracking-wider bg-gray-50">
+    <div className="tracking-wider">
       <div className="container mx-auto flex max-md:flex-col items-center">
         <div className="flex mt-auto flex-col gap-2 w-2/3 p-6 md:p-8">
           <Link
