@@ -41,12 +41,14 @@ import { GoHeartFill } from "react-icons/go";
 import { GoHeart } from "react-icons/go";
 import { HiMinus, HiPlus } from "react-icons/hi2";
 import BuyNowCard from "../common/BuyNowCard";
+import toast from "react-hot-toast";
+import BuyNowEarly from "../common/BuyNowEarly";
 
 const ProductCard = ({ product, setShowHeader, showHeader }) => {
   // const { isConnected, principal } = useConnect();
   const { id } = useParams();
   // const [backend] = useCanister("backend");
-  const { backendActor } = useAuth();
+  const { backendActor, isAuthenticated } = useAuth();
   const [favourites, setFavourites] = useState();
   const [open, setOpen] = useState(false);
   // const [productInFavourites, setProductInFavourites] = useState(false);
@@ -303,6 +305,12 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     getFav();
   }, [favChanged]);
 
+  useEffect(() => {
+    open &&
+      !isAuthenticated &&
+      toast.error("You need to login to your account to make a purchase");
+  }, [isAuthenticated, open]);
+
   // add or remove a favorite
   const toggleFav = async (product) => {
     try {
@@ -344,24 +352,31 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
 
   // const decrementQuantity = () =>
   //   setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  console.log(parseInt(product));
 
   return (
     <>
-      {open && (
-        <BuyNowCard
+      {open && isAuthenticated && (
+        // <BuyNowCard
+        //   onOpen={setOpen}
+        //   price_share={product[0].price_per_share}
+        //   nftLogo={product[0].nft.logo.data}
+        //   setSelected={setSelectedPlan}
+        //   selected={selectedPlan}
+        //   exchange={exchange}
+        //   loading={loading3}
+        //   nftdetails={product}
+        // />
+        <BuyNowEarly
           onOpen={setOpen}
-          price_share={product[0].price_per_share}
-          nftLogo={product[0].nft.logo.data}
-          setSelected={setSelectedPlan}
-          selected={selectedPlan}
-          exchange={exchange}
-          loading={loading3}
-          nftdetails={product}
+          nftId={parseInt(product[0].nft.id)}
+          nftCanId={product[1]}
+          totalSupply={parseInt(product[0].totalSupply)}
         />
       )}
       <div
         // className="border rounded-xl overflow-hidden"
-        className="border rounded-xl overflow-hidden grid grid-cols-3 max-lg:grid-cols-1"
+        className="border rounded-xl overflow-hidden grid grid-cols-3 max-lg:grid-cols-1 border-gray-300 mb-4"
         style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
       >
         {loading4 && (
@@ -480,12 +495,12 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
             <ReadMore text={product[1].toText()} maxLength={20} />
           </p> */}
           <p className="line-clamp-6">
-            {product[0].nft.metadata[0].description}
+            {product[0].nft.metadata[0]?.description}
           </p>
           <div className="flex justify-between sm:items-center mb-4 max-sm:flex-col mt-auto">
             <p className="bg-opacity-100 py-2 flex gap-2 rounded-md w-[50%] text-xl font-medium">
               {/* <IcpLogo /> */}
-              <span>IDR :</span>
+              <span>Rp. </span>
               {loading3 ? (
                 <div className="h-6 w-[50px] bg-gray-100 rounded-2xl animate-pulse"></div>
               ) : (

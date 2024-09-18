@@ -25,6 +25,7 @@ import { HiMiniUserCircle, HiOutlineDocumentText } from "react-icons/hi2";
 import { motion } from "framer-motion";
 import BuyNowCard from "../components/common/BuyNowCard";
 import { GoHeart, GoHeartFill } from "react-icons/go";
+import BuyNowEarly from "../components/common/BuyNowEarly";
 
 const ProductDetails = () => {
   const [nftLoading, setNftLoading] = useState(true);
@@ -176,20 +177,27 @@ const ProductDetails = () => {
   }, []);
 
   // console.log("nftData in productDetails ", nftData);
+  console.log(id);
 
   return (
     <>
       <Header />
       {open && (
-        <BuyNowCard
+        // <BuyNowCard
+        //   onOpen={setOpen}
+        //   price_share={nftData.price_per_share}
+        //   nftLogo={nftData.nft.logo.data}
+        //   setSelected={setSelectedPlan}
+        //   selected={selectedPlan}
+        //   exchange={exchange}
+        //   loading={loading3}
+        //   nftdetails={product}
+        // />
+        <BuyNowEarly
           onOpen={setOpen}
-          price_share={nftData.price_per_share}
-          nftLogo={nftData.nft.logo.data}
-          setSelected={setSelectedPlan}
-          selected={selectedPlan}
-          exchange={exchange}
-          loading={loading3}
-          nftdetails={product}
+          // nftId={parseInt(nftData.nft.id)}
+          // nftCanId={nftData[1]}
+          // totalSupply={parseInt(product[0].totalSupply)}
         />
       )}
       {nftLoading ? (

@@ -112,7 +112,7 @@ const CollectionPage = ({ name }) => {
               </div>
             </div>
           ) : (
-            <div className="grid min-[948px]:grid-cols-1 gap-x-8 gap-y-8 mt-8 px-6 lg:px-24">
+            <div className="grid min-[948px]:grid-cols-1 gap-x-8 gap-y-8 mt-8 lg:px-24">
               {search ? (
                 searchResults?.length > 0 ? (
                   searchResults.map((prod, index) => (

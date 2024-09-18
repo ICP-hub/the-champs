@@ -326,13 +326,8 @@ const BuyNowCard = ({
         </p>
         <div className="my-2 h-px w-full bg-gray-300"></div>
         <h4 className="font-semibold capitalize">payment method</h4>
-        <button className="flex p-2 w-full gap-2 items-center text-white font-semibold border-2 border-gray-300 rounded-md">
-          <img
-            src={GopayLogo}
-            alt="gopay_logo"
-            className="h-10 w-48 object-cover"
-          />
-          <span>{/* <RiVerifiedBadgeFill color="white" size={32} /> */}</span>
+        <button className="flex p-2 w-full gap-2 items-center font-semibold border-2 border-gray-300 rounded-md">
+          Select payment method
         </button>
         {/* <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2 font-semibold">
           <button
@@ -393,7 +388,7 @@ const BuyNowCard = ({
           ) : (
             <div className="flex gap-1 items-center">
               {/* <IcpLogo size={16} /> */}
-              IDR
+              Rp.
               <span>{((price_share * quantity) / exchange).toFixed(6)}</span>
               <span className="text-gray-500">
                 ({(price_share * quantity).toFixed(3)} USD)
