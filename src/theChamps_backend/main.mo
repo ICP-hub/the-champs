@@ -292,7 +292,7 @@ actor Champs {
         return 0.0;
     };
 
-    public shared ({ caller = user }) func buytokens(tokencanisterid : Principal, from : Principal, to : Principal, numberoftokens : Nat, paymentOption : { #icp; #ckbtc }, amount : Nat) : async (ICRC.Result) {
+    public shared ({ caller = user }) func buytokens(tokencanisterid : Principal, from : Principal, to : Principal, numberoftokens : Nat) : async (ICRC.Result) {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
