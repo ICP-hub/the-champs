@@ -286,9 +286,9 @@ const MintNft = () => {
             value={formData.priceInUsd}
             onChange={handleChange}
           />
-          {formErrors.priceInUsd && (
+          {/* {formErrors.priceInUsd && (
             <p className="text-red-500 text-xs">{formErrors.priceInUsd}</p>
-          )}
+          )} */}
         </div>
         <div>
           <div className="flex justify-between items-center pb-2">
