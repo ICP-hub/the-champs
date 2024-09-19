@@ -292,7 +292,7 @@ actor Champs {
         return 0.0;
     };
 
-    public shared ({ caller = user }) func buytokens(tokencanisterid : Principal, from : Principal, to : Principal, numberoftokens : Nat) : async (ICRC.Result) {
+    public shared ({ caller = user }) func buytokens(tokencanisterid : Principal, from : Principal, to : Principal, numberoftokens : Nat) : async Result.Result<Typestoken.TxIndex, Typestoken.TransferFromError> {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
@@ -330,7 +330,7 @@ actor Champs {
                                 throw Error.reject(debug_show (index));
                             };
                             case (#ok(data)) {
-                                return #Ok(data);
+                                return #ok(data);
                             };
                         };
     };
