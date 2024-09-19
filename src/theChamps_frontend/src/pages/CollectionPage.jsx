@@ -69,57 +69,81 @@ const CollectionPage = ({ name }) => {
           </div> */}
 
           {isLoading || loading ? (
+            <div className="rounded-2xl border-2 mt-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 p-2 gap-2">
+                <div className="">
+                  <img
+                    src={CHAMPS}
+                    alt="loading..."
+                    className="rounded-l-2xl"
+                  />
+                </div>
+                <div className="col-span-2 flex p-4 flex-col">
+                  <span className="text-gray-400 animate-pulse bg-gray-400 rounded-md h-6 w-28 mb-2"></span>
+                  <div className="items-center grid grid-cols-8 gap-1 mb-3">
+                    <div className="animate-pulse bg-gray-600 rounded-md h-4"></div>
+                    <div className="animate-pulse bg-gray-600 rounded-md h-4"></div>
+                    <div className="animate-pulse bg-gray-600 rounded-md h-4"></div>
+                    <div className="animate-pulse bg-gray-600 rounded-md h-4"></div>
+                  </div>
+                  <div className="animate-pulse bg-gray-600 rounded-md h-6 mb-2 w-20"></div>
+                  <div className="animate-pulse bg-gray-400 rounded-md h-12 mb-1"></div>
+                  <div className="animate-pulse bg-gray-400 rounded-md h-12"></div>
+                  <div className="mt-auto animate-pulse bg-gray-300 rounded-md h-8 w-28"></div>
+                </div>
+              </div>
+            </div>
+          ) : (
             // <div className="grid lg:grid-cols-1 xl:grid-cols-1 gap-8 max-lg:grid-cols-1 mt-8 max-sm:grid-cols-1 pb-4 px-6 lg:px-24">
             //   {Array.from({ length: 2 }, (_, index) => (
             //     <ProducrCardLgLoader key={index} />
             //   ))}
             // </div>
-            <div
-              className="flip-card-inner border-2 rounded-2xl"
-              // animate={isFlipped ? "back" : "front"}
-              // variants={flipVariants}
-            >
-              <div className="border rounded-md backface-hidden grid grid-cols-1 md:grid-cols-3 md:space-x-6 max-md:space-y-6">
-                <div>
-                  <img
-                    src={CHAMPS}
-                    // src={collectionImg}
-                    alt="Loading.."
-                    className="rounded-2xl object-cover z-[2]"
-                  ></img>
-                </div>
-                <div className="flex flex-col w-full h-full col-span-2">
-                  <div>
-                    <h1 className="font-bold text-2xl bg-gray-400 max-w-max text-gray-400 rounded-xl animate-pulse">
-                      product name
-                    </h1>
-                    <p className="text-sm font-normal bg-gray-400 max-w-max text-gray-400 rounded-xl animate-pulse mt-2">
-                      krcsw-aaaaa-aaaak-akqea-cai.icp0.io
-                    </p>
-                  </div>
-                  <p className="bg-gray-400 text-gray-400 rounded-xl animate-pulse mt-2">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Ducimus laborum ipsa eveniet nesciunt facere delectus
-                    dolorem tempore placeat. Numquam beatae quam dolores? Ab,
-                    magni possimus numquam dolor ipsa facilis maiores!
-                  </p>
-                  <div className="mt-auto">
-                    <span className="px-4 py-2 bg-gray-400 max-w-max text-gray-400 rounded-xl animate-pulse mt-2 flex items-center justify-center cursor-pointer  max-md:mb-4">
-                      View Collection
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="grid min-[948px]:grid-cols-1 gap-x-8 gap-y-8 mt-8 px-6 lg:px-24">
+            // <div
+            //   className="container mx-auto"
+            //   // animate={isFlipped ? "back" : "front"}
+            //   // variants={flipVariants}
+            // >
+            //   <div className="border rounded-md border-black p-6 md:p-8">
+            //     <div>
+            //       <img
+            //         src={CHAMPS}
+            //         // src={collectionImg}
+            //         alt="Loading.."
+            //         className="rounded-2xl object-cover z-[2] h-40"
+            //       ></img>
+            //     </div>
+            //     <div className="flex flex-col w-full h-full col-span-2">
+            //       <div>
+            //         <h1 className="font-bold text-2xl bg-gray-400 max-w-max text-gray-400 rounded-xl animate-pulse">
+            //           product name
+            //         </h1>
+            //         <p className="text-sm font-normal bg-gray-400 max-w-max text-gray-400 rounded-xl animate-pulse mt-2">
+            //           xxxx-xxxx-xxxx-xxxx-xxx.xxx.xx
+            //         </p>
+            //       </div>
+            //       <p className="bg-gray-400 text-gray-400 rounded-xl animate-pulse mt-2">
+            //         Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            //         Ducimus laborum ipsa eveniet nesciunt facere delectus
+            //         dolorem tempore placeat. Numquam beatae quam dolores? Ab,
+            //         magni possimus numquam dolor ipsa facilis maiores!
+            //       </p>
+            //       <div className="mt-auto">
+            //         <span className="px-4 py-2 bg-gray-400 max-w-max text-gray-400 rounded-xl animate-pulse mt-2 flex items-center justify-center cursor-pointer  max-md:mb-4">
+            //           View Collection
+            //         </span>
+            //       </div>
+            //     </div>
+            //   </div>
+            // </div>
+            <div className="grid min-[948px]:grid-cols-1 gap-x-8 gap-y-8 mt-8">
               {search ? (
                 searchResults?.length > 0 ? (
                   searchResults.map((prod, index) => (
                     <ProductCardLg prod={prod} key={index} />
                   ))
                 ) : (
-                  <div className="text-center mt-20 px-6 lg:px-24 flex justify-center items-center">
+                  <div className="text-center mt-20 px-6 flex justify-center items-center">
                     <p className="px-4 py-2 cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
                       No data found
                     </p>

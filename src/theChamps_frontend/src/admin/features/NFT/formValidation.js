@@ -2,11 +2,11 @@ export const validateForm = (formData, selectedImage) => {
   const errors = {};
 
   if (!formData.name) {
-    errors.name = "NFT Name is required";
+    errors.name = "Name is required";
   }
-  if (!formData.priceInUsd) {
-    errors.priceInUsd = "NFT Price is required";
-  }
+  // if (!formData.priceInUsd) {
+  //   errors.priceInUsd = "NFT Price is required";
+  // }
   // if (!formData.fee) {
   //   errors.fee = "Processing Fee is required";
   // }
@@ -22,7 +22,7 @@ export const validateForm = (formData, selectedImage) => {
     }
   });
   if (!selectedImage) {
-    errors.selectedImage = "NFT Image is required";
+    errors.selectedImage = "Image is required";
   }
 
   return errors;

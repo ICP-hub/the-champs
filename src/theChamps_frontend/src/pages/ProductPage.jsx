@@ -190,7 +190,7 @@ const ProductPage = ({ name }) => {
   useEffect(() => {
     getExchangeRate();
   }, [backendActor]);
-  console.log(collection);
+  // console.log(collection);
   return (
     <>
       {showHeader && <Header />} {/* Conditionally render the header */}
