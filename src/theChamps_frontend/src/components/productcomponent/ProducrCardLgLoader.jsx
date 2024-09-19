@@ -22,7 +22,7 @@ const ProducrCardLgLoader = () => {
             <h4 className="h-6 w-4/5 bg-gray-200 rounded-full animate-pulse mb-2"></h4>
             <h4 className="h-6 w-3/4 bg-gray-200 rounded-full animate-pulse"></h4>
           </div>
-          
+
           {/* <CiHeart size={48} className="cursor-pointer" /> */}
         </div>
         <div className="flex justify-between pt-6 gap-4 text-sm mb-6">
@@ -34,7 +34,6 @@ const ProducrCardLgLoader = () => {
           <h4 className="h-6 w-1/2 bg-gray-200 rounded-full animate-pulse"></h4>
           <h4 className="h-6 w-1/2 bg-gray-200 rounded-full animate-pulse"></h4>
         </div>
-        
       </div>
     </div>
   );

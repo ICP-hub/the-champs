@@ -53,9 +53,7 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
         nftCanId,
         NFTDetail.owner,
         principal,
-        quantity,
-        { icp: null },
-        NFTDetail.priceinusd * quantity
+        quantity
       );
       console.log("response nft purchase", response);
     } catch (err) {
