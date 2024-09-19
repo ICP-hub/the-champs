@@ -184,7 +184,7 @@ const MyFav = () => {
         <CiSearch size={24} />
         <input
           type="text"
-          placeholder="Search Our NFTs"
+          placeholder="Search our Digital Collectibles"
           className="bg-transparent outline-none w-full"
           value={searchQuery}
           onChange={handleSearch}

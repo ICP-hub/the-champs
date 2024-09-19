@@ -26,7 +26,7 @@ const MyProfileA = ({ onTabChange }) => {
       </div>
       <div className="py-6">
         <Tabs
-          tabs={["Profile", "My NFTs", "Favourites", "Activity"]}
+          tabs={["Profile", "My Collectibles", "Favourites", "Activity"]}
           defaultTab={"Profile"}
           onTabChange={handleTabChange}
         />

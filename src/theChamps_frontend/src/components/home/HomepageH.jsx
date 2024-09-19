@@ -6,9 +6,10 @@ import anim5 from "../../assets/images/anim-5.png";
 import anim6 from "../../assets/images/anim-6.png";
 import anim7 from "../../assets/images/anim-7.png";
 import { IoLogoInstagram, IoLogoTwitter } from "react-icons/io";
-import { FaDiscord } from "react-icons/fa";
+// import { FaDiscord } from "react-icons/fa";
 import FancyHeader from "../common/FancyHeader";
 import { motion } from "framer-motion";
+import { IoLogoLinkedin } from "react-icons/io5";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ artistData : Fake data : Replace by originals
 /* ----------------------------------------------------------------------------------------------------- */
@@ -19,7 +20,7 @@ const artistData = [
     image: anim4,
     socials: [
       { icon: <IoLogoTwitter size={16} />, link: "#" },
-      { icon: <FaDiscord size={16} />, link: "#" },
+      { icon: <IoLogoLinkedin size={16} />, link: "#" },
       { icon: <IoLogoInstagram size={16} />, link: "#" },
     ],
   },
@@ -29,17 +30,17 @@ const artistData = [
     image: anim5,
     socials: [
       { icon: <IoLogoTwitter size={16} />, link: "#" },
-      { icon: <FaDiscord size={16} />, link: "#" },
+      { icon: <IoLogoLinkedin size={16} />, link: "#" },
       { icon: <IoLogoInstagram size={16} />, link: "#" },
     ],
   },
   {
-    name: "Vinayak",
+    name: "Vinayak kalra",
     role: "Developer",
     image: anim6,
     socials: [
       { icon: <IoLogoTwitter size={16} />, link: "#" },
-      { icon: <FaDiscord size={16} />, link: "#" },
+      { icon: <IoLogoLinkedin size={16} />, link: "#" },
       { icon: <IoLogoInstagram size={16} />, link: "#" },
     ],
   },
@@ -49,7 +50,7 @@ const artistData = [
     image: anim7,
     socials: [
       { icon: <IoLogoTwitter size={16} />, link: "#" },
-      { icon: <FaDiscord size={16} />, link: "#" },
+      { icon: <IoLogoLinkedin size={16} />, link: "#" },
       { icon: <IoLogoInstagram size={16} />, link: "#" },
     ],
   },
@@ -61,7 +62,7 @@ const artistData = [
 const HomePageH = () => {
   return (
     <div className="p-6 md:p-8">
-      <FancyHeader normal="Meet" fancy="the artists" />
+      <FancyHeader normal="Meet" fancy="the team" />
       <Artists />
     </div>
   );

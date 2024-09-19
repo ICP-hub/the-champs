@@ -44,7 +44,7 @@ const UserAthenticated = () => {
   return (
     <div>
       <h1 className="text-sm md:text-md text-gray-500 text-left min-w-max">
-        Connected Wallet
+        Logged In
       </h1>
       <PlugWallet />
       <ProfileSection />
@@ -57,11 +57,10 @@ const UserNotAuthenticated = () => {
   return (
     <div>
       <h1 className="text-sm md:text-md text-gray-500 text-left min-w-max">
-        Connect Wallet
+        Log in
       </h1>
       <div className="pt-4 pb-8 text-sm md:text-md font-medium">
-        Connect your wallet to buy and sell digital assets directly from the
-        marketplace.
+        Log in to buy your digital assets or view your collection
       </div>
       <motion.div
         whileTap={{ scale: 0.8 }}
@@ -70,6 +69,24 @@ const UserNotAuthenticated = () => {
       >
         Log in
       </motion.div>
+      <div className="mt-4 space-y-2">
+        <h4 className="text-sm font-semibold">How to log in:</h4>
+        <p className="text-xs font-medium">
+          1. Click the “Log in” button above.
+        </p>
+        <p className="text-xs font-medium">
+          2. Put in your email address and follow the instructions in the email
+          received OR Log in with your Google account.
+        </p>
+        <p className="text-xs font-medium">
+          3. Select “Hide NFID wallet”, for maximum privacy OR “Share NFID
+          wallet”, for transparency.
+        </p>
+        <p className="text-xs font-medium">4. Press “Connect”.</p>
+        <p className="text-xs font-semibold">
+          Congrats, you can now use the platform.
+        </p>
+      </div>
     </div>
   );
 };

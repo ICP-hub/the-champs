@@ -91,7 +91,7 @@ const Searchbar = ({
           <CiSearch size={24} />
           <input
             type="text"
-            placeholder="Search our Nft"
+            placeholder="Search our Digital Collectibles"
             className="bg-transparent outline-none w-full"
             value={value}
             onChange={handleSearch}

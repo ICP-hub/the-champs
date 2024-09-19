@@ -27,7 +27,7 @@ const MyProfileB = ({ activeTabIndex }) => {
     return <MyProfileDetails />;
   }
 
-  if (activeTabIndex === "My NFTs") {
+  if (activeTabIndex === "My Collectibles") {
     const filterOptions = [
       { value: "all", label: "all" },
       { value: "Newest", label: "Newest" },
