@@ -176,8 +176,7 @@ const ProductDetails = () => {
     getNftDetails();
   }, []);
 
-  // console.log("nftData in productDetails ", nftData);
-  console.log(id);
+  console.log("nftData in productDetails ", nftData);
 
   return (
     <>
@@ -195,9 +194,9 @@ const ProductDetails = () => {
         // />
         <BuyNowEarly
           onOpen={setOpen}
-          // nftId={parseInt(nftData.nft.id)}
-          // nftCanId={nftData[1]}
-          // totalSupply={parseInt(product[0].totalSupply)}
+          nftId={parseInt(nftData.nft.id)}
+          nftCanId={index}
+          totalSupply={parseInt(nftData.totalSupply)}
         />
       )}
       {nftLoading ? (
