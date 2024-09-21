@@ -72,7 +72,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "/admin/nft-lists/:slug",
+    path: "/admin/collectibles/:slug",
     element: (
       <MainAdmin>
         <NFTList />
@@ -88,7 +88,7 @@ const appRoutes = createBrowserRouter([
     ),
   },
   {
-    path: "admin/create-nft/:slug",
+    path: "admin/create-collectibles/:slug",
     element: (
       <MainAdmin>
         <MintNft />
@@ -147,7 +147,7 @@ const appRoutes = createBrowserRouter([
   //   ),
   // },
   {
-    path: "/admin/nft-detail/:collection/:slug/:id",
+    path: "/admin/collectible-detail/:collection/:slug/:id",
     element: (
       <MainAdmin>
         <SingleNFT />

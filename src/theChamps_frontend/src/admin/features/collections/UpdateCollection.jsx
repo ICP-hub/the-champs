@@ -396,10 +396,11 @@ const UpdateCollection = () => {
         </div>
         <div className="w-full">
           <label htmlFor="name" className="md:text-lg text-sm font-semibold">
-            Wallet address to receive NFTs* <br />{" "}
+            Wallet address to receive collectibles* <br />{" "}
             <span className="text-sm">
               This must be a wallet address, not principal ID. This is where you
-              will receive team NFTs and surplus NFTs from your launch.
+              will receive team collectibles and surplus collectibles from your
+              launch.
             </span>
           </label>
           <input

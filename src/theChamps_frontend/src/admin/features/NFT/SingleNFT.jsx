@@ -36,7 +36,7 @@ const SingleNFT = () => {
         // console.log("Response getFractionalNFTDetails : ", res);
         setNFTDetail(res);
       } catch (err) {
-        console.error("Error fecthing fractionalNFTdetails : ", err);
+        console.error("Error fecthing fractionalcollectibledetails : ", err);
       } finally {
         setIsNFTLoading(false);
       }
@@ -45,7 +45,7 @@ const SingleNFT = () => {
     fetchNFTDetail();
   }, []);
 
-  console.log("single nft detail", nftDetail);
+  console.log("single collectible detail", nftDetail);
 
   return (
     <div className="rounded-lg bg-card text-textall h-full shadow-md p-6">
@@ -54,7 +54,7 @@ const SingleNFT = () => {
           className="w-6 h-6 cursor-pointer"
           onClick={() => navigate(-1)}
         />
-        NFT Detail
+        Collectible Detail
       </div>
       {isNFTLoading ? (
         <AdminLoader />
@@ -74,7 +74,7 @@ const SingleNFT = () => {
           <div className="flex border-2 w-full p-4 rounded-lg border-divider flex-col gap-2 tracking-wider">
             <div className="font-medium flex gap-2">
               <div className="min-w-32 flex justify-between">
-                <span>NFT name</span>
+                <span>Collectible name</span>
                 <span>:</span>
               </div>
               <p className="font-bold">
@@ -90,7 +90,7 @@ const SingleNFT = () => {
             </div>
             <div className="font-medium flex gap-2">
               <div className="min-w-32 flex justify-between">
-                <span>NFT ID</span>
+                <span>Collectible ID</span>
                 <span>:</span>
               </div>
               <p className="font-bold">{slug}</p>

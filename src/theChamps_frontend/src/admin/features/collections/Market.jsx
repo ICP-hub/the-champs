@@ -171,13 +171,13 @@ const CollectionCard = ({ collection }) => {
       </div>
       <div className="flex justify-between px-2 pt-2 pb-4 text-sm font-medium gap-4">
         <Link
-          to={`/admin/nft-lists/${collection.canisterId.toText()}`}
+          to={`/admin/collectibles/${collection.canisterId.toText()}`}
           className="px-4 py-2 bg-appbar border rounded-md hover:bg-hover w-full flex items-center justify-center"
         >
           View
         </Link>
         <Link
-          to={`/admin/create-nft/${collection.canisterId.toText()}`}
+          to={`/admin/create-collectibles/${collection.canisterId.toText()}`}
           className="px-4 py-2 button rounded-md text-white w-full flex items-center justify-center"
         >
           Mint

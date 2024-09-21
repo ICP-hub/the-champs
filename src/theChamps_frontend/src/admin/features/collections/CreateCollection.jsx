@@ -285,7 +285,7 @@ const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
                 >
                   Max Limit
                 </label>
-                <TextHint text="Please specify the maximum number of NFTs that can be created in this collection." />
+                <TextHint text="Please specify the maximum number of collectibles that can be created in this collection." />
               </div>
               <input
                 type="number"

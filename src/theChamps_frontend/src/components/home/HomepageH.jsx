@@ -10,6 +10,7 @@ import { IoLogoInstagram, IoLogoTwitter } from "react-icons/io";
 import FancyHeader from "../common/FancyHeader";
 import { motion } from "framer-motion";
 import { IoLogoLinkedin } from "react-icons/io5";
+import { Link } from "react-router-dom";
 /* ----------------------------------------------------------------------------------------------------- */
 /*  @ artistData : Fake data : Replace by originals
 /* ----------------------------------------------------------------------------------------------------- */
@@ -20,8 +21,14 @@ const artistData = [
     image: anim4,
     socials: [
       { icon: <IoLogoTwitter size={16} />, link: "#" },
-      { icon: <IoLogoLinkedin size={16} />, link: "#" },
-      { icon: <IoLogoInstagram size={16} />, link: "#" },
+      {
+        icon: <IoLogoLinkedin size={16} />,
+        link: "https://www.linkedin.com/in/jerryaurum/?originalSubdomain=id",
+      },
+      {
+        icon: <IoLogoInstagram size={16} />,
+        link: "https://www.instagram.com/jerryaurum/",
+      },
     ],
   },
   {
@@ -29,9 +36,18 @@ const artistData = [
     role: "Founder",
     image: anim5,
     socials: [
-      { icon: <IoLogoTwitter size={16} />, link: "#" },
-      { icon: <IoLogoLinkedin size={16} />, link: "#" },
-      { icon: <IoLogoInstagram size={16} />, link: "#" },
+      {
+        icon: <IoLogoTwitter size={16} />,
+        link: "https://x.com/GraceSabandar?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor",
+      },
+      {
+        icon: <IoLogoLinkedin size={16} />,
+        link: "https://www.linkedin.com/in/gracesabandar/",
+      },
+      {
+        icon: <IoLogoInstagram size={16} />,
+        link: "https://www.instagram.com/gracesabandar/",
+      },
     ],
   },
   {
@@ -39,8 +55,14 @@ const artistData = [
     role: "Developer",
     image: anim6,
     socials: [
-      { icon: <IoLogoTwitter size={16} />, link: "#" },
-      { icon: <IoLogoLinkedin size={16} />, link: "#" },
+      {
+        icon: <IoLogoTwitter size={16} />,
+        link: "https://x.com/vinayakkalra2",
+      },
+      {
+        icon: <IoLogoLinkedin size={16} />,
+        link: "https://www.linkedin.com/in/vinayak-kalra-b40910105?originalSubdomain=in",
+      },
       { icon: <IoLogoInstagram size={16} />, link: "#" },
     ],
   },
@@ -49,9 +71,18 @@ const artistData = [
     role: "Advisor",
     image: anim7,
     socials: [
-      { icon: <IoLogoTwitter size={16} />, link: "#" },
-      { icon: <IoLogoLinkedin size={16} />, link: "#" },
-      { icon: <IoLogoInstagram size={16} />, link: "#" },
+      {
+        icon: <IoLogoTwitter size={16} />,
+        link: "https://x.com/CalabrettaBruno",
+      },
+      {
+        icon: <IoLogoLinkedin size={16} />,
+        link: "https://www.linkedin.com/in/bruno-calabretta?trk=feed_main-feed-card_feed-reaction-header ",
+      },
+      {
+        icon: <IoLogoInstagram size={16} />,
+        link: "https://www.instagram.com/browncal88/",
+      },
     ],
   },
 ];
@@ -91,9 +122,15 @@ const Artists = () => {
           </div>
           <span className="flex items-center gap-4">
             {artist.socials.map((social, i) => (
-              <a key={i} href={social.link} className="cursor-pointer">
+              <Link
+                to={`${social.link}`}
+                target="_blank"
+                key={i}
+                href={social.link}
+                className="cursor-pointer"
+              >
                 {social.icon}
-              </a>
+              </Link>
             ))}
           </span>
         </motion.div>

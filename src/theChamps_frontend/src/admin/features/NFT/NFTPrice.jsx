@@ -243,8 +243,8 @@ const NFTPrice = () => {
             Individual wallet limit
             <br />{" "}
             <span className="text-sm">
-              The maximum number of NFTs a user can purchase from this group.
-              Leave blank for no limit.
+              The maximum number of collectibles a user can purchase from this
+              group. Leave blank for no limit.
             </span>
           </label>
           <input
@@ -262,10 +262,11 @@ const NFTPrice = () => {
             Group limit
             <br />{" "}
             <span className="text-sm">
-              The maximum number of NFTs that can be purchased by this group.
-              Leave blank for no limit. For Example: A private group of 100
-              members has an individual wallet limit of 1 and a group limit of
-              90. Of the 100 members, up to 90 can purchase 1 NFT each.
+              The maximum number of collectibles that can be purchased by this
+              group. Leave blank for no limit. For Example: A private group of
+              100 members has an individual wallet limit of 1 and a group limit
+              of 90. Of the 100 members, up to 90 can purchase 1 collectible
+              each.
             </span>
           </label>
           <input

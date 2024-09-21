@@ -156,12 +156,12 @@ const NFTs = () => {
   return (
     <div className="py-4">
       <h1 className="md:text-xl font-bold">
-        List of all NFT for collection : {slug}
+        List of all Digital Collectibles for collection : {slug}
       </h1>
       <div className="grid lg:grid-cols-3 sm:grid-cols-2 2xl:grid-cols-5 gap-x-4 gap-y-8 py-4">
         {nftLoading ? (
           <div className="col-span-full flex items-center justify-center">
-            Loading NFTs...
+            Loading collectibles...
           </div>
         ) : nftList && nftList.length > 0 ? (
           nftList.map((nft, index) => (
@@ -169,7 +169,7 @@ const NFTs = () => {
           ))
         ) : (
           <div className="col-span-full flex items-center justify-center">
-            <p>No NFTs found in this collection.</p>
+            <p>No collectibles found in this collection.</p>
           </div>
         )}
       </div>
@@ -178,9 +178,9 @@ const NFTs = () => {
 };
 
 const NFTCard = ({ nftdetail, collection_Id }) => {
-  console.log("NFT Detail :", nftdetail);
+  console.log("collectibles Detail :", nftdetail);
   const { fractional_token, nft } = nftdetail[0];
-  console.log("fractional token", fractional_token, "nft detail", nft);
+  console.log("fractional token", fractional_token, "collectible detail", nft);
   const tokenData = transformTokenData(fractional_token);
   // console.log(tokenData);
   return (
@@ -188,13 +188,13 @@ const NFTCard = ({ nftdetail, collection_Id }) => {
       <div>
         <img
           src={nft.logo.data.length > 10 ? nft.logo.data : champsImg}
-          alt="nftImg"
+          alt="collectibleImg"
           className="rounded-t-2xl"
         />
       </div>
       <span className="px-4 font-semibold text-lg">{tokenData.name}</span>
       <span className="text-sm font-medium px-4">
-        NFT ID : {nftdetail[1].toText()}
+        Collectible ID : {nftdetail[1].toText()}
       </span>
       <span className="px-4 text-sm">Owner : {nft.owner.toText()}</span>
       <p className="px-4 text-sm">
@@ -206,7 +206,7 @@ const NFTCard = ({ nftdetail, collection_Id }) => {
       </p>
       <div className="flex justify-end px-4 py-2">
         <Link
-          to={`/admin/nft-detail/${collection_Id}/${nftdetail[1].toText()}/${
+          to={`/admin/collectible-detail/${collection_Id}/${nftdetail[1].toText()}/${
             nft.id
           }`}
           className="button px-4 py-1 text-white rounded-md"
