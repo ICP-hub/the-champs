@@ -341,7 +341,7 @@ const ProductPage = ({ name }) => {
               ) : (
                 <div className="text-center mt-20 px-6 lg:px-24 flex justify-center items-center">
                   <p className="px-4 py-2 cursor-pointer rounded-lg w-48 productcardlgborder z-[1]">
-                    No Nft found
+                    No Digital Collectible found
                   </p>
                 </div>
               )}

@@ -89,7 +89,7 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
               </div>
             </div>
             <p className="py-2 text-xs text-center text-gray-500">
-              You are about to purchase this NFT from your connected wallet.
+              You are about to purchase this Digital Collectible from your connected wallet.
             </p>
             <div className="my-2 h-px w-full bg-gray-300"></div>
             {/* <h4 className="font-semibold capitalize">payment method</h4>
