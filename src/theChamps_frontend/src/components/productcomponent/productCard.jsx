@@ -352,7 +352,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
 
   // const decrementQuantity = () =>
   //   setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-  console.log(parseInt(product));
+  // console.log(parseInt(product));
 
   return (
     <>

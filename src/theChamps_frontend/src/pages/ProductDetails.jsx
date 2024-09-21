@@ -30,7 +30,7 @@ import BuyNowEarly from "../components/common/BuyNowEarly";
 const ProductDetails = () => {
   const [nftLoading, setNftLoading] = useState(true);
   const { slug, index, id } = useParams();
-  const { backendActor } = useAuth();
+  const { backendActor, isAuthenticated } = useAuth();
   const [nftData, setNftData] = useState(null);
   const [collectionData, setCollectionData] = useState(null);
   const [favourites, setFavourites] = useState();
@@ -218,12 +218,18 @@ const ProductDetails = () => {
   //   fetchCollection();
   // }, [backendActor]);
 
-  console.log("nftData in productDetails ", nftData);
+  useEffect(() => {
+    open &&
+      !isAuthenticated &&
+      toast.error("You need to login to your account to make a purchase");
+  }, [isAuthenticated, open]);
+
+  // console.log("nftData in productDetails ", nftData);
 
   return (
     <>
       <Header />
-      {open && (
+      {open && isAuthenticated && (
         // <BuyNowCard
         //   onOpen={setOpen}
         //   price_share={nftData.price_per_share}
