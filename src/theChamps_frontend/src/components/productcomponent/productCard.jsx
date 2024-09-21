@@ -501,11 +501,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
             <p className="bg-opacity-100 py-2 flex gap-2 rounded-md w-[50%] text-xl font-medium">
               {/* <IcpLogo /> */}
               <span>Rp. </span>
-              {loading3 ? (
-                <div className="h-6 w-[50px] bg-gray-100 rounded-2xl animate-pulse"></div>
-              ) : (
-                (product[0]?.price_per_share / exchange).toFixed(3)
-              )}
+              {product[0]?.price_per_share.toFixed(3)}
             </p>
             <button
               className="button px-4 py-2 text-white w-full sm:w-1/2 rounded-md text-md flex items-center justify-center"

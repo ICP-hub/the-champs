@@ -92,10 +92,10 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
               You are about to purchase this NFT from your connected wallet.
             </p>
             <div className="my-2 h-px w-full bg-gray-300"></div>
-            <h4 className="font-semibold capitalize">payment method</h4>
+            {/* <h4 className="font-semibold capitalize">payment method</h4>
             <button className="flex p-2 w-full gap-2 items-center font-semibold border-2 border-gray-300 rounded-md">
               Select payment method
-            </button>
+            </button> */}
             <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
               <span>Share</span>
               <div className="flex border rounded-md overflow-hidden items-center">

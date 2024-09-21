@@ -44,75 +44,75 @@ const ProductDetails = () => {
   const [favLoad, setFavLoad] = useState(false);
   const [product, setProduct] = useState([]);
 
-  // Get NFT details
-  const getNftDetails = async () => {
-    try {
-      const parsedId = parseInt(id);
-      const principalIndex = Principal.fromText(index);
-      const principalSlug = Principal.fromText(slug);
-
-      const [nftResponse, collectionResponse] = await Promise.all([
-        backendActor.getFractionalNftDetails(
-          parsedId,
-          principalIndex,
-          principalSlug
-        ),
-        backendActor.getcollectiondetails(principalSlug),
-      ]);
-
-      setCollectionData(collectionResponse);
-      setNftData(nftResponse);
-      setProduct([nftResponse, principalIndex]);
-      console.log("collectionRes", collectionResponse);
-      console.log("nftRes", nftResponse);
-    } catch (err) {
-      console.error("Error fetching fractionalized NFT details:", err);
-    } finally {
-      setNftLoading(false);
-    }
-  };
+  // // Get NFT details
+  // const getNftDetails = async () => {
+  //   if (backendActor)
+  //     try {
+  //       setNftLoading(true);
+  //       const parsedId = parseInt(index);
+  //       const principalIndex = Principal.fromText(slug);
+  //       const principalSlug = Principal.fromText(id);
+  //       const [nftResponse, collectionResponse] = await Promise.all([
+  //         backendActor.getFractionalNftDetails(
+  //           parsedId,
+  //           principalIndex,
+  //           principalSlug
+  //         ),
+  //         backendActor.getcollectiondetails(principalSlug),
+  //       ]);
+  //       setCollectionData(collectionResponse);
+  //       setNftData(nftResponse);
+  //       setProduct([nftResponse, principalIndex]);
+  //       console.log("collectionRes", collectionResponse);
+  //       console.log("nftRes", nftResponse);
+  //     } catch (err) {
+  //       console.error("Error fetching fractionalized NFT details:", err);
+  //     } finally {
+  //       setNftLoading(false);
+  //     }
+  // };
 
   // exchange rate
-  const getExchangeRate = async () => {
-    const paymentMethod = "FiatCurrency";
-    let paymentOpt = null;
-    if (paymentMethod == "Cryptocurrency") {
-      paymentOpt = { Cryptocurrency: null };
-    } else if (paymentMethod == "FiatCurrency") {
-      paymentOpt = { FiatCurrency: null };
-    }
-    const paymentMethod1 = "Cryptocurrency";
-    let paymentOpt1 = null;
-    if (paymentMethod1 == "Cryptocurrency") {
-      paymentOpt1 = { Cryptocurrency: null };
-    } else if (paymentMethod1 == "FiatCurrency") {
-      paymentOpt1 = { FiatCurrency: null };
-    }
+  // const getExchangeRate = async () => {
+  //   const paymentMethod = "FiatCurrency";
+  //   let paymentOpt = null;
+  //   if (paymentMethod == "Cryptocurrency") {
+  //     paymentOpt = { Cryptocurrency: null };
+  //   } else if (paymentMethod == "FiatCurrency") {
+  //     paymentOpt = { FiatCurrency: null };
+  //   }
+  //   const paymentMethod1 = "Cryptocurrency";
+  //   let paymentOpt1 = null;
+  //   if (paymentMethod1 == "Cryptocurrency") {
+  //     paymentOpt1 = { Cryptocurrency: null };
+  //   } else if (paymentMethod1 == "FiatCurrency") {
+  //     paymentOpt1 = { FiatCurrency: null };
+  //   }
 
-    if (selectedPlan.value == "ckBTC") {
-      SetPaymentMethod2("btc");
-    } else {
-      SetPaymentMethod2("icp");
-    }
+  //   if (selectedPlan.value == "ckBTC") {
+  //     SetPaymentMethod2("btc");
+  //   } else {
+  //     SetPaymentMethod2("icp");
+  //   }
 
-    setLoading3(true);
+  //   setLoading3(true);
 
-    try {
-      const res = await backendActor?.get_exchange_rates(
-        { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
-        { class: paymentOpt1, symbol: paymentMethod2 } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
-      );
-      console.log(res);
-      const exchangeRate2 =
-        parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
-      console.log(exchangeRate2);
-      setExchange(exchangeRate2);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading3(false);
-    }
-  };
+  //   try {
+  //     const res = await backendActor?.get_exchange_rates(
+  //       { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
+  //       { class: paymentOpt1, symbol: paymentMethod2 } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
+  //     );
+  //     console.log(res);
+  //     const exchangeRate2 =
+  //       parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
+  //     console.log(exchangeRate2);
+  //     setExchange(exchangeRate2);
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading3(false);
+  //   }
+  // };
 
   /*************** Favourite review ****************/
   // get favorites
@@ -167,14 +167,41 @@ const ProductDetails = () => {
     if (nftData) getFav();
   }, [favChanged, nftData]);
 
-  useEffect(() => {
-    getExchangeRate();
-  }, [selectedPlan.value, backendActor]);
+  // useEffect(() => {
+  //   getExchangeRate();
+  // }, [selectedPlan.value, backendActor]);
 
   // Effects
   useEffect(() => {
+    const getNftDetails = async () => {
+      if (backendActor) {
+        try {
+          setNftLoading(true);
+          const parsedId = parseInt(index);
+          const principalIndex = Principal.fromText(slug);
+          const principalSlug = Principal.fromText(id);
+          const [nftResponse, collectionResponse] = await Promise.all([
+            backendActor.getFractionalNftDetails(
+              parsedId,
+              principalIndex,
+              principalSlug
+            ),
+            backendActor.getcollectiondetails(principalSlug),
+          ]);
+          setCollectionData(collectionResponse);
+          setNftData(nftResponse);
+          setProduct([nftResponse, principalIndex]);
+          console.log("collectionRes", collectionResponse);
+          console.log("nftRes", nftResponse);
+        } catch (err) {
+          console.error("Error fetching fractionalized NFT details:", err);
+        } finally {
+          setNftLoading(false);
+        }
+      }
+    };
     getNftDetails();
-  }, []);
+  }, [backendActor]);
 
   console.log("nftData in productDetails ", nftData);
 
@@ -259,14 +286,11 @@ const ProductDetails = () => {
                 </span>
               </div>
               <div className="py-4 flex max-lg:flex-col lg:justify-between lg:items-center">
-                {loading3 ? (
-                  <div className="w-64 bg-gray-500 h-6 rounded-md animate-pulse"></div>
-                ) : (
-                  <div className="flex items-center font-semibold text-lg">
-                    {(nftData.price_per_share / exchange).toFixed(3)} ICP (
-                    {nftData.price_per_share.toFixed(3)} USD) / Share
-                  </div>
-                )}
+                <div className="flex items-center font-semibold text-lg gap-4">
+                  <p>Price :</p>
+                  Rp.{nftData.price_per_share.toFixed(3)} / Share
+                </div>
+
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   className="button px-4 py-2 rounded-lg text-white max-lg:mt-4 max-w-max"
