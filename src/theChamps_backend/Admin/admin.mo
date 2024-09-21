@@ -18,7 +18,8 @@ module {
         "reyup-5lhc2-top2a-uuhtn-lqki5-4eiar-3um6h-bgknr-owgwg-d7c2h-pqe",
         "4rk4s-ld5st-py7mx-msp4a-p46dz-f7yt7-rkzlq-r25cf-zy5oh-rn4pa-xae",
         "mct5s-arnud-4qrqd-7i2c3-avbyy-7gxkw-aey57-oskjq-w3ji3-ir4d3-hqe",
-        "oavgn-aq63y-4ppgd-ws735-bqrrn-xdhtc-m3azu-6qga7-i4phr-c7nie-wqe"
+        "oavgn-aq63y-4ppgd-ws735-bqrrn-xdhtc-m3azu-6qga7-i4phr-c7nie-wqe",
+        "opouq-k35n4-5h7di-33uzp-vhw7w-oth3a-pbw47-2koot-ggsga-v36v6-rqe"
     ];
 
     public func isAdmin(userPrincipal : Principal) : async Bool {
