@@ -35,14 +35,15 @@ const ProductDetails = () => {
   const [collectionData, setCollectionData] = useState(null);
   const [favourites, setFavourites] = useState();
   const [open, setOpen] = useState(false);
-  const [exchange, setExchange] = useState(1);
-  const [selectedPlan, setSelectedPlan] = useState({ value: "icp" });
-  const [loading3, setLoading3] = useState(true);
-  const [paymentMethod2, SetPaymentMethod2] = useState("icp");
+  // const [exchange, setExchange] = useState(1);
+  // const [selectedPlan, setSelectedPlan] = useState({ value: "icp" });
+  // const [loading3, setLoading3] = useState(true);
+  // const [paymentMethod2, SetPaymentMethod2] = useState("icp");
   const [favChanged, setFavChanged] = useState(false);
   const [favMatched, setFavMatched] = useState(false);
   const [favLoad, setFavLoad] = useState(false);
   const [product, setProduct] = useState([]);
+  const [collectionLoad, setCollectionLoad] = useState(true);
 
   // // Get NFT details
   // const getNftDetails = async () => {
@@ -180,18 +181,13 @@ const ProductDetails = () => {
           const parsedId = parseInt(index);
           const principalIndex = Principal.fromText(slug);
           const principalSlug = Principal.fromText(id);
-          const [nftResponse, collectionResponse] = await Promise.all([
-            backendActor.getFractionalNftDetails(
-              parsedId,
-              principalIndex,
-              principalSlug
-            ),
-            backendActor.getcollectiondetails(principalSlug),
-          ]);
-          setCollectionData(collectionResponse);
+          const nftResponse = await backendActor.getFractionalNftDetails(
+            parsedId,
+            principalIndex,
+            principalSlug
+          );
           setNftData(nftResponse);
           setProduct([nftResponse, principalIndex]);
-          console.log("collectionRes", collectionResponse);
           console.log("nftRes", nftResponse);
         } catch (err) {
           console.error("Error fetching fractionalized NFT details:", err);
@@ -202,6 +198,25 @@ const ProductDetails = () => {
     };
     getNftDetails();
   }, [backendActor]);
+
+  // useEffect(() => {
+  //   const fetchCollection = async () => {
+  //     if (backendActor) {
+  //       try {
+  //         setCollectionLoad(true);
+  //         const collectionRes = await backendActor.getcollectiondetails(
+  //           Principal.fromText(id)
+  //         );
+  //         setCollectionData(collectionRes);
+  //       } catch (err) {
+  //         console.log("Failed to fetch collection data");
+  //       } finally {
+  //         setCollectionLoad(false);
+  //       }
+  //     }
+  //   };
+  //   fetchCollection();
+  // }, [backendActor]);
 
   console.log("nftData in productDetails ", nftData);
 
@@ -258,9 +273,9 @@ const ProductDetails = () => {
                   <h1 className="text-2xl gradient-text">
                     {nftData.fractional_token[0][1].Text}
                   </h1>
-                  <h6 className="text-gray-500 capitalize font-medium">
-                    By {collectionData.name}
-                  </h6>
+                  {/* <h6 className="text-gray-500 capitalize font-medium">
+                    By {collectionData?.name}
+                  </h6> */}
                 </div>
                 <span className="flex items-center justify-center">
                   {favLoad ? (

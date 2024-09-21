@@ -298,7 +298,7 @@ const ProductPage = ({ name }) => {
           </div>
         </div>
       )}
-      <div className="left-0 right-0">
+      <div className="mt-24 min-h-screen">
         <div>
           <h1 className="text-5xl font-bold font-sans mb-12 gap-1 px-6 lg:px-24">
             <span className="relative text-transparent ml-2 bg-gradient-to-r from-[#FC001E] to-[#FF7D57] bg-clip-text">
