@@ -311,6 +311,16 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
       toast.error("You need to login to your account to make a purchase");
   }, [isAuthenticated, open]);
 
+  useEffect(() => {
+    if (open) {
+      document.documentElement.style.overflowY = "hidden";
+    } else {
+      document.documentElement.style.overflowY = "auto";
+    }
+  }, [open]);
+
+  // console.log(open);
+
   // add or remove a favorite
   const toggleFav = async (product) => {
     try {

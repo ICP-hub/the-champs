@@ -224,6 +224,14 @@ const ProductDetails = () => {
       toast.error("You need to login to your account to make a purchase");
   }, [isAuthenticated, open]);
 
+  useEffect(() => {
+    if (open) {
+      document.documentElement.style.overflowY = "hidden";
+    } else {
+      document.documentElement.style.overflowY = "auto";
+    }
+  }, [open]);
+
   // console.log("nftData in productDetails ", nftData);
 
   return (

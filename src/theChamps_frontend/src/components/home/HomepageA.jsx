@@ -40,7 +40,7 @@ const HomePageALeft = () => {
   return (
     <div className="flex flex-col lg:max-w-[80%] gap-4 mt-10">
       <div className="font-bold text-[55px] leading-[72px] max-[900px]:text-3xl">
-        Exclusive Digital Collectibles of your favorite players.
+        Exclusive Digital Collectibles of your favourite players.
       </div>
       <div className="text-[22px] font-normal text-[#7B7583] max-[900px]:text-[16px]">
         The chance to own a unique digital collectible of the 20 best Indonesian
