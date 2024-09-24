@@ -98,7 +98,7 @@ const HomePageALeftCommunityCounter = () => {
       </div>
       <div className="">
         {/* <p className="font-bold text-[32px]">{NFTs.length}+</p> */}
-        <p className="font-bold text-[32px]">10000+</p>
+        <p className="font-bold text-[32px]">10,000+</p>
         <p className="font-normal2 text-[#7B7583]">Fans</p>
       </div>
     </div>

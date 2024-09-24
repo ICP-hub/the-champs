@@ -5,7 +5,7 @@ import anim4 from "../../assets/images/anim-4.png";
 import anim5 from "../../assets/images/anim-5.png";
 import anim6 from "../../assets/images/anim-6.png";
 import anim7 from "../../assets/images/anim-7.png";
-import { IoLogoInstagram, IoLogoTwitter } from "react-icons/io";
+import { IoLogoGithub, IoLogoInstagram, IoLogoTwitter } from "react-icons/io";
 // import { FaDiscord } from "react-icons/fa";
 import FancyHeader from "../common/FancyHeader";
 import { motion } from "framer-motion";
@@ -63,7 +63,10 @@ const artistData = [
         icon: <IoLogoLinkedin size={16} />,
         link: "https://www.linkedin.com/in/vinayak-kalra-b40910105?originalSubdomain=in",
       },
-      { icon: <IoLogoInstagram size={16} />, link: "#" },
+      {
+        icon: <IoLogoGithub size={16} />,
+        link: "https://github.com/vinayakkalra",
+      },
     ],
   },
   {
