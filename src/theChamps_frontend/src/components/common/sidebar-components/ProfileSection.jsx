@@ -31,7 +31,7 @@ const ProfileSection = () => {
       try {
         await new Promise((resolve) => setTimeout(resolve, 3000));
       } catch (error) {
-        console.error("Error checking connection:", error);
+        // console.error("Error checking connection:", error);
       } finally {
         setLoading(false);
       }
@@ -51,7 +51,7 @@ const ProfileSection = () => {
           setIsAdmin(res);
           // console.log("admin is ", res);
         } catch (error) {
-          console.error("Error checking isAdmin:", error);
+          // console.error("Error checking isAdmin:", error);
           setIsAdmin(false);
         } finally {
           setLoading(false);

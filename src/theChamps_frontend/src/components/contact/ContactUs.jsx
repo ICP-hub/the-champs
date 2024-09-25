@@ -7,8 +7,15 @@ import Header from "../common/Header";
 import Footer from "../common/Footer";
 import { motion } from "framer-motion";
 import image from "../../assets/images/nft-4.png";
+import { scrollToTop } from "../common/BackToTop";
+import { useEffect } from "react";
 
 const ContactUs = () => {
+  useEffect(() => {
+    // console.log("hello");
+    scrollToTop();
+  }, []);
+
   return (
     <>
       <Header />

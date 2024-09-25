@@ -102,15 +102,15 @@ const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
     if (!file) return;
     const maxSizeInBytes = 1024 * 1024;
     if (file.size > maxSizeInBytes) {
-      console.error(
-        "Selected file is too large. Please select an image file less than or equal to 1 MB."
-      );
+      // console.error(
+      //   "Selected file is too large. Please select an image file less than or equal to 1 MB."
+      // );
       toast.error("Please select an image file less than or equal to 1 MB");
       return;
     }
 
     if (!file.type.startsWith("image/")) {
-      console.error("Selected file is not an image.");
+      // console.error("Selected file is not an image.");
       return;
     }
 
@@ -127,7 +127,7 @@ const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
       }));
       // console.log("blob is for logo", logoBlob);
     } catch (error) {
-      console.error("Error converting image to blob:", error);
+      // console.error("Error converting image to blob:", error);
     }
   };
 
@@ -136,15 +136,15 @@ const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
     if (!file) return;
     const maxSizeInBytes = 1024 * 1024;
     if (file.size > maxSizeInBytes) {
-      console.error(
-        "Selected file is too large. Please select an image file less than or equal to 1 MB."
-      );
+      // console.error(
+      //   "Selected file is too large. Please select an image file less than or equal to 1 MB."
+      // );
       toast.error("Please select an image file less than or equal to 1 MB");
       return;
     }
 
     if (!file.type.startsWith("image/")) {
-      console.error("Selected file is not an image.");
+      // console.error("Selected file is not an image.");
       return;
     }
 
@@ -162,7 +162,7 @@ const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
       // console.log("blob is for banner", bannerBlob);
     } catch (error) {
       // Handle potential errors during file processing here (optional)
-      console.error("Error converting image to blob:", error);
+      // console.error("Error converting image to blob:", error);
       toast.error(
         "An error occurred while processing the image. Please try again."
       );
@@ -175,7 +175,7 @@ const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
     try {
       setLoading(true);
       if (!formData.logo.data || !formData.banner.data) {
-        console.error("Logo or banner data is missing.");
+        // console.error("Logo or banner data is missing.");
         return;
       }
       // console.log("formData:", formData);
@@ -191,13 +191,13 @@ const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
       );
       // console.log("Collection creation result:", result);
       if (result.principal) {
-        console.log("Collection created successfully!", result);
+        // console.log("Collection created successfully!", result);
       }
       toast.success("Collection created successfully!");
       handleCreate();
       setFormSubmitted((prev) => !prev);
     } catch (error) {
-      console.error("Error creating collection:", error);
+      // console.error("Error creating collection:", error);
       toast.error("Error creating collection. Please try again.");
     } finally {
       setLoading(false);
@@ -228,7 +228,7 @@ const CreateCollections = ({ handleCreate, setFormSubmitted, isNew }) => {
       handleCreate();
       setFormSubmitted((prev) => !prev);
     } catch (err) {
-      console.log("Error getting old collection :", err);
+      // console.log("Error getting old collection :", err);
       toast.error("Error adding collection");
     } finally {
       setLoading(false);

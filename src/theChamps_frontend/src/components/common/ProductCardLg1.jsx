@@ -14,7 +14,7 @@ const ProductCardLg = ({ prod }) => {
   const [loading, setLoading] = useState(true);
   // const [backend] = useCanister("backend");
   const { backendActor } = useAuth();
-  console.log("single collection is", prod);
+  // console.log("single collection is", prod);
   const id = prod.canisterId.toText();
   const [img1, setImg1] = useState("");
   const [img2, setImg2] = useState("");
@@ -26,13 +26,13 @@ const ProductCardLg = ({ prod }) => {
       const res = await backendActor?.getcollectionwisefractionalnft(
         canister_id
       );
-      console.log("hello ss", res);
+      // console.log("hello ss", res);
       setCollection(res);
       setImg1(res[0][0].nft.logo.data);
       setImg2(res[1][0].nft.logo.data);
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -90,13 +90,13 @@ const ProductCardLg = ({ prod }) => {
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
-      console.log(res);
+      // console.log(res);
       const exchangeRate2 =
         parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
-      console.log(exchangeRate2);
+      // console.log(exchangeRate2);
       setExchange(exchangeRate2);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setLoading3(false);
     }

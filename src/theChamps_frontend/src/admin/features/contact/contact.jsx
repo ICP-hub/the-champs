@@ -17,9 +17,9 @@ const Contact = () => {
       const data = await backendActor?.listContacts();
       setSampleData(data);
       setIsLoading(false);
-      console.log("data", data);
+      // console.log("data", data);
     } catch (err) {
-      console.error("error fetching messages : ", err);
+      // console.error("error fetching messages : ", err);
       setIsLoading(false); // Ensure loading state is turned off in case of error
     }
   };

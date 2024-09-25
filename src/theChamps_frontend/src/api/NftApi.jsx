@@ -50,7 +50,7 @@ const NFTApi = () => {
         dispatch(getCollectionwiseNft(results));
         // console.log(results);
       } catch (err) {
-        console.error("Error getting collectionwise NFT (All)", err);
+        // console.error("Error getting collectionwise NFT (All)", err);
       } finally {
         setNFTLoading(false);
       }

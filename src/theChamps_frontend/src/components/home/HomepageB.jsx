@@ -63,7 +63,7 @@ const HomePageB = () => {
         // console.log("response latest nft ", response);
         setAllNFT(response);
       } catch (err) {
-        console.error("Error fetching latest NFT");
+        // console.error("Error fetching latest NFT");
       } finally {
         setIsLoading(false);
       }

@@ -2,6 +2,8 @@
 /*  @ Imports.
 /* ----------------------------------------------------------------------------------------------------- */
 
+import { useEffect } from "react";
+import { scrollToTop } from "../common/BackToTop";
 import CustomDivide from "../common/CustomDivide";
 import HomeFeatured from "./HomeFeatured";
 import HomePageA from "./HomepageA";
@@ -20,6 +22,10 @@ import Wallets from "./Wallets";
 /*  @ Base : <HomepageContainerMain />.
 /* ----------------------------------------------------------------------------------------------------- */
 const HomepageContainerMain = () => {
+  useEffect(() => {
+    scrollToTop();
+  }, []);
+
   return (
     <div className="container mx-auto space-y-8 mt-8">
       <HomePageA />

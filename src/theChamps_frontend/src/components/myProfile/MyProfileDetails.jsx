@@ -43,7 +43,7 @@ const MyProfileDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   // const principal = Principal.toString();
-  console.log("principal is", principal);
+  // console.log("principal is", principal);
 
   const [formData, setFormData] = useState({
     id: principal,
@@ -75,15 +75,15 @@ const MyProfileDetails = () => {
     if (!file) return;
     const maxSizeInBytes = 1024 * 1024;
     if (file.size > maxSizeInBytes) {
-      console.error(
-        "Selected file is too large. Please select an image file less than or equal to 1 MB."
-      );
+      // console.error(
+      //   "Selected file is too large. Please select an image file less than or equal to 1 MB."
+      // );
       toast.error("Please select an image file less than or equal to 1 MB");
       return;
     }
 
     if (!file.type.startsWith("image/")) {
-      console.error("Selected file is not an image.");
+      // console.error("Selected file is not an image.");
       return;
     }
 
@@ -94,9 +94,9 @@ const MyProfileDetails = () => {
         ...prevFormData,
         profileimage: logoBlob,
       }));
-      console.log("blob is for logo", logoBlob);
+      // console.log("blob is for logo", logoBlob);
     } catch (error) {
-      console.error("Error converting image to blob:", error);
+      // console.error("Error converting image to blob:", error);
     }
   };
   const handleEdit = () => {
@@ -114,17 +114,17 @@ const MyProfileDetails = () => {
       }
       setLoading(false);
       setIsLoading(false);
-      console.log("data", data);
-      console.log("user is ", formData);
+      // console.log("data", data);
+      // console.log("user is ", formData);
     } catch (error) {
-      console.log("reeegdf");
+      // console.log("reeegdf");
     }
   };
 
   useEffect(() => {
     const timer = setTimeout(() => {
       getuserDetail();
-      console.log("fdhfhgfhgh");
+      // console.log("fdhfhgfhgh");
     }, 1000);
     return () => clearTimeout(timer);
   }, []);
@@ -300,7 +300,7 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
   const [loading, setLoading] = useState(false);
   // const [backend] = useCanister("backend");
   const { backendActor } = useAuth();
-  console.log("backendActor", backendActor);
+  // console.log("backendActor", backendActor);
   // const { isConnected, principal } = useConnect();
   const { isAuthenticated, principal } = useAuth();
   const userInfo = useSelector((state) => state.auth);
@@ -354,15 +354,15 @@ const EditForm = ({ formData, setFormData, setEditMode }) => {
             telegram: formData.telegram || "",
           };
 
-          console.log("record is", User);
+          // console.log("record is", User);
           setErrors({});
           const user = await backendActor?.updateUser(User);
 
           if (user.ok) {
-            console.log("Updated:", user.ok);
+            // console.log("Updated:", user.ok);
             toast.success("Profile Updated successfully");
           } else {
-            console.error("Error updating user:", user);
+            // console.error("Error updating user:", user);
           }
         }
       } catch (error) {

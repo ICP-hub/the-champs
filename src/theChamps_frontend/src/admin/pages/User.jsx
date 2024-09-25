@@ -40,10 +40,10 @@ const User = () => {
       try {
         setIsUserLoading(true);
         const res = await backendActor?.listUsers();
-        console.log("response for list users:", res);
+        // console.log("response for list users:", res);
         setUserData(res);
       } catch (err) {
-        console.error("error fetching user data:", err);
+        // console.error("error fetching user data:", err);
       } finally {
         setIsUserLoading(false);
       }

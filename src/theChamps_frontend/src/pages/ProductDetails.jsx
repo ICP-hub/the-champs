@@ -126,7 +126,7 @@ const ProductDetails = () => {
       setFavourites(favIds); // store only ids
       setFavMatched(favIds.includes(nftData.nft.id));
     } catch (err) {
-      console.error("Error getting fav ", err);
+      // console.error("Error getting fav ", err);
     } finally {
       setFavLoad(false);
     }
@@ -157,7 +157,7 @@ const ProductDetails = () => {
         // console.log(res);
       }
     } catch (err) {
-      console.error("error toggling fav ", err);
+      // console.error("error toggling fav ", err);
     } finally {
       // setFavLoad(false);   // This may cause bug????
       setFavChanged((prev) => !prev);
@@ -188,9 +188,9 @@ const ProductDetails = () => {
           );
           setNftData(nftResponse);
           setProduct([nftResponse, principalIndex]);
-          console.log("nftRes", nftResponse);
+          // console.log("nftRes", nftResponse);
         } catch (err) {
-          console.error("Error fetching fractionalized NFT details:", err);
+          // console.error("Error fetching fractionalized NFT details:", err);
         } finally {
           setNftLoading(false);
         }

@@ -36,7 +36,7 @@ const SingleNFT = () => {
         // console.log("Response getFractionalNFTDetails : ", res);
         setNFTDetail(res);
       } catch (err) {
-        console.error("Error fecthing fractionalcollectibledetails : ", err);
+        // console.error("Error fecthing fractionalcollectibledetails : ", err);
       } finally {
         setIsNFTLoading(false);
       }
@@ -45,7 +45,7 @@ const SingleNFT = () => {
     fetchNFTDetail();
   }, []);
 
-  console.log("single collectible detail", nftDetail);
+  // console.log("single collectible detail", nftDetail);
 
   return (
     <div className="rounded-lg bg-card text-textall h-full shadow-md p-6">

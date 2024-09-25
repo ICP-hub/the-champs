@@ -1,8 +1,14 @@
 import FancyHeader from "../common/FancyHeader";
 import { motion } from "framer-motion";
 import aboutData from "../../Data/AboutData";
+import { useEffect } from "react";
+import { scrollToTop } from "../common/BackToTop";
 
 const AboutPageContainerMain = () => {
+  useEffect(() => {
+    scrollToTop();
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}

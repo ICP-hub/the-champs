@@ -32,7 +32,7 @@ const ProductCardLg = ({ prod }) => {
       setCollection(res);
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -84,13 +84,13 @@ const ProductCardLg = ({ prod }) => {
       if (res?.Ok?.rate) {
         const exchangeRate2 =
           parseInt(res.Ok.rate) / Math.pow(10, res.Ok.metadata.decimals);
-        console.log(exchangeRate2);
+        // console.log(exchangeRate2);
         setExchange(exchangeRate2);
       } else {
-        console.log("Failed to fetch the exchange rate");
+        // console.log("Failed to fetch the exchange rate");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setLoading3(false);
     }

@@ -32,10 +32,10 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
         Principal.fromText(id),
         nftId
       );
-      console.log("Response getFractionalNFTDetails : ", res);
+      // console.log("Response getFractionalNFTDetails : ", res);
       setNFTDetail(res);
     } catch (err) {
-      console.error("Error fecthing fractionalNFTdetails : ", err);
+      // console.error("Error fecthing fractionalNFTdetails : ", err);
     } finally {
       setIsNFTLoading(false);
     }
@@ -55,9 +55,9 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
         principal,
         quantity
       );
-      console.log("response nft purchase", response);
+      // console.log("response nft purchase", response);
     } catch (err) {
-      console.error("error while purchasing nft", err);
+      // console.error("error while purchasing nft", err);
       toast.error("Failed to proceed");
     } finally {
       setPurchaseLoad(false);

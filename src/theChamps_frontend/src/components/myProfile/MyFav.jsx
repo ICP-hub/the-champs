@@ -55,7 +55,7 @@ const MyFav = () => {
         setFilteredProduct(favouriteProducts);
         setLoading2(false);
       } catch (error) {
-        console.log("Error while fetching user NFT", error);
+        // console.log("Error while fetching user NFT", error);
       }
     } else {
       toast.error("please connect to wellect");
@@ -108,7 +108,7 @@ const MyFav = () => {
         const favIds = res.map((fav) => fav[0].id);
         setFavourites(favIds);
       } catch (err) {
-        console.error("Error getting fav ", err);
+        // console.error("Error getting fav ", err);
       } finally {
         setFavLoad(false);
       }
@@ -137,7 +137,7 @@ const MyFav = () => {
         await backendActor?.addfavourite(product[0], parseInt(nft.id));
       }
     } catch (err) {
-      console.error("Error toggling fav ", err);
+      // console.error("Error toggling fav ", err);
     } finally {
       setFavChanged((prev) => !prev);
     }
@@ -157,18 +157,18 @@ const MyFav = () => {
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
-      console.log(res);
+      // console.log(res);
 
       if (res?.Ok?.rate) {
         const exchangeRate2 =
           parseInt(res.Ok.rate) / Math.pow(10, res.Ok.metadata.decimals);
-        console.log(exchangeRate2);
+        // console.log(exchangeRate2);
         setExchange(exchangeRate2);
       } else {
-        console.log("Failed to fetch the exchange rate");
+        // console.log("Failed to fetch the exchange rate");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setLoading3(false);
     }

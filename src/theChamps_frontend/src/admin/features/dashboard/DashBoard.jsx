@@ -34,7 +34,7 @@ const DashBoard = () => {
         const res = await backendActor?.getallstats();
         setAllStats(res);
       } catch (err) {
-        console.error("Error fetching all stats : ", err);
+        // console.error("Error fetching all stats : ", err);
       } finally {
         setIsLoading(false);
       }

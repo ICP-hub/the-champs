@@ -45,7 +45,7 @@ const NFTList = () => {
       toast.success("Collection removed successfully");
       navigate("/admin/collections");
     } catch (err) {
-      console.error("error removing collection :", err);
+      // console.error("error removing collection :", err);
       toast.error("Failed to remove collection");
     } finally {
       setModalLoader(false);
@@ -178,9 +178,9 @@ const NFTs = () => {
 };
 
 const NFTCard = ({ nftdetail, collection_Id }) => {
-  console.log("collectibles Detail :", nftdetail);
+  // console.log("collectibles Detail :", nftdetail);
   const { fractional_token, nft } = nftdetail[0];
-  console.log("fractional token", fractional_token, "collectible detail", nft);
+  // console.log("fractional token", fractional_token, "collectible detail", nft);
   const tokenData = transformTokenData(fractional_token);
   // console.log(tokenData);
   return (

@@ -34,7 +34,7 @@ export const useAuthClient = () => {
         // const client = await AuthClient.create(nfIDInstance);
         // setAuthClient(client);
       } catch (error) {
-        console.error("Error initializing NFID:", error);
+        // console.error("Error initializing NFID:", error);
         setError("Failed to initialize NFID.");
       }
     };
@@ -53,11 +53,11 @@ export const useAuthClient = () => {
   const reloadStatus = async () => {
     try {
       const identity = nfid.getIdentity();
-      console.log("identity on reload", identity);
+      // console.log("identity on reload", identity);
       if (Principal.from(identity.getPrincipal()).toText() === "2vxsx-fae") {
-        console.log("principal", identity.getPrincipal());
+        // console.log("principal", identity.getPrincipal());
         setIsAuthenticated(false);
-        console.log("Anonymous identity detected. Authentication failed.");
+        // console.log("Anonymous identity detected. Authentication failed.");
         return;
       }
 
@@ -70,7 +70,7 @@ export const useAuthClient = () => {
       setPrincipal(identity.getPrincipal());
       setIdentity(identity);
     } catch (err) {
-      console.log("Error reloading nfid status", err);
+      // console.log("Error reloading nfid status", err);
       setIsAuthenticated(false);
     }
   };
@@ -87,7 +87,7 @@ export const useAuthClient = () => {
         const theUserPrincipal = Principal.from(
           delegationResult.getPrincipal()
         ).toText();
-        console.log("user principal text", theUserPrincipal);
+        // console.log("user principal text", theUserPrincipal);
         // const isLogin = await nfid.getDelegationType();
         // console.log(isLogin, "Delegation type");
         setIsAuthenticated(true);
@@ -99,7 +99,7 @@ export const useAuthClient = () => {
         setBackendActor(backendActor);
         setIdentity(identity);
       } catch (error) {
-        console.error("Error during NFID call:", error);
+        // console.error("Error during NFID call:", error);
         setError("Failed to get NFID delegation.");
       }
     } else {
@@ -129,7 +129,7 @@ export const useAuthClient = () => {
 
 export const AuthProvider = ({ children }) => {
   const auth = useAuthClient();
-  console.log("auth is ", auth);
+  // console.log("auth is ", auth);
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 };
 

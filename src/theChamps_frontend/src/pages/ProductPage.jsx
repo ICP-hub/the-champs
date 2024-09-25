@@ -46,9 +46,9 @@ const ProductPage = ({ name }) => {
       // console.log("hello");
       setCollectionDetails(res);
       setLoading4(false);
-      console.log(res);
+      // console.log(res);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setLoading4(false);
     }
@@ -65,7 +65,7 @@ const ProductPage = ({ name }) => {
 
       // console.log("hello");
       setCollection(res);
-      console.log(res);
+      // console.log(res);
 
       // Adjust slice end value based on itemsPerPage
       setSearchResults(res);
@@ -75,7 +75,7 @@ const ProductPage = ({ name }) => {
       }
       setloading(false);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setHasMore(false);
     }
   };
@@ -175,13 +175,13 @@ const ProductPage = ({ name }) => {
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: "icp" } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
-      console.log(res);
+      // console.log(res);
       const exchangeRate2 =
         parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
-      console.log(exchangeRate2);
+      // console.log(exchangeRate2);
       setExchange(exchangeRate2);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setLoading3(false);
     }

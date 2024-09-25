@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useAuth } from "../auth/useClient";
 import CHAMPS from "../assets/CHAMPS.png";
+import { scrollToTop } from "../components/common/BackToTop";
 
 const CollectionPage = ({ name }) => {
   const [grid, setGrid] = useState(true);
@@ -38,6 +39,10 @@ const CollectionPage = ({ name }) => {
     );
     setSearchResults(filteredResults);
   };
+
+  useEffect(() => {
+    scrollToTop();
+  }, []);
 
   return (
     <>

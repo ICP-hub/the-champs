@@ -20,11 +20,11 @@ const UserSendAPI = () => {
     try {
       setIsLoading(true);
       const res = await backendActor?.createContact(data);
-      console.log("Response form sendUserContact", res);
+      // console.log("Response form sendUserContact", res);
       setFormSubmited(true);
       toast.success("Submitted Successfully! We'll contact you soon!");
     } catch (err) {
-      console.log("Error sending email info", err);
+      // console.log("Error sending email info", err);
     } finally {
       setIsLoading(false);
     }

@@ -167,13 +167,13 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
         { class: paymentOpt, symbol: "usd" }, // Assuming paymentOpt is for USD (dollar)
         { class: paymentOpt1, symbol: paymentMethod2 } // Assuming paymentOpt1 is for ICP (Internet Computer Protocol)
       );
-      console.log(res);
+      // console.log(res);
       const exchangeRate2 =
         parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
-      console.log(exchangeRate2);
+      // console.log(exchangeRate2);
       setExchange(exchangeRate2);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setLoading3(false);
     }
@@ -335,7 +335,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           },
           Principal.fromText(id),
         ]);
-        console.log(res);
+        // console.log(res);
         // return; ? return need?
       } else {
         // Add favorite
@@ -343,10 +343,10 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           Principal.fromText(id),
           parseInt(product[0].nft.id)
         );
-        console.log(res);
+        // console.log(res);
       }
     } catch (err) {
-      console.error("error toggling fav ", err);
+      // console.error("error toggling fav ", err);
     } finally {
       // setFavLoad(false);   // This may cause bug????
       setFavChanged((prev) => !prev);

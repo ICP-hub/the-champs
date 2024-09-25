@@ -31,7 +31,7 @@ function MainAdmin({ children }) {
             setIsAdmin(false);
           }
         } catch (error) {
-          console.error("Error checking isAdmin:", error);
+          // console.error("Error checking isAdmin:", error);
           setIsAdmin(false);
         } finally {
           setIsAdminChecked(true);

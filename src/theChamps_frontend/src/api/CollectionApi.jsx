@@ -22,7 +22,7 @@ const CollectionApi = () => {
       // If the plug principal required : then return ids : remove ids[1]
       res?.map((ids) => dispatch(getCollectionIds(ids[1])));
     } catch (err) {
-      console.error("Error fetching collection IDs", err);
+      // console.error("Error fetching collection IDs", err);
     }
   };
 
@@ -32,7 +32,7 @@ const CollectionApi = () => {
       const res = await backendActor?.getcollectiondetails(collectionId);
       dispatch(getSingleCollectionData(res));
     } catch (err) {
-      console.error("Error fetching collection Details : ", err);
+      // console.error("Error fetching collection Details : ", err);
     } finally {
       setIsLoading(false);
     }
@@ -54,7 +54,7 @@ const CollectionApi = () => {
             );
             return { canisterId: principal, details: response };
           } catch (err) {
-            console.error("Error fetching", err);
+            // console.error("Error fetching", err);
             throw err;
           }
         };
@@ -65,7 +65,7 @@ const CollectionApi = () => {
             const results = await Promise.all(promises);
             return results;
           } catch (error) {
-            console.error("Error in fetching all principal details:", error);
+            // console.error("Error in fetching all principal details:", error);
             throw error;
           } finally {
             setIsLoading(false);
@@ -87,13 +87,13 @@ const CollectionApi = () => {
             );
           })
           .catch((error) => {
-            console.error("Failed to fetch collections:", error);
+            // console.error("Failed to fetch collections:", error);
           });
       } else {
         setIsLoading(false);
       }
     } catch (err) {
-      console.error("Error fetching collectionId", err);
+      // console.error("Error fetching collectionId", err);
     }
   };
 

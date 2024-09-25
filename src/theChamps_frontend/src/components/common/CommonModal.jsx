@@ -29,13 +29,13 @@ const CommonModal = ({ toggleModal, tokencanisterid }) => {
 
         if (response.Ok) {
           toast.success("Transfer successful");
-          console.log(response);
+          // console.log(response);
         } else {
           toast.error("Transfer error:", response.Err);
-          console.error("Transfer error:", response.Err);
+          // console.error("Transfer error:", response.Err);
         }
       } catch (error) {
-        console.error("Error occurred during transfer:", error);
+        // console.error("Error occurred during transfer:", error);
         toast.error("Error occurred during transfer");
       } finally {
         setLoading(false);

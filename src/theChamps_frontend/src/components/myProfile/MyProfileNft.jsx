@@ -58,7 +58,7 @@ const MyProfileNFT = () => {
         );
         setProduct(res);
       } catch (err) {
-        console.error("Error getting user nft ", err);
+        // console.error("Error getting user nft ", err);
       } finally {
         setIsLoading(false);
       }
@@ -97,13 +97,13 @@ const MyProfileNFT = () => {
         { class: paymentOpt, symbol: "usd" },
         { class: paymentOpt1, symbol: paymentMethod2 }
       );
-      console.log(res);
+      // console.log(res);
       const exchangeRate2 =
         parseInt(res?.Ok?.rate) / Math.pow(10, res?.Ok?.metadata?.decimals);
-      console.log(exchangeRate2);
+      // console.log(exchangeRate2);
       setExchange(exchangeRate2);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setLoading3(false);
     }
@@ -123,7 +123,7 @@ const MyProfileNFT = () => {
       }, {});
       setFavStatus(favStatusObj);
     } catch (err) {
-      console.error("Error getting fav ", err);
+      // console.error("Error getting fav ", err);
     } finally {
       setFavLoad(false);
     }
@@ -155,7 +155,7 @@ const MyProfileNFT = () => {
         [prod[1].nft.id]: !prevStatus[prod[1].nft.id],
       }));
     } catch (err) {
-      console.error("error toggling fav ", err);
+      // console.error("error toggling fav ", err);
     } finally {
       setFavLoad(false);
     }
@@ -467,9 +467,9 @@ const TransferModal = ({ nft, onClose, exchange, loading }) => {
         // parseInt(amount)
         parseInt(quantity)
       );
-      console.log("Transfer nft response", paymentResponse);
+      // console.log("Transfer nft response", paymentResponse);
     } catch (err) {
-      console.error("Error in nft transfer ", err);
+      // console.error("Error in nft transfer ", err);
       // toast.error("Insufficient fund in wallet. Balance : ", currentBalance);
       toast.error("failed to transfer nft");
     } finally {

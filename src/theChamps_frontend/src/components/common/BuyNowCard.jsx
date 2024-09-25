@@ -83,7 +83,7 @@ const BuyNowCard = ({
         ? ids.ckBTCtokenCan
         : null;
 
-        console.log(principalId, 'principalId')
+        // console.log(principalId, 'principalId')
     try {
       // console.log(principalId);
       setBuyLoading(true);
@@ -98,17 +98,17 @@ const BuyNowCard = ({
         }),
       ]);
 
-      console.log("ICRC1_META RESPONSE", metadata);
+      // console.log("ICRC1_META RESPONSE", metadata);
       const formattedMetadata = formatTokenMetaData(metadata);
       setMetaData(formattedMetadata);
 
       const parsedBalance = parseInt(balance, 10);
-      console.log("Balance:", parsedBalance);
+      // console.log("Balance:", parsedBalance);
       setBalance(parsedBalance);
       // Call transferApprove after setting metaData and balance
       transferApprove(parsedBalance, formattedMetadata, tokenActor);
     } catch (err) {
-      console.error("ICRC1_META ERROR", err);
+      // console.error("ICRC1_META ERROR", err);
     } finally {
       setBuyLoading(false);
     }
@@ -142,12 +142,12 @@ const BuyNowCard = ({
       setMetaData(formattedMetadata);
 
       const parsedBalance = parseInt(balance, 10);
-      console.log("Balance:", parsedBalance);
+      // console.log("Balance:", parsedBalance);
       setBalance(parsedBalance);
 
       transferApprove(parsedBalance, formattedMetadata, tokenActor);
     } catch (err) {
-      console.error("Error during token confirmation:", err);
+      // console.error("Error during token confirmation:", err);
       toast.error("An error occurred while confirming the token");
     }
     // finally {
@@ -167,7 +167,7 @@ const BuyNowCard = ({
   };
 
   const fetchMetadataAndBalance = async (tokenActor, ownerPrincipal) => {
-    console.log(tokenActor, ownerPrincipal.toText());
+    // console.log(tokenActor, ownerPrincipal.toText());
     try {
       const [metadata, balance] = await Promise.all([
         tokenActor.icrc1_metadata(),
@@ -176,10 +176,10 @@ const BuyNowCard = ({
           subaccount: [],
         }),
       ]);
-      console.log("Fetched metadata:", metadata);
+      // console.log("Fetched metadata:", metadata);
       return { metadata, balance };
     } catch (err) {
-      console.error("Error fetching metadata and balance:", err);
+      // console.error("Error fetching metadata and balance:", err);
       throw err;
     }
   };
@@ -195,8 +195,8 @@ const BuyNowCard = ({
         ((price_share * quantity) / exchange) * Math.pow(10, decimals),
         10
       );
-      console.log("sendable amount console ", sendableAmount);
-      console.log("current balance console ", currentBalance);
+      // console.log("sendable amount console ", sendableAmount);
+      // console.log("current balance console ", currentBalance);
       if (currentBalance > sendableAmount) {
         //   console.log("We can send the amount");
         // transaction logic
@@ -228,10 +228,10 @@ const BuyNowCard = ({
           memo: [],
           created_at_time: [],
         };
-        console.log("transaction ", transaction);
+        // console.log("transaction ", transaction);
         // console.log("Token Actor ICRC2 APPROVE", tokenActor.icrc2_approve);
         const approveRes = await tokenActor.icrc2_approve(transaction);
-        console.log("Payment Approve Response ", approveRes);
+        // console.log("Payment Approve Response ", approveRes);
         if (approveRes.Err) {
           const errorMessage = `Insufficient funds. Balance: ${approveRes.Err.InsufficientFunds.balance}`;
           toast.error(errorMessage);
@@ -244,13 +244,13 @@ const BuyNowCard = ({
           );
         }
       } else {
-        console.log("Insufficient Balance to purchase");
+        // console.log("Insufficient Balance to purchase");
         toast.error(
           `Insufficient balance. Balance : ${currentBalance / 10 ** 8}`
         );
       }
     } catch (err) {
-      console.error("Error in transfer approve", err);
+      // console.error("Error in transfer approve", err);
     } finally {
       setBuyLoading(false);
     }
@@ -258,9 +258,9 @@ const BuyNowCard = ({
 
   // After approve payment
   const afterPaymentApprove = async (paymentId, amount, currentBalance) => {
-    console.log(
-      `You are going to send ,${amount} and your payment ID is ${paymentId}`
-    );
+    // console.log(
+    //   `You are going to send ,${amount} and your payment ID is ${paymentId}`
+    // );
     const paymentOptions = {
       [selectedMethodToBuy]: null,
     };
@@ -274,9 +274,9 @@ const BuyNowCard = ({
         paymentOptions,
         parseInt(amount)
       );
-      console.log("Payment Success Response ", paymentResponse);
+      // console.log("Payment Success Response ", paymentResponse);
     } catch (err) {
-      console.error("Insufficient fund in wallet ", err);
+      // console.error("Insufficient fund in wallet ", err);
       toast.error("Insufficient fund in wallet. Balance : ", currentBalance);
     }
   };

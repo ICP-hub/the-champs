@@ -19,10 +19,10 @@ const fetchUserDetails = async (
   try {
     setIsUserDataLoading(true);
     const res = await backendActor?.getUserdetailsbyid(Principal.fromText(id));
-    console.log(res);
+    // console.log(res);
     setUserInfo(res.ok);
   } catch (err) {
-    console.error("Error fetching user details : ", err);
+    // console.error("Error fetching user details : ", err);
   } finally {
     setIsUserDataLoading(false);
   }
@@ -54,7 +54,7 @@ const UserData = () => {
     fetchUserDetails(id, backendActor, setUserInfo, setIsUserDataLoading);
   }, [backendActor]);
 
-  console.log("userInfo is :", userInfo);
+  // console.log("userInfo is :", userInfo);
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex gap-4 items-center font-bold text-lg tracking-wider">
@@ -122,10 +122,10 @@ const Cards = ({ id }) => {
         const res = await backendActor?.getusersfractionnft(
           Principal.fromText(id)
         );
-        console.log("user nft: ", res);
+        // console.log("user nft: ", res);
         setNFTList(res);
       } catch (err) {
-        console.error("Error Fetching getusersfractionnft : ", err);
+        // console.error("Error Fetching getusersfractionnft : ", err);
       } finally {
         setNftLoading(false);
       }
@@ -152,7 +152,7 @@ const Cards = ({ id }) => {
 
 const NFTDetailCard = ({ nft }) => {
   const [collectionId, nftDetail, nftId] = nft;
-  console.log("nftDetail ", nftDetail);
+  // console.log("nftDetail ", nftDetail);
   const tokenData = transformTokenData(nftDetail.fractional_token);
   return (
     <div className="bg-card rounded-2xl overflow-hidden flex flex-col space-x-2">

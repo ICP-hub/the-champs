@@ -34,7 +34,7 @@ const ContactDetail = () => {
       }
       setIsLoading(false);
     } catch (error) {
-      console.log("Error fetching contact:", error);
+      // console.log("Error fetching contact:", error);
     }
   };
 
@@ -51,7 +51,7 @@ const ContactDetail = () => {
       setLoading(true);
       const res = await backendActor.deleteContact(messages.id);
     } catch (error) {
-      console.error("Error deleting contact:", error);
+      // console.error("Error deleting contact:", error);
     } finally {
       setLoading(false);
       navigate("/admin/message");

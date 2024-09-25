@@ -68,18 +68,18 @@ const MyProfileActivity = () => {
       try {
         const res = await backendActor?.getusersfractionnft(principal);
 
-        console.log("Response from backendActor:", res);
+        // console.log("Response from backendActor:", res);
 
         const filteredData = res.filter((item) => {
           const ownerPrincipal = item.nft?.owner?.toText();
           return ownerPrincipal === principal?.toText();
         });
 
-        console.log("Filtered Data:", filteredData);
+        // console.log("Filtered Data:", filteredData);
         setProduct(filteredData);
         setLoading(false);
       } catch (error) {
-        console.log("Error while fetching user NFT", error);
+        // console.log("Error while fetching user NFT", error);
       }
     };
 
@@ -92,13 +92,13 @@ const MyProfileActivity = () => {
           // Principal.fromText(principal)
           principal
         );
-        console.log("transation", res);
-        console.log("Response from backendActor:", res);
+        // console.log("transation", res);
+        // console.log("Response from backendActor:", res);
 
         setProduct(res);
         setLoading(false);
       } catch (error) {
-        console.log("Error while fetching user NFT", error);
+        // console.log("Error while fetching user NFT", error);
       }
     };
 

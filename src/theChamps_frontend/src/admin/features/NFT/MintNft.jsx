@@ -112,7 +112,7 @@ const MintNft = () => {
         toast.success("Digital Collectible created Successfully");
         navigate("/admin/collections");
       } catch (err) {
-        console.error("Error Creating collectible", err);
+        // console.error("Error Creating collectible", err);
         toast.error("Failed to create digital collectible");
       } finally {
         setIsMintLoading(false);

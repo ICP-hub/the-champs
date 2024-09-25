@@ -71,12 +71,12 @@ const HomePageALeftCommunityCounter = () => {
     try {
       const res = await backendActor.getallfractionalnfts();
       SetNFTs(res);
-      console.log("all nft", res[0][1]?.fractional_token.logo);
+      // console.log("all nft", res[0][1]?.fractional_token.logo);
       setimg1(res[0][1]?.fractional_token?.logo);
       setimg2(res[1][1]?.fractional_token?.logo);
       setimg3(res[2][1]?.fractional_token?.logo);
     } catch (error) {
-      console.log("Error while fetching user NFT", error);
+      // console.log("Error while fetching user NFT", error);
     }
   };
 
