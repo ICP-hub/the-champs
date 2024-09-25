@@ -216,7 +216,7 @@ actor Champs {
                         Debug.print(debug_show (newnft));
                         Cycles.add<system>(500_000_000_000);
                         let initial_mints = [{
-                            account = { owner = user; subaccount = null };
+                            account = { owner = champs; subaccount = null };
                             amount = _totalSupply;
                         }];
                         let init  = {
@@ -237,7 +237,7 @@ actor Champs {
                         
                         let approve = await fractiontokens.icrc2_approve({from_subaccount  = null;spender = {owner = champs; subaccount = null;};amount = _totalSupply;expires_at = null;expected_allowance = null;memo = null;fee = null;created_at_time = null;});
 
-                        Debug.print("THe output of the approve function is : " # debug_show (approve));
+                        Debug.print("THe output of the approve function is : " # debug_show (approve));  
                         
                         let tokencanister : Principal = await fractiontokens.getCanisterId();
                         var name : Typestoken.Value = #Text(_name);
@@ -289,12 +289,12 @@ actor Champs {
         return 0.0;
     };
 
-    public shared ({ caller = _user }) func buytokens(tokencanisterid : Principal, from : Principal, to : Principal, numberoftokens : Nat) : async ICRC.Result_2 {
+    public shared ({ caller = _user }) func buytokens(tokencanisterid : Principal,to : Principal, numberoftokens : Nat) : async ICRC.Result {
         // if (Principal.isAnonymous(_user)) {
         //     throw Error.reject("User is not authenticated");
         // };
         let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-            icrc2_transfer_from : (ICRC.TransferFromArgs) -> async ICRC.Result_2;
+            icrc1_transfer : (ICRC.TransferArg) -> async ICRC.Result;
         };
         // switch (paymentOption) {
         //     case (#icp) {
@@ -304,16 +304,15 @@ actor Champs {
         //                 throw Error.reject(debug_show (index));
         //             };
         //             case (#Ok(res)) {
-                        let transferparams : ICRC.TransferFromArgs = {
-                            spender_subaccount = null;
-                            from = { owner = from; subaccount = null };
+                        let transferparams : ICRC.TransferArg = {
                             to = { owner = to; subaccount = null };
                             amount = numberoftokens;
                             fee = null;
+                            from_subaccount = null;
                             memo = null;
                             created_at_time = null;
                         };
-                        let tokens = await tokencansiter_actor.icrc2_transfer_from(transferparams);
+                        let tokens = await tokencansiter_actor.icrc1_transfer(transferparams);
                        Debug.print("This here is the check that whtere the code is being executed till this line  and its a Yes");
                         switch (tokens) {
                             case (#Err(index)) {
