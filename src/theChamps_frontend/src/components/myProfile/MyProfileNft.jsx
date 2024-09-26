@@ -174,11 +174,11 @@ const MyProfileNFT = () => {
       </div>
       <div>
         {isLoading ? (
-          <div className="grid lg:grid-cols-3 gap-4 mb-4 xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
+          <div className="grid gap-4 mb-4">
             <Loader />
           </div>
         ) : product.length > 0 ? (
-          <div className="grid lg:grid-cols-3 gap-4 mb-4 xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
+          <div className="grid gap-4 mb-4">
             {product.map((prod, index) => (
               <div key={index}>
                 {/* {isModalOpen && selectedNFT === prod && (
@@ -206,10 +206,14 @@ const MyProfileNFT = () => {
                       className="object-cover cursor-pointer h-96 w-full rounded-t-lg"
                     ></motion.img>
                   </Link>
-                  <div className="p-2 mx-2 my-4">
+                  {console.log(prod[1])}
+                  <div className="p-2 mx-2 my-4 font-semibold">
                     <div className="flex justify-between font-bold items-center">
                       <div className="text-lg font-semibold">
-                        {prod[1]?.fractional_token[0][1]?.Text}
+                        Collectible Name :{" "}
+                        <span className="text-gray-700">
+                          {prod[1]?.fractional_token[0][1]?.Text}
+                        </span>
                       </div>
 
                       <span className="flex items-center justify-center">
@@ -235,12 +239,17 @@ const MyProfileNFT = () => {
                         )}
                       </span>
                     </div>
-                    <div>{prod[2]?.toText()}</div>
-                    <div className="flex mb-4">
-                      <p className="bg-opacity-100 py-2 flex gap-1 rounded-md w-[50%]">
-                        Rp.
-                        <span className="font-semibold">
-                          {prod[1].price_per_share.toFixed(3)}
+                    <div>
+                      Collectible Id :{" "}
+                      <span className="font-semibold text-gray-700">
+                        {prod[2]?.toText()}
+                      </span>
+                    </div>
+                    <div className="flex">
+                      <p className="bg-opacity-100 flex gap-1 rounded-md w-[50%]">
+                        Price :
+                        <span className="font-semibold text-gray-700">
+                          Rp. {prod[1].price_per_share.toFixed(3)}/Share
                         </span>
                       </p>
                       {/* <button
@@ -249,6 +258,22 @@ const MyProfileNFT = () => {
                       >
                         Transfer
                       </button> */}
+                    </div>
+                    <div>
+                      Share you own :{" "}
+                      <span className="font-semibold text-gray-700">
+                        {parseInt(prod[1].totalSupply)}
+                      </span>
+                    </div>
+                    <div>
+                      Total Value :{" "}
+                      <span className="font-semibold text-gray-700">
+                        Rp.
+                        {(
+                          parseInt(prod[1].totalSupply) *
+                          prod[1].price_per_share.toFixed(3)
+                        ).toFixed(3)}
+                      </span>
                     </div>
                   </div>
                 </div>
