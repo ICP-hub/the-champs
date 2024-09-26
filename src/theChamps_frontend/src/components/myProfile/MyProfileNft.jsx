@@ -188,27 +188,26 @@ const MyProfileNFT = () => {
                     loading={loading3}
                   />
                 )}
+                {console.log("Curr Product", prod)}
                 <div
                   className="border rounded-xl overflow-hidden"
                   style={{ boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)" }}
                 >
-                  <div className="overflow-hidden flex items-center justify-center">
-                    <Link>
-                      <motion.img
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.2, ease: "easeInOut" }}
-                        src={
-                          prod[1].nft.logo.data.length > 10
-                            ? prod[1].nft.logo.data
-                            : placeHolderImg
-                        }
-                        className="rounded-t-lg object-cover cursor-pointer overflow-hidden"
-                      ></motion.img>
-                    </Link>
-                  </div>
-                  <div className="p-2 mx-2">
+                  <Link className="overflow-hidden flex items-center p-1">
+                    <motion.img
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.2, ease: "easeInOut" }}
+                      src={
+                        prod[1].nft.logo.data.length > 10
+                          ? prod[1].nft.logo.data
+                          : placeHolderImg
+                      }
+                      className="object-cover cursor-pointer h-96 w-full rounded-t-lg"
+                    ></motion.img>
+                  </Link>
+                  <div className="p-2 mx-2 my-4">
                     <div className="flex justify-between font-bold items-center">
-                      <div className="text-lg font-semibold mb-2">
+                      <div className="text-lg font-semibold">
                         {prod[1]?.fractional_token[0][1]?.Text}
                       </div>
 
@@ -235,23 +234,20 @@ const MyProfileNFT = () => {
                         )}
                       </span>
                     </div>
-                    <div className="flex justify-between mb-4">
-                      <p className="mt-4 bg-opacity-100 py-2 flex gap-1 rounded-md w-[50%]">
-                        <IcpLogo />
-                        {loading3 ? (
-                          <div className="h-6 bg-gray-300 rounded-2xl animate-pulse w-24"></div>
-                        ) : (
-                          <span className="font-semibold">
-                            {(prod[1].price_per_share / exchange).toFixed(3)}
-                          </span>
-                        )}
+                    <div>{prod[2]?.toText()}</div>
+                    <div className="flex mb-4">
+                      <p className="bg-opacity-100 py-2 flex gap-1 rounded-md w-[50%]">
+                        Rp.
+                        <span className="font-semibold">
+                          {prod[1].price_per_share.toFixed(3)}
+                        </span>
                       </p>
-                      <button
+                      {/* <button
                         className="mt-4 button text-white rounded-md w-[50%] text-md flex items-center justify-center"
                         onClick={() => handleModalOpen(prod)}
                       >
                         Transfer
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>

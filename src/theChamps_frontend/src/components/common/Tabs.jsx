@@ -78,7 +78,7 @@ const Chip = ({ text, selected, setSelected }) => {
     <button
       onClick={setSelected}
       className={`px-2.5 py-2 relative font-semibold text-sm md:text-xl hover:text-[#fc001e]
-         z-10`}
+         z-10 min-w-32`}
     >
       <div className={`relative z-10 py-2 ${selected && "gradient_text"}`}>
         {text}
