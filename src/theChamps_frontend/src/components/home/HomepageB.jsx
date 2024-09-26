@@ -119,7 +119,7 @@ const HomePageB = () => {
         </Link>
       ) : (
         <NotAvailable className="text-center">
-          Featured NFT not available
+          Featured Digital Collectible not available
         </NotAvailable>
       )}
     </div>

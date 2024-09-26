@@ -165,7 +165,7 @@ const ProductCardLg = ({ prod }) => {
               {prod.canisterId.toText()}
             </p>
           </div>
-          <p className="mt-4">{prod.details.description}</p>
+          <p className="mt-4 overflow-hidden overflow-hidden text-ellipsis w-full">{prod.details.description}</p>
           <div className="mt-auto">
             <Link
               to={`/collection/${prod.canisterId.toText()}`}

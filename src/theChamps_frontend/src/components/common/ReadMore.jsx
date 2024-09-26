@@ -8,9 +8,9 @@ const ReadMore = ({ text, maxLength, readmore }) => {
   };
 
   return (
-    <div>
+    <div className="w-full overflow-hidden text-ellipsis">
       {isTruncated ? (
-        <>
+        <div className="w-full overflow-hidden text-ellipsis">
           {text?.slice(0, maxLength)}
           {text.length > maxLength && "... "}
           {readmore && (
@@ -21,9 +21,9 @@ const ReadMore = ({ text, maxLength, readmore }) => {
               Read More
             </button>
           )}
-        </>
+        </div>
       ) : (
-        <>
+        <div className="overflow-hidden text-ellipsis w-full">
           {text}{" "}
           <button
             onClick={toggleTruncate}
@@ -31,7 +31,7 @@ const ReadMore = ({ text, maxLength, readmore }) => {
           >
             Read Less
           </button>
-        </>
+        </div>
       )}
     </div>
   );
