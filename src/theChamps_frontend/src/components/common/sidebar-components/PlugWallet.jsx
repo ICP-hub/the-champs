@@ -44,7 +44,9 @@ const PlugWallet = () => {
   };
 
   // Refresh bal logic
-  const refreshBal = () => {};
+  const refreshPage = () => {
+    window.location.reload();
+  };
 
   // Copy plug id
   const copyAddress = () => {
@@ -109,7 +111,7 @@ const PlugWallet = () => {
           >
             <div
               className="px-6 py-3 hover:bg-gray-200 flex gap-4 items-center"
-              onClick={refreshBal}
+              onClick={refreshPage}
             >
               <IconWrapper>
                 <IoMdRefresh size={28} />
@@ -125,7 +127,7 @@ const PlugWallet = () => {
               </IconWrapper>
               <p>Copy Address</p>
             </div>
-            <a
+            {/* <a
               target="_blank"
               href="https://icscan.io/account/d1f2fcb239ed4510f7f1cfe07210a71aa3c8c2bd93e39ab7e1338ca9b37b6060"
               className="px-6 py-3 hover:bg-gray-200 flex gap-4 items-center"
@@ -134,7 +136,7 @@ const PlugWallet = () => {
                 <IoMdSearch size={28} />
               </IconWrapper>
               <p>View in explorer</p>
-            </a>
+            </a> */}
             <div
               className="px-6 py-3 hover:bg-gray-200 flex gap-4 items-center"
               onClick={userLogOut}

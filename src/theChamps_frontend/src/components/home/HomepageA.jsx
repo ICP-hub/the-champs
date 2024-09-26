@@ -133,7 +133,7 @@ const HomePageARight = () => {
           <span className="flex w-full mt-auto">
             <img src={star3} alt="square" className="max-h-80 max-w-80" />
           </span>
-          <span className="flex items-center w-full">
+          <span className="hidden md:flex items-center w-full">
             <img src={star} alt="star" className="max-h-20 max-w-80" />
           </span>
         </div>
