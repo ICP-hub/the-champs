@@ -4,15 +4,15 @@ import { motion } from "framer-motion";
 
 const OrderConfirmation = ({ action }) => {
   return (
-    <div className="flex justify-center items-center bg-gradient-to-br from-[#fc001e] to-[#ff7d57] rounded-2xl px-8 py-24 max-md:flex-col gap-8 shadow-lg relative">
+    <div className="flex justify-center items-center bg-card rounded-2xl px-8 py-24 max-md:flex-col gap-8 shadow-lg relative">
       <button className="absolute top-5 right-5" onClick={action}>
         <IoMdClose size={32} color="white" />
       </button>
       <div className="flex flex-col items-center text-center max-md:justify-center">
-        <h1 className="text-xl md:text-4xl font-black text-white mb-2">
+        <h1 className="text-xl md:text-4xl font-black  mb-2 gradient-text">
           Your Order is Confirmed!
         </h1>
-        <h2 className="text-lg md:text-2xl font-semibold text-gray-400">
+        <h2 className="text-lg md:text-2xl font-semibold text-gray-700">
           Thank You for Your Purchase!
         </h2>
 

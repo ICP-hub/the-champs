@@ -69,12 +69,14 @@ const ProfileSection = () => {
     <>
       <div className="flex flex-col gap-4">
         <div className="border-2 rounded-2xl overflow-hidden">
-          <h1 className={commonHeadingStyle}>Nfts</h1>
+          <h1 className={commonHeadingStyle}>Digital Collectibles</h1>
           <div className="flex flex-col w-full">
             <button
               to="/my-profile"
               className={commonLinkStyle}
-              onClick={() => navigate("/my-profile", { state: "My NFTs" })}
+              onClick={() =>
+                navigate("/my-profile", { state: "My Collectibles" })
+              }
             >
               <IconWrapper>
                 <IoMdImages size={28} />
@@ -109,7 +111,7 @@ const ProfileSection = () => {
             </IconWrapper>
             <span className="font-medium">Favourites</span>
           </button>
-          <button
+          {/* <button
             className={commonLinkStyle}
             onClick={() => navigate("/my-profile", { state: "Activity" })}
           >
@@ -117,7 +119,7 @@ const ProfileSection = () => {
               <MdFormatListBulletedAdd size={28} />
             </IconWrapper>
             <span className="font-medium">Activity</span>
-          </button>
+          </button> */}
         </div>
         {loading ? (
           <div className="border-2 rounded-2xl overflow-hidden animate-pulse">

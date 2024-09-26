@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 const initialStateIndex = {
   Profile: 0,
-  "My NFTs": 1,
+  "My Collectibles": 1,
   Favourites: 2,
   Activity: 3,
 };
