@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const OrderConfirmation = ({ action }) => {
   return (
-    <div className="flex justify-center items-center bg-card rounded-2xl px-8 py-24 max-md:flex-col gap-8 shadow-lg relative">
+    <div className="flex justify-center items-center bg-white rounded-2xl px-8 py-24 max-md:flex-col gap-8 shadow-lg relative">
       <button className="absolute top-5 right-5" onClick={action}>
         <IoMdClose size={32} color="white" />
       </button>
