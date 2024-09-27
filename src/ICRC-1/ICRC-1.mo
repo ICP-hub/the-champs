@@ -17,8 +17,6 @@ actor class Ledger(init : { initial_mints : [{ account : { owner : Principal; su
   let transactionWindowNanos : Types.Duration = 24 * 60 * 60 * 1_000_000_000;
   let defaultSubaccount : Types.Subaccount = Blob.fromArrayMut(Array.init(32, 0 : Nat8));
 
-
-
   private stable var capacity = 1000000000000000000;
   private stable var balance_cycle = ExperimentalCycles.balance();
 
@@ -358,7 +356,7 @@ actor class Ledger(init : { initial_mints : [{ account : { owner : Principal; su
       ("icrc1:name", #Text(init.token_name)),
       ("icrc1:symbol", #Text(init.token_symbol)),
       ("icrc1:decimals", #Nat(Nat8.toNat(init.decimals))),
-      ("icrc1:fee", #Nat(init.transfer_fee)), 
+      ("icrc1:fee", #Nat(init.transfer_fee)),
     ];
   };
 
@@ -514,18 +512,23 @@ actor class Ledger(init : { initial_mints : [{ account : { owner : Principal; su
     #Ok(txid);
   };
 
-  public query func icrc2_allowance({ account : Types.Account; spender : Types.Account }) : async Types.Allowance {
+  public query func icrc2_allowance({
+    account : Types.Account;
+    spender : Types.Account;
+  }) : async Types.Allowance {
     allowance(account, spender, Nat64.fromNat(Int.abs(Time.now())));
+  };
+
+  public query func getTotalSupply() : async Nat {
+    return init.initial_mints[0].amount;
   };
 
   ///  Customised Functios for the Ledger
 
-  public func wallet_receive() : async { accepted: Nat64 } {
+  public func wallet_receive() : async { accepted : Nat64 } {
     let amount = ExperimentalCycles.available();
     let limit : Nat = capacity - balance_cycle;
-    let accepted = 
-      if (amount <= limit) amount
-      else limit;
+    let accepted = if (amount <= limit) amount else limit;
     let deposit = ExperimentalCycles.accept<system>(accepted);
     assert (deposit == accepted);
     balance_cycle += accepted;
