@@ -42,6 +42,9 @@ actor Champs {
     private var fractionalnftmap = TrieMap.TrieMap<Principal, [(Principal, Types.FractionalNFT, Principal)]>(Principal.equal, Principal.hash);
     private var stablefractionalnftmap : [(Principal, [(Principal, Types.FractionalNFT, Principal)])] = [];
 
+    private var userownershipmap = TrieMap.TrieMap<Principal, [(Principal, Types.TokenId, Principal)]>(Principal.equal, Principal.hash);
+    private var stableuserownershipmap : [(Principal, [(Principal, Types.TokenId, Principal)])] = [];
+
     private var users = TrieMap.TrieMap<Principal, UsersTypes.User>(Principal.equal, Principal.hash);
     private var stableusers : [(Principal, UsersTypes.User)] = [];
 
@@ -54,34 +57,33 @@ actor Champs {
         return adminstatus;
     };
 
-    public shared ({caller = user}) func totalfractionalNFTs () : async Nat {
+    public shared ({ caller = user }) func totalfractionalNFTs() : async Nat {
         // let adminstatus = await Admin.isAdmin(user);
         // if (adminstatus == false) {
         //     throw Error.reject("User is not an admin");
         // };
         var count : Nat = 0;
-        for ((k,v) in fractionalnftmap.entries()) {
+        for ((k, v) in fractionalnftmap.entries()) {
             count := count + v.size();
         };
         return count;
     };
 
-    public shared ({caller = user}) func totalcollections () : async Nat {
+    public shared ({ caller = user }) func totalcollections() : async Nat {
         // let adminstatus = await Admin.isAdmin(user);
         // if (adminstatus == false) {
         //     throw Error.reject("User is not an admin");
         // };
         var count : Nat = 0;
-        for ((k,v) in nftcollectionMap.entries()) {
+        for ((k, v) in nftcollectionMap.entries()) {
             count := count + v.size();
         };
         return count;
     };
-
 
     // ******************************************* Collections Realted functions  *************************************************************
 
-    public shared ({caller = user }) func add_collection_to_map (collection_id : Principal) : async Text {
+    public shared ({ caller = user }) func add_collection_to_map(collection_id : Principal) : async Text {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
@@ -101,15 +103,15 @@ actor Champs {
                 if (coll) {
                     return "Collection already added";
                 } else {
-                let temp = List.push(collection_id, List.fromArray(collections));
-                nftcollectionMap.put(user, List.toArray(temp));
-                return "Collection added";
+                    let temp = List.push(collection_id, List.fromArray(collections));
+                    nftcollectionMap.put(user, List.toArray(temp));
+                    return "Collection added";
                 };
             };
         };
-    }; 
+    };
 
-    public shared ({caller = user}) func remove_collection_to_map (collection_id : Principal) : async Text {
+    public shared ({ caller = user }) func remove_collection_to_map(collection_id : Principal) : async Text {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
@@ -130,7 +132,6 @@ actor Champs {
             };
         };
     };
-
 
     public shared ({ caller = user }) func createcollection(logo : Types.LogoResult, banner : Types.LogoResult, description : Text, name : Text, symbol : Text, maxLimit : Nat16, featured : Bool) : async (Principal, Principal) {
         // if (Principal.isAnonymous(user)) {
@@ -184,7 +185,7 @@ actor Champs {
         _name : Text,
         _symbol : Text,
         _decimals : Nat8,
-        _totalSupply : Nat
+        _totalSupply : Nat,
     ) : async (Types.FractionalNFTResult, Principal) {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
@@ -202,12 +203,12 @@ actor Champs {
             };
             case (?id) {
                 let nftcanisteractor = actor (Principal.toText(nftcanisterid)) : actor {
-                    mintDip721 : (to : Principal, metadata : Types.MetadataDesc, priceinusd : Float , logo : Types.LogoResult) -> async Types.MintReceipt;
+                    mintDip721 : (to : Principal, metadata : Types.MetadataDesc, priceinusd : Float, logo : Types.LogoResult) -> async Types.MintReceipt;
 
                     getallNFT : () -> async [Types.Nft];
                 };
                 let mintednft = await nftcanisteractor.mintDip721(to, metadata, priceinusd, _logo);
-                let champs = await idQuick();  
+                let champs = await idQuick();
                 switch (mintednft) {
                     case (#Err(index)) {
                         throw Error.reject(debug_show (index));
@@ -219,40 +220,55 @@ actor Champs {
                             account = { owner = champs; subaccount = null };
                             amount = _totalSupply;
                         }];
-                        let init  = {
+                        let init = {
                             decimals : Nat8 = _decimals;
                             initial_mints : [{
-                              account : { owner : Principal; subaccount : ?Blob };
-                              amount : Nat; 
+                                account : {
+                                    owner : Principal;
+                                    subaccount : ?Blob;
+                                };
+                                amount : Nat;
                             }] = initial_mints;
-                            minting_account : { owner : Principal; subaccount : ?Blob } = { owner = user; subaccount = null };
+                            minting_account : {
+                                owner : Principal;
+                                subaccount : ?Blob;
+                            } = { owner = user; subaccount = null };
                             token_name : Text = _name;
                             token_symbol : Text = _symbol;
                             transfer_fee : Nat = 0;
                         };
-                        
-                        let fractiontokens = await ICRCActorClass.Ledger(init);
-                        
-                        ignore await fractiontokens.wallet_receive();
-                        
-                        let approve = await fractiontokens.icrc2_approve({from_subaccount  = null;spender = {owner = champs; subaccount = null;};amount = _totalSupply;expires_at = null;expected_allowance = null;memo = null;fee = null;created_at_time = null;});
 
-                        Debug.print("THe output of the approve function is : " # debug_show (approve));  
-                        
+                        let fractiontokens = await ICRCActorClass.Ledger(init);
+
+                        ignore await fractiontokens.wallet_receive();
+
+                        let approve = await fractiontokens.icrc2_approve({
+                            from_subaccount = null;
+                            spender = { owner = champs; subaccount = null };
+                            amount = _totalSupply;
+                            expires_at = null;
+                            expected_allowance = null;
+                            memo = null;
+                            fee = null;
+                            created_at_time = null;
+                        });
+
+                        Debug.print("THe output of the approve function is : " # debug_show (approve));
+
                         let tokencanister : Principal = await fractiontokens.getCanisterId();
                         var name : Typestoken.Value = #Text(_name);
                         var symbol : Typestoken.Value = #Text(_symbol);
                         var decimals : Typestoken.Value = #Nat(Nat8.toNat(_decimals));
                         var fee : Typestoken.Value = #Nat(0);
-                        
+
                         let tokenmetadata = [
                             ("icrc1:name", name),
-                            ("icrc1:symbol",symbol),
-                            ("icrc1:decimals",decimals),
-                            ("icrc1:fee", fee)
-                            ];
+                            ("icrc1:symbol", symbol),
+                            ("icrc1:decimals", decimals),
+                            ("icrc1:fee", fee),
+                        ];
                         let nftdata = await getNFTdetails(nftcanisterid, newnft.token_id);
-                        
+
                         let fractionNftDetails : Types.FractionalNFT = {
                             collectionid = nftcanisterid;
                             nft = nftdata;
@@ -269,7 +285,16 @@ actor Champs {
                             case (?nft) {
                                 let temp = List.push((nftcanisterid, fractionNftDetails, tokencanister), List.fromArray(nft));
                                 fractionalnftmap.put(to, List.toArray(temp));
-                                return (#Ok(fractionNftDetails), tokencanister);
+                                switch (userownershipmap.get(to)) {
+                                    case null {
+                                        userownershipmap.put(to, [(nftcanisterid, newnft.token_id, tokencanister)]);
+                                    };
+                                    case (?v) {
+                                        let newlist = List.push((nftcanisterid, newnft.token_id, tokencanister), List.fromArray(v));
+                                        userownershipmap.put(to, List.toArray(newlist));
+                                        return (#Ok(fractionNftDetails), tokencanister);
+                                    };
+                                };
                             };
                         };
                         return (#Ok(fractionNftDetails), tokencanister);
@@ -289,12 +314,15 @@ actor Champs {
         return 0.0;
     };
 
-    public shared ({ caller = _user }) func buytokens(tokencanisterid : Principal,to : Principal, numberoftokens : Nat) : async ICRC.Result {
+    public shared ({ caller = _user }) func buytokens(nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async ICRC.Result {
         // if (Principal.isAnonymous(_user)) {
         //     throw Error.reject("User is not authenticated");
         // };
         let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
             icrc1_transfer : (ICRC.TransferArg) -> async ICRC.Result;
+            getTotalSupply : () -> async Nat;
+            icrc1_metadata : () -> async [(Text, Types.Value)];
+
         };
         // switch (paymentOption) {
         //     case (#icp) {
@@ -304,88 +332,99 @@ actor Champs {
         //                 throw Error.reject(debug_show (index));
         //             };
         //             case (#Ok(res)) {
-                        let transferparams : ICRC.TransferArg = {
-                            to = { owner = to; subaccount = null };
-                            amount = numberoftokens;
-                            fee = null;
-                            from_subaccount = null;
-                            memo = null;
-                            created_at_time = null;
-                        };
-                        let tokens = await tokencansiter_actor.icrc1_transfer(transferparams);
-                       Debug.print("This here is the check that whtere the code is being executed till this line  and its a Yes");
-                        switch (tokens) {
-                            case (#Err(index)) {
-                               throw Error.reject(debug_show(index));
-                            };
-                            case (#Ok(data)) {
-                                return #Ok(data);
-                            };
-                        };
+        let transferparams : ICRC.TransferArg = {
+            to = { owner = to; subaccount = null };
+            amount = numberoftokens;
+            fee = null;
+            from_subaccount = null;
+            memo = null;
+            created_at_time = null;
+        };
+        let tokens = await tokencansiter_actor.icrc1_transfer(transferparams);
+
+        Debug.print("This here is the check that whtere the code is being executed till this line  and its a Yes");
+        switch (tokens) {
+            case (#Err(index)) {
+                throw Error.reject(debug_show (index));
+            };
+            case (#Ok(data)) {
+                switch (userownershipmap.get(to)) {
+                    case null {
+                        userownershipmap.put(to, [(nftCanister, tokenid, tokencanisterid)]);
+                        return #Ok(data);
+                    };
+                    case (?v) {
+                        let newlist = List.push((nftCanister, tokenid, tokencanisterid), List.fromArray(v));
+                        userownershipmap.put(to, List.toArray(newlist));
+                        return #Ok(data);
+                    };
+                };
+            };
+        };
     };
-                //         return #Ok(res);
-                //     };
-                // // };
-            // };
-            // case (#ckbtc) {
-            //     let response : ICRC.Result_2 = await icrc2_transferFrom(ckbtcLedger, from, to, amount);
-            //     switch (response) {
-            //         case (#Err(index)) {
-            //             throw Error.reject(debug_show (index));
-            //         };
-            //         case (#Ok(res)) {
-            //             let transferparamsckbtc = {
-            //                 spender_subaccount = null;
-            //                 from = { owner = from; subaccount = null };
-            //                 to = { owner = to; subaccount = null };
-            //                 amount = numberoftokens;
-            //                 fee = null;
-            //                 memo = null;
-            //                 created_at_time = null;
-            //             };
-            //             let tokens = await tokencansiter_actor.icrc2_transfer_from(transferparamsckbtc);
-            //             switch (tokens) {
-            //                 case (#err(index)) {
-            //                     throw Error.reject(debug_show (index));
-            //                 };
-            //                 case (#ok(data)) {
-            //                     return #Ok(data);
-            //                 };
-            //             };
-            //             return #Ok(res);
-            //         };
+    //         return #Ok(res);
+    //     };
+    // // };
+    // };
+    // case (#ckbtc) {
+    //     let response : ICRC.Result_2 = await icrc2_transferFrom(ckbtcLedger, from, to, amount);
+    //     switch (response) {
+    //         case (#Err(index)) {
+    //             throw Error.reject(debug_show (index));
+    //         };
+    //         case (#Ok(res)) {
+    //             let transferparamsckbtc = {
+    //                 spender_subaccount = null;
+    //                 from = { owner = from; subaccount = null };
+    //                 to = { owner = to; subaccount = null };
+    //                 amount = numberoftokens;
+    //                 fee = null;
+    //                 memo = null;
+    //                 created_at_time = null;
+    //             };
+    //             let tokens = await tokencansiter_actor.icrc2_transfer_from(transferparamsckbtc);
+    //             switch (tokens) {
+    //                 case (#err(index)) {
+    //                     throw Error.reject(debug_show (index));
+    //                 };
+    //                 case (#ok(data)) {
+    //                     return #Ok(data);
+    //                 };
+    //             };
+    //             return #Ok(res);
+    //         };
     //             };
     //         };
     //     };
     // };
 
-    public shared ({ caller = user }) func transfertokens(tokencanisterid : Principal, to : Principal, amount : Nat) : async Result.Result<Typestoken.TxIndex,Typestoken.TransferError> {
+    public shared ({ caller = user }) func transfertokens(tokencanisterid : Principal, to : Principal, amount : Nat) : async Result.Result<Typestoken.TxIndex, Typestoken.TransferError> {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
-        let icrc1_transfer_paramas  = {
-            from_subaccount  = null;
-            to  = { owner = to; subaccount = null };
+        let icrc1_transfer_paramas = {
+            from_subaccount = null;
+            to = { owner = to; subaccount = null };
             amount = amount;
-            fee  = null;
+            fee = null;
             memo = null;
             created_at_time = null;
         };
         let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-        icrc1_transfer : ({
-        from_subaccount : ?Typestoken.Subaccount;
-        to : Typestoken.Account;
-        amount : Typestoken.Tokens;
-        fee : ?Typestoken.Tokens;
-        memo : ?Typestoken.Memo;
-        created_at_time : ?Typestoken.Timestamp;
-  }) -> async Typestoken.Result<Typestoken.TxIndex,Typestoken.TransferError>;
+            icrc1_transfer : ({
+                from_subaccount : ?Typestoken.Subaccount;
+                to : Typestoken.Account;
+                amount : Typestoken.Tokens;
+                fee : ?Typestoken.Tokens;
+                memo : ?Typestoken.Memo;
+                created_at_time : ?Typestoken.Timestamp;
+            }) -> async Typestoken.Result<Typestoken.TxIndex, Typestoken.TransferError>;
         };
         let tokens = await tokencansiter_actor.icrc1_transfer(icrc1_transfer_paramas);
         switch (tokens) {
             case (#Err(index)) {
                 throw (Error.reject(debug_show (index)));
-            }; 
+            };
             case (#Ok(data)) {
                 return #ok(data);
             };
@@ -430,9 +469,9 @@ actor Champs {
         };
     };
 
-    public shared ({caller = user}) func gettokenmetadata(tokencanisterid : Principal ): async [(Text, Typestoken.Value)] {
+    public shared ({ caller = user }) func gettokenmetadata(tokencanisterid : Principal) : async [(Text, Typestoken.Value)] {
         let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-            icrc1_metadata : () -> async [(Text,Typestoken.Value)];
+            icrc1_metadata : () -> async [(Text, Typestoken.Value)];
         };
         let metadata = await tokencansiter_actor.icrc1_metadata();
         return metadata;
@@ -450,16 +489,45 @@ actor Champs {
     //     return transactions;
     // };
 
-    public func getusersfractionnft(user : Principal) : async [(Principal, Types.FractionalNFT, Principal)] {
+    public func getusersfractionnft(user : Principal) : async [(Types.Nft,[(Text, Typestoken.Value)], Nat,Typestoken.Tokens)] {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
-        switch (fractionalnftmap.get(user)) {
+        switch (userownershipmap.get(user)) {
             case null {
                 return [];
             };
             case (?nft) {
-                return nft;
+                var datalist = List.nil<(Types.Nft,[(Text, Typestoken.Value)], Nat,Typestoken.Tokens)>();
+                for (v in nft.vals()) {
+                    let tokencansiter_actor = actor (Principal.toText(v.2)) : actor {
+                        icrc1_balance_of : (account : Typestoken.Account) -> async Typestoken.Tokens;
+                        getTotalSupply : () -> async Nat;
+                        icrc1_metadata : () -> async [(Text, Types.Value)];
+                    };
+
+                    let token_metadata = await tokencansiter_actor.icrc1_metadata();
+
+                    let total_suppply = await tokencansiter_actor.getTotalSupply();
+
+                    let balance = await tokencansiter_actor.icrc1_balance_of({owner : Principal = user ; subaccount : ?Typestoken.Subaccount = null;});
+
+                    let nftcanisteractor = actor (Principal.toText(v.0)) : actor {
+                        getNFT(token_id : Types.TokenId) : async Types.NftResult;
+                    };
+
+                    let callersnft = await nftcanisteractor.getNFT(v.1);
+                    switch (callersnft){
+                        case (#Err(Index)){
+                            throw Error.reject("Nft doesn't exist");
+                        };
+                        case (#Ok(data)){
+                            datalist := List.push((data,token_metadata,total_suppply,balance),datalist);
+                        };
+                    };
+                    // let fractionNFT_Detail : {}
+                };
+            return List.toArray(datalist);
             };
         };
     };
@@ -639,7 +707,8 @@ actor Champs {
             getNFT : (token_id : Types.TokenId) -> async Types.NftResult;
         };
         let fractiontokencanisteractor = actor (Principal.toText(tokencanister)) : actor {
-            icrc1_total_supply : () -> async Typestoken.Tokens ; icrc1_metadata : () -> async [(Text, Typestoken.Value)];
+            icrc1_total_supply : () -> async Typestoken.Tokens;
+            icrc1_metadata : () -> async [(Text, Typestoken.Value)];
         };
         let metadata : Types.NftResult = await nftcanisteractor.getNFT(tokenid);
         switch (metadata) {
@@ -655,7 +724,7 @@ actor Champs {
                     fractional_token = tokenmetadata;
                     totalSupply = totalsupply;
                     price_per_share = data.priceinusd / Float.fromInt64(Int64.fromNat64(Nat64.fromNat(totalsupply)));
-                    
+
                 };
                 return fractionalNftDetails;
             };
@@ -806,7 +875,7 @@ actor Champs {
 
     public func getallstats() : async UsersTypes.Statsdata {
         let totalusers = users.size();
-        let totalnfts =  await totalfractionalNFTs();
+        let totalnfts = await totalfractionalNFTs();
         let stats : UsersTypes.Statsdata = {
             totalusers = totalusers;
             totalCollections = await totalcollections();
@@ -836,20 +905,23 @@ actor Champs {
 
     // ******************************************************************************************************************************
 
-    public func get_exchange_rates( x : XRC.Asset , y : XRC.Asset) : async XRC.GetExchangeRateResult {
+    public func get_exchange_rates(x : XRC.Asset, y : XRC.Asset) : async XRC.GetExchangeRateResult {
         let xrc = actor (exchange_rate_canister) : actor {
-            get_exchange_rate : ( GetExchangeRateRequest : XRC.GetExchangeRateRequest ) -> async XRC.GetExchangeRateResult;
+            get_exchange_rate : (GetExchangeRateRequest : XRC.GetExchangeRateRequest) -> async XRC.GetExchangeRateResult;
         };
-        let timestamp = Int.div(Time.now(),1_000_000_000) - 120;
+        let timestamp = Int.div(Time.now(), 1_000_000_000) - 120;
         // 2 mintues buffer time to get the exchange rate
-        Debug.print(debug_show(timestamp));
+        Debug.print(debug_show (timestamp));
         Cycles.add<system>(10_000_000_000);
-        let result = await xrc.get_exchange_rate({timestamp : ?Nat64 = ?Nat64.fromIntWrap(timestamp); quote_asset = x; base_asset = y});
-        Debug.print(debug_show(Cycles.refunded()));
+        let result = await xrc.get_exchange_rate({
+            timestamp : ?Nat64 = ?Nat64.fromIntWrap(timestamp);
+            quote_asset = x;
+            base_asset = y;
+        });
+        Debug.print(debug_show (Cycles.refunded()));
         Debug.print(debug_show (result));
         return result;
     };
-
 
     public type Icrc28TrustedOriginsResponse = {
         trusted_origins : [Text];
