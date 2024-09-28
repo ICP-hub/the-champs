@@ -321,6 +321,8 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
 
   // console.log(open);
 
+  // console.log(product, product[1].toText());
+
   // add or remove a favorite
   const toggleFav = async (product) => {
     try {

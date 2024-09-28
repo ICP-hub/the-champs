@@ -46,36 +46,40 @@ const Market = () => {
   return (
     <div>
       {!isCreate && (
-        <div className="flex items-center justify-between">
-          <select
-            value={sortOption}
-            onChange={handleSortChange}
-            className="px-2 py-1 border rounded-md bg-none outline-none bg-transparent text-textall border-black dark:border-white"
-          >
-            <option className="text-black" value="newest">
-              Newest
-            </option>
-            <option className="text-black" value="oldest">
-              Oldest
-            </option>
-          </select>
-          <div className="flex gap-4">
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              className="button px-4 py-2 rounded-md text-white"
-              onClick={handleCreate}
+        <>
+          {" "}
+          <div className="text-3xl font-bold mb-4">Collections</div>
+          <div className="flex items-center justify-between">
+            <select
+              value={sortOption}
+              onChange={handleSortChange}
+              className="px-2 py-1 border rounded-md bg-none outline-none bg-transparent text-textall border-black dark:border-white"
             >
-              Create New
-            </motion.button>
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              className="button px-4 py-2 rounded-md text-white"
-              onClick={addOld}
-            >
-              Add
-            </motion.button>
+              <option className="text-black" value="newest">
+                Newest
+              </option>
+              <option className="text-black" value="oldest">
+                Oldest
+              </option>
+            </select>
+            <div className="flex gap-4">
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                className="button px-4 py-2 rounded-md text-white"
+                onClick={handleCreate}
+              >
+                Create New
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                className="button px-4 py-2 rounded-md text-white"
+                onClick={addOld}
+              >
+                Add
+              </motion.button>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {isCreate ? (
@@ -99,7 +103,6 @@ const Market = () => {
 // View Collection tab
 const ViewCollections = ({ isLoading, sortOption }) => {
   const collectionData = useSelector((state) => state.collections);
-
   // Function to sort collections based on createdAt
   const sortCollections = (collections, sortOrder) => {
     const mutableCollections = [...collections];
@@ -131,7 +134,7 @@ const ViewCollections = ({ isLoading, sortOption }) => {
       {isLoading ? (
         <AdminLoader />
       ) : sortedCollections.length > 0 ? (
-        <div className="grid lg:grid-cols-3 sm:grid-cols-2 2xl:grid-cols-5 gap-x-4 gap-y-8 py-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 w-full max-w-6xl mx-auto">
           {sortedCollections.map((collection, index) => (
             <CollectionCard collection={collection} key={index} />
           ))}
@@ -149,41 +152,82 @@ const ViewCollections = ({ isLoading, sortOption }) => {
 
 // Collection card
 const CollectionCard = ({ collection }) => {
+  // Format Date
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(Number(collection.details.created_at) / 1e6));
   // console.log(collection);
   const logoUrl = collection.details.logo.data;
   // If image randomly generated than show champsImg
   const imageUrlToShow = logoUrl.length < 10 ? champsImg : logoUrl;
 
+  console.log(collection);
+
   return (
-    <div className="bg-card rounded-2xl flex flex-col gap-2 shadow-md">
-      <div className="rounded-t-2xl">
-        <img
-          src={imageUrlToShow}
-          alt="Collection logo"
-          className="rounded-t-2xl min-h-64"
-        />
-      </div>
-      <div className="flex flex-col px-2 py-4 space-y-2">
-        <p className="text-2xl font-medium">{collection.details.name}</p>
-        <p className="text-lg font-medium line-clamp-1">
-          {collection.canisterId.toText()}
-        </p>
-      </div>
-      <div className="flex justify-between px-2 pt-2 pb-4 text-sm font-medium gap-4">
+    <div className="w-full h-96 bg-slate-300 overflow-hidden cursor-pointer group relative rounded-2xl">
+      <div
+        className="absolute inset-0 saturate-100 md:saturate-0 md:group-hover:saturate-100 group-hover:scale-110 transition-all duration-500"
+        style={{
+          backgroundImage: `url(${imageUrlToShow})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="py-4 relative z-20 h-full text-slate-300 group-hover:text-white transition-colors duration-500 flex flex-col justify-between">
         <Link
           to={`/admin/collectibles/${collection.canisterId.toText()}`}
-          className="px-4 py-2 bg-appbar border rounded-md hover:bg-hover w-full flex items-center justify-center"
+          className="ml-auto button px-2 py-1 rounded-l-full"
         >
-          View
+          View Collectibles
         </Link>
-        <Link
-          to={`/admin/create-collectibles/${collection.canisterId.toText()}`}
-          className="px-4 py-2 button rounded-md text-white w-full flex items-center justify-center"
-        >
-          Mint
-        </Link>
+        <div className="bg-[#0009] font-semibold px-4 space-y-1">
+          <h4 className="text-3xl font-bold">{collection.details.name}</h4>
+          <p>Collection ID: {collection.canisterId.toText()}</p>
+          <p>Created at: {formattedDate}</p>
+          <p className="mt-4">
+            <Link
+              to={`/admin/create-collectibles/${collection.canisterId.toText()}`}
+              className="button px-2 py-1 rounded-full"
+            >
+              Mint
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
+
+    // <div className="bg-card rounded-2xl flex flex-col gap-2 shadow-md">
+    //   <div className="rounded-t-2xl">
+    //     <img
+    //       src={imageUrlToShow}
+    //       alt="Collection logo"
+    //       className="rounded-t-2xl min-h-64"
+    //     />
+    //   </div>
+    //   <div className="flex flex-col px-2 py-4 space-y-2">
+    //     <p className="text-2xl font-medium">{collection.details.name}</p>
+    //     <p className="text-lg font-medium line-clamp-1">
+    //       {collection.canisterId.toText()}
+    //     </p>
+    //   </div>
+    //   <div className="flex justify-between px-2 pt-2 pb-4 text-sm font-medium gap-4">
+    //     <Link
+    //       to={`/admin/collectibles/${collection.canisterId.toText()}`}
+    //       className="px-4 py-2 bg-appbar border rounded-md hover:bg-hover w-full flex items-center justify-center"
+    //     >
+    //       View
+    //     </Link>
+    //     <Link
+    //       to={`/admin/create-collectibles/${collection.canisterId.toText()}`}
+    //       className="px-4 py-2 button rounded-md text-white w-full flex items-center justify-center"
+    //     >
+    //       Mint
+    //     </Link>
+    //   </div>
+    // </div>
   );
 };
 

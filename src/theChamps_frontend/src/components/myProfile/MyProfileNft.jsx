@@ -52,6 +52,7 @@ const MyProfileNFT = () => {
   useEffect(() => {
     const getUserNFT = async () => {
       try {
+        setIsLoading(true);
         const res = await backendActor.getusersfractionnft(
           // Principal.fromText("2vxsx-fae")
           principal
@@ -177,7 +178,7 @@ const MyProfileNFT = () => {
           <div className="grid gap-4 mb-4">
             <Loader />
           </div>
-        ) : product.length > 0 ? (
+        ) : product && product.length > 0 ? (
           <div className="grid gap-4 mb-4">
             {product.map((prod, index) => (
               <div key={index}>
@@ -199,20 +200,19 @@ const MyProfileNFT = () => {
                       whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.2, ease: "easeInOut" }}
                       src={
-                        prod[1].nft.logo.data.length > 10
-                          ? prod[1].nft.logo.data
+                        prod[0].logo.data.length > 10
+                          ? prod[0].logo.data
                           : placeHolderImg
                       }
                       className="object-cover cursor-pointer h-96 w-full rounded-t-lg"
                     ></motion.img>
                   </Link>
-                  {console.log(prod[1])}
                   <div className="p-2 mx-2 my-4 font-semibold">
                     <div className="flex justify-between font-bold items-center">
                       <div className="text-lg font-semibold">
                         Collectible Name :{" "}
                         <span className="text-gray-700">
-                          {prod[1]?.fractional_token[0][1]?.Text}
+                          {prod[1][0][1].Text}
                         </span>
                       </div>
 
@@ -228,7 +228,7 @@ const MyProfileNFT = () => {
                           />
                         ) : (
                           <button onClick={() => toggleFav(prod, prod[0])}>
-                            {favStatus[prod[1].nft.id] ? (
+                            {favStatus[prod[0].id] ? (
                               <IconWrapper>
                                 <GoHeartFill size={32} />
                               </IconWrapper>
@@ -242,14 +242,14 @@ const MyProfileNFT = () => {
                     <div>
                       Collectible Id :{" "}
                       <span className="font-semibold text-gray-700">
-                        {prod[2]?.toText()}
+                        {parseInt(prod[0].id)}
                       </span>
                     </div>
                     <div className="flex">
                       <p className="bg-opacity-100 flex gap-1 rounded-md w-[50%]">
                         Price :
                         <span className="font-semibold text-gray-700">
-                          Rp. {prod[1].price_per_share.toFixed(3)}/Share
+                          Rp. {prod[0].priceinusd.toFixed(3)}
                         </span>
                       </p>
                       {/* <button
@@ -262,17 +262,26 @@ const MyProfileNFT = () => {
                     <div>
                       Share you own :{" "}
                       <span className="font-semibold text-gray-700">
-                        {parseInt(prod[1].totalSupply)}
+                        {prod[0].owner.toText() === principal.toText()
+                          ? parseInt(prod[2])
+                          : parseInt(prod[3])}
                       </span>
                     </div>
                     <div>
                       Total Value :{" "}
                       <span className="font-semibold text-gray-700">
                         Rp.
-                        {(
-                          parseInt(prod[1].totalSupply) *
-                          prod[1].price_per_share.toFixed(3)
-                        ).toFixed(3)}
+                        {prod[0].owner.toText() === principal.toText()
+                          ? parseInt(prod[3]) === 0
+                            ? prod[0].priceinusd.toFixed(3)
+                            : (
+                                (prod[0].priceinusd / parseInt(prod[3])) *
+                                parseInt(prod[2])
+                              ).toFixed(3)
+                          : (
+                              (prod[0].priceinusd / parseInt(prod[2])) *
+                              parseInt(prod[3])
+                            ).toFixed(3)}
                       </span>
                     </div>
                   </div>
@@ -283,7 +292,7 @@ const MyProfileNFT = () => {
         ) : (
           <div className="text-center mt-8 px-6 lg:px-24 flex justify-center items-center">
             <button className="px-4 py-2 border border-red-500 cursor-pointer rounded-lg w-48 z-[1]">
-              No NFT found
+              No Collectible found
             </button>
           </div>
         )}

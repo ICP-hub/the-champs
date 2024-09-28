@@ -20,6 +20,7 @@ import toast from "react-hot-toast";
 import { TbSquareRoundedChevronLeft } from "react-icons/tb";
 import { useAuth } from "../../../auth/useClient";
 import { transformTokenData } from "../../utils/functions";
+import { HiArrowRight } from "react-icons/hi2";
 
 const NFTList = () => {
   const { slug } = useParams();
@@ -85,7 +86,7 @@ const NFTList = () => {
                   : champsImg
               }
               alt="banner"
-              className="max-h-max min-h-max rounded-2xl w-full object-cover"
+              className="rounded-2xl w-full object-cover"
             />
           </div>
           <div className="absolute top-32 md:left-16 rounded-2xl flex justify-center max-md:w-full">
@@ -150,6 +151,8 @@ const NFTs = () => {
   const nftList = useSelector((state) => state.nftData.singleCollectionNFT);
   // nftList?.map((item) => console.log(item));
 
+  console.log(nftList);
+
   useEffect(() => {
     getSingleCollectionWiseNFT(Principal.fromText(slug));
   }, []);
@@ -158,20 +161,24 @@ const NFTs = () => {
       <h1 className="md:text-xl font-bold">
         List of all Digital Collectibles for collection : {slug}
       </h1>
-      <div className="grid lg:grid-cols-3 sm:grid-cols-2 2xl:grid-cols-5 gap-x-4 gap-y-8 py-4">
-        {nftLoading ? (
-          <div className="col-span-full flex items-center justify-center">
-            Loading collectibles...
+      <div className="no-scrollbar relative w-full overflow-hidden overflow-y-scroll">
+        <div className="py-4 md:py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 w-full max-w-6xl mx-auto">
+            {nftLoading ? (
+              <div className="col-span-full flex items-center justify-center">
+                Loading collectibles...
+              </div>
+            ) : nftList && nftList.length > 0 ? (
+              nftList.map((nft, index) => (
+                <NFTCard key={index} nftdetail={nft} collection_Id={slug} />
+              ))
+            ) : (
+              <div className="col-span-full flex items-center justify-center">
+                <p>No collectibles found in this collection.</p>
+              </div>
+            )}
           </div>
-        ) : nftList && nftList.length > 0 ? (
-          nftList.map((nft, index) => (
-            <NFTCard key={index} nftdetail={nft} collection_Id={slug} />
-          ))
-        ) : (
-          <div className="col-span-full flex items-center justify-center">
-            <p>No collectibles found in this collection.</p>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
@@ -184,38 +191,90 @@ const NFTCard = ({ nftdetail, collection_Id }) => {
   const tokenData = transformTokenData(fractional_token);
   // console.log(tokenData);
   return (
-    <div className="bg-card rounded-2xl flex flex-col space-y-2 shadow-md">
-      <div>
-        <img
-          src={nft.logo.data.length > 10 ? nft.logo.data : champsImg}
-          alt="collectibleImg"
-          className="rounded-t-2xl"
-        />
+    <Link
+      to={`/admin/collectible-detail/${collection_Id}/${nftdetail[1].toText()}/${
+        nft.id
+      }`}
+      className="w-full h-96 bg-slate-300 overflow-hidden cursor-pointer group relative rounded-2xl"
+    >
+      <div
+        className="absolute inset-0 saturate-100 md:saturate-0 md:group-hover:saturate-100 group-hover:scale-110 transition-all duration-500"
+        style={{
+          backgroundImage: `url(${
+            nft.logo.data.length > 10 ? nft.logo.data : champsImg
+          })`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="relative z-20 h-full text-slate-300 group-hover:text-white transition-colors duration-500 flex flex-col justify-between">
+        <div className="p-4">
+          <HiArrowRight className="text-3xl group-hover:-rotate-45 transition-transform duration-500 ml-auto" />
+        </div>
+        <div className="bg-[#0009] font-semibold p-4">
+          <h4 className="text-3xl font-bold">{tokenData.name}</h4>
+          <p>Owner: {nft.owner.toText()}</p>
+          <p>Total Share : {parseInt(nftdetail[0].totalSupply)}</p>
+          <p>
+            Price/Share: Rp.
+            {nftdetail[0].price_per_share}
+          </p>
+          <p>
+            Total Value: Rp.
+            {nftdetail[0].price_per_share * parseInt(nftdetail[0].totalSupply)}
+          </p>
+        </div>
       </div>
-      <span className="px-4 font-semibold text-lg">{tokenData.name}</span>
-      <span className="text-sm font-medium px-4">
-        Collectible ID : {nftdetail[1].toText()}
-      </span>
-      <span className="px-4 text-sm">Owner : {nft.owner.toText()}</span>
-      <p className="px-4 text-sm">
-        Price : $ <span className="text-lg">{nft.priceinusd}</span>
-      </p>
-      <p className="px-4 text-sm">
-        Price/Share : ${" "}
-        <span className="text-lg">{nftdetail[0].price_per_share}</span>
-      </p>
-      <div className="flex justify-end px-4 py-2">
-        <Link
-          to={`/admin/collectible-detail/${collection_Id}/${nftdetail[1].toText()}/${
-            nft.id
-          }`}
-          className="button px-4 py-1 text-white rounded-md"
-        >
-          View
-        </Link>
-      </div>
-    </div>
+    </Link>
   );
+  // return (
+  //   <div className="button rounded-2xl flex flex-col space-y-4 shadow-lg transition-transform transform hover:scale-105">
+  //     <div className="overflow-hidden rounded-t-2xl shadow-md">
+  //       <img
+  //         src={nft.logo.data.length > 10 ? nft.logo.data : champsImg}
+  //         alt="collectibleImg"
+  //         className="w-full h-64 object-cover"
+  //       />
+  //     </div>
+  //     <span className="px-6 font-bold text-xl text-white">
+  //       Collectible Name: {tokenData.name}
+  //     </span>
+  //     <span className="text-sm font-medium text-gray-300 px-6">
+  //       Collectible ID: {nftdetail[1].toText()}
+  //     </span>
+  //     <span className="px-6 text-sm text-gray-200">
+  //       Owner: {nft.owner.toText()}
+  //     </span>
+  //     <p className="px-6 text-sm text-gray-200">
+  //       Total Share:
+  //       <span className="text-lg font-semibold text-white">
+  //         {parseInt(nftdetail[0].totalSupply)}
+  //       </span>
+  //     </p>
+  //     <p className="px-6 text-sm text-gray-200">
+  //       Price/Share: Rp.
+  //       <span className="text-lg font-semibold text-white">
+  //         {nftdetail[0].price_per_share}
+  //       </span>
+  //     </p>
+  //     <p className="px-6 text-sm text-gray-200 flex gap-1 items-center">
+  //       Total Value: Rp.
+  //       <span className="text-lg font-semibold text-white">
+  //         {nftdetail[0].price_per_share * parseInt(nftdetail[0].totalSupply)}
+  //       </span>
+  //     </p>
+  //     <div className="flex justify-end px-6 py-3">
+  //       <Link
+  //         to={`/admin/collectible-detail/${collection_Id}/${nftdetail[1].toText()}/${
+  //           nft.id
+  //         }`}
+  //         className="bg-white text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-md transition-colors duration-200"
+  //       >
+  //         View
+  //       </Link>
+  //     </div>
+  //   </div>
+  // );
 };
 // const [backend] = useCanister("backend");
 // const [isLoading, setIsLoading] = useState(true);

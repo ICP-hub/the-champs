@@ -12,7 +12,7 @@ const CollectionApi = () => {
   // const [backend] = useCanister("backend");
   const { backendActor } = useAuth();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
 
   // Get collection ids to filter collectionwisenft
@@ -61,7 +61,9 @@ const CollectionApi = () => {
 
         const fetchAllCollections = async () => {
           try {
-            const promises = allPrincipals[0]?.map(fetchPrincipalDetails);
+            const promises = allPrincipals?.map((principal) =>
+              fetchPrincipalDetails(principal[0])
+            );
             const results = await Promise.all(promises);
             return results;
           } catch (error) {

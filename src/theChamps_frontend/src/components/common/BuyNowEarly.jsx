@@ -49,14 +49,23 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
 
   // Buy tokens
   const handleConfirm = async () => {
+    console.log({
+      collectionCanister: Principal.fromText(id),
+      nft_id: nftId,
+      nft_canister_id: nftCanId,
+      principal,
+      quantity,
+    });
     try {
       setPurchaseLoad(true);
       const response = await backendActor.buytokens(
+        Principal.fromText(id),
+        nftId,
         nftCanId,
         principal,
         quantity
       );
-      console.log("response nft purchase", response);
+      // console.log("response nft purchase", response);
       // onOpen(false);
       setOrderConf(true);
     } catch (err) {
@@ -72,6 +81,7 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
     setOrderConf(false);
   };
 
+  console.log(NFTDetail);
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 flex justify-center items-center bg-[#0009] z-[170]">
       {!orderConf ? (
@@ -134,7 +144,11 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
             <span className="text-gray-500">
               ({(price_share * quantity).toFixed(3)} USD)
             </span> */}
-                  <span>{(NFTDetail.priceinusd * quantity).toFixed(6)}</span>
+                  <span>
+                    {((NFTDetail.priceinusd / totalSupply) * quantity).toFixed(
+                      6
+                    )}
+                  </span>
                 </div>
               </div>
               <div className="py-2 text-xs text-center max-w-96 font-medium text-gray-500">

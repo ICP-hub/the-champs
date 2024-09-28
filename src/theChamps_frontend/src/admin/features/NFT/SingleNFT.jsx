@@ -20,7 +20,7 @@ const SingleNFT = () => {
   const { collection, slug, id } = useParams();
   // const [backend] = useCanister("backend");
   const { backendActor } = useAuth();
-  const [isNFTLoading, setIsNFTLoading] = useState(false);
+  const [isNFTLoading, setIsNFTLoading] = useState(true);
   const [nftDetail, setNFTDetail] = useState(null);
   const navigate = useNavigate();
 
@@ -43,7 +43,7 @@ const SingleNFT = () => {
     };
 
     fetchNFTDetail();
-  }, []);
+  }, [backendActor]);
 
   // console.log("single collectible detail", nftDetail);
 
@@ -104,11 +104,11 @@ const SingleNFT = () => {
             </div>
             <div className="font-medium flex gap-2">
               <div className="min-w-32 flex justify-between">
-                <span>Price</span>
+                <span>Total Value</span>
                 <span>:</span>
               </div>
               <p className="font-bold">
-                $ {nftDetail?.nft.priceinusd.toFixed(3)}
+                Rp. {nftDetail?.nft.priceinusd.toFixed(3)}
               </p>
             </div>
             <div className="font-medium flex gap-2">
@@ -135,7 +135,7 @@ const SingleNFT = () => {
                 <span>:</span>
               </div>
               <p className="font-bold">
-                $ {nftDetail?.price_per_share.toFixed(3)}
+                Rp. {nftDetail?.price_per_share.toFixed(3)}
               </p>
             </div>
           </div>
