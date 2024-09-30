@@ -23,6 +23,8 @@ const SingleNFT = () => {
   const [isNFTLoading, setIsNFTLoading] = useState(true);
   const [nftDetail, setNFTDetail] = useState(null);
   const navigate = useNavigate();
+  const [shareLoading, setShareLoading] = useState(true);
+  const [sharesLeft, setSharesLeft] = useState(null);
 
   useEffect(() => {
     const fetchNFTDetail = async () => {
@@ -33,7 +35,7 @@ const SingleNFT = () => {
           Principal.fromText(slug),
           Principal.fromText(collection)
         );
-        // console.log("Response getFractionalNFTDetails : ", res);
+        console.log("Response getFractionalNFTDetails : ", res);
         setNFTDetail(res);
       } catch (err) {
         // console.error("Error fecthing fractionalcollectibledetails : ", err);
@@ -45,7 +47,26 @@ const SingleNFT = () => {
     fetchNFTDetail();
   }, [backendActor]);
 
-  // console.log("single collectible detail", nftDetail);
+  // Avalibale share
+  useEffect(() => {
+    const fetchAvailableShare = async () => {
+      try {
+        setShareLoading(true);
+        const response = await backendActor.getAvailableshares(
+          Principal.fromText(slug)
+        );
+        // console.log("response available share", response);
+        setSharesLeft(parseInt(response));
+      } catch (err) {
+        console.error("Error fetching available share ", err);
+      } finally {
+        setShareLoading(false);
+      }
+    };
+    if (backendActor) fetchAvailableShare();
+  }, [backendActor]);
+
+  console.log("single collectible detail", nftDetail);
 
   return (
     <div className="rounded-lg bg-card text-textall h-full shadow-md p-6">
@@ -104,11 +125,36 @@ const SingleNFT = () => {
             </div>
             <div className="font-medium flex gap-2">
               <div className="min-w-32 flex justify-between">
+                <span>Total Share</span>
+                <span>:</span>
+              </div>
+              <p className="font-bold">{parseInt(nftDetail?.totalSupply)}</p>
+            </div>
+            <div className="font-medium flex gap-2">
+              <div className="min-w-32 flex justify-between">
+                <span>Avl. Share</span>
+                <span>:</span>
+              </div>
+              {shareLoading ? (
+                <div className="h-4 w-20 animate-pulse rounded bg-gray-500"></div>
+              ) : (
+                <p className="font-bold">{sharesLeft}</p>
+              )}
+            </div>
+            <div className="font-medium flex gap-2">
+              <div className="min-w-32 flex justify-between">
                 <span>Total Value</span>
                 <span>:</span>
               </div>
-              <p className="font-bold">
-                Rp. {nftDetail?.nft.priceinusd.toFixed(3)}
+              <p className="font-bold flex items-center">
+                Rp.{" "}
+                {shareLoading ? (
+                  <div className="h-4 w-20 animate-pulse rounded bg-gray-500"></div>
+                ) : (
+                  <p className="font-bold">
+                    {(sharesLeft * nftDetail?.price_per_share).toFixed(3)}
+                  </p>
+                )}
               </p>
             </div>
             <div className="font-medium flex gap-2">

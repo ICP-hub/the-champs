@@ -44,6 +44,8 @@ const ProductDetails = () => {
   const [favLoad, setFavLoad] = useState(false);
   const [product, setProduct] = useState([]);
   const [collectionLoad, setCollectionLoad] = useState(true);
+  const [sharesLeft, setSharesLeft] = useState(null);
+  const [shareLoading, setShareLoading] = useState(true);
 
   // // Get NFT details
   // const getNftDetails = async () => {
@@ -168,6 +170,24 @@ const ProductDetails = () => {
     if (nftData) getFav();
   }, [favChanged, nftData]);
 
+  useEffect(() => {
+    const fetchAvailableShare = async () => {
+      try {
+        setShareLoading(true);
+        const response = await backendActor.getAvailableshares(
+          Principal.fromText(slug)
+        );
+        // console.log("response available share", response);
+        setSharesLeft(parseInt(response));
+      } catch (err) {
+        console.error("Error fetching available share ", err);
+      } finally {
+        setShareLoading(false);
+      }
+    };
+    if (backendActor) fetchAvailableShare();
+  }, [backendActor]);
+
   // useEffect(() => {
   //   getExchangeRate();
   // }, [selectedPlan.value, backendActor]);
@@ -251,8 +271,9 @@ const ProductDetails = () => {
         <BuyNowEarly
           onOpen={setOpen}
           nftId={parseInt(nftData.nft.id)}
-          nftCanId={index}
+          nftCanId={Principal.fromText(slug)}
           totalSupply={parseInt(nftData.totalSupply)}
+          sharesLeft={sharesLeft}
         />
       )}
       {nftLoading ? (
@@ -314,6 +335,14 @@ const ProductDetails = () => {
                   )}
                 </span>
               </div>
+              <div className="flex items-center gap-2 font-bold text-lg">
+                <p>Available Share : </p>
+                {shareLoading ? (
+                  <div className="h-4 w-20 animate-pulse rounded bg-gray-500"></div>
+                ) : (
+                  <p>{sharesLeft}</p>
+                )}
+              </div>
               <div className="py-4 flex max-lg:flex-col lg:justify-between lg:items-center">
                 <div className="flex items-center font-semibold text-lg gap-4">
                   <p>Price :</p>
@@ -364,7 +393,7 @@ const ProductDetails = () => {
                     </div>
                   </div>
                   <p className="text-start py-8">
-                    {nftData.nft.metadata[0].description}
+                    {nftData.nft.metadata[0]?.description}
                   </p>
                 </div>
               </div>

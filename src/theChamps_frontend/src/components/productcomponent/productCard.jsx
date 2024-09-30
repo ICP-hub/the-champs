@@ -69,6 +69,8 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   const [favMatched, setFavMatched] = useState(false);
   const [favLoad, setFavLoad] = useState(false);
   const [paymentMethod2, setPaymentMethod2] = useState("icp");
+  const [sharesLeft, setSharesLeft] = useState(null);
+  const [shareLoading, setShareLoading] = useState(true);
 
   // const addToFavourites = async () => {
   //   try {
@@ -365,6 +367,21 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   // const decrementQuantity = () =>
   //   setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
   // console.log(parseInt(product));
+  useEffect(() => {
+    const fetchAvailableShare = async () => {
+      try {
+        setShareLoading(true);
+        const response = await backendActor.getAvailableshares(product[1]);
+        // console.log("response available share", response);
+        setSharesLeft(parseInt(response));
+      } catch (err) {
+        console.error("Error fetching available share ", err);
+      } finally {
+        setShareLoading(false);
+      }
+    };
+    if (backendActor) fetchAvailableShare();
+  }, [backendActor]);
 
   return (
     <>
@@ -384,6 +401,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           nftId={parseInt(product[0].nft.id)}
           nftCanId={product[1]}
           totalSupply={parseInt(product[0].totalSupply)}
+          sharesLeft={sharesLeft}
         />
       )}
       <div
@@ -518,6 +536,14 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
             {/* <IcpLogo /> */}
             Total Share : {parseInt(product[0].totalSupply)}
           </p>
+          <div className="font-bold flex items-center gap-2">
+            Available Share :{" "}
+            {shareLoading ? (
+              <div className="h-4 w-20 bg-gray-500 animate-pulse rounded"></div>
+            ) : (
+              <h4>{sharesLeft}</h4>
+            )}
+          </div>
           <p></p>
           <div className="flex justify-between sm:items-center mb-4 max-sm:flex-col mt-auto">
             <button
