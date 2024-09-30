@@ -322,7 +322,6 @@ actor Champs {
             icrc1_transfer : (ICRC.TransferArg) -> async ICRC.Result;
             getTotalSupply : () -> async Nat;
             icrc1_metadata : () -> async [(Text, Types.Value)];
-
         };
         // switch (paymentOption) {
         //     case (#icp) {
@@ -590,6 +589,15 @@ actor Champs {
             };
         };
         return List.toArray(collectionnft);
+    };
+
+
+    public shared func getAvailableshares(tokenCanister : Principal) : async Typestoken.Tokens {
+        let token  = actor(Principal.toText(tokenCanister)) : actor {
+            icrc1_balance_of : (account : Typestoken.Account) -> async Typestoken.Tokens;
+        };
+        let balance = await token.icrc1_balance_of({owner : Principal =  Principal.fromActor(Champs); subaccount : ?Typestoken.Subaccount = null;});
+        return balance;
     };
 
     public shared ({ caller = user }) func getcollectiondetails(collectioncanisterid : Principal) : async Types.Dip721NonFungibleToken {
