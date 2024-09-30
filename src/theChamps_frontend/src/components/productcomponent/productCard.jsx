@@ -415,12 +415,12 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           </Link>
         </div>
         <div className="p-4 my-4 flex flex-col h-full w-full">
-          <div className="flex justify-between font-bold items-center">
+          <div className="flex flex-col font-bold">
             <div className="text-3xl font-semibold mb-2">
               {product[0]?.fractional_token[0][1]?.Text}
             </div>
 
-            <span className="flex items-center justify-center">
+            <span className="flex">
               {favLoad ? (
                 <TailSpin
                   height="30px"
@@ -509,14 +509,19 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           <p className="line-clamp-6">
             {product[0].nft.metadata[0]?.description}
           </p>
+          {console.log(product)}
+          <p className="font-bold">
+            {/* <IcpLogo /> */}
+            Price : Rp.{product[0]?.price_per_share.toFixed(3)}/Share
+          </p>
+          <p className="font-bold">
+            {/* <IcpLogo /> */}
+            Total Share : {parseInt(product[0].totalSupply)}
+          </p>
+          <p></p>
           <div className="flex justify-between sm:items-center mb-4 max-sm:flex-col mt-auto">
-            <p className="bg-opacity-100 py-2 flex gap-2 rounded-md w-[50%] text-xl font-medium">
-              {/* <IcpLogo /> */}
-              <span>Rp. </span>
-              {product[0]?.price_per_share.toFixed(3)}
-            </p>
             <button
-              className="button px-4 py-2 text-white w-full sm:w-1/2 rounded-md text-md flex items-center justify-center"
+              className="button px-4 py-2 text-white font-bold text-sm rounded-l-full rounded-r-full"
               // onClick={handleBuyNow} // Call handleBuyNow function when button is clicked
               onClick={() => setOpen(true)}
             >

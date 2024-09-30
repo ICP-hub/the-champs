@@ -60,7 +60,7 @@ const MyProfileNFT = () => {
         setProduct(res);
         console.log("user collectible response", res);
       } catch (err) {
-        // console.error("Error getting user nft ", err);
+        console.error("Error getting user nft ", err);
       } finally {
         setIsLoading(false);
       }
