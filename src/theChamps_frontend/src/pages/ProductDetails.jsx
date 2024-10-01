@@ -46,6 +46,7 @@ const ProductDetails = () => {
   const [collectionLoad, setCollectionLoad] = useState(true);
   const [sharesLeft, setSharesLeft] = useState(null);
   const [shareLoading, setShareLoading] = useState(true);
+  const [clicked, setClicked] = useState(0);
 
   // // Get NFT details
   // const getNftDetails = async () => {
@@ -136,6 +137,10 @@ const ProductDetails = () => {
 
   // add or remove a favorite
   const toggleFav = async () => {
+    if (!isAuthenticated) {
+      toast.error("You need to login to add favourite");
+      return;
+    }
     try {
       setFavLoad(true);
       if (favMatched) {
@@ -242,7 +247,7 @@ const ProductDetails = () => {
     open &&
       !isAuthenticated &&
       toast.error("You need to login to your account to make a purchase");
-  }, [isAuthenticated, open]);
+  }, [isAuthenticated, open, clicked]);
 
   useEffect(() => {
     if (open) {
@@ -351,8 +356,11 @@ const ProductDetails = () => {
 
                 <motion.button
                   whileTap={{ scale: 0.9 }}
-                  className="button px-4 py-2 rounded-lg text-white max-lg:mt-4 max-w-max"
-                  onClick={() => setOpen(true)}
+                  className="button px-4 py-2 text-white max-lg:mt-4 max-w-max rounded-full text-sm"
+                  onClick={() => {
+                    setOpen(true);
+                    setClicked((prev) => prev + 1);
+                  }}
                 >
                   Buy Now
                 </motion.button>
@@ -457,7 +465,7 @@ const Loader = () => {
                 /Share
               </span>
             </div>
-            <button className="bg-gray-500 text-gray-500 animate-pulse px-4 py-2 rounded-lg max-lg:mt-4 max-w-max">
+            <button className="bg-gray-500 text-gray-500 animate-pulse px-4 py-2 text-sm max-lg:mt-4 max-w-max rounded-full">
               Buy Now
             </button>
           </div>

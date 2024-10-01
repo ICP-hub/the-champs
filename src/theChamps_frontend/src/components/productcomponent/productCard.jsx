@@ -71,6 +71,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   const [paymentMethod2, setPaymentMethod2] = useState("icp");
   const [sharesLeft, setSharesLeft] = useState(null);
   const [shareLoading, setShareLoading] = useState(true);
+  const [clicked, setClicked] = useState({ fav: 0, buy: 0 });
 
   // const addToFavourites = async () => {
   //   try {
@@ -285,6 +286,11 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   //   }
   // };
 
+  const openModal = () => {
+    setOpen(true);
+    setClicked((prev) => ({ ...prev, buy: prev.buy + 1 }));
+  };
+
   /*************** Favourite review ****************/
   // get favorites
   const getFav = async () => {
@@ -311,7 +317,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     open &&
       !isAuthenticated &&
       toast.error("You need to login to your account to make a purchase");
-  }, [isAuthenticated, open]);
+  }, [isAuthenticated, open, clicked.buy]);
 
   useEffect(() => {
     if (open) {
@@ -327,6 +333,10 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
 
   // add or remove a favorite
   const toggleFav = async (product) => {
+    if (!isAuthenticated) {
+      toast.error("You need to login to add favourite");
+      return;
+    }
     try {
       setFavLoad(true);
       if (favMatched) {
@@ -549,7 +559,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
             <button
               className="button px-4 py-2 text-white font-bold text-sm rounded-l-full rounded-r-full"
               // onClick={handleBuyNow} // Call handleBuyNow function when button is clicked
-              onClick={() => setOpen(true)}
+              onClick={openModal}
             >
               Buy now
             </button>
