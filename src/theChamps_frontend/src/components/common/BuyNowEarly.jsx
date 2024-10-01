@@ -7,6 +7,7 @@ import { Principal } from "@dfinity/principal";
 import { useParams } from "react-router";
 import toast from "react-hot-toast";
 import OrderConfirmation from "../../pages/OrderConfirmation";
+import { Link } from "react-router-dom";
 
 const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
   console.log("nft can id", nftCanId);
@@ -159,9 +160,10 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
               <div className="py-2 text-xs text-center max-w-96 font-medium text-gray-500">
                 This process may take a minute. Transactions can not be
                 reversed. By clicking confirm you show acceptance to our
-                <span className="text-[#FC001E] underline ml-1">
+                
+                <Link to='/Terms-and-services' className="text-[#FC001E] underline ml-1">
                   Terms and Service
-                </span>
+                </Link>
                 .
               </div>
               <div className="flex justify-center md:justify-end items-center space-x-4 my-2">
