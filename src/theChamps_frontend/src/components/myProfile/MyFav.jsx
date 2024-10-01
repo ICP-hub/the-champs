@@ -58,7 +58,7 @@ const MyFav = () => {
         // console.log("Error while fetching user NFT", error);
       }
     } else {
-      toast.error("please connect to wellect");
+      toast.error("please connect to wallet");
       setLoading2(false);
     }
   };
@@ -235,8 +235,8 @@ const MyFav = () => {
                           whileHover={{ scale: 1.1 }}
                           transition={{ duration: 0.2, ease: "easeInOut" }}
                           src={
-                            product[1]?.fractional_token?.logo
-                              ? product[1]?.fractional_token?.logo
+                            product[1]?.nft?.logo?.data
+                              ? product[1]?.nft?.logo?.data
                               : placeHolderImg
                           }
                           alt=""
