@@ -353,9 +353,16 @@ actor Champs {
                         return #Ok(data);
                     };
                     case (?v) {
-                        let newlist = List.push((nftCanister, tokenid, tokencanisterid), List.fromArray(v));
-                        userownershipmap.put(to, List.toArray(newlist));
-                        return #Ok(data);
+                        switch (List.find(List.fromArray(v), func(x : (Principal, Types.TokenId, Principal)) : Bool { x.2 == tokencanisterid })) {
+                            case null {
+                                let newlist = List.push((nftCanister, tokenid, tokencanisterid), List.fromArray(v));
+                                userownershipmap.put(to, List.toArray(newlist));
+                                return #Ok(data);
+                            };
+                            case (?x) {
+                                return #Ok(data);
+                            };
+                        };
                     };
                 };
             };
@@ -488,7 +495,7 @@ actor Champs {
     //     return transactions;
     // };
 
-    public func getusersfractionnft(user : Principal) : async [(Types.Nft,[(Text, Typestoken.Value)], Nat,Typestoken.Tokens)] {
+    public func getusersfractionnft(user : Principal) : async [(Types.Nft, [(Text, Typestoken.Value)], Nat, Typestoken.Tokens)] {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
@@ -497,7 +504,7 @@ actor Champs {
                 return [];
             };
             case (?nft) {
-                var datalist = List.nil<(Types.Nft,[(Text, Typestoken.Value)], Nat,Typestoken.Tokens)>();
+                var datalist = List.nil<(Types.Nft, [(Text, Typestoken.Value)], Nat, Typestoken.Tokens)>();
                 for (v in nft.vals()) {
                     let tokencansiter_actor = actor (Principal.toText(v.2)) : actor {
                         icrc1_balance_of : (account : Typestoken.Account) -> async Typestoken.Tokens;
@@ -509,24 +516,27 @@ actor Champs {
 
                     let total_suppply = await tokencansiter_actor.getTotalSupply();
 
-                    let balance = await tokencansiter_actor.icrc1_balance_of({owner : Principal = user ; subaccount : ?Typestoken.Subaccount = null;});
+                    let balance = await tokencansiter_actor.icrc1_balance_of({
+                        owner : Principal = user;
+                        subaccount : ?Typestoken.Subaccount = null;
+                    });
 
                     let nftcanisteractor = actor (Principal.toText(v.0)) : actor {
                         getNFT(token_id : Types.TokenId) : async Types.NftResult;
                     };
 
                     let callersnft = await nftcanisteractor.getNFT(v.1);
-                    switch (callersnft){
-                        case (#Err(Index)){
+                    switch (callersnft) {
+                        case (#Err(Index)) {
                             throw Error.reject("Nft doesn't exist");
                         };
-                        case (#Ok(data)){
-                            datalist := List.push((data,token_metadata,total_suppply,balance),datalist);
+                        case (#Ok(data)) {
+                            datalist := List.push((data, token_metadata, total_suppply, balance), datalist);
                         };
                     };
                     // let fractionNFT_Detail : {}
                 };
-            return List.toArray(datalist);
+                return List.toArray(datalist);
             };
         };
     };
@@ -591,12 +601,14 @@ actor Champs {
         return List.toArray(collectionnft);
     };
 
-
     public shared func getAvailableshares(tokenCanister : Principal) : async Typestoken.Tokens {
-        let token  = actor(Principal.toText(tokenCanister)) : actor {
+        let token = actor (Principal.toText(tokenCanister)) : actor {
             icrc1_balance_of : (account : Typestoken.Account) -> async Typestoken.Tokens;
         };
-        let balance = await token.icrc1_balance_of({owner : Principal =  Principal.fromActor(Champs); subaccount : ?Typestoken.Subaccount = null;});
+        let balance = await token.icrc1_balance_of({
+            owner : Principal = Principal.fromActor(Champs);
+            subaccount : ?Typestoken.Subaccount = null;
+        });
         return balance;
     };
 
