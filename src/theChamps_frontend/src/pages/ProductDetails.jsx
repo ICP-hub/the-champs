@@ -295,7 +295,7 @@ const ProductDetails = () => {
                       ? nftData.nft.logo.data
                       : placeholderimg
                   }
-                  alt="nft name"
+                  alt="Digital Collectible name"
                   className="h-64 w-64 object-fill rounded-2xl"
                 />
               </div>
@@ -424,7 +424,7 @@ const Loader = () => {
           <div className="p-2 border-2 rounded-2xl overflow-hidden border-gray-300 animate-pulse">
             <img
               src={placeholderimg}
-              alt="nft name"
+              alt="Digital Collectible name"
               className="h-64 w-64 object-fill rounded-2xl"
             />
           </div>
@@ -440,7 +440,7 @@ const Loader = () => {
           <div className="py-4 lg:py-8 flex justify-between items-center">
             <div>
               <h1 className="text-2xl bg-gray-500 animate-pulse text-gray-500 mb-2 rounded-md">
-                NFT Name
+              Digital Collectible Name
               </h1>
               <h6 className="text-gray-500 capitalize font-medium flex gap-2">
                 <span className="bg-gray-300 animate-pulse text-gray-300 rounded-md">

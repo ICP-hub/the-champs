@@ -63,7 +63,7 @@ const HomePageG = () => {
     {
       title: "Phase 05",
       progress: "95%",
-      heading: "New NFTs",
+      heading: "New Digital Collectibles",
       description:
         "Quality comes first. we took our time to plan out everything and build our production pipeline for a good quality artworks.",
       points: [

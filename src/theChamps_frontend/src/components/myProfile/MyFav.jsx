@@ -213,7 +213,7 @@ const MyFav = () => {
               endMessage={
                 <div className="text-center mt-8 px-6 lg:px-24 flex justify-center items-center">
                   <button className="px-4 py-2 border border-red-500 cursor-pointer rounded-lg w-48 z-[1]">
-                    No more NFTs found
+                    No more Digital Collectibles found
                   </button>
                 </div>
               }

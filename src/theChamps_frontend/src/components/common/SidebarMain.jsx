@@ -289,7 +289,7 @@ const SidebarMain = () => {
 
       <div className="flex items-center justify-center">
         <div className="p-4 text-left text-md rounded-2xl border border-gray-200 w-[90%]  ">
-          <p className=" mb-2 text-gray-400">NFTs</p>
+          <p className=" mb-2 text-gray-400">Digital Collectibles</p>
           <Link
             to="/collections/collection"
             className="flex gap-8 items-center text-lg cursor-pointer"
