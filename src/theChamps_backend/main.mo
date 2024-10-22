@@ -31,22 +31,22 @@ actor Champs {
     stable let exchange_rate_canister = "uf6dk-hyaaa-aaaaq-qaaaq-cai";
     // stores collection canister id of the user
     private var nftcollectionMap = TrieMap.TrieMap<Principal, [Principal]>(Principal.equal, Principal.hash);
-    private var stablenftcollectionMap : [(Principal, [Principal])] = [];
+    private stable var stablenftcollectionMap : [(Principal, [Principal])] = [];
 
     private var favourites = TrieMap.TrieMap<Principal, [(Types.Nft, Principal)]>(Principal.equal, Principal.hash);
-    private var stablefavourites : [(Principal, [(Types.Nft, Principal)])] = [];
+    private stable var stablefavourites : [(Principal, [(Types.Nft, Principal)])] = [];
 
     private var contacts = TrieMap.TrieMap<Types.ContactId, Types.Contact>(Text.equal, Text.hash);
     private stable var stablecontacts : [(Types.ContactId, Types.Contact)] = [];
 
     private var fractionalnftmap = TrieMap.TrieMap<Principal, [(Principal, Types.FractionalNFT, Principal)]>(Principal.equal, Principal.hash);
-    private var stablefractionalnftmap : [(Principal, [(Principal, Types.FractionalNFT, Principal)])] = [];
+    private stable var stablefractionalnftmap : [(Principal, [(Principal, Types.FractionalNFT, Principal)])] = [];
 
     private var userownershipmap = TrieMap.TrieMap<Principal, [(Principal, Types.TokenId, Principal)]>(Principal.equal, Principal.hash);
-    private var stableuserownershipmap : [(Principal, [(Principal, Types.TokenId, Principal)])] = [];
+    private stable var stableuserownershipmap : [(Principal, [(Principal, Types.TokenId, Principal)])] = [];
 
     private var users = TrieMap.TrieMap<Principal, UsersTypes.User>(Principal.equal, Principal.hash);
-    private var stableusers : [(Principal, UsersTypes.User)] = [];
+    private stable var stableusers : [(Principal, UsersTypes.User)] = [];
 
     public func idQuick() : async Principal {
         return Principal.fromActor(Champs);
@@ -232,7 +232,7 @@ actor Champs {
                             minting_account : {
                                 owner : Principal;
                                 subaccount : ?Blob;
-                            } = { owner = user; subaccount = null };
+                            } = { owner = champs; subaccount = null };
                             token_name : Text = _name;
                             token_symbol : Text = _symbol;
                             transfer_fee : Nat = 0;
@@ -910,7 +910,6 @@ actor Champs {
         stablecontacts := Iter.toArray(contacts.entries());
         stablefractionalnftmap := Iter.toArray(fractionalnftmap.entries());
         stableusers := Iter.toArray(users.entries());
-
     };
 
     // Postupgrade function to restore the data from stable variables
