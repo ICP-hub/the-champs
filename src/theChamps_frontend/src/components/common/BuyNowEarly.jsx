@@ -7,8 +7,10 @@ import { Principal } from "@dfinity/principal";
 import { useParams } from "react-router";
 import toast from "react-hot-toast";
 import OrderConfirmation from "../../pages/OrderConfirmation";
+import { Link } from "react-router-dom";
 
-const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
+const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
+  console.log("nft can id", nftCanId);
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
   const { isAuthenticated, principal, identity, backendActor } = useAuth();
@@ -24,7 +26,7 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
   };
 
   const handleIncrement = () => {
-    setQuantity((prev) => (prev < totalSupply ? prev + 1 : prev));
+    setQuantity((prev) => (prev < sharesLeft ? prev + 1 : prev));
   };
 
   const fetchNFTDetail = async () => {
@@ -117,7 +119,11 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
               Select payment method
             </button> */}
               <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
-                <span>Share</span>
+                <p>Available Share</p>
+                <p>{sharesLeft}</p>
+              </div>
+              <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+                <span>AMOUNT OF SHARES</span>
                 <div className="flex border rounded-md overflow-hidden items-center">
                   <button
                     className="flex items-center justify-center p-2 bg-gray-200 h-full"
@@ -145,7 +151,7 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
               ({(price_share * quantity).toFixed(3)} USD)
             </span> */}
                   <span>
-                    {((NFTDetail.priceinusd / totalSupply) * quantity).toFixed(
+                    {((NFTDetail.priceinusd / sharesLeft) * quantity).toFixed(
                       6
                     )}
                   </span>
@@ -154,9 +160,10 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId }) => {
               <div className="py-2 text-xs text-center max-w-96 font-medium text-gray-500">
                 This process may take a minute. Transactions can not be
                 reversed. By clicking confirm you show acceptance to our
-                <span className="text-[#FC001E] underline ml-1">
+                
+                <Link to='/Terms-and-services' className="text-[#FC001E] underline ml-1">
                   Terms and Service
-                </span>
+                </Link>
                 .
               </div>
               <div className="flex justify-center md:justify-end items-center space-x-4 my-2">

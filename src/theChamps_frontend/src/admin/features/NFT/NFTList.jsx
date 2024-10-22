@@ -55,7 +55,7 @@ const NFTList = () => {
   // console.log(collectionDetail);
   useEffect(() => {
     getSingleCollectionDetails(Principal.fromText(slug));
-  }, []);
+  }, [backendActor]);
 
   return isLoading ? (
     <AdminLoader />
@@ -150,9 +150,6 @@ const NFTs = () => {
   const { slug } = useParams();
   const nftList = useSelector((state) => state.nftData.singleCollectionNFT);
   // nftList?.map((item) => console.log(item));
-
-  console.log(nftList);
-
   useEffect(() => {
     getSingleCollectionWiseNFT(Principal.fromText(slug));
   }, []);
@@ -185,11 +182,31 @@ const NFTs = () => {
 };
 
 const NFTCard = ({ nftdetail, collection_Id }) => {
+  const { backendActor } = useAuth();
+  const [shareLoading, setShareLoading] = useState(true);
+  const [sharesLeft, setSharesLeft] = useState(null);
   // console.log("collectibles Detail :", nftdetail);
   const { fractional_token, nft } = nftdetail[0];
   // console.log("fractional token", fractional_token, "collectible detail", nft);
   const tokenData = transformTokenData(fractional_token);
   // console.log(tokenData);
+
+  useEffect(() => {
+    const fetchAvailableShare = async () => {
+      try {
+        setShareLoading(true);
+        const response = await backendActor.getAvailableshares(nftdetail[1]);
+        // console.log("response available share", response);
+        setSharesLeft(parseInt(response));
+      } catch (err) {
+        console.error("Error fetching available share ", err);
+      } finally {
+        setShareLoading(false);
+      }
+    };
+    if (backendActor) fetchAvailableShare();
+  }, [backendActor]);
+
   return (
     <Link
       to={`/admin/collectible-detail/${collection_Id}/${nftdetail[1].toText()}/${
@@ -215,13 +232,25 @@ const NFTCard = ({ nftdetail, collection_Id }) => {
           <h4 className="text-3xl font-bold">{tokenData.name}</h4>
           <p>Owner: {nft.owner.toText()}</p>
           <p>Total Share : {parseInt(nftdetail[0].totalSupply)}</p>
+          <div className="font-bold flex items-center gap-2">
+            Available Share :{" "}
+            {shareLoading ? (
+              <div className="h-4 w-20 bg-gray-500 animate-pulse rounded"></div>
+            ) : (
+              <h4>{sharesLeft}</h4>
+            )}
+          </div>
           <p>
             Price/Share: Rp.
             {nftdetail[0].price_per_share}
           </p>
-          <p>
-            Total Value: Rp.
-            {nftdetail[0].price_per_share * parseInt(nftdetail[0].totalSupply)}
+          <p className="flex items-center">
+            Available share Value: Rp.
+            {shareLoading ? (
+              <div className="h-4 w-20 bg-gray-500 animate-pulse rounded"></div>
+            ) : (
+              <h4>{(sharesLeft * nftdetail[0].price_per_share).toFixed(3)}</h4>
+            )}
           </p>
         </div>
       </div>

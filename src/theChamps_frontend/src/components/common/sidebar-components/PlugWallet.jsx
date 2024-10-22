@@ -16,11 +16,12 @@ import { login, logout } from "../../../../../redux/reducers/authReducer";
 import IcpLogo from "../../../assets/IcpLogo";
 import useClipboard from "react-use-clipboard";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../auth/useClient";
 
 const PlugWallet = () => {
   const controls = useAnimation();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // const { principal, disconnect } = useConnect();
   const { principal, logout } = useAuth();
@@ -60,6 +61,7 @@ const PlugWallet = () => {
     // dispatch(logout());
     // disconnect();
     logout();
+    navigate("/");
     toast.success("Logout successfully");
   };
 
@@ -144,7 +146,7 @@ const PlugWallet = () => {
               <IconWrapper>
                 <IoMdLogOut size={28} />
               </IconWrapper>
-              <p>Disconnect</p>
+              <p>Logout</p>
             </div>
           </motion.div>
         </div>

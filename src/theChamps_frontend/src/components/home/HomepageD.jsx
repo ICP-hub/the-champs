@@ -18,7 +18,7 @@ const HomePageD = () => {
     { value: "10000", label: "Fans", unit: "+" },
     { value: "1", label: "Total Collections" },
     { value: "100000", label: "Digital Collectibles" },
-    { value: "0", label: "NFT sales" },
+    { value: "0", label: "Ticket Sales" },
   ]);
   const [counts, setCounts] = useState([]);
   // const [backend] = useCanister("backend");

@@ -58,10 +58,10 @@ const CommonModal = ({ toggleModal, tokencanisterid }) => {
       >
         <div className="flex flex-col">
           <h1 className="flex items-center justify-center text-center text-[1.3rem] py-4 font-medium">
-            Transfer NFT
+            Transfer Digital Collectible
           </h1>
           <h4 className="text-center py-4 text-lg">
-            Please enter the address or Principal you want to send the NFT to
+            Please enter the address or Principal you want to send the Digital Collectible to
           </h4>
           <p className="bg-gradient-to-tr from-[#FC001E] to-[#FF7D57] text-[0.8rem] md:text-[0.9rem] flex text-white p-3 rounded-md gap-2 md:min-w-max font-semibold">
             <RiErrorWarningFill size={20} color="white" />

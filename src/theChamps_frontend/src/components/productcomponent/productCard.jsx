@@ -69,6 +69,9 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   const [favMatched, setFavMatched] = useState(false);
   const [favLoad, setFavLoad] = useState(false);
   const [paymentMethod2, setPaymentMethod2] = useState("icp");
+  const [sharesLeft, setSharesLeft] = useState(null);
+  const [shareLoading, setShareLoading] = useState(true);
+  const [clicked, setClicked] = useState({ fav: 0, buy: 0 });
 
   // const addToFavourites = async () => {
   //   try {
@@ -283,6 +286,11 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   //   }
   // };
 
+  const openModal = () => {
+    setOpen(true);
+    setClicked((prev) => ({ ...prev, buy: prev.buy + 1 }));
+  };
+
   /*************** Favourite review ****************/
   // get favorites
   const getFav = async () => {
@@ -309,7 +317,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
     open &&
       !isAuthenticated &&
       toast.error("You need to login to your account to make a purchase");
-  }, [isAuthenticated, open]);
+  }, [isAuthenticated, open, clicked.buy]);
 
   useEffect(() => {
     if (open) {
@@ -325,6 +333,10 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
 
   // add or remove a favorite
   const toggleFav = async (product) => {
+    if (!isAuthenticated) {
+      toast.error("You need to login to add favourite");
+      return;
+    }
     try {
       setFavLoad(true);
       if (favMatched) {
@@ -365,6 +377,21 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
   // const decrementQuantity = () =>
   //   setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
   // console.log(parseInt(product));
+  useEffect(() => {
+    const fetchAvailableShare = async () => {
+      try {
+        setShareLoading(true);
+        const response = await backendActor.getAvailableshares(product[1]);
+        // console.log("response available share", response);
+        setSharesLeft(parseInt(response));
+      } catch (err) {
+        console.error("Error fetching available share ", err);
+      } finally {
+        setShareLoading(false);
+      }
+    };
+    if (backendActor) fetchAvailableShare();
+  }, [backendActor]);
 
   return (
     <>
@@ -384,6 +411,7 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
           nftId={parseInt(product[0].nft.id)}
           nftCanId={product[1]}
           totalSupply={parseInt(product[0].totalSupply)}
+          sharesLeft={sharesLeft}
         />
       )}
       <div
@@ -518,12 +546,20 @@ const ProductCard = ({ product, setShowHeader, showHeader }) => {
             {/* <IcpLogo /> */}
             Total Share : {parseInt(product[0].totalSupply)}
           </p>
+          <div className="font-bold flex items-center gap-2">
+            Available Share :{" "}
+            {shareLoading ? (
+              <div className="h-4 w-20 bg-gray-500 animate-pulse rounded"></div>
+            ) : (
+              <h4>{sharesLeft}</h4>
+            )}
+          </div>
           <p></p>
           <div className="flex justify-between sm:items-center mb-4 max-sm:flex-col mt-auto">
             <button
               className="button px-4 py-2 text-white font-bold text-sm rounded-l-full rounded-r-full"
               // onClick={handleBuyNow} // Call handleBuyNow function when button is clicked
-              onClick={() => setOpen(true)}
+              onClick={openModal}
             >
               Buy now
             </button>

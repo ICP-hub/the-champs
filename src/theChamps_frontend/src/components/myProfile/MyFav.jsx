@@ -58,7 +58,7 @@ const MyFav = () => {
         // console.log("Error while fetching user NFT", error);
       }
     } else {
-      toast.error("please connect to wellect");
+      toast.error("please connect to wallet");
       setLoading2(false);
     }
   };
@@ -213,7 +213,7 @@ const MyFav = () => {
               endMessage={
                 <div className="text-center mt-8 px-6 lg:px-24 flex justify-center items-center">
                   <button className="px-4 py-2 border border-red-500 cursor-pointer rounded-lg w-48 z-[1]">
-                    No more NFTs found
+                    No more Digital Collectibles found
                   </button>
                 </div>
               }
@@ -235,8 +235,8 @@ const MyFav = () => {
                           whileHover={{ scale: 1.1 }}
                           transition={{ duration: 0.2, ease: "easeInOut" }}
                           src={
-                            product[1]?.fractional_token?.logo
-                              ? product[1]?.fractional_token?.logo
+                            product[1]?.nft?.logo?.data
+                              ? product[1]?.nft?.logo?.data
                               : placeHolderImg
                           }
                           alt=""
