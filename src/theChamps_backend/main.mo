@@ -154,6 +154,7 @@ actor Champs {
             featured = featured;
         };
         let nftcollection = await NFTActorClass.Dip721NFT(Principal.fromActor(Champs), metadata);
+        Debug.print("the principal who is calling this" # debug_show (Principal.fromActor(Champs)));
         ignore await nftcollection.wallet_receive();
         let collection_canister_id = await nftcollection.getCanisterId();
         let new_custodian = await nftcollection.addcustodians(user);
@@ -204,14 +205,13 @@ actor Champs {
             case (?id) {
                 let nftcanisteractor = actor (Principal.toText(nftcanisterid)) : actor {
                     mintDip721 : (to : Principal, metadata : Types.MetadataDesc, priceinusd : Float, logo : Types.LogoResult) -> async Types.MintReceipt;
-
                     getallNFT : () -> async [Types.Nft];
                 };
                 let mintednft = await nftcanisteractor.mintDip721(to, metadata, priceinusd, _logo);
                 let champs = await idQuick();
                 switch (mintednft) {
                     case (#Err(index)) {
-                        throw Error.reject("minting DIP721 failedand threw this error "#debug_show (index));
+                        throw Error.reject("minting DIP721 failedand threw this error " # debug_show (index));
                     };
                     case (#Ok(newnft)) {
                         Debug.print(debug_show (newnft));
@@ -910,6 +910,7 @@ actor Champs {
         stablecontacts := Iter.toArray(contacts.entries());
         stablefractionalnftmap := Iter.toArray(fractionalnftmap.entries());
         stableusers := Iter.toArray(users.entries());
+        stableuserownershipmap := Iter.toArray(userownershipmap.entries());
     };
 
     // Postupgrade function to restore the data from stable variables
@@ -920,6 +921,7 @@ actor Champs {
         contacts := TrieMap.fromEntries(stablecontacts.vals(), Text.equal, Text.hash);
         fractionalnftmap := TrieMap.fromEntries(stablefractionalnftmap.vals(), Principal.equal, Principal.hash);
         users := TrieMap.fromEntries(stableusers.vals(), Principal.equal, Principal.hash);
+        userownershipmap := TrieMap.fromEntries(stableuserownershipmap.vals(),Principal.equal,Principal.hash);
     };
 
     // ******************************************************************************************************************************
