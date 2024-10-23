@@ -211,7 +211,7 @@ actor Champs {
                 let champs = await idQuick();
                 switch (mintednft) {
                     case (#Err(index)) {
-                        throw Error.reject(debug_show (index));
+                        throw Error.reject("minting DIP721 failedand threw this error "#debug_show (index));
                     };
                     case (#Ok(newnft)) {
                         Debug.print(debug_show (newnft));
