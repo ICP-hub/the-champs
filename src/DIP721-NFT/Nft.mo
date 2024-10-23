@@ -9,6 +9,8 @@ import Types "./Types";
 import Cycles "mo:base/ExperimentalCycles";
 import Time "mo:base/Time";
 import Debug "mo:base/Debug";
+import Error "mo:base/Error";
+
 
 shared actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungibleToken) = Self {
   stable var transactionId : Types.TransactionId = 0;
@@ -39,7 +41,8 @@ shared actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungib
   public shared ({ caller }) func addcustodians(custodian : Principal) : async Result.Result<Types.AddCustodian, Types.AddCustodianError> {
     Debug.print("Caller" # debug_show (caller));
     if (not List.some(custodians, func(c : Principal) : Bool { c == caller })) {
-      return #err(#Unauthorized);
+      throw (Error.reject("addcustodian function is returning unauthorised because caller is not a custodian"));
+      return #err(#Unauthorized );
     } else if (List.some(custodians, func(c : Principal) : Bool { c == custodian })) {
       return #err(#AlreadyCustodian);
     } else {
@@ -83,6 +86,7 @@ shared actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungib
           caller != token.owner and
           not List.some(custodians, func(custodian : Principal) : Bool { custodian == caller })
         ) {
+          // throw (Error.reject("addcustodian function is returning unauthorised because caller is not a custodian"));
           return #Err(#Unauthorized);
         } else if (Principal.notEqual(from, token.owner)) {
           return #Err(#Other);
@@ -90,7 +94,7 @@ shared actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungib
           nfts := List.map(
             nfts,
             func(item : Types.Nft) : Types.Nft {
-              if (item.id == token.id) {
+              if (item.id == token.id) { 
                 let update : Types.Nft = {
                   owner = to;
                   id = item.id;
@@ -220,6 +224,7 @@ shared actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungib
 
   public shared func mintDip721(to : Principal, metadata : Types.MetadataDesc, priceinusd : Float, logo : Types.LogoResult) : async Types.MintReceipt {
     if (not List.some(custodians, func(custodian : Principal) : Bool { custodian == to })) {
+      throw (Error.reject("mintDip721 function is returning unauthorised because caller is not a custodian"));
       return #Err(#Unauthorized);
     };
 
@@ -250,6 +255,7 @@ shared actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungib
       };
       case (?token) {
         if (caller != token.owner) {
+      throw (Error.reject("lockDip721 function is returning unauthorised because caller is not a custodian"));
           return #err(#Unauthorized);
         } else if (token.locked) {
           return #err(#AlreadyLocked);
@@ -289,6 +295,8 @@ shared actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungib
       };
       case (?token) {
         if (caller != token.owner) {
+      throw (Error.reject("unlockDip721 function is returning unauthorised because caller is not a custodian"));
+
           return #err(#Unauthorized);
         } else if (not token.locked) {
           return #err(#AlreadyUnlocked);
