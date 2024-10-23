@@ -111,7 +111,7 @@ const Artists = () => {
           transition={index % 2 === 0 ? null : { delay: 0.5 }}
           key={index}
           className={`flex flex-col gap-4 justify-center items-center ${
-            index % 2 === 0 ? "min-[900px]:mt-20" : ""
+            index % 2 === 0 ? "min-[900px]:mt-20 " : ""
           }`}
         >
           <img
@@ -120,7 +120,7 @@ const Artists = () => {
             className="h-40 w-40 rounded-2xl p-2 border-2"
           />
           <div className="flex flex-col gap-2 items-center justify-center">
-            <h3 className="font-bold text-[22px]">{artist.name}</h3>
+            <h3 className="font-bold text-md md:text-xl">{artist.name}</h3>
             <p className="text-[#7B7583]">{artist.role}</p>
           </div>
           <span className="flex items-center gap-4">

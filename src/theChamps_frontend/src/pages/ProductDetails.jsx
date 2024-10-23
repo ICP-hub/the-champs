@@ -44,6 +44,9 @@ const ProductDetails = () => {
   const [favLoad, setFavLoad] = useState(false);
   const [product, setProduct] = useState([]);
   const [collectionLoad, setCollectionLoad] = useState(true);
+  const [sharesLeft, setSharesLeft] = useState(null);
+  const [shareLoading, setShareLoading] = useState(true);
+  const [clicked, setClicked] = useState(0);
 
   // // Get NFT details
   // const getNftDetails = async () => {
@@ -134,6 +137,10 @@ const ProductDetails = () => {
 
   // add or remove a favorite
   const toggleFav = async () => {
+    if (!isAuthenticated) {
+      toast.error("You need to login to add favourite");
+      return;
+    }
     try {
       setFavLoad(true);
       if (favMatched) {
@@ -167,6 +174,24 @@ const ProductDetails = () => {
   useEffect(() => {
     if (nftData) getFav();
   }, [favChanged, nftData]);
+
+  useEffect(() => {
+    const fetchAvailableShare = async () => {
+      try {
+        setShareLoading(true);
+        const response = await backendActor.getAvailableshares(
+          Principal.fromText(slug)
+        );
+        // console.log("response available share", response);
+        setSharesLeft(parseInt(response));
+      } catch (err) {
+        console.error("Error fetching available share ", err);
+      } finally {
+        setShareLoading(false);
+      }
+    };
+    if (backendActor) fetchAvailableShare();
+  }, [backendActor]);
 
   // useEffect(() => {
   //   getExchangeRate();
@@ -222,7 +247,7 @@ const ProductDetails = () => {
     open &&
       !isAuthenticated &&
       toast.error("You need to login to your account to make a purchase");
-  }, [isAuthenticated, open]);
+  }, [isAuthenticated, open, clicked]);
 
   useEffect(() => {
     if (open) {
@@ -251,8 +276,9 @@ const ProductDetails = () => {
         <BuyNowEarly
           onOpen={setOpen}
           nftId={parseInt(nftData.nft.id)}
-          nftCanId={index}
+          nftCanId={Principal.fromText(slug)}
           totalSupply={parseInt(nftData.totalSupply)}
+          sharesLeft={sharesLeft}
         />
       )}
       {nftLoading ? (
@@ -269,7 +295,7 @@ const ProductDetails = () => {
                       ? nftData.nft.logo.data
                       : placeholderimg
                   }
-                  alt="nft name"
+                  alt="Digital Collectible name"
                   className="h-64 w-64 object-fill rounded-2xl"
                 />
               </div>
@@ -314,6 +340,14 @@ const ProductDetails = () => {
                   )}
                 </span>
               </div>
+              <div className="flex items-center gap-2 font-bold text-lg">
+                <p>Available Share : </p>
+                {shareLoading ? (
+                  <div className="h-4 w-20 animate-pulse rounded bg-gray-500"></div>
+                ) : (
+                  <p>{sharesLeft}</p>
+                )}
+              </div>
               <div className="py-4 flex max-lg:flex-col lg:justify-between lg:items-center">
                 <div className="flex items-center font-semibold text-lg gap-4">
                   <p>Price :</p>
@@ -322,8 +356,11 @@ const ProductDetails = () => {
 
                 <motion.button
                   whileTap={{ scale: 0.9 }}
-                  className="button px-4 py-2 rounded-lg text-white max-lg:mt-4 max-w-max"
-                  onClick={() => setOpen(true)}
+                  className="button px-4 py-2 text-white max-lg:mt-4 max-w-max rounded-full text-sm"
+                  onClick={() => {
+                    setOpen(true);
+                    setClicked((prev) => prev + 1);
+                  }}
                 >
                   Buy Now
                 </motion.button>
@@ -364,7 +401,7 @@ const ProductDetails = () => {
                     </div>
                   </div>
                   <p className="text-start py-8">
-                    {nftData.nft.metadata[0].description}
+                    {nftData.nft.metadata[0]?.description}
                   </p>
                 </div>
               </div>
@@ -387,7 +424,7 @@ const Loader = () => {
           <div className="p-2 border-2 rounded-2xl overflow-hidden border-gray-300 animate-pulse">
             <img
               src={placeholderimg}
-              alt="nft name"
+              alt="Digital Collectible name"
               className="h-64 w-64 object-fill rounded-2xl"
             />
           </div>
@@ -403,7 +440,7 @@ const Loader = () => {
           <div className="py-4 lg:py-8 flex justify-between items-center">
             <div>
               <h1 className="text-2xl bg-gray-500 animate-pulse text-gray-500 mb-2 rounded-md">
-                NFT Name
+              Digital Collectible Name
               </h1>
               <h6 className="text-gray-500 capitalize font-medium flex gap-2">
                 <span className="bg-gray-300 animate-pulse text-gray-300 rounded-md">
@@ -428,7 +465,7 @@ const Loader = () => {
                 /Share
               </span>
             </div>
-            <button className="bg-gray-500 text-gray-500 animate-pulse px-4 py-2 rounded-lg max-lg:mt-4 max-w-max">
+            <button className="bg-gray-500 text-gray-500 animate-pulse px-4 py-2 text-sm max-lg:mt-4 max-w-max rounded-full">
               Buy Now
             </button>
           </div>

@@ -57,7 +57,16 @@ const MyProfileNFT = () => {
           // Principal.fromText("2vxsx-fae")
           principal
         );
-        setProduct(res);
+        const uniqueNFTs = Array.from(
+          res
+            .reduce((acc, item) => {
+              acc.set(item[0].id.toString(), item);
+              return acc;
+            }, new Map())
+            .values()
+        );
+
+        setProduct(uniqueNFTs);
         console.log("user collectible response", res);
       } catch (err) {
         console.error("Error getting user nft ", err);

@@ -188,7 +188,7 @@ const UploadNFTImg = () => {
           >
             Upload Thumbnail <br />{" "}
             <span className="text-sm mt-4 pt-4">
-              Thumbnails are displayed when viewing NFTs on the collection page.
+              Thumbnails are displayed when viewing Digital Collectibles on the collection page.
               Creators are welcome to generate and upload their own thumbnails.
               For static image collections Toniq Mint will auto-generate
               thumbnails if no files are uploaded (most common). For non-static

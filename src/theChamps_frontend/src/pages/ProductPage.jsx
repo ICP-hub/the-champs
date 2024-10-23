@@ -195,7 +195,7 @@ const ProductPage = ({ name }) => {
     <>
       {showHeader && <Header />} {/* Conditionally render the header */}
       {loading4 ? (
-        <div className="animate-pulse flex space-x-4 px-6 md:mt-44 lg:px-24">
+        <div className="animate-pulse flex space-x-4 container mx-auto px-6 md:px-8">
           <div className="  bg-gray-300 h-32 w-32 rounded-xl"></div>
           <div className="flex-1 space-y-4  ">
             <div className="h-24 rounded-xl bg-gray-300  "></div>
@@ -207,7 +207,7 @@ const ProductPage = ({ name }) => {
           </div>
         </div>
       ) : (
-        <div className="md:mt-24 left-0 right-0 px-6 lg:px-24">
+        <div className="container mx-auto px-6 md:px-8">
           <div className="w-full relative">
             <img
               src={
@@ -329,7 +329,7 @@ const ProductPage = ({ name }) => {
             <>
               {searchResults.length > 0 ? (
                 // <div className="grid grid-cols-1 px-6 lg:px-24 sm:grid-cols-2 lg:grid-cols-3 gap-12 mt-4 justify-center">
-                <div className="px-6 lg:px-24">
+                <div className="container mx-auto px-6 md:px-8">
                   {searchResults.map((product, index) => (
                     <ProductCard
                       key={index}

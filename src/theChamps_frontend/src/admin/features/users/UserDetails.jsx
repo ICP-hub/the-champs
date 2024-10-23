@@ -103,7 +103,7 @@ const UserData = () => {
           </span>
         </div>
       </div>
-      <h1 className="md:text-xl font-medium">NFTs owned by {id}</h1>
+      <h1 className="md:text-xl font-medium">Digital Collectible owned by {id}</h1>
       <Cards id={id} />
     </div>
   );
@@ -137,13 +137,13 @@ const Cards = ({ id }) => {
     <div className="grid lg:grid-cols-3 sm:grid-cols-2 2xl:grid-cols-5 gap-x-4 gap-y-8 py-4">
       {nftLoading ? (
         <div className="col-span-full flex items-center justify-center">
-          Loading User NFTs...
+          Loading User Digital Collectibles...
         </div>
       ) : nftList && nftList?.length > 0 ? (
         nftList.map((nft, index) => <NFTDetailCard key={index} nft={nft} />)
       ) : (
         <div className="col-span-full flex items-center justify-center">
-          <p>Above User doesn't own any NFT</p>
+          <p>Above User doesn't own any Digital Collectible</p>
         </div>
       )}
     </div>
@@ -166,7 +166,7 @@ const NFTDetailCard = ({ nft }) => {
       />
       <div className="p-2 text-sm font-medium space-y-2 py-4">
         <span className="flex gap-4">
-          <label className="min-w-max">NFT ID :</label>
+          <label className="min-w-max">Digital Collectible ID :</label>
           <p>{nftId.toText()}</p>
         </span>
         <span className="flex gap-4">
@@ -174,7 +174,7 @@ const NFTDetailCard = ({ nft }) => {
           <p>{collectionId.toText()}</p>
         </span>
         <span className="flex gap-4">
-          <label>NFT Name :</label>
+          <label>Digital Collectible Name :</label>
           <p>{tokenData.name}</p>
         </span>
         <span className="flex gap-4">
