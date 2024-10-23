@@ -222,8 +222,8 @@ shared actor class Dip721NFT(custodian : Principal, init : Types.Dip721NonFungib
     return List.toArray(nfts);
   };
 
-  public shared func mintDip721(to : Principal, metadata : Types.MetadataDesc, priceinusd : Float, logo : Types.LogoResult) : async Types.MintReceipt {
-    if (not List.some(custodians, func(custodian : Principal) : Bool { custodian == to })) {
+  public shared ({caller}) func mintDip721(to : Principal, metadata : Types.MetadataDesc, priceinusd : Float, logo : Types.LogoResult) : async Types.MintReceipt {
+    if (not List.some(custodians, func(custodian : Principal) : Bool { custodian == caller })) {
       throw (Error.reject("mintDip721 function is returning unauthorised because caller is not a custodian"));
       return #Err(#Unauthorized);
     };
