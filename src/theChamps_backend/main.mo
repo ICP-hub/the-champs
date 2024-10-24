@@ -232,7 +232,7 @@ actor Champs {
                             minting_account : {
                                 owner : Principal;
                                 subaccount : ?Blob;
-                            } = { owner = champs; subaccount = null };
+                            } = { owner = user; subaccount = null };
                             token_name : Text = _name;
                             token_symbol : Text = _symbol;
                             transfer_fee : Nat = 0;
@@ -404,7 +404,7 @@ actor Champs {
     //     };
     // };
 
-    public shared ({ caller = user }) func transfertokens(tokencanisterid : Principal, to : Principal, amount : Nat) : async Result.Result<Typestoken.TxIndex, Typestoken.TransferError> {
+    public shared ({ caller = ser }) func transfertokens(tokencanisterid : Principal, to : Principal, amount : Nat) : async Result.Result<Typestoken.TxIndex, Typestoken.TransferError> {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
