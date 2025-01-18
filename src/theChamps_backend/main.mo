@@ -3,6 +3,7 @@ import Error "mo:base/Error";
 import Cycles "mo:base/ExperimentalCycles";
 import Iter "mo:base/Iter";
 import List "mo:base/List";
+import Http "http";
 import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Text "mo:base/Text";
@@ -23,8 +24,16 @@ import Nat64 "mo:base/Nat64";
 import Int64 "mo:base/Int64";
 import Int "mo:base/Int";
 import Nat8 "mo:base/Nat8";
+import Nat "mo:base/Nat";
+import serdeJson "mo:serde/JSON";
+
 actor Champs {
     // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
+    public type IC = actor {
+        http_request : Http.IcHttp.HttpRequest -> async Http.IcHttp.HttpResponse;
+    };
+    let ic : IC = actor ("aaaaa-aa");
+
     let g = Source.Source();
     stable let icpLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai";
     stable let ckbtcLedger = "r7inp-6aaaa-aaaaa-aaabq-cai";
@@ -404,7 +413,107 @@ actor Champs {
     //     };
     // };
 
-    public shared ({ caller = ser }) func transfertokens(tokencanisterid : Principal, to : Principal, amount : Nat) : async Result.Result<Typestoken.TxIndex, Typestoken.TransferError> {
+ 
+    // public query func transform({
+    //     context : Blob;
+    //     response : ic.http_request_result;
+    // }) : async ic.http_request_result {
+    //     {
+    //     response with headers = []; // not intersted in the headers
+    //     };
+    // };
+
+    public func createInvoice(quantity: Nat, ticketId: Nat, transform_context: ?Http.IcHttp.TransformContext) : async Text {
+            let successUrl = "https://champs.com/success";
+            let cancelUrl = "https://champs.com/failed";
+
+            let idempotency_key : Text = generateIdempotencyKey();
+            let request_headers = [
+                { name = "Content-Type"; value = "application/json" },
+                { name = "Idempotency-Key"; value = idempotency_key },
+            ];
+            
+            let body = {
+                qty = quantity;
+                ticket_id = ticketId;
+                successUrl = successUrl;
+                cancelUrl = cancelUrl;
+            };
+
+            let request_body_json : Text = "{ " # "\"qty\" : " # Nat.toText(body.qty) # ","  # " \"success_url\" : \" " # body.successUrl # "\"," # " \"failed_url\" : \"" # body.cancelUrl # "\"," # " \"ticket_id\" : " # Nat.toText(body.ticket_id) #"  }";
+            Debug.print(debug_show(request_body_json));
+            let request_body = Text.encodeUtf8(request_body_json);
+            Debug.print(debug_show(request_body));
+
+            let http_request : Http.IcHttp.HttpRequest = {
+                url = "https://champproxyserv.netlify.app/.netlify/functions/api" # "/invoice/checkout";
+                headers = request_headers;
+                body = ?request_body;
+                method = #post;
+                transform = transform_context;
+                max_response_bytes= null;
+            };
+            Cycles.add(21_800_000_000);
+            let http_response : Http.IcHttp.HttpResponse = await ic.http_request(http_request);
+            Debug.print(debug_show(http_response));
+            Debug.print(debug_show(Text.decodeUtf8(http_response.body)));
+
+            let decoded_text : Text = switch (Text.decodeUtf8(http_response.body)) {
+                case (null) { "No value returned" };
+                case (?y) { y };
+            };
+            Debug.print(debug_show(decoded_text));
+            
+            let result : Text = decoded_text;
+            result;
+
+    };
+    public func getStatus(invoiceId: Nat, transform_context: ?Http.IcHttp.TransformContext) : async Text {
+
+            let request_headers = [
+                { name = "Content-Type"; value = "application/json" },
+            ];
+            
+            let body = {
+                invoiceId  = invoiceId;     
+            };
+
+            let request_body_json : Text = "{ " # "\"invoiceId\" : " # Nat.toText(body.invoiceId) # " }";
+            Debug.print(debug_show(request_body_json));
+            let request_body = Text.encodeUtf8(request_body_json);
+            Debug.print(debug_show(request_body));
+
+            let http_request : Http.IcHttp.HttpRequest = {
+                url = "https://champproxyserv.netlify.app/.netlify/functions/api" # "/payment/status";
+                headers = request_headers;
+                body = ?request_body;
+                method = #post;
+                transform = transform_context;
+                max_response_bytes= null;
+            };
+            Cycles.add(21_800_000_000);
+            let http_response : Http.IcHttp.HttpResponse = await ic.http_request(http_request);
+            Debug.print(debug_show(http_response));
+            Debug.print(debug_show(Text.decodeUtf8(http_response.body)));
+
+            let decoded_text : Text = switch (Text.decodeUtf8(http_response.body)) {
+                case (null) { "No value returned" };
+                case (?y) { y };
+            };
+            Debug.print(debug_show(decoded_text));
+            
+            let result : Text = decoded_text;
+            result;
+
+    };
+
+    func generateIdempotencyKey() : Text {
+        let timestamp = Time.now(); 
+        return "idempotency-" # Int.toText(timestamp);
+    };
+
+
+    public shared ({ caller = user }) func transfertokens(tokencanisterid : Principal, to : Principal, amount : Nat) : async Result.Result<Typestoken.TxIndex, Typestoken.TransferError> {
         // if (Principal.isAnonymous(user)) {
         //     throw Error.reject("User is not authenticated");
         // };
