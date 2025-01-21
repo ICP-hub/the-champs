@@ -328,7 +328,37 @@ actor Champs {
         return 0.0;
     };
 
-    public shared ({ caller = _user }) func buytokens(nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async ICRC.Result {
+    public shared ({ caller = _user }) func processPendingTransfer(invoiceId : Text) : async Result.Result<ICRC.Result,Text>{
+        let args : UsersTypes.Args = switch(argMap.get(invoiceId)){
+            case null return #err("No args found for Invoice");
+            case(?_args) _args;
+        };
+        let statusCheck = await getStatus(invoiceId);
+        switch(statusCheck){
+            case(#err(e)){
+                return #err(e);
+            };
+            case(#ok(entry)){
+                if(entry.transactionStatus == "completed"){
+                    let result = await buytokens(
+                        _user,
+                        args.nftCanister,
+                        args.tokenid,
+                        args.tokencanisterid,
+                        args.to,
+                        args.numberoftokens
+                    );
+                    return #ok(result);
+                }
+                else{
+                    return #err("You must Complete Transaction")
+                }
+            }
+        }
+        
+    };
+
+    func buytokens(_user : Principal, nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async ICRC.Result {
         // if (Principal.isAnonymous(_user)) {
         //     throw Error.reject("User is not authenticated");
         // };
@@ -428,7 +458,7 @@ actor Champs {
         };
     };
 
-    public func createInvoice(quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async Text {
+    public func createInvoice(quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async Result.Result<UsersTypes.Invoice,Text> {
             let successUrl = "https://champs.com/success";
             let cancelUrl = "https://champs.com/failed";
 
@@ -445,9 +475,7 @@ actor Champs {
             };
 
             let request_body_json : Text = "{ " # "\"qty\" : " # Nat.toText(body.qty) # ","  # " \"success_url\" : \" " # body.successUrl # "\"," # " \"failed_url\" : \"" # body.cancelUrl # "\"" # "  }";
-            Debug.print(debug_show(request_body_json));
             let request_body = Text.encodeUtf8(request_body_json);
-            Debug.print(debug_show(request_body));
 
             let http_request : Http.IcHttp.HttpRequest = {
                 url = "https://champproxyserv.netlify.app/.netlify/functions/api" # "/invoice/checkout";
@@ -462,21 +490,36 @@ actor Champs {
             };
             Cycles.add(21_800_000_000);
             let http_response : Http.IcHttp.HttpResponse = await ic.http_request(http_request);
-            Debug.print(debug_show(http_response));
-            Debug.print(debug_show(Text.decodeUtf8(http_response.body)));
 
             let decoded_text : Text = switch (Text.decodeUtf8(http_response.body)) {
                 case (null) { "No value returned" };
                 case (?y) { y };
             };
-            Debug.print(debug_show(decoded_text));
-            
-            let result : Text = decoded_text;
-            // argsMap.put()
-            result;
+            let blob = serdeJson.fromText(decoded_text);
+            let data : ?UsersTypes.Invoice = from_candid(blob);
+            let invoice : UsersTypes.Invoice = switch(data) {
+                case(null) { return #err("Error creating Invoice"); };
+                case(?_session) { 
+                    switch(_session.success){
+                        case true _session;
+                        case false return #err("Error creating Invoice");
+                    };
+                 };
+            };
+            let args : UsersTypes.Args ={
+                nftCanister = nftCanister;
+                tokenid = tokenid;
+                tokencanisterid = tokencanisterid;
+                to = to;
+                numberoftokens = numberoftokens
+            };
+            if(invoice.success == true){
+                argMap.put(invoice.invoice_id,args);
+            };
+            return #ok(invoice);
 
     };
-    public func getStatus(invoiceId: Text, transform_context: ?Http.IcHttp.TransformContext) : async Text {
+    public func getStatus(invoiceId: Text) : async Result.Result<UsersTypes.TxStatus,Text> {
 
             let request_headers = [
                 { name = "Content-Type"; value = "application/json" },
@@ -487,31 +530,34 @@ actor Champs {
             };
 
             let request_body_json : Text = "{ " # "\"invoiceId\" : \"" # body.invoiceId # "\"" # " }";
-            Debug.print(debug_show(request_body_json));
             let request_body = Text.encodeUtf8(request_body_json);
-            Debug.print(debug_show(request_body));
 
             let http_request : Http.IcHttp.HttpRequest = {
                 url = "https://champproxyserv.netlify.app/.netlify/functions/api" # "/payment/status";
                 headers = request_headers;
                 body = ?request_body;
                 method = #post;
-                transform = transform_context;
+                transform = ?{
+                    function = transform;
+                    context = Blob.fromArray([]);
+                };
                 max_response_bytes= null;
             };
             Cycles.add(21_800_000_000);
             let http_response : Http.IcHttp.HttpResponse = await ic.http_request(http_request);
-            Debug.print(debug_show(http_response));
-            Debug.print(debug_show(Text.decodeUtf8(http_response.body)));
 
             let decoded_text : Text = switch (Text.decodeUtf8(http_response.body)) {
                 case (null) { "No value returned" };
                 case (?y) { y };
             };
-            Debug.print(debug_show(decoded_text));
-            
-            let result : Text = decoded_text;
-            result;
+            let blob = serdeJson.fromText(decoded_text);
+            let data : ?UsersTypes.TxStatus = from_candid(blob);
+            return switch(data) {
+                case(null) { return #err("Error Fetching Status"); };
+                case(?data) { 
+                    return #ok(data);
+                 };
+            };
 
     };
 

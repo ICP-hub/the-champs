@@ -45,6 +45,15 @@ module {
         tokencanisterid : Principal;
         to : Principal;
         numberoftokens : Nat
+    };
+
+    public type Invoice = {
+        success : Bool;
+        invoice_url : Text;
+        invoice_id : Text
+    };
+    public type TxStatus = {
+        transactionStatus : Text
     }
 
 }
