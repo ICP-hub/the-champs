@@ -25,7 +25,9 @@ import Int64 "mo:base/Int64";
 import Int "mo:base/Int";
 import Nat8 "mo:base/Nat8";
 import Nat "mo:base/Nat";
+import Blob "mo:base/Blob";
 import serdeJson "mo:serde/JSON";
+
 
 actor Champs {
     // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
@@ -56,6 +58,9 @@ actor Champs {
 
     private var users = TrieMap.TrieMap<Principal, UsersTypes.User>(Principal.equal, Principal.hash);
     private stable var stableusers : [(Principal, UsersTypes.User)] = [];
+
+    private var argMap = TrieMap.TrieMap<Text, UsersTypes.Args>(Text.equal, Text.hash);
+    private stable var stableArgMap : [(Text, UsersTypes.Args)] = [];
 
     public func idQuick() : async Principal {
         return Principal.fromActor(Champs);
@@ -323,61 +328,60 @@ actor Champs {
         return 0.0;
     };
 
-    // public shared ({ caller = _user }) func buytokens(nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async ICRC.Result {
-    //     // if (Principal.isAnonymous(_user)) {
-    //     //     throw Error.reject("User is not authenticated");
-    //     // };
-    //     let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-    //         icrc1_transfer : (ICRC.TransferArg) -> async ICRC.Result;
-    //         getTotalSupply : () -> async Nat;
-    //         icrc1_metadata : () -> async [(Text, Types.Value)];
-    //     };
-    //     // switch (paymentOption) {
-    //     //     case (#icp) {
-    //     //         let response : ICRC.Result_2 = await icrc2_transferFrom(icpLedger, from, to, amount);
-    //     //         switch (response) {
-    //     //             case (#Err(index)) {
-    //     //                 throw Error.reject(debug_show (index));
-    //     //             };
-    //     //             case (#Ok(res)) {
-    //     let transferparams : ICRC.TransferArg = {
-    //         to = { owner = to; subaccount = null };
-    //         amount = numberoftokens;
-    //         fee = null;
-    //         from_subaccount = null;
-    //         memo = null;
-    //         created_at_time = null;
-    //     };
-    //     let tokens = await tokencansiter_actor.icrc1_transfer(transferparams);
+    public shared ({ caller = _user }) func buytokens(nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async ICRC.Result {
+        // if (Principal.isAnonymous(_user)) {
+        //     throw Error.reject("User is not authenticated");
+        // };
+        let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
+            icrc1_transfer : (ICRC.TransferArg) -> async ICRC.Result;
+            getTotalSupply : () -> async Nat;
+            icrc1_metadata : () -> async [(Text, Types.Value)];
+        };
+        // switch (paymentOption) {
+        //     case (#icp) {
+        //         let response : ICRC.Result_2 = await icrc2_transferFrom(icpLedger, from, to, amount);
+        //         switch (response) {
+        //             case (#Err(index)) {
+        //                 throw Error.reject(debug_show (index));
+        //             };
+        //             case (#Ok(res)) {
+        let transferparams : ICRC.TransferArg = {
+            to = { owner = to; subaccount = null };
+            amount = numberoftokens;
+            fee = null;
+            from_subaccount = null;
+            memo = null;
+            created_at_time = null;
+        };
+        let tokens = await tokencansiter_actor.icrc1_transfer(transferparams);
 
-    //     Debug.print("This here is the check that whtere the code is being executed till this line  and its a Yes");
-    //     switch (tokens) {
-    //         case (#Err(index)) {
-    //             throw Error.reject(debug_show (index));
-    //         };
-    //         case (#Ok(data)) {
-    //             switch (userownershipmap.get(to)) {
-    //                 case null {
-    //                     userownershipmap.put(to, [(nftCanister, tokenid, tokencanisterid)]);
-    //                     return #Ok(data);
-    //                 };
-    //                 case (?v) {
-    //                     switch (List.find(List.fromArray(v), func(x : (Principal, Types.TokenId, Principal)) : Bool { x.2 == tokencanisterid })) {
-    //                         case null {
-    //                             let newlist = List.push((nftCanister, tokenid, tokencanisterid), List.fromArray(v));
-    //                             userownershipmap.put(to, List.toArray(newlist));
-    //                             return #Ok(data);
-    //                         };
-    //                         case (?x) {
-    //                             return #Ok(data);
-    //                         };
-    //                     };
-    //                 };
-    //             };
-    //         };
-    //     };
-    // };
-//-------------------------------------------------//
+        Debug.print("This here is the check that whtere the code is being executed till this line  and its a Yes");
+        switch (tokens) {
+            case (#Err(index)) {
+                throw Error.reject(debug_show (index));
+            };
+            case (#Ok(data)) {
+                switch (userownershipmap.get(to)) {
+                    case null {
+                        userownershipmap.put(to, [(nftCanister, tokenid, tokencanisterid)]);
+                        return #Ok(data);
+                    };
+                    case (?v) {
+                        switch (List.find(List.fromArray(v), func(x : (Principal, Types.TokenId, Principal)) : Bool { x.2 == tokencanisterid })) {
+                            case null {
+                                let newlist = List.push((nftCanister, tokenid, tokencanisterid), List.fromArray(v));
+                                userownershipmap.put(to, List.toArray(newlist));
+                                return #Ok(data);
+                            };
+                            case (?x) {
+                                return #Ok(data);
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
     //         return #Ok(res);
     //     };
     // // };
@@ -415,147 +419,16 @@ actor Champs {
     // };
 
  
-    // public query func transform({
-    //     context : Blob;
-    //     response : ic.http_request_result;
-    // }) : async ic.http_request_result {
-    //     {
-    //     response with headers = []; // not intersted in the headers
-    //     };
-    // };
-
-    // public shared ({ caller = _user }) func buytokens(
-    // nftCanister: Principal, 
-    // tokenid: Types.TokenId, 
-    // tokencanisterid: Principal, 
-    // to: Principal, 
-    // numberoftokens: Nat
-    // ) : async ICRC.Result {
-    // // Ensure the user is authenticated (if required)
-    // // Uncomment if authentication is needed
-    // // if (Principal.isAnonymous(_user)) {
-    // //     throw Error.reject("User is not authenticated");
-    // // };
-
-    // // Token canister actor initialization
-    // let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-    //     icrc1_transfer: (ICRC.TransferArg) -> async ICRC.Result;
-    //     getTotalSupply: () -> async Nat;
-    //     icrc1_metadata: () -> async [(Text, Types.Value)];
-    // };
-
-    // // Transfer parameters
-    // let transferparams: ICRC.TransferArg = {
-    //     to = { owner = to; subaccount = null };
-    //     amount = numberoftokens;
-    //     fee = null;
-    //     from_subaccount = null;
-    //     memo = null;
-    //     created_at_time = null;
-    // };
-    // // Convert tokenid (Nat64) to Nat
-    // // let tokenIdAsNat: Nat = Nat64.toNat(tokenid);
-
-    // // Call createInvoice function to generate an invoice for this purchase
-    // let invoice: Text = await createInvoice(numberoftokens, Nat64.toNat(tokenid), null);
-    // Debug.print("Invoice created: " # invoice);
-
-    // // Perform token transfer
-    // let tokens = await tokencansiter_actor.icrc1_transfer(transferparams);
-
-    // Debug.print("Reached token transfer section.");
-    // switch (tokens) {
-    //     case (#Err(index)) {
-    //         throw Error.reject(debug_show(index));
-    //     };
-    //     case (#Ok(data)) {
-    //         switch (userownershipmap.get(to)) {
-    //             case null {
-    //                 userownershipmap.put(to, [(nftCanister, tokenid, tokencanisterid)]);
-    //                 return #Ok(data);
-    //             };
-    //             case (?v) {
-    //                 switch (List.find(
-    //                     List.fromArray(v),
-    //                     func(x: (Principal, Types.TokenId, Principal)): Bool {
-    //                         x.2 == tokencanisterid
-    //                     }
-    //                 )) {
-    //                     case null {
-    //                         let newlist = List.push((nftCanister, tokenid, tokencanisterid), List.fromArray(v));
-    //                         userownershipmap.put(to, List.toArray(newlist));
-    //                         return #Ok(data);
-    //                     };
-    //                     case (?x) {
-    //                         return #Ok(data);
-    //                     };
-    //                 };
-    //             };
-    //         };
-    //     };
-    // };
-    // };
-
-    public shared ({ caller = _user }) func buytokens(
-    nftCanister: Principal, 
-    tokenid: Types.TokenId, 
-    tokencanisterid: Principal, 
-    to: Principal, 
-    numberoftokens: Nat
-    ) : async (Text, ICRC.Result) {
-    // Token canister actor initialization
-    let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
-        icrc1_transfer: (ICRC.TransferArg) -> async ICRC.Result;
-        getTotalSupply: () -> async Nat;
-        icrc1_metadata: () -> async [(Text, Types.Value)];
-    };
-
-    // Transfer parameters
-    let transferparams: ICRC.TransferArg = {
-        to = { owner = to; subaccount = null };
-        amount = numberoftokens;
-        fee = null;
-        from_subaccount = null;
-        memo = null;
-        created_at_time = null;
-    };
-
-    // Call createInvoice function to generate an invoice for this purchase
-    let invoice: Text = await createInvoice(numberoftokens, Nat64.toNat(tokenid), null);
-    Debug.print("Invoice created: " # invoice);
-
-    // Perform token transfer
-    let tokens = await tokencansiter_actor.icrc1_transfer(transferparams);
-
-    Debug.print("Reached token transfer section.");
-    switch (tokens) {
-        case (#Err(index)) {
-            throw Error.reject(debug_show(index));
-        };
-        case (#Ok(data)) {
-            switch (userownershipmap.get(to)) {
-                case null {
-                    userownershipmap.put(to, [(nftCanister, tokenid, tokencanisterid)]);
-                };
-                case (?v) {
-                    let existingList = List.fromArray(v);
-                    let isExisting = List.find(existingList, func(x: (Principal, Types.TokenId, Principal)): Bool {
-                        x.2 == tokencanisterid;
-                    }) != null;
-
-                    if (not isExisting) { // Corrected the negation syntax
-                        let updatedList = List.push((nftCanister, tokenid, tokencanisterid), existingList);
-                        userownershipmap.put(to, List.toArray(updatedList));
-                    };
-                };
-            };
-            // Return both the invoice and token transfer result
-            (invoice, #Ok(data))
+    public query func transform({
+        context : Blob;
+        response : Http.IcHttp.HttpResponsePayload;
+    }) : async Http.IcHttp.HttpResponsePayload {
+        {
+        response with headers = []; // not intersted in the headers
         };
     };
-    };
 
-    public func createInvoice(quantity: Nat, ticketId: Nat, transform_context: ?Http.IcHttp.TransformContext) : async Text {
+    public func createInvoice(quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async Text {
             let successUrl = "https://champs.com/success";
             let cancelUrl = "https://champs.com/failed";
 
@@ -567,12 +440,11 @@ actor Champs {
             
             let body = {
                 qty = quantity;
-                ticket_id = ticketId;
                 successUrl = successUrl;
                 cancelUrl = cancelUrl;
             };
 
-            let request_body_json : Text = "{ " # "\"qty\" : " # Nat.toText(body.qty) # ","  # " \"success_url\" : \" " # body.successUrl # "\"," # " \"failed_url\" : \"" # body.cancelUrl # "\"," # " \"ticket_id\" : " # Nat.toText(body.ticket_id) #"  }";
+            let request_body_json : Text = "{ " # "\"qty\" : " # Nat.toText(body.qty) # ","  # " \"success_url\" : \" " # body.successUrl # "\"," # " \"failed_url\" : \"" # body.cancelUrl # "\"" # "  }";
             Debug.print(debug_show(request_body_json));
             let request_body = Text.encodeUtf8(request_body_json);
             Debug.print(debug_show(request_body));
@@ -582,7 +454,10 @@ actor Champs {
                 headers = request_headers;
                 body = ?request_body;
                 method = #post;
-                transform = transform_context;
+                transform = ?{
+                    function = transform;
+                    context = Blob.fromArray([]);
+                };
                 max_response_bytes= null;
             };
             Cycles.add(21_800_000_000);
@@ -597,10 +472,11 @@ actor Champs {
             Debug.print(debug_show(decoded_text));
             
             let result : Text = decoded_text;
+            // argsMap.put()
             result;
 
     };
-    public func getStatus(invoiceId: Nat, transform_context: ?Http.IcHttp.TransformContext) : async Text {
+    public func getStatus(invoiceId: Text, transform_context: ?Http.IcHttp.TransformContext) : async Text {
 
             let request_headers = [
                 { name = "Content-Type"; value = "application/json" },
@@ -610,7 +486,7 @@ actor Champs {
                 invoiceId  = invoiceId;     
             };
 
-            let request_body_json : Text = "{ " # "\"invoiceId\" : " # Nat.toText(body.invoiceId) # " }";
+            let request_body_json : Text = "{ " # "\"invoiceId\" : \"" # body.invoiceId # "\"" # " }";
             Debug.print(debug_show(request_body_json));
             let request_body = Text.encodeUtf8(request_body_json);
             Debug.print(debug_show(request_body));

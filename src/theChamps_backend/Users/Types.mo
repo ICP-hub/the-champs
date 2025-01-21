@@ -1,3 +1,4 @@
+import Nat64 "mo:base/Nat64";
 module {
     public type User = {
         profileimage : Text;
@@ -37,6 +38,14 @@ module {
     public type TransactionsDtetails = {
         
     };
+
+    public type Args = {
+        nftCanister : Principal;
+        tokenid : Nat64;
+        tokencanisterid : Principal;
+        to : Principal;
+        numberoftokens : Nat
+    }
 
 }
 
