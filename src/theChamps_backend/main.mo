@@ -25,7 +25,9 @@ import Int64 "mo:base/Int64";
 import Int "mo:base/Int";
 import Nat8 "mo:base/Nat8";
 import Nat "mo:base/Nat";
+import Blob "mo:base/Blob";
 import serdeJson "mo:serde/JSON";
+
 
 actor Champs {
     // public stable var nftcollection : ?NFTActorClass.Dip721NFT = null;
@@ -56,6 +58,9 @@ actor Champs {
 
     private var users = TrieMap.TrieMap<Principal, UsersTypes.User>(Principal.equal, Principal.hash);
     private stable var stableusers : [(Principal, UsersTypes.User)] = [];
+
+    private var argMap = TrieMap.TrieMap<Text, UsersTypes.Args>(Text.equal, Text.hash);
+    private stable var stableArgMap : [(Text, UsersTypes.Args)] = [];
 
     public func idQuick() : async Principal {
         return Principal.fromActor(Champs);
@@ -414,16 +419,16 @@ actor Champs {
     // };
 
  
-    // public query func transform({
-    //     context : Blob;
-    //     response : ic.http_request_result;
-    // }) : async ic.http_request_result {
-    //     {
-    //     response with headers = []; // not intersted in the headers
-    //     };
-    // };
+    public query func transform({
+        context : Blob;
+        response : Http.IcHttp.HttpResponsePayload;
+    }) : async Http.IcHttp.HttpResponsePayload {
+        {
+        response with headers = []; // not intersted in the headers
+        };
+    };
 
-    public func createInvoice(quantity: Nat, ticketId: Nat, transform_context: ?Http.IcHttp.TransformContext) : async Text {
+    public func createInvoice(quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async Text {
             let successUrl = "https://champs.com/success";
             let cancelUrl = "https://champs.com/failed";
 
@@ -435,12 +440,11 @@ actor Champs {
             
             let body = {
                 qty = quantity;
-                ticket_id = ticketId;
                 successUrl = successUrl;
                 cancelUrl = cancelUrl;
             };
 
-            let request_body_json : Text = "{ " # "\"qty\" : " # Nat.toText(body.qty) # ","  # " \"success_url\" : \" " # body.successUrl # "\"," # " \"failed_url\" : \"" # body.cancelUrl # "\"," # " \"ticket_id\" : " # Nat.toText(body.ticket_id) #"  }";
+            let request_body_json : Text = "{ " # "\"qty\" : " # Nat.toText(body.qty) # ","  # " \"success_url\" : \" " # body.successUrl # "\"," # " \"failed_url\" : \"" # body.cancelUrl # "\"" # "  }";
             Debug.print(debug_show(request_body_json));
             let request_body = Text.encodeUtf8(request_body_json);
             Debug.print(debug_show(request_body));
@@ -450,7 +454,10 @@ actor Champs {
                 headers = request_headers;
                 body = ?request_body;
                 method = #post;
-                transform = transform_context;
+                transform = ?{
+                    function = transform;
+                    context = Blob.fromArray([]);
+                };
                 max_response_bytes= null;
             };
             Cycles.add(21_800_000_000);
@@ -465,10 +472,11 @@ actor Champs {
             Debug.print(debug_show(decoded_text));
             
             let result : Text = decoded_text;
+            // argsMap.put()
             result;
 
     };
-    public func getStatus(invoiceId: Nat, transform_context: ?Http.IcHttp.TransformContext) : async Text {
+    public func getStatus(invoiceId: Text, transform_context: ?Http.IcHttp.TransformContext) : async Text {
 
             let request_headers = [
                 { name = "Content-Type"; value = "application/json" },
@@ -478,7 +486,7 @@ actor Champs {
                 invoiceId  = invoiceId;     
             };
 
-            let request_body_json : Text = "{ " # "\"invoiceId\" : " # Nat.toText(body.invoiceId) # " }";
+            let request_body_json : Text = "{ " # "\"invoiceId\" : \"" # body.invoiceId # "\"" # " }";
             Debug.print(debug_show(request_body_json));
             let request_body = Text.encodeUtf8(request_body_json);
             Debug.print(debug_show(request_body));
