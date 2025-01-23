@@ -459,8 +459,8 @@ actor Champs {
     };
 
     public func createInvoice(quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async Result.Result<UsersTypes.Invoice,Text> {
-            let successUrl = "https://champs.com/success";
-            let cancelUrl = "https://champs.com/failed";
+            let successUrl = "https://krcsw-aaaaa-aaaak-akqea-cai.icp0.io/success";
+            let cancelUrl = "https://krcsw-aaaaa-aaaak-akqea-cai.icp0.io/failure";
 
             let idempotency_key : Text = generateIdempotencyKey();
             let request_headers = [
