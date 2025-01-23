@@ -1,23 +1,57 @@
 import ConfImg from "../assets/order_conf.svg";
-import { IoMdClose } from "react-icons/io";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router";
 import { scrollToTop } from "../components/common/BackToTop";
+import { useAuth } from "../auth/useClient";
+import { useState, useEffect } from "react";
 
 const OrderConfirmation = ({ action }) => {
+  const { backendActor } = useAuth();
   const navigate = useNavigate();
+
+  const [orderConf, setOrderConf] = useState(true);
+
+  const payment = async () => {
+    try {
+      setOrderConf(true);
+      const value = localStorage.getItem("invoice_id");
+      console.log(value);
+      const res = await backendActor.processPendingTransfer(value);
+      console.log("Response :", res);
+      if (res.ok) {
+        localStorage.removeItem("invoice_id");
+      }
+      setOrderConf(false);
+    } catch (err) {
+      console.error("Error fetching details:", err);
+    }
+  };
+
+  useEffect(() => {
+    payment();
+  }, [backendActor]);
 
   const viewOrderDetails = () => {
     navigate("/my-profile", { state: "My Collectibles" });
     scrollToTop();
   };
+
+  if (orderConf) {
+    return (
+      <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="custom-loader">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex justify-center items-center bg-white md:rounded-2xl px-8 py-24 max-md:flex-col gap-8 shadow-lg relative max-md:h-screen max-md:w-screen">
-      <button className="absolute top-5 right-5" onClick={action}>
-        <IoMdClose size={32} color="red" />
-      </button>
+    <div className="flex justify-center items-center bg-white md:rounded-2xl px-8 py-24 max-md:flex-col gap-8 relative max-md:h-screen max-md:w-screen">
       <div className="flex flex-col items-center text-center max-md:justify-center">
-        <h1 className="text-xl md:text-4xl font-black  mb-2 gradient-text">
+        <h1 className="text-xl md:text-4xl font-black mb-2 gradient-text">
           Your Order is Confirmed!
         </h1>
         <h2 className="text-lg md:text-2xl font-semibold text-gray-700">

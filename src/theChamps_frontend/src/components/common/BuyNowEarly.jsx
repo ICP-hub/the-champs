@@ -8,6 +8,7 @@ import { useParams } from "react-router";
 import toast from "react-hot-toast";
 import OrderConfirmation from "../../pages/OrderConfirmation";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
   console.log("nft can id", nftCanId);
@@ -19,6 +20,7 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
   const [isNftLoading, setIsNFTLoading] = useState(true);
   const [purchaseLoad, setPurchaseLoad] = useState(false);
   const [orderConf, setOrderConf] = useState(false);
+  const navigate = useNavigate();
 
   // decrement qty
   const handleDecrement = () => {
@@ -60,16 +62,26 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
     });
     try {
       setPurchaseLoad(true);
-      const response = await backendActor.buytokens(
+      const response = await backendActor.createInvoice(
+        quantity,
         Principal.fromText(id),
         nftId,
         nftCanId,
         principal,
         quantity
       );
-      // console.log("response nft purchase", response);
+
+      console.log("response nft purchase", response.ok);
+      console.log(response.ok.invoice_id);
+
+      localStorage.removeItem("invoice_id");
+      localStorage.setItem("invoice_id", response.ok.invoice_id);
+
       // onOpen(false);
-      setOrderConf(true);
+      if (response.ok.success && response.ok.invoice_url) {
+        window.open(response.ok.invoice_url, "_blank");
+        // setOrderConf(true);
+      }
     } catch (err) {
       console.error("error while purchasing nft", err);
       toast.error("Failed to proceed");
@@ -160,8 +172,10 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
               <div className="py-2 text-xs text-center max-w-96 font-medium text-gray-500">
                 This process may take a minute. Transactions can not be
                 reversed. By clicking confirm you show acceptance to our
-                
-                <Link to='/Terms-and-services' className="text-[#FC001E] underline ml-1">
+                <Link
+                  to="/Terms-and-services"
+                  className="text-[#FC001E] underline ml-1"
+                >
                   Terms and Service
                 </Link>
                 .

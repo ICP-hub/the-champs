@@ -27,6 +27,8 @@ import Contact from "./admin/features/contact/contact";
 import ContactDetail from "./admin/features/contact/ContactDetail";
 import MintNft from "./admin/features/NFT/MintNft";
 import UserDetail from "./admin/features/users/UserDetails";
+import OrderConfirmation from "./pages/OrderConfirmation";
+import OrderFailure from "./pages/OrderFailure";
 /**** Create Routes *****/
 const appRoutes = createBrowserRouter([
   { path: "/", element: <HomePage /> },
@@ -46,6 +48,8 @@ const appRoutes = createBrowserRouter([
   { path: "/privacy-policy", element: <PrivacyPolicy /> },
   { path: "/Terms-and-services", element: <TermsAndService /> },
   { path: "/how-it-works", element: <HowItWorks /> },
+  { path: "/success", element: <OrderConfirmation /> },
+  { path: "/failure", element: <OrderFailure /> },
 
   {
     path: "/admin",
