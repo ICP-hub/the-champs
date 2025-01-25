@@ -465,7 +465,7 @@ actor Champs {
             let idempotency_key : Text = generateIdempotencyKey();
             let request_headers = [
                 { name = "Content-Type"; value = "application/json" },
-                { name = "Idempotency-Key"; value = idempotency_key },
+                { name = "IdempotencyKey"; value = idempotency_key },
             ];
             
             let body = {
