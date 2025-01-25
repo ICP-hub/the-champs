@@ -71,17 +71,15 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
         quantity
       );
 
-      console.log("response nft purchase", response.ok);
+      console.log("response nft purchase", response);
       console.log(response.ok.invoice_id);
 
-      localStorage.removeItem("invoice_id");
-      localStorage.setItem("invoice_id", response.ok.invoice_id);
-
-      // onOpen(false);
+      onOpen(false);
       if (response.ok.success && response.ok.invoice_url) {
         window.open(response.ok.invoice_url, "_blank");
         // setOrderConf(true);
       }
+      localStorage.setItem("invoice_id", response.ok.invoice_id);
     } catch (err) {
       console.error("error while purchasing nft", err);
       toast.error("Failed to proceed");
