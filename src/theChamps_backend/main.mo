@@ -520,9 +520,11 @@ actor Champs {
 
     };
     public func getStatus(invoiceId: Text) : async Result.Result<UsersTypes.TxStatus,Text> {
-
+        
+            let idempotency_key : Text = generateIdempotencyKey();
             let request_headers = [
                 { name = "Content-Type"; value = "application/json" },
+                { name = "IdempotencyKey"; value = idempotency_key }
             ];
             
             let body = {
