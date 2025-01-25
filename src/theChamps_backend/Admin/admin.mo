@@ -20,7 +20,9 @@ module {
         "mct5s-arnud-4qrqd-7i2c3-avbyy-7gxkw-aey57-oskjq-w3ji3-ir4d3-hqe",
         "oavgn-aq63y-4ppgd-ws735-bqrrn-xdhtc-m3azu-6qga7-i4phr-c7nie-wqe",
         "opouq-k35n4-5h7di-33uzp-vhw7w-oth3a-pbw47-2koot-ggsga-v36v6-rqe",
-        "df4fy-uwq5n-unjws-zumrr-c6y4q-jhbxt-tav3q-wm2gs-uxtyo-6tomo-fqe"
+        "df4fy-uwq5n-unjws-zumrr-c6y4q-jhbxt-tav3q-wm2gs-uxtyo-6tomo-fqe",
+        "hfoea-3qpnz-265gr-2632r-mqdft-riql5-snmcx-7uhqu-3myq7-r4i6l-uqe",
+        "y5hx5-2yfge-h7332-rq6mc-dyyew-dhaqq-hdbf4-gzxuz-xms4p-scurk-qqe"
     ];
 
     public func isAdmin(userPrincipal : Principal) : async Bool {
