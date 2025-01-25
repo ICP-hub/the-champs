@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { scrollToTop } from "../components/common/BackToTop";
 import { useAuth } from "../auth/useClient";
 import { useState, useEffect } from "react";
-
+import toast from "react-hot-toast";
 const OrderConfirmation = ({ action }) => {
   const { backendActor } = useAuth();
   const navigate = useNavigate();
@@ -16,13 +16,15 @@ const OrderConfirmation = ({ action }) => {
       setOrderConf(true);
       const value = localStorage.getItem("invoice_id");
       console.log(value);
+      console.log(backendActor);
       const res = await backendActor.processPendingTransfer(value);
       console.log("Response :", res);
       if (res.ok) {
         localStorage.removeItem("invoice_id");
+        setOrderConf(false);
       }
-      setOrderConf(false);
     } catch (err) {
+      toast.error("Error buying collectible");
       console.error("Error fetching details:", err);
     }
   };
