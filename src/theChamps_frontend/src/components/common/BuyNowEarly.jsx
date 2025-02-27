@@ -63,6 +63,7 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
     try {
       setPurchaseLoad(true);
       const response = await backendActor.createInvoice(
+        window.location.origin,
         quantity,
         Principal.fromText(id),
         nftId,
@@ -70,7 +71,7 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
         principal,
         quantity
       );
-
+      console.log(window.location.origin,'window.location.origin');
       console.log("response nft purchase", response);
       console.log(response.ok.invoice_id);
 
@@ -97,17 +98,17 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 flex justify-center items-center bg-[#0009] z-[170]">
       {!orderConf ? (
-        <div className="bg-white md:rounded-2xl px-6 md:p-8 max-md:h-full max-md:w-full flex justify-center flex-col max-sm:space-y-4">
+        <div className="flex flex-col justify-center px-6 bg-white md:rounded-2xl md:p-8 max-md:h-full max-md:w-full max-sm:space-y-4">
           {isNftLoading ? (
             <div>Loading...</div>
           ) : (
             <>
               {" "}
-              <h4 className="text-sm py-2 flex items-center justify-center w-full font-semibold">
+              <h4 className="flex items-center justify-center w-full py-2 text-sm font-semibold">
                 You are about to make a purchase!
               </h4>
-              <div className="flex w-full items-center justify-center">
-                <div className="min-h-48 min-w-40 max-h-48 max-w-40 rounded-md overflow-hidden">
+              <div className="flex items-center justify-center w-full">
+                <div className="overflow-hidden rounded-md min-h-48 min-w-40 max-h-48 max-w-40">
                   <img
                     src={
                       NFTDetail.logo.data.length > 10
@@ -123,20 +124,20 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
                 You are about to purchase this Digital Collectible from your
                 connected wallet.
               </p>
-              <div className="my-2 h-px w-full bg-gray-300"></div>
+              <div className="w-full h-px my-2 bg-gray-300"></div>
               {/* <h4 className="font-semibold capitalize">payment method</h4>
-            <button className="flex p-2 w-full gap-2 items-center font-semibold border-2 border-gray-300 rounded-md">
+            <button className="flex items-center w-full gap-2 p-2 font-semibold border-2 border-gray-300 rounded-md">
               Select payment method
             </button> */}
-              <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+              <div className="flex items-center justify-between my-2 text-sm font-semibold uppercase">
                 <p>Available Share</p>
                 <p>{sharesLeft}</p>
               </div>
-              <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+              <div className="flex items-center justify-between my-2 text-sm font-semibold uppercase">
                 <span>AMOUNT OF SHARES</span>
-                <div className="flex border rounded-md overflow-hidden items-center">
+                <div className="flex items-center overflow-hidden border rounded-md">
                   <button
-                    className="flex items-center justify-center p-2 bg-gray-200 h-full"
+                    className="flex items-center justify-center h-full p-2 bg-gray-200"
                     onClick={handleDecrement}
                   >
                     <HiMinus className="h-6" />
@@ -145,16 +146,16 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
                     {quantity}
                   </span>
                   <button
-                    className="flex items-center justify-center p-2 bg-gray-200 h-full"
+                    className="flex items-center justify-center h-full p-2 bg-gray-200"
                     onClick={handleIncrement}
                   >
                     <HiPlus className="h-6" />
                   </button>
                 </div>
               </div>
-              <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+              <div className="flex items-center justify-between my-2 text-sm font-semibold uppercase">
                 <span>Total</span>
-                <div className="flex gap-1 items-center">
+                <div className="flex items-center gap-1">
                   Rp.
                   {/* <span>{((price_share * quantity) / exchange).toFixed(6)}</span>
             <span className="text-gray-500">
@@ -167,7 +168,7 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
                   </span>
                 </div>
               </div>
-              <div className="py-2 text-xs text-center max-w-96 font-medium text-gray-500">
+              <div className="py-2 text-xs font-medium text-center text-gray-500 max-w-96">
                 This process may take a minute. Transactions can not be
                 reversed. By clicking confirm you show acceptance to our
                 <Link
@@ -178,9 +179,9 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
                 </Link>
                 .
               </div>
-              <div className="flex justify-center md:justify-end items-center space-x-4 my-2">
+              <div className="flex items-center justify-center my-2 space-x-4 md:justify-end">
                 <button
-                  className="px-4 py-2 rounded-md border-2 border-gray-300"
+                  className="px-4 py-2 border-2 border-gray-300 rounded-md"
                   onClick={() => (purchaseLoad ? null : onOpen(false))}
                 >
                   cancel

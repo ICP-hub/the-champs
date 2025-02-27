@@ -458,9 +458,9 @@ actor Champs {
         };
     };
 
-    public func createInvoice(quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async Result.Result<UsersTypes.Invoice,Text> {
-            let successUrl = "https://thechampsdigital.com/success";
-            let cancelUrl = "https://thechampsdigital.com/failure";
+    public func createInvoice(endUrl: Text, quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async Result.Result<UsersTypes.Invoice,Text> {
+            let successUrl = endUrl #"/success";
+            let cancelUrl =  endUrl #"/failure";
 
             let idempotency_key : Text = generateIdempotencyKey();
             let request_headers = [
@@ -1115,7 +1115,7 @@ actor Champs {
 
     // Equivalent to the Rust function that returns the record type
     public func icrc28_trusted_origins() : async Icrc28TrustedOriginsResponse {
-        let trusted_origins = ["https://krcsw-aaaaa-aaaak-akqea-cai.icp0.io", "http://localhost:3000", "http://bd3sg-teaaa-aaaaa-qaaba-cai.localhost:4943", "http://127.0.0.1:4943/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai", "http://127.0.0.1:4943", "http://localhost:4200", "https://thechampsdigital.com"];
+        let trusted_origins = ["https://krcsw-aaaaa-aaaak-akqea-cai.icp0.io", "http://localhost:3000", "http://bd3sg-teaaa-aaaaa-qaaba-cai.localhost:4943", "http://127.0.0.1:4943/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai", "http://127.0.0.1:4943", "http://localhost:4200", "https://thechampsdigital.com","https://www.thechampsdigital.com"];
 
         return {
             trusted_origins = trusted_origins;
