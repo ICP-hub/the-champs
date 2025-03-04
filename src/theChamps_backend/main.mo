@@ -386,8 +386,11 @@ actor Champs {
             memo = null;
             created_at_time = null;
         };
+        Debug.print("transfer params");
+        Debug.print(debug_show(transferparams));
         let tokens = await tokencansiter_actor.icrc1_transfer(transferparams);
-
+        Debug.print("transfer result");
+        Debug.print(debug_show(tokens));
         Debug.print("This here is the check that whtere the code is being executed till this line  and its a Yes");
         switch (tokens) {
             case (#Err(index)) {
