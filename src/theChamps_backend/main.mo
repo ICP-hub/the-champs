@@ -364,7 +364,7 @@ actor Champs {
         // if (Principal.isAnonymous(_user)) {
         //     throw Error.reject("User is not authenticated");
         // };
-        Debug.print("Num of Tokens in buyTokens function" # Nat.toText(numberoftokens));
+        Debug.print("Num of Tokens in buyTokens function " # Nat.toText(numberoftokens));
         let tokencansiter_actor = actor (Principal.toText(tokencanisterid)) : actor {
             icrc1_transfer : (ICRC.TransferArg) -> async ICRC.Result;
             getTotalSupply : () -> async Nat;
@@ -461,7 +461,7 @@ actor Champs {
         };
     };
 
-    public func createInvoice(endUrl: Text, quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal, numberoftokens : Nat) : async Result.Result<UsersTypes.Invoice,Text> {
+    public func createInvoice(endUrl: Text, quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal) : async Result.Result<UsersTypes.Invoice,Text> {
             let successUrl = endUrl #"/success";
             let cancelUrl =  endUrl #"/failure";
 
@@ -478,9 +478,7 @@ actor Champs {
             };
             Debug.print("Body");
             Debug.print(debug_show(body));
-            Debug.print("Num of Tokens in create Invoice" # Nat.toText(numberoftokens));
-            Debug.print("Quantity in create Invoice" # Nat.toText(quantity));
-            Debug.print(debug_show(quantity));
+            Debug.print("Quantity in create Invoice " # Nat.toText(quantity));
             let request_body_json : Text = "{ " # "\"qty\" : " # Nat.toText(body.qty) # ","  # " \"success_url\" : \" " # body.successUrl # "\"," # " \"failed_url\" : \"" # body.cancelUrl # "\"" # "  }";
             let request_body = Text.encodeUtf8(request_body_json);
 
@@ -518,7 +516,7 @@ actor Champs {
                 tokenid = tokenid;
                 tokencanisterid = tokencanisterid;
                 to = to;
-                numberoftokens = numberoftokens
+                numberoftokens = quantity
             };
             if(invoice.success == true){
                 argMap.put(invoice.invoice_id,args);
