@@ -115,8 +115,8 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
                 <div className="overflow-hidden rounded-md min-h-48 min-w-40 max-h-48 max-w-40">
                   <img
                     src={
-                      NFTDetail.logo.data.length > 10
-                        ? NFTDetail.logo.data
+                      NFTDetail?.logo?.data?.length > 10
+                        ? NFTDetail?.logo?.data
                         : champsImg
                     }
                     alt="champs-img"
