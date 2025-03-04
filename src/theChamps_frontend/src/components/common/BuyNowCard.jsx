@@ -308,12 +308,12 @@ const BuyNowCard = ({
 
   return (
     <div className="bg-slate-900/20 backdrop-blur p-8 fixed inset-0 z-[999] grid place-items-center overflow-y-scroll no-scrollbar top-0">
-      <div className="bg-white rounded-2xl p-4 md:px-6">
-        <h4 className="text-sm py-2 flex items-center justify-center w-full font-semibold">
+      <div className="p-4 bg-white rounded-2xl md:px-6">
+        <h4 className="flex items-center justify-center w-full py-2 text-sm font-semibold">
           You are about to make a purchase!
         </h4>
-        <div className="flex w-full items-center justify-center">
-          <div className="min-h-48 min-w-40 max-h-48 max-w-40 rounded-md overflow-hidden">
+        <div className="flex items-center justify-center w-full">
+          <div className="overflow-hidden rounded-md min-h-48 min-w-40 max-h-48 max-w-40">
             <img
               src={nftLogo.length > 10 ? nftLogo : champsImg}
               alt="champs-img"
@@ -324,12 +324,12 @@ const BuyNowCard = ({
         <p className="py-2 text-xs text-center text-gray-500">
           You are about to purchase this Digital Collectible from your connected wallet.
         </p>
-        <div className="my-2 h-px w-full bg-gray-300"></div>
+        <div className="w-full h-px my-2 bg-gray-300"></div>
         <h4 className="font-semibold capitalize">payment method</h4>
-        <button className="flex p-2 w-full gap-2 items-center font-semibold border-2 border-gray-300 rounded-md">
+        <button className="flex items-center w-full gap-2 p-2 font-semibold border-2 border-gray-300 rounded-md">
           Select payment method
         </button>
-        {/* <div className="grid md:grid-cols-2 gap-x-2 gap-y-2 my-2 font-semibold">
+        {/* <div className="grid my-2 font-semibold md:grid-cols-2 gap-x-2 gap-y-2">
           <button
             className={`p-4 flex justify-between items-center ${
               selected.value === "icp"
@@ -361,11 +361,11 @@ const BuyNowCard = ({
             )}
           </button>
         </div> */}
-        <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+        <div className="flex items-center justify-between my-2 text-sm font-semibold uppercase">
           <span>Share</span>
-          <div className="flex border rounded-md overflow-hidden items-center">
+          <div className="flex items-center overflow-hidden border rounded-md">
             <button
-              className="flex items-center justify-center p-2 bg-gray-200 h-full"
+              className="flex items-center justify-center h-full p-2 bg-gray-200"
               onClick={handleDecrement}
             >
               <HiMinus className="h-6" />
@@ -374,19 +374,19 @@ const BuyNowCard = ({
               {quantity}
             </span>
             <button
-              className="flex items-center justify-center p-2 bg-gray-200 h-full"
+              className="flex items-center justify-center h-full p-2 bg-gray-200"
               onClick={handleIncrement}
             >
               <HiPlus className="h-6" />
             </button>
           </div>
         </div>
-        <div className="flex justify-between items-center font-semibold my-2 text-sm uppercase">
+        <div className="flex items-center justify-between my-2 text-sm font-semibold uppercase">
           <span>Total</span>
           {loading ? (
-            <span className="h-5 w-44 bg-gray-500 animate-pulse rounded-2xl"></span>
+            <span className="h-5 bg-gray-500 w-44 animate-pulse rounded-2xl"></span>
           ) : (
-            <div className="flex gap-1 items-center">
+            <div className="flex items-center gap-1">
               {/* <IcpLogo size={16} /> */}
               Rp.
               <span>{((price_share * quantity) / exchange).toFixed(6)}</span>
@@ -396,7 +396,7 @@ const BuyNowCard = ({
             </div>
           )}
         </div>
-        <div className="py-2 text-xs text-center max-w-96 font-medium text-gray-500">
+        <div className="py-2 text-xs font-medium text-center text-gray-500 max-w-96">
           This process may take a minute. Transactions can not be reversed. By
           clicking confirm you show acceptance to our
           <span className="text-[#FC001E] underline ml-1">
@@ -404,7 +404,7 @@ const BuyNowCard = ({
           </span>
           .
         </div>
-        <div className="flex justify-end items-center space-x-4 my-2">
+        <div className="flex items-center justify-end my-2 space-x-4">
           <button
             className={`px-4 py-2 rounded-md border-2 border-gray-300 ${
               loading && "animate-pulse"

@@ -3,25 +3,42 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router";
 import { scrollToTop } from "../components/common/BackToTop";
 import { useAuth } from "../auth/useClient";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
+
 const OrderConfirmation = ({ action }) => {
   const { backendActor } = useAuth();
   const navigate = useNavigate();
-
   const [orderConf, setOrderConf] = useState(true);
+  const hasFetched = useRef(false); // Prevent multiple API calls
 
   const payment = async () => {
+    if (hasFetched.current) return; // Prevent duplicate execution
+    hasFetched.current = true;
+
+    if (!backendActor) {
+      console.error("backendActor is null, cannot process payment");
+      return;
+    }
+
     try {
       setOrderConf(true);
       const value = localStorage.getItem("invoice_id");
-      console.log(value);
-      console.log(backendActor);
+
+      if (!value) {
+        toast.error("No invoice ID found");
+        return;
+      }
+
+      console.log("Processing payment for invoice:", value);
       const res = await backendActor.processPendingTransfer(value);
-      console.log("Response :", res);
+      console.log("Response:", res);
+
       if (res.ok) {
         localStorage.removeItem("invoice_id");
         setOrderConf(false);
+      } else {
+        toast.error("Payment processing failed.");
       }
     } catch (err) {
       toast.error("Error buying collectible");
@@ -30,7 +47,12 @@ const OrderConfirmation = ({ action }) => {
   };
 
   useEffect(() => {
-    payment();
+    if (backendActor) {
+      console.log("backendActor is available:", backendActor);
+      payment();
+    } else {
+      console.warn("backendActor is not available yet");
+    }
   }, [backendActor]);
 
   const viewOrderDetails = () => {
@@ -40,7 +62,7 @@ const OrderConfirmation = ({ action }) => {
 
   if (orderConf) {
     return (
-      <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
         <div className="custom-loader">
           <span></span>
           <span></span>
@@ -51,12 +73,12 @@ const OrderConfirmation = ({ action }) => {
   }
 
   return (
-    <div className="flex justify-center items-center bg-white md:rounded-2xl px-8 py-24 max-md:flex-col gap-8 relative max-md:h-screen max-md:w-screen">
+    <div className="relative flex items-center justify-center gap-8 px-8 py-24 bg-white md:rounded-2xl max-md:flex-col max-md:h-screen max-md:w-screen">
       <div className="flex flex-col items-center text-center max-md:justify-center">
-        <h1 className="text-xl md:text-4xl font-black mb-2 gradient-text">
+        <h1 className="mb-2 text-xl font-black md:text-4xl gradient-text">
           Your Order is Confirmed!
         </h1>
-        <h2 className="text-lg md:text-2xl font-semibold text-gray-700">
+        <h2 className="text-lg font-semibold text-gray-700 md:text-2xl">
           Thank You for Your Purchase!
         </h2>
 
@@ -82,7 +104,7 @@ const OrderConfirmation = ({ action }) => {
         <img
           src={ConfImg}
           alt="Order Confirmation"
-          className="h-80 w-80 sm:h-96 sm:w-96 bg-white rounded-full shadow-lg transition-transform duration-300 hover:scale-105"
+          className="transition-transform duration-300 bg-white rounded-full shadow-lg h-80 w-80 sm:h-96 sm:w-96 hover:scale-105"
         />
       </motion.div>
     </div>

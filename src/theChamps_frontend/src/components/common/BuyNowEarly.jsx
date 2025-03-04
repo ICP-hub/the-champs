@@ -14,6 +14,7 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
   console.log("nft can id", nftCanId);
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
+  const [numOfTokens, setNumOfTokens] = useState(1);
   const { isAuthenticated, principal, identity, backendActor } = useAuth();
   const [buyLoading, setBuyLoading] = useState(false);
   const [NFTDetail, setNFTDetail] = useState(null);
@@ -25,10 +26,12 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
   // decrement qty
   const handleDecrement = () => {
     setQuantity((prev) => Math.max(prev - 1, 1));
+    setNumOfTokens((prev) => Math.max(prev - 1, 1));
   };
 
   const handleIncrement = () => {
     setQuantity((prev) => (prev < sharesLeft ? prev + 1 : prev));
+    setNumOfTokens((prev) => (prev < sharesLeft ? prev + 1 : prev));
   };
 
   const fetchNFTDetail = async () => {
@@ -59,6 +62,7 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
       nft_canister_id: nftCanId,
       principal,
       quantity,
+      numOfTokens,
     });
     try {
       setPurchaseLoad(true);
@@ -69,7 +73,7 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
         nftId,
         nftCanId,
         principal,
-        quantity
+        numOfTokens
       );
       console.log(window.location.origin,'window.location.origin');
       console.log("response nft purchase", response);
