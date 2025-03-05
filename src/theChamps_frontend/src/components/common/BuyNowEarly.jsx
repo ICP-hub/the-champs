@@ -69,7 +69,6 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
         nftId,
         nftCanId,
         principal,
-        quantity
       );
       console.log(window.location.origin,'window.location.origin');
       console.log("response nft purchase", response);
