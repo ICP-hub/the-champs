@@ -498,16 +498,21 @@ actor Champs {
             };
             Cycles.add(21_800_000_000);
             let http_response : Http.IcHttp.HttpResponse = await ic.http_request(http_request);
+            Debug.print(debug_show(http_response));
 
             let decoded_text : Text = switch (Text.decodeUtf8(http_response.body)) {
                 case (null) { "No value returned" };
                 case (?y) { y };
             };
+            Debug.print(debug_show(decoded_text));
             let blob = serdeJson.fromText(decoded_text);
+            Debug.print(debug_show(blob));
             let data : ?UsersTypes.Invoice = from_candid(blob);
+            Debug.print(debug_show(data));
             let invoice : UsersTypes.Invoice = switch(data) {
                 case(null) { return #err("Error creating Invoice"); };
                 case(?_session) { 
+                    Debug.print(debug_show(_session));
                     switch(_session.success){
                         case true _session;
                         case false return #err("Error creating Invoice");
