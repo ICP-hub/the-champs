@@ -464,61 +464,12 @@ actor Champs {
         };
     };
 
-    public func createInvoice(endUrl: Text, quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal) : async Result.Result<UsersTypes.Invoice,Text> {
-            let successUrl = endUrl #"/success";
-            let cancelUrl =  endUrl #"/failure";
-
-            let idempotency_key : Text = generateIdempotencyKey();
-            let request_headers = [
-                { name = "Content-Type"; value = "application/json" },
-                { name = "IdempotencyKey"; value = idempotency_key },
-            ];
+    public func createInvoice(invoice : UsersTypes.Invoice, quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal) : async Result.Result<UsersTypes.Invoice,Text> {
             
-            let body = {
-                qty = quantity;
-                successUrl = successUrl;
-                cancelUrl = cancelUrl;
+            if (not invoice.success) {
+                return #err("Error creating Invoice");
             };
-            Debug.print("Body");
-            Debug.print(debug_show(body));
-            Debug.print("Quantity in create Invoice " # Nat.toText(quantity));
-            let request_body_json : Text = "{ " # "\"qty\" : " # Nat.toText(body.qty) # ","  # " \"success_url\" : \" " # body.successUrl # "\"," # " \"failed_url\" : \"" # body.cancelUrl # "\"" # "  }";
-            let request_body = Text.encodeUtf8(request_body_json);
-
-            let http_request : Http.IcHttp.HttpRequest = {
-                url = "https://champproxyserv.netlify.app/.netlify/functions/api" # "/invoice/checkout";
-                headers = request_headers;
-                body = ?request_body;
-                method = #post;
-                transform = ?{
-                    function = transform;
-                    context = Blob.fromArray([]);
-                };
-                max_response_bytes= null;
-            };
-            Cycles.add(21_800_000_000);
-            let http_response : Http.IcHttp.HttpResponse = await ic.http_request(http_request);
-            Debug.print(debug_show(http_response));
-
-            let decoded_text : Text = switch (Text.decodeUtf8(http_response.body)) {
-                case (null) { "No value returned" };
-                case (?y) { y };
-            };
-            Debug.print(debug_show(decoded_text));
-            let blob = serdeJson.fromText(decoded_text);
-            Debug.print(debug_show(blob));
-            let data : ?UsersTypes.Invoice = from_candid(blob);
-            Debug.print(debug_show(data));
-            let invoice : UsersTypes.Invoice = switch(data) {
-                case(null) { return #err("Error creating Invoice"); };
-                case(?_session) { 
-                    Debug.print(debug_show(_session));
-                    switch(_session.success){
-                        case true _session;
-                        case false return #err("Error creating Invoice");
-                    };
-                 };
-            };
+            
             let args : UsersTypes.Args ={
                 nftCanister = nftCanister;
                 tokenid = tokenid;
@@ -532,6 +483,74 @@ actor Champs {
             return #ok(invoice);
 
     };
+    // public func createInvoice(endUrl: Text, quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal) : async Result.Result<UsersTypes.Invoice,Text> {
+    //         let successUrl = endUrl #"/success";
+    //         let cancelUrl =  endUrl #"/failure";
+
+    //         let idempotency_key : Text = generateIdempotencyKey();
+    //         let request_headers = [
+    //             { name = "Content-Type"; value = "application/json" },
+    //             { name = "IdempotencyKey"; value = idempotency_key },
+    //         ];
+            
+    //         let body = {
+    //             qty = quantity;
+    //             successUrl = successUrl;
+    //             cancelUrl = cancelUrl;
+    //         };
+    //         Debug.print("Body");
+    //         Debug.print(debug_show(body));
+    //         Debug.print("Quantity in create Invoice " # Nat.toText(quantity));
+    //         let request_body_json : Text = "{ " # "\"qty\" : " # Nat.toText(body.qty) # ","  # " \"success_url\" : \" " # body.successUrl # "\"," # " \"failed_url\" : \"" # body.cancelUrl # "\"" # "  }";
+    //         let request_body = Text.encodeUtf8(request_body_json);
+
+    //         let http_request : Http.IcHttp.HttpRequest = {
+    //             url = "https://champproxyserv.netlify.app/.netlify/functions/api" # "/invoice/checkout";
+    //             headers = request_headers;
+    //             body = ?request_body;
+    //             method = #post;
+    //             transform = ?{
+    //                 function = transform;
+    //                 context = Blob.fromArray([]);
+    //             };
+    //             max_response_bytes= null;
+    //         };
+    //         Cycles.add(21_800_000_000);
+    //         let http_response : Http.IcHttp.HttpResponse = await ic.http_request(http_request);
+    //         Debug.print(debug_show(http_response));
+
+    //         let decoded_text : Text = switch (Text.decodeUtf8(http_response.body)) {
+    //             case (null) { "No value returned" };
+    //             case (?y) { y };
+    //         };
+    //         Debug.print(debug_show(decoded_text));
+    //         let blob = serdeJson.fromText(decoded_text);
+    //         Debug.print(debug_show(blob));
+    //         let data : ?UsersTypes.Invoice = from_candid(blob);
+    //         Debug.print(debug_show(data));
+    //         let invoice : UsersTypes.Invoice = switch(data) {
+    //             case(null) { return #err("Error creating Invoice"); };
+    //             case(?_session) { 
+    //                 Debug.print(debug_show(_session));
+    //                 switch(_session.success){
+    //                     case true _session;
+    //                     case false return #err("Error creating Invoice");
+    //                 };
+    //              };
+    //         };
+    //         let args : UsersTypes.Args ={
+    //             nftCanister = nftCanister;
+    //             tokenid = tokenid;
+    //             tokencanisterid = tokencanisterid;
+    //             to = to;
+    //             numberoftokens = quantity
+    //         };
+    //         if(invoice.success == true){
+    //             argMap.put(invoice.invoice_id,args);
+    //         };
+    //         return #ok(invoice);
+
+    // };
     public func getStatus(invoiceId: Text) : async Result.Result<UsersTypes.TxStatus,Text> {
         
             let idempotency_key : Text = generateIdempotencyKey();
