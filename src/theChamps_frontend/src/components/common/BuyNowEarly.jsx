@@ -38,10 +38,10 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
         Principal.fromText(id),
         nftId
       );
-      // console.log("Response getFractionalNFTDetails : ", res);
+      console.log("Response getFractionalNFTDetails : ", res);
       setNFTDetail(res);
     } catch (err) {
-      // console.error("Error fecthing fractionalNFTdetails : ", err);
+      console.error("Error fecthing fractionalNFTdetails : ", err);
     } finally {
       setIsNFTLoading(false);
     }
@@ -53,40 +53,129 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
 
   // Buy tokens
   const handleConfirm = async () => {
-    console.log({
-      collectionCanister: Principal.fromText(id),
-      nft_id: nftId,
-      nft_canister_id: nftCanId,
-      principal,
-      quantity,
-    });
     try {
       setPurchaseLoad(true);
-      const response = await backendActor.createInvoice(
-        window.location.origin,
+
+      
+      const payload = {
+        qty: quantity,
+        success_url: `${window.location.origin}/success`,
+        failed_url: `${window.location.origin}/failed`,
+      };
+
+      console.log("🚀 Sending payload to Champs Proxy API:", payload);
+
+     
+      const paymentResponse = await fetch(
+        "https://champproxyserv.netlify.app/.netlify/functions/api/invoice/checkout",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!paymentResponse.ok) {
+        console.log("HTTP Error", paymentResponse.status);
+        throw new Error(`HTTP Error: ${paymentResponse.status}`);
+      }
+
+      const paymentData = await paymentResponse.json();
+      console.log(" Payment API Response paymentResponse:", paymentResponse);
+      console.log(" Payment API Response:", paymentData);
+
+      if (!paymentData.success) {
+        console.log("Invoice URL for success", paymentData.success_url);
+        throw new Error("Payment gateway error: " + JSON.stringify(paymentData));
+      }
+
+      console.log(" Invoice URL:", paymentData.invoice_url);
+
+     
+   
+      const invoice = {
+        success: true,
+        invoice_url: paymentData.invoice_url,
+        invoice_id: paymentData.invoice_id
+      };
+
+      console.log(" Sending invoice to backend:", invoice);
+
+      const backendResponse = await backendActor.createInvoice(
+        invoice,
         quantity,
         Principal.fromText(id),
         nftId,
         nftCanId,
-        principal,
+        principal
       );
-      console.log(window.location.origin,'window.location.origin');
-      console.log("response nft purchase", response);
-      console.log(response.ok.invoice_id);
 
-      onOpen(false);
-      if (response.ok.success && response.ok.invoice_url) {
-        window.open(response.ok.invoice_url, "_blank");
-        // setOrderConf(true);
+      if ("err" in backendResponse) {
+        console.log("error", backendResponse.err)
+        throw new Error("Backend error: " + backendResponse.err);
       }
-      localStorage.setItem("invoice_id", response.ok.invoice_id);
+      console.log(" Stored invoice in backend:", backendResponse.ok);
+      // if (backendResponse.ok){
+      //   window.open(paymentData.invoice_url, "_blank");
+      // }else{
+      //   console.log("error in redirect")
+      // }
+ 
+      if (backendResponse.ok && paymentData.success) {
+        window.open(paymentData.invoice_url, "_blank");
+      } else {
+        console.error("Error in redirect: Backend or payment gateway response not OK");
+      }
+     
+
+
+      localStorage.setItem("invoice_id", paymentData.invoice_id);
     } catch (err) {
-      console.error("error while purchasing nft", err);
-      toast.error("Failed to proceed");
+      console.error("🚨 Error processing invoice:", err);
+      toast.error(`Failed to proceed: ${err.message}`);
     } finally {
       setPurchaseLoad(false);
     }
   };
+
+
+  // const handleConfirm = async () => {
+  //   console.log({
+  //     collectionCanister: Principal.fromText(id),
+  //     nft_id: nftId,
+  //     nft_canister_id: nftCanId,
+  //     principal,
+  //     quantity,
+  //   });
+  //   try {
+  //     setPurchaseLoad(true);
+  //     const response = await backendActor.createInvoice(
+  //       window.location.origin,
+  //       quantity,
+  //       Principal.fromText(id),
+  //       nftId,
+  //       nftCanId,
+  //       principal,
+  //     );
+  //     console.log(window.location.origin,'window.location.origin');
+  //     console.log("response nft purchase", response);
+  //     console.log(response.ok.invoice_id);
+
+  //     onOpen(false);
+  //     if (response.ok.success && response.ok.invoice_url) {
+  //       window.open(response.ok.invoice_url, "_blank");
+  //       // setOrderConf(true);
+  //     }
+  //     localStorage.setItem("invoice_id", response.ok.invoice_id);
+  //   } catch (err) {
+  //     console.error("error while purchasing nft", err);
+  //     toast.error("Failed to proceed");
+  //   } finally {
+  //     setPurchaseLoad(false);
+  //   }
+  // };
 
   const colseAllModals = () => {
     onOpen(false);
