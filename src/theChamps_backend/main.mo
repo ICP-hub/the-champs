@@ -464,11 +464,11 @@ actor Champs {
         };
     };
 
-    public func createInvoice(invoice : UsersTypes.Invoice, quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal) : async Result.Result<UsersTypes.Invoice,Text> {
+    public func createInvoice(invoiceId : Text, quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal) : async Result.Result<Text,Text> {
             
-            if (not invoice.success) {
-                return #err("Error creating Invoice");
-            };
+            // if (not invoice.success) {
+            //     return #err("Error creating Invoice");
+            // };
             
             let args : UsersTypes.Args ={
                 nftCanister = nftCanister;
@@ -477,12 +477,12 @@ actor Champs {
                 to = to;
                 numberoftokens = quantity
             };
-            if(invoice.success == true){
-                argMap.put(invoice.invoice_id,args);
-            };
-            return #ok(invoice);
+            argMap.put(invoiceId,args);
+
+            return #ok(invoiceId);
 
     };
+    
     // public func createInvoice(endUrl: Text, quantity: Nat,nftCanister : Principal, tokenid : Types.TokenId, tokencanisterid : Principal, to : Principal) : async Result.Result<UsersTypes.Invoice,Text> {
     //         let successUrl = endUrl #"/success";
     //         let cancelUrl =  endUrl #"/failure";
