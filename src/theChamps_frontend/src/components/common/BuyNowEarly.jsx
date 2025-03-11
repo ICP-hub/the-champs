@@ -55,86 +55,79 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
   }, []);
 
   // Buy tokens
+
   const handleConfirm = async () => {
     try {
       setPurchaseLoad(true);
 
-      
       const payload = {
         qty: quantity,
         success_url: `${window.location.origin}/success`,
         failed_url: `${window.location.origin}/failed`,
       };
 
-      console.log("🚀 Sending payload to Champs Proxy API:", payload);
+      console.log("🚀 Sending payload to Payment API:", payload);
 
-     
+      //  Step 1: Call Payment API
       const paymentResponse = await fetch(
         "https://champproxyserv.netlify.app/.netlify/functions/api/invoice/checkout",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         }
       );
 
-      if (!paymentResponse.ok) {
-        console.log("HTTP Error", paymentResponse.status);
-        throw new Error(`HTTP Error: ${paymentResponse.status}`);
+      if (paymentResponse.status !== 200) {
+        console.error("❌ Payment API Error: Status", paymentResponse.status);
+        toast.error("Your payment failed. Please try again.");
+        return;
       }
 
       const paymentData = await paymentResponse.json();
-      console.log(" Payment API Response paymentResponse:", paymentResponse);
-      console.log(" Payment API Response:", paymentData);
+      console.log("Payment API Response:", paymentData);
 
       if (!paymentData.success) {
-        console.log("Invoice URL for success", paymentData.success_url);
-        throw new Error("Payment gateway error: " + JSON.stringify(paymentData));
+        console.error("❌ Payment Gateway Error:", paymentData);
+        toast.error("Your payment failed. Please try again.");
+        return;
       }
 
       console.log(" Invoice URL:", paymentData.invoice_url);
-
-     
-   
-      const invoice = {
-        success: true,
-        invoice_url: paymentData.invoice_url,
-        invoice_id: paymentData.invoice_id
-      };
-
-      console.log(" Sending invoice to backend:", invoice);
+      //  Step 2: 
+      const invoice_id = paymentData.invoice_id
+      const invoiceId = invoice_id;
+      console.log("📤 Sending Invoice to Backend:", invoiceId);
 
       const backendResponse = await backendActor.createInvoice(
-        invoice,
+        invoiceId,
         quantity,
         Principal.fromText(id),
         nftId,
         nftCanId,
-        principal
+        principal,
       );
 
       if ("err" in backendResponse) {
-        console.log("error", backendResponse.err)
-        throw new Error("Backend error: " + backendResponse.err);
+        console.error("❌ Backend Error:", backendResponse.err);
+        toast.error("Failed to create invoice. Please contact support.");
+        return;
       }
-      console.log(" Stored invoice in backend:", backendResponse.ok);
-      // if (backendResponse.ok){
-      //   window.open(paymentData.invoice_url, "_blank");
-      // }else{
-      //   console.log("error in redirect")
-      // }
- 
+
+      console.log(" Invoice Stored in Backend:", backendResponse.ok);
+
+      // Step 3: 
       if (backendResponse.ok && paymentData.success) {
         window.open(paymentData.invoice_url, "_blank");
+        localStorage.setItem("invoice_id", invoiceId);
+
+        //  Step 4: 
+        colseAllModals();
+        toast.success("Invoice created successfully! Redirecting...");
       } else {
-        console.error("Error in redirect: Backend or payment gateway response not OK");
+        console.error("❌ Error: Backend or Payment API response was not OK");
+        toast.error("Something went wrong. Please try again.");
       }
-     
-
-
-      localStorage.setItem("invoice_id", paymentData.invoice_id);
     } catch (err) {
       console.error("🚨 Error processing invoice:", err);
       toast.error(`Failed to proceed: ${err.message}`);
@@ -142,7 +135,6 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
       setPurchaseLoad(false);
     }
   };
-
 
   // const handleConfirm = async () => {
   //   console.log({

@@ -22,7 +22,7 @@ module {
         "opouq-k35n4-5h7di-33uzp-vhw7w-oth3a-pbw47-2koot-ggsga-v36v6-rqe",
         "df4fy-uwq5n-unjws-zumrr-c6y4q-jhbxt-tav3q-wm2gs-uxtyo-6tomo-fqe",
         "hfoea-3qpnz-265gr-2632r-mqdft-riql5-snmcx-7uhqu-3myq7-r4i6l-uqe",
-        "y5hx5-2yfge-h7332-rq6mc-dyyew-dhaqq-hdbf4-gzxuz-xms4p-scurk-qqe"
+        "qfaie-jy6jq-cnrxd-4k3hd-itn2j-e4eg7-clkms-difxp-o5hve-vodem-tqe"
     ];
 
     public func isAdmin(userPrincipal : Principal) : async Bool {
