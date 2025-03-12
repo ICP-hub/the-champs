@@ -155,7 +155,7 @@ actor Champs {
         // if (adminstatus == false) {
         //     throw Error.reject("User is not an admin");
         // };
-        Cycles.add<system>(500_500_000_000);
+        Cycles.add<system>(800_500_000_000);
         Debug.print(debug_show (user));
         let metadata : Types.Dip721NonFungibleToken = {
             logo = logo;
@@ -229,7 +229,7 @@ actor Champs {
                     };
                     case (#Ok(newnft)) {
                         Debug.print(debug_show (newnft));
-                        Cycles.add<system>(500_000_000_000);
+                        Cycles.add<system>(850_000_000_000);
                         let initial_mints = [{
                             account = { owner = champs; subaccount = null };
                             amount = _totalSupply;
