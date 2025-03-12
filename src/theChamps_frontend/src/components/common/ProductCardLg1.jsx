@@ -183,7 +183,7 @@ const ProductCardLg = ({ prod }) => {
               className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57] 
           text-white cursor-pointer rounded-lg z-50 max-w-max max-md:mb-4"
             >
-              View Collection 1
+              View Collection 
             </button>
           </div>
         </div>
