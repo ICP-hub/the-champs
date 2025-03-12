@@ -330,7 +330,7 @@ actor Champs {
 
     public shared ({ caller = _user }) func processPendingTransfer(invoiceId : Text) : async Result.Result<ICRC.Result,Text>{
         let args : UsersTypes.Args = switch(argMap.get(invoiceId)){
-            case null return #err("No args found for Invoice");
+            case null return #err("No args found for Invoice or already processed");
             case(?_args) _args;
         };
         Debug.print("Args that are stored while invoice creation");
@@ -350,6 +350,7 @@ actor Champs {
                         args.to,
                         args.numberoftokens
                     );
+                    argMap.delete(invoiceId);
                     return #ok(result);
                 }
                 else{
