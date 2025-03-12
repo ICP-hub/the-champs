@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import IcpLogo from "../../assets/IcpLogo";
 import PlaceholderImg from "../../assets/CHAMPS.png";
@@ -20,6 +20,7 @@ const ProductCardLg = ({ prod }) => {
   const [img2, setImg2] = useState("");
   const [exchange, setExchange] = useState(1);
   const [loading3, setLoading3] = useState(true);
+  const navigate =useNavigate()
   const getCollectionWiseNft = async () => {
     try {
       const canister_id = Principal.fromText(id);
@@ -139,6 +140,10 @@ const ProductCardLg = ({ prod }) => {
     },
   };
 
+
+  const handleClick = () => {
+    navigate(`/collection/${prod.canisterId.toText()}`);
+  };
   return (
     <motion.div
       className="flip-card-inner border-2 border__animation rounded-2xl"
@@ -166,13 +171,20 @@ const ProductCardLg = ({ prod }) => {
             </p>
           </div>
           <p className="mt-4 overflow-hidden overflow-hidden text-ellipsis w-full">{prod.details.description}</p>
-          <div className="mt-auto">
-            <Link
+          <div className="mt-auto cursor-pointer">
+            {/* <Link
               to={`/collection/${prod.canisterId.toText()}`}
               className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57] text-white cursor-pointer rounded-lg z-50 max-w-max max-md:mb-4"
             >
-              View Collection
-            </Link>
+              View Collection 
+            </Link> */}
+            <button
+              onClick={handleClick}
+              className="px-4 py-2 bg-gradient-to-tr from-[#FC001E] flex items-center justify-center to-[#FF7D57] 
+          text-white cursor-pointer rounded-lg z-50 max-w-max max-md:mb-4"
+            >
+              View Collection 1
+            </button>
           </div>
         </div>
       </div>

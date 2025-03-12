@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import OrderConfirmation from "../../pages/OrderConfirmation";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router";
-
+import { v4 as uuidv4 } from 'uuid';
 const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
   console.log("nft can id", nftCanId);
   const { id } = useParams();
@@ -73,7 +73,10 @@ const BuyNowEarly = ({ onOpen, totalSupply, nftCanId, nftId, sharesLeft }) => {
         "https://champproxyserv.netlify.app/.netlify/functions/api/invoice/checkout",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "idempotencykey": uuidv4(),
+          },
           body: JSON.stringify(payload),
         }
       );
